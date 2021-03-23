@@ -1,0 +1,65 @@
+plugins {
+	// Spring
+	id 'org.springframework.boot' version '2.4.4'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '15'
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	// Use JUnit Jupiter API for testing.
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+
+	// AssertJ
+	testImplementation 'org.assertj:assertj-core:3.18.1'
+
+	// Use JUnit Jupiter Engine for testing.
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+	// This dependency is used by the application.
+	implementation 'com.google.guava:guava:29.0-jre'
+
+	// Jackson for JSON.
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok:1.18.16'
+	annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+	// Spring Web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Spring Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Spring Data JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
+
+	// Spring Developer Tools
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// Spring Boot Test
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+test {
+	useJUnitPlatform()
+}
