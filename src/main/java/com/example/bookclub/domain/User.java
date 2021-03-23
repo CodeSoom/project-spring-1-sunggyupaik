@@ -1,6 +1,7 @@
 package com.example.bookclub.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -29,4 +30,15 @@ public class User {
     private String profileImage;
 
     private boolean deleted;
+
+    @Builder
+    public User(Long id, String name, String email, String nickname, String password, String profileImage) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.nickname = nickname;
+        this.password = password;
+        this.profileImage = profileImage;
+        this.deleted = isDeleted();
+    }
 }

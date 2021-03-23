@@ -1,10 +1,18 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.User;
+import com.example.bookclub.domain.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
-    public String getUser(Long id) {
-        return "\"id\":1L,\"name\":\"홍길동\",\"email\":\"abcd@naver.com\",\"nickname\":\"abcd\",\"password\":\"1234\",\"profileImage\":\"image\"";
+    private final UserRepository userRepository;
+
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    public User getUser(Long id) {
+        return userRepository.findById(id).get();
     }
 }
