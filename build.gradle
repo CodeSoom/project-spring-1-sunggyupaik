@@ -1,22 +1,24 @@
 plugins {
+	// Apply the application plugin to add support for building a CLI application in Java.
+	id 'application'
+
 	// Spring
-	id 'org.springframework.boot' version '2.4.4'
-	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-	id 'java'
+	id 'org.springframework.boot' version '2.3.5.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 }
 
-group = 'com.example'
-version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '15'
 
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
 	}
 }
 
 repositories {
-	mavenCentral()
+	// Use JCenter for resolving dependencies.
+	jcenter()
 }
 
 dependencies {
@@ -60,6 +62,12 @@ dependencies {
 	}
 }
 
+application {
+	// Define the main class for the application.
+	mainClass = 'com.example.bookclub.App'
+}
+
 test {
+	// Use junit platform for unit tests.
 	useJUnitPlatform()
 }

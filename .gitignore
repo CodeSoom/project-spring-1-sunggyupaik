@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### Binary ###
-app/out
+app/out/
