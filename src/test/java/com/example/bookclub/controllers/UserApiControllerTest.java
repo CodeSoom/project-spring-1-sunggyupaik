@@ -40,6 +40,8 @@ class UserApiControllerTest {
     private static final String CREATED_PASSWORD = "5678";
     private static final String CREATED_PROFILEIMAGE = "picture";
 
+    private static final String EXISTED_EMAIL = "abcd@naver.com";
+
     private User setUpUser;
     private User createUserData;
 
@@ -136,5 +138,19 @@ class UserApiControllerTest {
                 .andExpect(jsonPath("password").value(CREATED_PASSWORD))
                 .andExpect(jsonPath("profileImage").value(CREATED_PROFILEIMAGE))
                 .andExpect(jsonPath("deleted").value(false));
+    }
+
+    @Test
+    void createWithExistedEmail() throws Exception {
+        given(userService.createUser(any(UserCreateDto.class)))
+                .willThrow(UserEmailDuplicatedException.class);
+
+        mockMvc.perform(
+                post("/api/users")
+                .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userCreateDto))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }
