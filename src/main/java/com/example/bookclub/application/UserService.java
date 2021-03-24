@@ -28,7 +28,7 @@ public class UserService {
         if(userRepository.existsByEmail(email)) {
             throw new UserEmailDuplicatedException(email);
         }
-        
+
         String nickname = userCreateDto.getNickname();
         if(userRepository.existsByNickname(nickname)) {
             throw new UserNicknameDuplicatedException(nickname);
