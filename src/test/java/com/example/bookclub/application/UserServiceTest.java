@@ -30,12 +30,14 @@ class UserServiceTest {
     private static final String CREATED_PROFILEIMAGE = "picture";
 
     private static final String EXISTED_EMAIL = "abcd@naver.com";
+    private static final String EXISTED_NICKNAME = "abcd";
 
     private User setUpUser;
     private User createdUser;
 
     private UserCreateDto userCreateDto;
     private UserCreateDto emailExistedUserDto;
+    private UserCreateDto nicknameExistedUserDto;
 
     private UserService userService;
     private UserRepository userRepository;
@@ -78,6 +80,14 @@ class UserServiceTest {
                 .password(CREATED_PASSWORD)
                 .profileImage(CREATED_PROFILEIMAGE)
                 .build();
+
+        nicknameExistedUserDto = UserCreateDto.builder()
+                .name(CREATED_NAME)
+                .email(CREATED_EMAIL)
+                .nickname(EXISTED_NICKNAME)
+                .password(CREATED_PASSWORD)
+                .profileImage(CREATED_PROFILEIMAGE)
+                .build();
     }
 
     @Test
@@ -100,5 +110,13 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.createUser(emailExistedUserDto))
                 .isInstanceOf(UserEmailDuplicatedException.class);
+    }
+
+    @Test
+    public void createWithDuplicatedNickname() {
+        given(userRepository.existsByNickname(EXISTED_NICKNAME)).willReturn(true);
+
+        assertThatThrownBy(() -> userService.createUser(nicknameExistedUserDto))
+                .isInstanceOf(UserNicknameDuplicatedException.class);
     }
 }
