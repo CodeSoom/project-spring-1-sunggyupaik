@@ -1,0 +1,15 @@
+# Spring Email
+mail:
+  id: melon975123@gmail.com
+  password:
+    stmp:
+      host: smtp.gmail.com
+      port: 465
+      socketFactory.port: 465
+      auth: true
+      starttls.enable: true
+      starttls.required: true
+      socketFactory.fallback: false
+      socketFactory.class: javax.net.ssl.SSLSocketFactory
+
+
