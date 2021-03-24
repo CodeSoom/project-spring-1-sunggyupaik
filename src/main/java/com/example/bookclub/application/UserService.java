@@ -5,6 +5,7 @@ import com.example.bookclub.dto.UserResultDto;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
+import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,6 +27,11 @@ public class UserService {
         String email = userCreateDto.getEmail();
         if(userRepository.existsByEmail(email)) {
             throw new UserEmailDuplicatedException(email);
+        }
+        
+        String nickname = userCreateDto.getNickname();
+        if(userRepository.existsByNickname(nickname)) {
+            throw new UserNicknameDuplicatedException(nickname);
         }
 
         User user = userCreateDto.toEntity();
