@@ -1,6 +1,7 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.dto.ErrorResponse;
+import com.example.bookclub.errors.UserEmailDuplicatedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -11,6 +12,12 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class ControllerErrorAdvice {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserEmailDuplicatedException.class)
+    public ErrorResponse handleUserEmailDuplicated(UserEmailDuplicatedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorResponse handleProductMethodArgumentNotValid(MethodArgumentNotValidException e) {

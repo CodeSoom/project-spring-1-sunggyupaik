@@ -1,9 +1,10 @@
 package com.example.bookclub.controllers;
 
-import com.example.bookclub.dto.UserCreateDto;
-import com.example.bookclub.dto.UserResultDto;
 import com.example.bookclub.application.UserService;
 import com.example.bookclub.domain.User;
+import com.example.bookclub.dto.UserCreateDto;
+import com.example.bookclub.dto.UserResultDto;
+import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
