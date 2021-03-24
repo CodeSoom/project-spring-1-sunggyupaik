@@ -14,6 +14,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -64,6 +65,21 @@ class UserControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("id").value(1L))
+                .andExpect(jsonPath("name").value("홍길동"))
+                .andExpect(jsonPath("email").value("abcd@naver.com"))
+                .andExpect(jsonPath("nickname").value("abcd"))
+                .andExpect(jsonPath("password").value("1234"))
+                .andExpect(jsonPath("profileImage").value("image"));
+    }
+
+    @Test
+    void createWithValidAttribute() throws Exception {
+        mockMvc.perform(
+                post("/users")
+        )
+                .andDo(print())
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(1L))
                 .andExpect(jsonPath("name").value("홍길동"))
                 .andExpect(jsonPath("email").value("abcd@naver.com"))
