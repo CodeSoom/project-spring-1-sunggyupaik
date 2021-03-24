@@ -44,7 +44,7 @@ class UserApiControllerTest {
     private static final String EXISTED_EMAIL = "abcd@naver.com";
 
     private User setUpUser;
-    private User createUserData;
+    private User createdUser;
 
     private UserCreateDto userCreateDto;
 
@@ -64,7 +64,7 @@ class UserApiControllerTest {
                 .profileImage(SETUP_PROFILEIMAGE)
                 .build();
 
-        createUserData = User.builder()
+        createdUser = User.builder()
                 .name(CREATED_NAME)
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
