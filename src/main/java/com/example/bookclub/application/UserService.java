@@ -1,7 +1,7 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.Dto.UserCreateDto;
-import com.example.bookclub.Dto.UserResultDto;
+import com.example.bookclub.dto.UserCreateDto;
+import com.example.bookclub.dto.UserResultDto;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import org.springframework.stereotype.Service;

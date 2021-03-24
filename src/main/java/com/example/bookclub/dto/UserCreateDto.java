@@ -1,4 +1,4 @@
-package com.example.bookclub.Dto;
+package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.User;
 import lombok.AccessLevel;
@@ -15,15 +15,15 @@ import javax.validation.constraints.Size;
 @ToString
 public class UserCreateDto {
     @NotBlank(message = "name 값은 필수입니다")
-    @Size(min=2)
+    @Size(min=2, max=6)
     private String name;
 
     @NotBlank(message = "email 값은 필수입니다")
-    @Size(min=3)
+    @Size(min=3, max=48)
     private String email;
 
     @NotBlank(message = "nickname 값은 필수입니다")
-    @Size(min=3)
+    @Size(min=3, max=10)
     private String nickname;
 
     @NotBlank(message = "password 값은 필수입니다")

@@ -1,4 +1,4 @@
-package com.example.bookclub.Dto;
+package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.User;
 import lombok.AccessLevel;
