@@ -5,6 +5,7 @@ import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.UserCreateDto;
 import com.example.bookclub.dto.UserResultDto;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
+import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
