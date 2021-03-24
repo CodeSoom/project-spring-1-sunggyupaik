@@ -1,5 +1,7 @@
 package com.example.bookclub.controllers;
 
+import com.example.bookclub.Dto.UserCreateDto;
+import com.example.bookclub.Dto.UserResultDto;
 import com.example.bookclub.application.UserService;
 import com.example.bookclub.domain.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,8 +24,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
-class UserControllerTest {
+@WebMvcTest(UserApiController.class)
+class UserApiControllerTest {
     private static final Long EXISTED_ID = 1L;
     private static final String SETUP_NAME = "홍길동";
     private static final String SETUP_EMAIL = "abcd@naver.com";
@@ -41,6 +43,8 @@ class UserControllerTest {
     private User setUpUser;
     private User createUserData;
 
+    private UserCreateDto userCreateDto;
+
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
@@ -49,21 +53,29 @@ class UserControllerTest {
                 .build();
 
         setUpUser = User.builder()
-            .id(EXISTED_ID)
-            .name(SETUP_NAME)
-            .email(SETUP_EMAIL)
-            .nickname(SETUP_NICKNAME)
-            .password(SETUP_PASSWORD)
-            .profileImage(SETUP_PROFILEIMAGE)
-            .build();
+                .id(EXISTED_ID)
+                .name(SETUP_NAME)
+                .email(SETUP_EMAIL)
+                .nickname(SETUP_NICKNAME)
+                .password(SETUP_PASSWORD)
+                .profileImage(SETUP_PROFILEIMAGE)
+                .build();
 
         createUserData = User.builder()
-            .name(CREATED_NAME)
-            .email(CREATED_EMAIL)
-            .nickname(CREATED_NICKNAME)
-            .password(CREATED_PASSWORD)
-            .profileImage(CREATED_PROFILEIMAGE)
-            .build();
+                .name(CREATED_NAME)
+                .email(CREATED_EMAIL)
+                .nickname(CREATED_NICKNAME)
+                .password(CREATED_PASSWORD)
+                .profileImage(CREATED_PROFILEIMAGE)
+                .build();
+
+        userCreateDto = UserCreateDto.builder()
+                .name(CREATED_NAME)
+                .email(CREATED_EMAIL)
+                .nickname(CREATED_NICKNAME)
+                .password(CREATED_PASSWORD)
+                .profileImage(CREATED_PROFILEIMAGE)
+                .build();
     }
 
     @Autowired
@@ -83,7 +95,7 @@ class UserControllerTest {
         given(userService.getUser(EXISTED_ID)).willReturn(setUpUser);
 
         mockMvc.perform(
-                get("/users/{id}", EXISTED_ID)
+                get("/api/users/{id}", EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -98,22 +110,22 @@ class UserControllerTest {
 
     @Test
     void createWithValidAttribute() throws Exception {
-        given(userService.createUser(any(User.class))).will(invocation -> {
-            User user = invocation.getArgument(0);
-            return User.builder()
+        given(userService.createUser(any(UserCreateDto.class))).will(invocation -> {
+            UserCreateDto userCreateDto = invocation.getArgument(0);
+            return UserResultDto.builder()
                     .id(CREATED_ID)
-                    .name(user.getName())
-                    .email(user.getEmail())
-                    .nickname(user.getNickname())
-                    .password(user.getPassword())
-                    .profileImage(user.getProfileImage())
+                    .name(userCreateDto.getName())
+                    .email(userCreateDto.getEmail())
+                    .nickname(userCreateDto.getNickname())
+                    .password(userCreateDto.getPassword())
+                    .profileImage(userCreateDto.getProfileImage())
                     .build();
         });
 
         mockMvc.perform(
-                post("/users")
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(createUserData))
+                post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userCreateDto))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())

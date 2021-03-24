@@ -14,31 +14,39 @@ import javax.persistence.Id;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
+@Builder
 public class User {
     @Id
     @GeneratedValue
     private Long id;
 
-    private String name;
+    @Builder.Default
+    private String name = "";
 
-    private String email;
+    @Builder.Default
+    private String email = "";
 
-    private String nickname;
+    @Builder.Default
+    private String nickname = "";
 
-    private String password;
+    @Builder.Default
+    private String password = "";
 
-    private String profileImage;
+    @Builder.Default
+    private String profileImage = "";
 
-    private boolean deleted;
+    @Builder.Default
+    private boolean deleted = false;
 
     @Builder
-    public User(Long id, String name, String email, String nickname, String password, String profileImage) {
+    public User(Long id, String name, String email, String nickname,
+                String password, String profileImage, boolean deleted) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.profileImage = profileImage;
-        this.deleted = isDeleted();
+        this.deleted = deleted;
     }
 }

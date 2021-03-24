@@ -1,5 +1,7 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.Dto.UserCreateDto;
+import com.example.bookclub.Dto.UserResultDto;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,9 @@ public class UserService {
         return userRepository.findById(id).get();
     }
 
-    public User createUser(User userData) {
-        return userRepository.save(userData);
+    public UserResultDto createUser(UserCreateDto userCreateDto) {
+        User user = userCreateDto.toEntity();
+        User createdUser = userRepository.save(user);
+        return UserResultDto.of(createdUser);
     }
 }

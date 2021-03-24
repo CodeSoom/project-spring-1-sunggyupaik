@@ -1,5 +1,7 @@
 package com.example.bookclub.controllers;
 
+import com.example.bookclub.Dto.UserCreateDto;
+import com.example.bookclub.Dto.UserResultDto;
 import com.example.bookclub.application.UserService;
 import com.example.bookclub.domain.User;
 import org.springframework.http.HttpStatus;
@@ -21,13 +23,14 @@ public class UserApiController {
     }
 
     @GetMapping("/{id}")
-    public User detail(@PathVariable Long id) {
-        return userService.getUser(id);
+    public UserResultDto detail(@PathVariable Long id) {
+        User user = userService.getUser(id);
+        return UserResultDto.of(user);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public User create(@RequestBody User userData) {
-        return userService.createUser(userData);
+    public UserResultDto create(@RequestBody UserCreateDto userCreateDto) {
+        return userService.createUser(userCreateDto);
     }
 }
