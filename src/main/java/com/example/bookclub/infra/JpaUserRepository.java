@@ -13,4 +13,6 @@ public interface JpaUserRepository
     User save(User user);
 
     boolean existsByEmail(String email);
+
+    boolean existsByNickname(String nickname);
 }
