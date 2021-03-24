@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface JpaUserRepository
         extends UserRepository, CrudRepository<User, Long> {
     Optional<User> findById(Long id);
+
+    User save(User user);
 }

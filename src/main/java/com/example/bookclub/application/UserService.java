@@ -4,7 +4,10 @@ import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
 
@@ -14,5 +17,9 @@ public class UserService {
 
     public User getUser(Long id) {
         return userRepository.findById(id).get();
+    }
+
+    public User createUser(User userData) {
+        return userRepository.save(userData);
     }
 }

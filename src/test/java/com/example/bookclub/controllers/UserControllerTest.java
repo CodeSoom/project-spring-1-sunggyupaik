@@ -2,16 +2,19 @@ package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.UserService;
 import com.example.bookclub.domain.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -48,6 +51,9 @@ class UserControllerTest {
     }
 
     @Autowired
+    ObjectMapper objectMapper;
+
+    @Autowired
     MockMvc mockMvc;
 
     @Autowired
@@ -75,8 +81,12 @@ class UserControllerTest {
 
     @Test
     void createWithValidAttribute() throws Exception {
+        given(userService.createUser(any(User.class))).willReturn(setUpUserOne);
+
         mockMvc.perform(
                 post("/users")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(setUpUserOne))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
