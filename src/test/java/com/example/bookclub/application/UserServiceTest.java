@@ -35,6 +35,7 @@ class UserServiceTest {
     private User createdUser;
 
     private UserCreateDto userCreateDto;
+    private UserCreateDto emailExistedUserDto;
 
     private UserService userService;
     private UserRepository userRepository;
@@ -69,6 +70,14 @@ class UserServiceTest {
                 .password(CREATED_PASSWORD)
                 .profileImage(CREATED_PROFILEIMAGE)
                 .build();
+
+        emailExistedUserDto = UserCreateDto.builder()
+                .name(CREATED_NAME)
+                .email(EXISTED_EMAIL)
+                .nickname(CREATED_NICKNAME)
+                .password(CREATED_PASSWORD)
+                .profileImage(CREATED_PROFILEIMAGE)
+                .build();
     }
 
     @Test
@@ -89,7 +98,7 @@ class UserServiceTest {
     public void createWithDuplicatedEmail() {
         given(userRepository.existsByEmail(EXISTED_EMAIL)).willReturn(true);
 
-        assertThatThrownBy(() -> userService.createUser(any(UserCreateDto.class)))
+        assertThatThrownBy(() -> userService.createUser(emailExistedUserDto))
                 .isInstanceOf(UserEmailDuplicatedException.class);
     }
 }
