@@ -59,4 +59,8 @@ public class User {
         this.password = password;
         this.profileImage = profileImage;
     }
+
+    public boolean isPasswordSameWith(String password) {
+        return this.password.equals(password);
+    }
 }

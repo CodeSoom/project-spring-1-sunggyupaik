@@ -11,6 +11,7 @@ import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import com.example.bookclub.errors.UserNotFoundException;
+import com.example.bookclub.errors.UserPasswordBadRequestException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -60,8 +61,12 @@ public class UserService {
     public UserResultDto updateUser(Long id, UserUpdateDto userUpdateDto) {
         User user = getUser(id);
 
-        String nickname = userUpdateDto.getNickname();
         String password = userUpdateDto.getPassword();
+        if (!user.isPasswordSameWith(password)) {
+            throw new UserPasswordBadRequestException();
+        }
+
+        String nickname = userUpdateDto.getNickname();
         String profileImage = userUpdateDto.getProfileImage();
         user.updateWith(nickname, password, profileImage);
 

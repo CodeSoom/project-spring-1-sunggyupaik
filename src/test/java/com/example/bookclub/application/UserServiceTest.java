@@ -205,5 +205,4 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.updateUser(EXISTED_ID, passwordNotExistedUserUpdateDto))
                 .isInstanceOf(UserPasswordBadRequestException.class);
     }
-
 }
