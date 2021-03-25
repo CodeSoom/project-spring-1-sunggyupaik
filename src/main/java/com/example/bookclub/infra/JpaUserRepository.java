@@ -15,4 +15,6 @@ public interface JpaUserRepository
     boolean existsByEmail(String email);
 
     boolean existsByNickname(String nickname);
+
+    boolean findByIdNotAndNickname(Long id, String nickname);
 }

@@ -67,6 +67,10 @@ public class UserService {
         }
 
         String nickname = userUpdateDto.getNickname();
+        if (isNicknameDuplicated(id, nickname)) {
+            throw new UserNicknameDuplicatedException(nickname);
+        }
+
         String profileImage = userUpdateDto.getProfileImage();
         user.updateWith(nickname, password, profileImage);
 
@@ -89,5 +93,9 @@ public class UserService {
         user.delete();
 
         return UserResultDto.of(user);
+    }
+
+    public boolean isNicknameDuplicated(Long id, String nickname) {
+        return userRepository.findByIdNotAndNickname(id, nickname);
     }
 }
