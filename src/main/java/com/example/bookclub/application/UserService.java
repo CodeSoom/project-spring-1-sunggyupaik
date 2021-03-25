@@ -6,6 +6,7 @@ import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.UserCreateDto;
 import com.example.bookclub.dto.UserResultDto;
+import com.example.bookclub.dto.UserUpdateDto;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
@@ -54,6 +55,10 @@ public class UserService {
         deleteEmailAuthentication(emailAuthentication.getEmail());
 
         return UserResultDto.of(createdUser);
+    }
+
+    public UserResultDto updateUser(Long id, UserUpdateDto userUpdateDto) {
+        return null;
     }
 
     public EmailAuthentication getAuthenticationNumber(String email) {
