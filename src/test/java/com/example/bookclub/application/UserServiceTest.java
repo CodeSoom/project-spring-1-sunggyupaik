@@ -56,7 +56,7 @@ class UserServiceTest {
     void setUp() {
         userRepository = mock(UserRepository.class);
         emailAuthenticationRepository = mock(EmailAuthenticationRepository.class);
-        userService = new UserService(userRepository);
+        userService = new UserService(userRepository, emailAuthenticationRepository);
 
         setUpUser = User.builder()
                 .id(EXISTED_ID)

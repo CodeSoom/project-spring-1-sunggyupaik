@@ -5,10 +5,6 @@ var main = {
             _this.sendMessage();
         });
 
-        $('#btn-checkMessage').on('click', function () {
-            _this.checkMessage();
-        });
-
         $('#btn-save').on('click', function () {
             _this.save();
         });
@@ -42,7 +38,7 @@ var main = {
             nickname: $('#nickname').val(),
             password: $('#password').val(),
             profileImage: $('#profileImage').val(),
-
+            authenticationNumber: $('#authenticationNumber').val()
         };
 
         $.ajax({

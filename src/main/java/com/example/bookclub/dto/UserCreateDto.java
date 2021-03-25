@@ -32,6 +32,8 @@ public class UserCreateDto {
 
     private String profileImage;
 
+    private String authenticationNumber;
+
     @Builder
     public UserCreateDto(String name, String email, String nickname,
                          String password, String profileImage) {

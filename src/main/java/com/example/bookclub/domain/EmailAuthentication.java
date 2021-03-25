@@ -28,4 +28,8 @@ public class EmailAuthentication {
         this.email = email;
         this.authenticationNumber = authenticationNumber;
     }
+
+    public boolean isSameWith(String authenticationNumber) {
+        return this.authenticationNumber.equals(authenticationNumber);
+    }
 }
