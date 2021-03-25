@@ -1,5 +1,7 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.EmailAuthentication;
+import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.UserCreateDto;
@@ -8,6 +10,8 @@ import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -32,6 +36,8 @@ class UserServiceTest {
 
     private static final String EXISTED_EMAIL = "abcd@naver.com";
     private static final String EXISTED_NICKNAME = "abcd";
+    private static final String EXISTED_AUTHENTICATIONNUMBER = "12345";
+    private static final String NOT_EXISTED_AUTHENTICATIONNUMBER = "67890";
 
     private User setUpUser;
     private User createdUser;
@@ -39,13 +45,16 @@ class UserServiceTest {
     private UserCreateDto userCreateDto;
     private UserCreateDto emailExistedUserDto;
     private UserCreateDto nicknameExistedUserDto;
+    private EmailAuthentication emailAuthentication;
 
     private UserService userService;
     private UserRepository userRepository;
+    private EmailAuthenticationRepository emailAuthenticationRepository;
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
+        emailAuthenticationRepository = mock(EmailAuthenticationRepository.class);
         userService = new UserService(userRepository);
 
         setUpUser = User.builder()
@@ -89,6 +98,11 @@ class UserServiceTest {
                 .password(CREATED_PASSWORD)
                 .profileImage(CREATED_PROFILEIMAGE)
                 .build();
+
+        emailAuthentication = EmailAuthentication.builder()
+                .email(SETUP_EMAIL)
+                .authenticationNumber(EXISTED_AUTHENTICATIONNUMBER)
+                .build();
     }
 
     @Test
@@ -119,5 +133,13 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.createUser(nicknameExistedUserDto))
                 .isInstanceOf(UserNicknameDuplicatedException.class);
+    }
+
+    @Test
+    public void createWithNotValidAuthenticationNumber() {
+        given(emailAuthenticationRepository.findByEmail(SETUP_EMAIL)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> userService.createUser(userCreateDto))
+                .isInstanceOf(EmailNotAuthenticatedException.class);
     }
 }
