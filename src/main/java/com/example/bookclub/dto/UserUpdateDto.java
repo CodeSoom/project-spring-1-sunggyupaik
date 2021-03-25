@@ -6,12 +6,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.Size;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @ToString
 public class UserUpdateDto {
+    @Size(min=3, max=10)
     private String nickname;
 
+    @Size(min = 4, max = 1024)
     private String password;
 
     private String profileImage;
