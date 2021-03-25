@@ -1,12 +1,16 @@
 var main = {
     init : function () {
         var _this = this;
-        $('#btn-save').on('click', function () {
-            _this.save();
-        });
-
         $('#btn-sendMessage').on('click', function () {
             _this.sendMessage();
+        });
+
+        $('#btn-checkMessage').on('click', function () {
+            _this.checkMessage();
+        });
+
+        $('#btn-save').on('click', function () {
+            _this.save();
         });
     },
 
@@ -14,17 +18,19 @@ var main = {
         var data = {
             email: $('#email').val()
         }
-        alert('메일을 전송하였습니다')
+        $("#email").attr("readonly",true);
+        alert('메일 전송을 시작합니다.');
 
         $.ajax({
             type: 'POST',
             url: '/api/email/authentication',
-            dataType: 'json',
+            dataType: 'text',
             contentType:'application/json;',
             data: JSON.stringify(data)
         }).done(function() {
             alert("메일 전송이 완료되었습니다.");
         }).fail(function (error) {
+            $("#email").attr("readonly",false);
             alert(JSON.stringify(error));
         });
     },
@@ -35,7 +41,8 @@ var main = {
             email: $('#email').val(),
             nickname: $('#nickname').val(),
             password: $('#password').val(),
-            profileImage: $('#profileImage').val()
+            profileImage: $('#profileImage').val(),
+
         };
 
         $.ajax({
