@@ -1,6 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.EmailAuthentication;
+import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.dto.EmailRequestDto;
 import com.example.bookclub.errors.MailIllegalArgumentException;
 import org.springframework.mail.MailException;
