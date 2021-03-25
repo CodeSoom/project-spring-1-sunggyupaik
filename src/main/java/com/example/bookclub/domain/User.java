@@ -49,4 +49,8 @@ public class User {
         this.profileImage = profileImage;
         this.deleted = deleted;
     }
+
+    public void delete() {
+        this.deleted = true;
+    }
 }

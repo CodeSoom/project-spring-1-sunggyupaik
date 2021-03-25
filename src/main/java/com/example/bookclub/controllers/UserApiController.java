@@ -5,6 +5,7 @@ import com.example.bookclub.dto.UserResultDto;
 import com.example.bookclub.application.UserService;
 import com.example.bookclub.domain.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,5 +35,11 @@ public class UserApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserResultDto create(@RequestBody @Valid UserCreateDto userCreateDto) {
         return userService.createUser(userCreateDto);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public UserResultDto delete(@PathVariable Long id) {
+        return userService.deleteUser(id);
     }
 }

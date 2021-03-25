@@ -63,4 +63,12 @@ public class UserService {
         EmailAuthentication emailAuthentication = getAuthenticationNumber(email);
         emailAuthenticationRepository.delete(emailAuthentication);
     }
+
+    public UserResultDto deleteUser(Long id) {
+        User user = userRepository.findById(id);
+
+        user.delete();
+
+        return UserResultDto.of(user);
+    }
 }
