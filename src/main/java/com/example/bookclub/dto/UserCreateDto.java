@@ -7,31 +7,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class UserCreateDto {
-    @NotBlank(message = "name 값은 필수입니다")
     @Size(min=2, max=6)
     private String name;
 
-    @NotBlank(message = "email 값은 필수입니다")
     @Size(min=3, max=48)
     private String email;
 
-    @NotBlank(message = "nickname 값은 필수입니다")
     @Size(min=3, max=10)
     private String nickname;
 
-    @NotBlank(message = "password 값은 필수입니다")
     @Size(min = 4, max = 1024)
     private String password;
 
     private String profileImage;
 
+    @Size(min = 4, max = 5)
     private String authenticationNumber;
 
     @Builder
