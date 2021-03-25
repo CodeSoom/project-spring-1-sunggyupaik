@@ -4,6 +4,7 @@ import com.example.bookclub.application.UserService;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.dto.UserCreateDto;
 import com.example.bookclub.dto.UserResultDto;
+import com.example.bookclub.dto.UserUpdateDto;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,7 +89,7 @@ class UserApiControllerTest {
                 .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
-        UserUpdateDto = UserUpdateDto.builder()
+        userUpdateDto = UserUpdateDto.builder()
                 .nickname(UPDATED_NICKNAME)
                 .password(UPDATED_PASSWORD)
                 .profileImage(UPDATED_PROFILEIMAGE)
