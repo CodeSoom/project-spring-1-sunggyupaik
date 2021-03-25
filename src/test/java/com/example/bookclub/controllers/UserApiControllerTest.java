@@ -5,6 +5,7 @@ import com.example.bookclub.domain.User;
 import com.example.bookclub.dto.UserCreateDto;
 import com.example.bookclub.dto.UserResultDto;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
+import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -149,6 +150,20 @@ class UserApiControllerTest {
         mockMvc.perform(
                 post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userCreateDto))
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createWithExistedNickname() throws Exception {
+        given(userService.createUser(any(UserCreateDto.class)))
+                .willThrow(UserNicknameDuplicatedException.class);
+
+        mockMvc.perform(
+                post("/api/users")
+                        .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userCreateDto))
         )
                 .andDo(print())
