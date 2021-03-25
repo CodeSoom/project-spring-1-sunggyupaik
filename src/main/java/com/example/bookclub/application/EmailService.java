@@ -33,11 +33,17 @@ public class EmailService {
     private MimeMessage createMessage(String to) throws MessagingException {
         MimeMessage  message = javaMailSender.createMimeMessage();
 
-        String code = createNumber();
+        String code = createAuthenticationNumber();
         message.addRecipients(Message.RecipientType.TO, to);
         message.setSubject("BookClub 인증번호");
         message.setText(code);
 
         return message;
+    }
+
+    public String createAuthenticationNumber() {
+        double dValue = Math.random();
+        int iValue = (int)(dValue * 100000);
+        return Integer.toString(iValue);
     }
 }
