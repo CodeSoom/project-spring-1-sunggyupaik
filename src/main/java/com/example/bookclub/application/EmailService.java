@@ -13,13 +13,20 @@ import javax.mail.internet.MimeMessage;
 @Service
 public class EmailService {
     private final JavaMailSender javaMailSender;
+    private final EmailAuthenticationRepository emailAuthenticationRepository;
+    private final String code;
 
-    public EmailService(JavaMailSender javaMailSender) {
+    public EmailService(JavaMailSender javaMailSender,
+                        EmailAuthenticationRepository emailAuthenticationRepository
+    ) {
         this.javaMailSender = javaMailSender;
+        this.emailAuthenticationRepository = emailAuthenticationRepository;
+        code = createAuthenticationNumber();
     }
 
     public String sendAuthenticationNumber(EmailRequestDto emailRequestDto) throws MessagingException {
-        MimeMessage message = createMessage(emailRequestDto.getEmail());
+        String email = emailRequestDto.getEmail();
+        MimeMessage message = createMessage(email);
 
         try {
             javaMailSender.send(message);
@@ -27,13 +34,14 @@ public class EmailService {
             throw new MailIllegalArgumentException();
         }
 
-        return "message";
+        emailAuthenticationRepository.save(new EmailAuthentication(email, code));
+
+        return email;
     }
 
     private MimeMessage createMessage(String to) throws MessagingException {
         MimeMessage  message = javaMailSender.createMimeMessage();
 
-        String code = createAuthenticationNumber();
         message.addRecipients(Message.RecipientType.TO, to);
         message.setSubject("BookClub 인증번호");
         message.setText(code);
@@ -41,7 +49,7 @@ public class EmailService {
         return message;
     }
 
-    public String createAuthenticationNumber() {
+    public static String createAuthenticationNumber() {
         double dValue = Math.random();
         int iValue = (int)(dValue * 100000);
         return Integer.toString(iValue);
