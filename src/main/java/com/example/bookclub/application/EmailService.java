@@ -6,6 +6,8 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
 @Service
@@ -16,7 +18,7 @@ public class EmailService {
         this.javaMailSender = javaMailSender;
     }
 
-    public String sendAuthenticationNumber(EmailRequestDto emailRequestDto) {
+    public String sendAuthenticationNumber(EmailRequestDto emailRequestDto) throws MessagingException {
         MimeMessage message = createMessage(emailRequestDto.getEmail());
 
         try {
@@ -24,5 +26,18 @@ public class EmailService {
         } catch(MailException ex) {
             throw new MailIllegalArgumentException();
         }
+
+        return "message";
+    }
+
+    private MimeMessage createMessage(String to) throws MessagingException {
+        MimeMessage  message = javaMailSender.createMimeMessage();
+
+        String code = createNumber();
+        message.addRecipients(Message.RecipientType.TO, to);
+        message.setSubject("BookClub 인증번호");
+        message.setText(code);
+
+        return message;
     }
 }
