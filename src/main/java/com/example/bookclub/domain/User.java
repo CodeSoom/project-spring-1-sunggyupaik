@@ -53,4 +53,10 @@ public class User {
     public void delete() {
         this.deleted = true;
     }
+
+    public void updateWith(String nickname, String password, String profileImage) {
+        this.nickname = nickname;
+        this.password = password;
+        this.profileImage = profileImage;
+    }
 }

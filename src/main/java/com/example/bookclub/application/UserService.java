@@ -58,7 +58,14 @@ public class UserService {
     }
 
     public UserResultDto updateUser(Long id, UserUpdateDto userUpdateDto) {
-        return null;
+        User user = getUser(id);
+
+        String nickname = userUpdateDto.getNickname();
+        String password = userUpdateDto.getPassword();
+        String profileImage = userUpdateDto.getProfileImage();
+        user.updateWith(nickname, password, profileImage);
+
+        return UserResultDto.of(user);
     }
 
     public EmailAuthentication getAuthenticationNumber(String email) {
