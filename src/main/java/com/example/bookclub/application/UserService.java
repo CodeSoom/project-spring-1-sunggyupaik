@@ -72,7 +72,8 @@ public class UserService {
         }
 
         String profileImage = userUpdateDto.getProfileImage();
-        user.updateWith(nickname, password, profileImage);
+        String newPassword = userUpdateDto.getNewPassword();
+        user.updateWith(nickname, newPassword, profileImage);
 
         return UserResultDto.of(user);
     }

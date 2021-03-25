@@ -18,12 +18,17 @@ public class UserUpdateDto {
     @Size(min = 4, max = 1024)
     private String password;
 
+    @Size(min = 4, max = 1024)
+    private String newPassword;
+
     private String profileImage;
 
     @Builder
-    public UserUpdateDto(String nickname, String password, String profileImage) {
+    public UserUpdateDto(String nickname, String password,
+                         String newPassword, String profileImage) {
         this.nickname = nickname;
         this.password = password;
+        this.newPassword = newPassword;
         this.profileImage = profileImage;
     }
 }
