@@ -22,6 +22,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -43,12 +44,17 @@ class UserApiControllerTest {
     private static final String CREATED_PASSWORD = "5678";
     private static final String CREATED_PROFILEIMAGE = "picture";
 
+    private static final String UPDATED_NICKNAME = "qwer";
+    private static final String UPDATED_PASSWORD = "5678";
+    private static final String UPDATED_PROFILEIMAGE = "picture";
+
     private static final String EXISTED_EMAIL = "abcd@naver.com";
 
     private User setUpUser;
     private User createdUser;
 
     private UserCreateDto userCreateDto;
+    private UserUpdateDto userUpdateDto;
 
     @BeforeEach
     void setUp() {
@@ -80,6 +86,12 @@ class UserApiControllerTest {
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
                 .profileImage(CREATED_PROFILEIMAGE)
+                .build();
+
+        UserUpdateDto = UserUpdateDto.builder()
+                .nickname(UPDATED_NICKNAME)
+                .password(UPDATED_PASSWORD)
+                .profileImage(UPDATED_PROFILEIMAGE)
                 .build();
     }
 
@@ -174,9 +186,20 @@ class UserApiControllerTest {
     @Test
     void deleteWithExistedId() throws Exception {
         mockMvc.perform(
-                delete("/users/{id}", EXISTED_ID)
+                delete("/api/users/{id}", EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void updateWithValidAttribute() throws Exception {
+        mockMvc.perform(
+                patch("/api/users/{id}", EXISTED_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userUpdateDto))
+        )
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
