@@ -38,7 +38,9 @@ class UserServiceTest {
     private static final String CREATED_PROFILEIMAGE = "picture";
 
     private static final String UPDATED_NICKNAME = "qwer";
-    private static final String UPDATED_PASSWORD = "5678";
+    private static final String NOT_EXISTED_PASSWORD = "5678";
+    private static final String UPDATED_PASSWORD = "1234";
+
     private static final String UPDATED_PROFILEIMAGE = "picture";
 
     private static final String EXISTED_EMAIL = "abcd@naver.com";
@@ -54,6 +56,7 @@ class UserServiceTest {
     private UserCreateDto nicknameExistedUserCreateDto;
     private UserUpdateDto userUpdateDto;
     private UserUpdateDto nicknameExistedUserUpdateDto;
+    private UserUpdateDto passwordNotExistedUserUpdateDto;
     private EmailAuthentication emailAuthentication;
 
     private UserService userService;
@@ -117,8 +120,14 @@ class UserServiceTest {
 
         nicknameExistedUserUpdateDto = UserUpdateDto.builder()
                 .nickname(SETUP_NICKNAME)
-                .password(UPDATED_PASSWORD)
+                .password(SETUP_PASSWORD)
                 .profileImage(UPDATED_PROFILEIMAGE)
+                .build();
+
+        passwordNotExistedUserUpdateDto = UserUpdateDto.builder()
+                .nickname(SETUP_NICKNAME)
+                .password(NOT_EXISTED_PASSWORD)
+                .profileImage(SETUP_PROFILEIMAGE)
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
@@ -187,4 +196,13 @@ class UserServiceTest {
         assertThatThrownBy(() -> userService.updateUser(EXISTED_ID, nicknameExistedUserUpdateDto))
                 .isInstanceOf(UserNicknameDuplicatedException.class);
     }
+
+    @Test
+    public void updateWithNotValidPassword() {
+        given(userRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpUser));
+
+        assertThatThrownBy(() -> userService.updateUser(EXISTED_ID, passwordNotExistedUserUpdateDto))
+                .isInstanceOf(UserPasswordBadRequestException.class);
+    }
+
 }

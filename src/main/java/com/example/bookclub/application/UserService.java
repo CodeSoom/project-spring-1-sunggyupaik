@@ -70,7 +70,7 @@ public class UserService {
 
     public EmailAuthentication getAuthenticationNumber(String email) {
         return emailAuthenticationRepository.findByEmail(email)
-                    .orElseThrow(() -> new EmailNotAuthenticatedException(email));
+                .orElseThrow(() -> new EmailNotAuthenticatedException(email));
     }
 
     public void deleteEmailAuthentication(String email) {
