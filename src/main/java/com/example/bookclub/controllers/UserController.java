@@ -18,4 +18,9 @@ public class UserController {
     public String usersSave() {
         return "users/users-save";
     }
+
+    @GetMapping("/update")
+    public String usersUpdate() {
+        return "users/users-update";
+    }
 }
