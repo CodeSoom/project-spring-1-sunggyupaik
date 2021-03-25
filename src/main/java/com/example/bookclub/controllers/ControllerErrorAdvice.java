@@ -6,6 +6,7 @@ import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import com.example.bookclub.errors.UserNotFoundException;
+import com.example.bookclub.errors.UserPasswordBadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -43,6 +44,12 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EmailNotAuthenticatedException.class)
     public ErrorResponse handleEmailNotAuthenticated(EmailNotAuthenticatedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserPasswordBadRequestException.class)
+    public ErrorResponse handlePasswordBadRequest(UserPasswordBadRequestException e) {
         return new ErrorResponse(e.getMessage());
     }
 

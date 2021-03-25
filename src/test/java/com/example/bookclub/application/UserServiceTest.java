@@ -10,6 +10,7 @@ import com.example.bookclub.dto.UserUpdateDto;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
+import com.example.bookclub.errors.UserPasswordBadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
