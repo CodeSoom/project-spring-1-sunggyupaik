@@ -1,5 +1,6 @@
 package com.example.bookclub.controllers;
 
+import com.example.bookclub.application.EmailService;
 import com.example.bookclub.dto.EmailRequestDto;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,8 +12,14 @@ import javax.mail.MessagingException;
 @RestController
 @RequestMapping("/api/email")
 public class EmailApiController {
+    private final EmailService emailService;
+
+    public EmailApiController(EmailService emailService) {
+        this.emailService = emailService;
+    }
+
     @PostMapping("/authentication")
     public String sendAuthenticationNumber(@RequestBody EmailRequestDto emailRequestDto) throws MessagingException {
-        return "";
+        return emailService.sendAuthenticationNumber(emailRequestDto);
     }
 }
