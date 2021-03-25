@@ -49,6 +49,7 @@ public class UserService {
 
         User user = userCreateDto.toEntity();
         User createdUser = userRepository.save(user);
+        deleteEmailAuthentication(emailAuthentication.getEmail());
 
         return UserResultDto.of(createdUser);
     }
@@ -56,5 +57,10 @@ public class UserService {
     public EmailAuthentication getAuthenticationNumber(String email) {
         return emailAuthenticationRepository.findByEmail(email)
                     .orElseThrow(() -> new EmailNotAuthenticatedException(email));
+    }
+
+    public void deleteEmailAuthentication(String email) {
+        EmailAuthentication emailAuthentication = getAuthenticationNumber(email);
+        emailAuthenticationRepository.delete(emailAuthentication);
     }
 }

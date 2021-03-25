@@ -11,4 +11,6 @@ public interface JpaEmailAuthenticationRepository
     EmailAuthentication save(EmailAuthentication emailAuthentication);
 
     Optional<EmailAuthentication> findByEmail(String email);
+
+    void delete(EmailAuthentication emailAuthentication);
 }

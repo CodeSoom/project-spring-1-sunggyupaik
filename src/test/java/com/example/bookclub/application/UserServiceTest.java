@@ -19,6 +19,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class UserServiceTest {
     private static final Long EXISTED_ID = 1L;
@@ -102,7 +103,7 @@ class UserServiceTest {
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
-                .email(SETUP_EMAIL)
+                .email(CREATED_EMAIL)
                 .authenticationNumber(EXISTED_AUTHENTICATIONNUMBER)
                 .build();
     }
@@ -111,7 +112,7 @@ class UserServiceTest {
     public void createWithValidAttribute() {
         given(userRepository.save(any(User.class))).willReturn(createdUser);
         given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL))
-                .willReturn(Optional.of(new EmailAuthentication(CREATED_EMAIL, EXISTED_AUTHENTICATIONNUMBER)));
+                .willReturn(Optional.of(emailAuthentication));
 
         UserResultDto userResultDto = userService.createUser(userCreateDto);
 
@@ -122,7 +123,7 @@ class UserServiceTest {
         assertThat(userResultDto.getPassword()).isEqualTo(userCreateDto.getPassword());
         assertThat(userResultDto.getProfileImage()).isEqualTo(userCreateDto.getProfileImage());
 
-        assertThat(emailAuthenticationRepository.findByEmail(CREATED_EMAIL)).isNull();
+        verify(emailAuthenticationRepository).delete(emailAuthentication);
     }
 
     @Test
