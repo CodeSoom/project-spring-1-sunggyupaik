@@ -26,8 +26,7 @@ public class UserCreateDto {
     private String password;
 
     private String profileImage;
-
-    @Size(min = 4, max = 5)
+    
     private String authenticationNumber;
 
     @Builder
