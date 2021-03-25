@@ -1,5 +1,6 @@
 package com.example.bookclub.controllers;
 
+import com.example.bookclub.dto.EmailRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +24,14 @@ class EmailApiControllerTest {
 
     @Test
     void sendAuthenticationNumberWithValidEmail() throws Exception {
+        EmailRequestDto emailRequestDto = EmailRequestDto.builder()
+                .email(VALID_EMAIL)
+                .build();
+
         mockMvc.perform(
                 post("/api/email/authentication")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(VALID_EMAIL)
+                .content(objectMapper.writeValueAsString(emailRequestDto))
         )
                 .andDo(print())
                 .andExpect(status().isOk());

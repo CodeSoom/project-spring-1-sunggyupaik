@@ -10,32 +10,32 @@ import java.util.Properties;
 
 @Configuration
 public class EmailConfig {
-    @Value("${mail.smtp.host")
+    @Value("${spring.mail.host}")
     private String host;
-    @Value("${mail.smtp.port}")
+    @Value("${spring.mail.port}")
     private int port;
-    @Value("${mail.smtp.socketFactory.port}")
-    private int socketPort;
-    @Value("${mail.smtp.auth}")
+    @Value("${spring.mail.properties.mail.smtp.auth}")
     private boolean isAuth;
-    @Value("${mail.smtp.starttls.enable}")
-    private boolean isStarttls;
-    @Value("${mail.smtp.starttls.required}")
-    private boolean isStarttlsRequired;
-    @Value("${mail.smtp.socketFactory.fallback}")
-    private boolean isFallback;
-    @Value("${mail.id}")
-    private String id;
-    @Value("${mail.password}")
+    @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
+    private boolean isEnabled;
+    @Value("${spring.mail.properties.mail.transport.protocol}")
+    private String protocol;
+    @Value("${spring.mail.properties.mail.debug}")
+    private boolean isDebug;
+    @Value("${spring.mail.username}")
+    private String username;
+    @Value("${spring.mail.password}")
     private String password;
 
     @Bean
-    public JavaMailSender javaMailService() {
+    public JavaMailSender javaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost(host);
         javaMailSender.setPort(port);
-        javaMailSender.setUsername(id);
+
+        javaMailSender.setUsername(username);
         javaMailSender.setPassword(password);
+
         javaMailSender.setJavaMailProperties(getMailProperties());
         javaMailSender.setDefaultEncoding("UTF-8");
         return javaMailSender;
@@ -43,12 +43,10 @@ public class EmailConfig {
 
     private Properties getMailProperties() {
         Properties properties = new Properties();
-        properties.put("mail.smtp.socketFactory.port", socketPort);
         properties.put("mail.smtp.auth", isAuth);
-        properties.put("mail.smtp.starttls.enable", isStarttls);
-        properties.put("mail.smtp.starttls.required", isStarttlsRequired);
-        properties.put("mail.smtp.socketFactory.fallback",isFallback);
-        properties.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+        properties.put("mail.smtp.starttls.enable", isEnabled);
+        properties.put("mail.transport.protocol", protocol);
+        properties.put("mail.debug", isDebug);
         return properties;
     }
 }

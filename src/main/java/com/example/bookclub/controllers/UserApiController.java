@@ -35,6 +35,4 @@ public class UserApiController {
     public UserResultDto create(@RequestBody @Valid UserCreateDto userCreateDto) {
         return userService.createUser(userCreateDto);
     }
-
-
 }
