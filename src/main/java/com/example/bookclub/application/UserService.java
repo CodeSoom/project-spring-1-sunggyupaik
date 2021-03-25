@@ -96,6 +96,6 @@ public class UserService {
     }
 
     public boolean isNicknameDuplicated(Long id, String nickname) {
-        return userRepository.findByIdNotAndNickname(id, nickname);
+        return userRepository.existsByIdNotAndNickname(id, nickname);
     }
 }
