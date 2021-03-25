@@ -50,9 +50,10 @@ class UserServiceTest {
     private User createdUser;
 
     private UserCreateDto userCreateDto;
-    private UserCreateDto emailExistedUserDto;
-    private UserCreateDto nicknameExistedUserDto;
+    private UserCreateDto emailExistedUserCreateDto;
+    private UserCreateDto nicknameExistedUserCreateDto;
     private UserUpdateDto userUpdateDto;
+    private UserUpdateDto nicknameExistedUserUpdateDto;
     private EmailAuthentication emailAuthentication;
 
     private UserService userService;
@@ -98,7 +99,7 @@ class UserServiceTest {
                 .profileImage(UPDATED_PROFILEIMAGE)
                 .build();
 
-        emailExistedUserDto = UserCreateDto.builder()
+        emailExistedUserCreateDto = UserCreateDto.builder()
                 .name(CREATED_NAME)
                 .email(EXISTED_EMAIL)
                 .nickname(CREATED_NICKNAME)
@@ -106,12 +107,18 @@ class UserServiceTest {
                 .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
-        nicknameExistedUserDto = UserCreateDto.builder()
+        nicknameExistedUserCreateDto = UserCreateDto.builder()
                 .name(CREATED_NAME)
                 .email(CREATED_EMAIL)
                 .nickname(EXISTED_NICKNAME)
                 .password(CREATED_PASSWORD)
                 .profileImage(CREATED_PROFILEIMAGE)
+                .build();
+
+        nicknameExistedUserUpdateDto = UserUpdateDto.builder()
+                .nickname(SETUP_NICKNAME)
+                .password(UPDATED_PASSWORD)
+                .profileImage(UPDATED_PROFILEIMAGE)
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
@@ -142,7 +149,7 @@ class UserServiceTest {
     public void createWithDuplicatedEmail() {
         given(userRepository.existsByEmail(EXISTED_EMAIL)).willReturn(true);
 
-        assertThatThrownBy(() -> userService.createUser(emailExistedUserDto))
+        assertThatThrownBy(() -> userService.createUser(emailExistedUserCreateDto))
                 .isInstanceOf(UserEmailDuplicatedException.class);
     }
 
@@ -150,7 +157,7 @@ class UserServiceTest {
     public void createWithDuplicatedNickname() {
         given(userRepository.existsByNickname(EXISTED_NICKNAME)).willReturn(true);
 
-        assertThatThrownBy(() -> userService.createUser(nicknameExistedUserDto))
+        assertThatThrownBy(() -> userService.createUser(nicknameExistedUserCreateDto))
                 .isInstanceOf(UserNicknameDuplicatedException.class);
     }
 
@@ -171,5 +178,13 @@ class UserServiceTest {
         assertThat(userResultDto.getNickname()).isEqualTo(userUpdateDto.getNickname());
         assertThat(userResultDto.getPassword()).isEqualTo(userUpdateDto.getPassword());
         assertThat(userResultDto.getProfileImage()).isEqualTo(userUpdateDto.getProfileImage());
+    }
+
+    @Test
+    public void updatedWithExistedNickname() {
+        given(userRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpUser));
+
+        assertThatThrownBy(() -> userService.updateUser(EXISTED_ID, nicknameExistedUserUpdateDto))
+                .isInstanceOf(UserNicknameDuplicatedException.class);
     }
 }
