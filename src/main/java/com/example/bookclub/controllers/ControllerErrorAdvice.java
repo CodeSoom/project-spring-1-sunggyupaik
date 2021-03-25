@@ -1,10 +1,11 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.dto.ErrorResponse;
-import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.EmailBadRequestException;
+import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
+import com.example.bookclub.errors.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,6 +16,12 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class ControllerErrorAdvice {
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public ErrorResponse handleUserNotFound(UserNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserEmailDuplicatedException.class)
     public ErrorResponse handleUserEmailDuplicated(UserEmailDuplicatedException e) {

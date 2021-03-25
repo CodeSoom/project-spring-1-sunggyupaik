@@ -9,6 +9,7 @@ import com.example.bookclub.dto.UserResultDto;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
+import com.example.bookclub.errors.UserNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -66,7 +67,7 @@ public class UserService {
     }
 
     public UserResultDto deleteUser(Long id) {
-        User user = userRepository.findById(id);
+        User user = getUser(id);
 
         user.delete();
 
