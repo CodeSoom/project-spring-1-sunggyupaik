@@ -8,6 +8,10 @@ var main = {
         $('#btn-save').on('click', function () {
             _this.save();
         });
+
+        $('#btn-update').on('click', function () {
+            _this.update();
+        });
     },
 
     sendMessage : function() {
@@ -49,6 +53,28 @@ var main = {
             data: JSON.stringify(data)
         }).done(function() {
             alert('회원가입이 완료되었습니다.');
+            window.location.href = '/';
+        }).fail(function (request) {
+            alert(request.responseText);
+        });
+    },
+
+    update : function () {
+        var id = $('#id').val();
+        var data = {
+            nickname: $('#nickname').val(),
+            password: $('#password').val(),
+            profileImage: $('#profileImage').val(),
+        };
+
+        $.ajax({
+            type: 'PATCH',
+            url: '/api/users/' + id,
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function() {
+            alert('회원정보가 수정되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
             alert(request.responseText);

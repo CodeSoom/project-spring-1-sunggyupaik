@@ -17,7 +17,7 @@ spring:
   # Spring Jpa ddl
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 
   #Spring Email
   mail:
