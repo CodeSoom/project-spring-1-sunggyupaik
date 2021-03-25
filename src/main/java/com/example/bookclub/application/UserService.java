@@ -37,8 +37,9 @@ public class UserService {
         }
 
         EmailAuthentication emailAuthentication = getAuthenticationNumber(email);
-        if (!emailAuthentication.isSameWith(email)) {
-            throw new EmailNotAuthenticatedException(email);
+        String authenticationNumber = emailAuthentication.getAuthenticationNumber();
+        if (!emailAuthentication.isSameWith(authenticationNumber)) {
+            throw new EmailNotAuthenticatedException(authenticationNumber);
         }
 
         String nickname = userCreateDto.getNickname();

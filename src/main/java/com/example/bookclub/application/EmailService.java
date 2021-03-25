@@ -23,11 +23,12 @@ public class EmailService {
     ) {
         this.javaMailSender = javaMailSender;
         this.emailAuthenticationRepository = emailAuthenticationRepository;
-        code = createAuthenticationNumber();
+        this.code = createAuthenticationNumber();
     }
 
     public String sendAuthenticationNumber(EmailRequestDto emailRequestDto) throws MessagingException {
         String email = emailRequestDto.getEmail();
+        System.out.println(email+"***");
         MimeMessage message = createMessage(email);
 
         try {
