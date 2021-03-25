@@ -32,12 +32,13 @@ public class UserCreateDto {
 
     @Builder
     public UserCreateDto(String name, String email, String nickname,
-                         String password, String profileImage) {
+                         String password, String profileImage, String authenticationNumber) {
         this.name = name;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
         this.profileImage = profileImage;
+        this.authenticationNumber = authenticationNumber;
     }
 
     public User toEntity() {

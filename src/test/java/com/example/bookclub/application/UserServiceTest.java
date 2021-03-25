@@ -82,6 +82,7 @@ class UserServiceTest {
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
                 .profileImage(CREATED_PROFILEIMAGE)
+                .authenticationNumber(EXISTED_AUTHENTICATIONNUMBER)
                 .build();
 
         emailExistedUserDto = UserCreateDto.builder()
@@ -109,6 +110,8 @@ class UserServiceTest {
     @Test
     public void createWithValidAttribute() {
         given(userRepository.save(any(User.class))).willReturn(createdUser);
+        given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL))
+                .willReturn(Optional.of(new EmailAuthentication(CREATED_EMAIL, EXISTED_AUTHENTICATIONNUMBER)));
 
         UserResultDto userResultDto = userService.createUser(userCreateDto);
 
@@ -118,6 +121,8 @@ class UserServiceTest {
         assertThat(userResultDto.getNickname()).isEqualTo(userCreateDto.getNickname());
         assertThat(userResultDto.getPassword()).isEqualTo(userCreateDto.getPassword());
         assertThat(userResultDto.getProfileImage()).isEqualTo(userCreateDto.getProfileImage());
+
+        assertThat(emailAuthenticationRepository.findByEmail(CREATED_EMAIL)).isNull();
     }
 
     @Test
