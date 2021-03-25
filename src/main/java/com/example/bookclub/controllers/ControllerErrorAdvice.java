@@ -2,7 +2,7 @@ package com.example.bookclub.controllers;
 
 import com.example.bookclub.dto.ErrorResponse;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
-import com.example.bookclub.errors.MailIllegalArgumentException;
+import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import org.springframework.http.HttpStatus;
@@ -28,8 +28,8 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MailIllegalArgumentException.class)
-    public ErrorResponse handleMailIllegalArgument(MailIllegalArgumentException e) {
+    @ExceptionHandler(EmailBadRequestException.class)
+    public ErrorResponse handleEmailBadRequest(EmailBadRequestException e) {
         return new ErrorResponse(e.getMessage());
     }
 

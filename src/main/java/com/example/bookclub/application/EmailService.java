@@ -3,7 +3,7 @@ package com.example.bookclub.application;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.dto.EmailRequestDto;
-import com.example.bookclub.errors.MailIllegalArgumentException;
+import com.example.bookclub.errors.EmailBadRequestException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -28,13 +28,12 @@ public class EmailService {
 
     public String sendAuthenticationNumber(EmailRequestDto emailRequestDto) throws MessagingException {
         String email = emailRequestDto.getEmail();
-        System.out.println(email+"***");
         MimeMessage message = createMessage(email);
 
         try {
             javaMailSender.send(message);
         } catch(MailException ex) {
-            throw new MailIllegalArgumentException();
+            throw new EmailBadRequestException(email);
         }
 
         emailAuthenticationRepository.save(new EmailAuthentication(email, code));

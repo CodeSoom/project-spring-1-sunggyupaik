@@ -25,9 +25,9 @@ var main = {
             data: JSON.stringify(data)
         }).done(function() {
             alert("메일 전송이 완료되었습니다.");
-        }).fail(function (error) {
+        }).fail(function (request) {
             $("#email").attr("readonly",false);
-            alert(JSON.stringify(error));
+            alert(request.responseText);
         });
     },
 
