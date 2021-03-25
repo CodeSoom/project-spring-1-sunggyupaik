@@ -6,6 +6,7 @@ import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.UserCreateDto;
 import com.example.bookclub.dto.UserResultDto;
+import com.example.bookclub.dto.UserUpdateDto;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
@@ -36,6 +37,10 @@ class UserServiceTest {
     private static final String CREATED_PASSWORD = "5678";
     private static final String CREATED_PROFILEIMAGE = "picture";
 
+    private static final String UPDATED_NICKNAME = "qwer";
+    private static final String UPDATED_PASSWORD = "5678";
+    private static final String UPDATED_PROFILEIMAGE = "picture";
+
     private static final String EXISTED_EMAIL = "abcd@naver.com";
     private static final String EXISTED_NICKNAME = "abcd";
     private static final String EXISTED_AUTHENTICATIONNUMBER = "12345";
@@ -47,6 +52,7 @@ class UserServiceTest {
     private UserCreateDto userCreateDto;
     private UserCreateDto emailExistedUserDto;
     private UserCreateDto nicknameExistedUserDto;
+    private UserUpdateDto userUpdateDto;
     private EmailAuthentication emailAuthentication;
 
     private UserService userService;
@@ -84,6 +90,12 @@ class UserServiceTest {
                 .password(CREATED_PASSWORD)
                 .profileImage(CREATED_PROFILEIMAGE)
                 .authenticationNumber(EXISTED_AUTHENTICATIONNUMBER)
+                .build();
+
+        userUpdateDto = UserUpdateDto.builder()
+                .nickname(UPDATED_NICKNAME)
+                .password(UPDATED_PASSWORD)
+                .profileImage(UPDATED_PROFILEIMAGE)
                 .build();
 
         emailExistedUserDto = UserCreateDto.builder()
@@ -148,5 +160,16 @@ class UserServiceTest {
 
         assertThatThrownBy(() -> userService.createUser(userCreateDto))
                 .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
+
+    @Test
+    public void updateWithValidAttribute() {
+        given(userRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpUser));
+
+        UserResultDto userResultDto = userService.updateUser(EXISTED_ID, userUpdateDto);
+        
+        assertThat(userResultDto.getNickname()).isEqualTo(userUpdateDto.getNickname());
+        assertThat(userResultDto.getPassword()).isEqualTo(userUpdateDto.getPassword());
+        assertThat(userResultDto.getProfileImage()).isEqualTo(userUpdateDto.getProfileImage());
     }
 }
