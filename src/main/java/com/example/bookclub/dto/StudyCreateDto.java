@@ -5,12 +5,10 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
@@ -18,7 +16,7 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
+@ToString
 public class StudyCreateDto {
     private String name;
 
@@ -39,13 +37,10 @@ public class StudyCreateDto {
 
     private String endTime;
 
-    @Enumerated(EnumType.STRING)
     private Day day;
 
-    @Enumerated(EnumType.STRING)
     private StudyState studyState;
 
-    @Enumerated(EnumType.STRING)
     private Zone zone;
 
     public Study toEntity() {

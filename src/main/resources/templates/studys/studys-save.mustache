@@ -1,0 +1,58 @@
+{{>layout/header}}
+
+<h1>스터디 생성</h1>
+
+<div class="col-md-12">
+    <div class="col-md-4">
+        <form>
+            <div class="form-group">
+                <label for="name"> 스터디 이름 </label>
+                <input type="text" class="form-control" id="name" placeholder="스터디 이름을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="description"> 설명 </label>
+                <input type="text" class="form-control" id="description" placeholder="설명을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="contact"> 연락처 </label>
+                <input type="text" class="form-control" id="contact" placeholder="연락처를 입력하세요(카카오 , sns, 전화번호 등등)">
+            </div>
+            <div class="form-group">
+                <label for="size"> 인원 제한 </label>
+                <input type="number" class="form-control" id="size" placeholder="인원 제한을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="startDate"> 시작 날짜 </label>
+                <input type="datetime-local" class="form-control" id="startDate" placeholder="시작 날짜를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="endDate"> 종료 날짜 </label>
+                <input type="datetime-local" class="form-control" id="endDate" placeholder="종료 날짜를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="day"> 요일 </label>
+                <input type="text" class="form-control" id="day" placeholder="요일을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="startTime"> 시작 시간 </label>
+                <input type="text" class="form-control" id="startTime" placeholder="시작 시간을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="endTime"> 종료 시간 </label>
+                <input type="text" class="form-control" id="endTime" placeholder="종료 시간을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="studyState"> 스터디 상태 </label>
+                <input type="text" class="form-control" id="studyState" placeholder="스터디 상태를 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="zone"> 지역 </label>
+                <input type="text" class="form-control" id="zone" placeholder="지역을 입력하세요">
+            </div>
+        </form>
+        <a href="/" role="button" class="btn btn-secondary">취소</a>
+        <button type="button" class="btn btn-primary" id="btn-save-study">등록</button>
+    </div>
+</div>
+
+{{>layout/footer}}

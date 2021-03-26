@@ -39,6 +39,23 @@ public class StudyResultDto {
 
     private Zone zone;
 
+    public StudyResultDto(Long id, String name, String description, String contact,
+                          int size, LocalDate startDate, LocalDate endDate, String startTime,
+                          String endTime, Day day, StudyState studyState, Zone zone) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.contact = contact;
+        this.size = size;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.day = day;
+        this.studyState = studyState;
+        this.zone = zone;
+    }
+
     public static StudyResultDto of(Study study) {
         return StudyResultDto.builder()
                 .id(study.getId())
@@ -55,4 +72,6 @@ public class StudyResultDto {
                 .zone(study.getZone())
                 .build();
     }
+
+
 }

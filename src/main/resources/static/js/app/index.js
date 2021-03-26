@@ -12,6 +12,10 @@ var main = {
         $('#btn-update').on('click', function () {
             _this.update();
         });
+
+        $('#btn-save-study').on('click', function () {
+            _this.saveStudy();
+        });
     },
 
     sendMessage : function() {
@@ -47,7 +51,7 @@ var main = {
 
         $.ajax({
             type: 'POST',
-            url: '/api/users',
+            url: '/api/study',
             dataType: 'json',
             contentType:'application/json; charset=utf-8',
             data: JSON.stringify(data)
@@ -79,7 +83,36 @@ var main = {
         }).fail(function (request) {
             alert(request.responseText);
         });
-    }
+    },
+
+    saveStudy : function () {
+        var data = {
+            name: $('#name').val(),
+            description: $('#description').val(),
+            contact: $('#contact').val(),
+            size: $('#size').val(),
+            startDate: $('#startDate').val(),
+            endDate: $('#endDate').val(),
+            startTime: $('#startTime').val(),
+            endTime: $('#endTime').val(),
+            day: $('#day').val(),
+            studyState: $('#studyState').val(),
+            zone: $('#zone').val()
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/study',
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function() {
+            alert('스터디 생성이 완료되었습니다.');
+            window.location.href = '/';
+        }).fail(function (request) {
+            alert(request.responseText);
+        });
+    },
 };
 
 main.init();

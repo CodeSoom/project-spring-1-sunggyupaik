@@ -16,9 +16,7 @@ public class StudyService {
 
     public StudyResultDto createStudy(StudyCreateDto studyCreateDto) {
         Study study = studyCreateDto.toEntity();
-
         studyRepository.save(study);
-
         return StudyResultDto.of(study);
     }
 }

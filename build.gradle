@@ -63,7 +63,7 @@ dependencies {
 	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
 
 	//Hibernate-java8
-	implementation 'org.hibernate.orm:hibernate-java8'
+	implementation 'org.hibernate.orm:hibernate-java8:6.0.0.Alpha7'
 
 	// Spring Developer Tools
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
