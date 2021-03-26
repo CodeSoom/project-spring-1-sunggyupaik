@@ -32,24 +32,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserApiController.class)
 class UserApiControllerTest {
     private static final Long EXISTED_ID = 1L;
-    private static final String SETUP_NAME = "홍길동";
-    private static final String SETUP_EMAIL = "abcd@naver.com";
-    private static final String SETUP_NICKNAME = "abcd";
-    private static final String SETUP_PASSWORD = "1234";
+    private static final String SETUP_NAME = "name";
+    private static final String SETUP_EMAIL = "email";
+    private static final String SETUP_NICKNAME = "nickname";
+    private static final String SETUP_PASSWORD = "1234567890";
     private static final String SETUP_PROFILEIMAGE = "image";
 
     private static final Long CREATED_ID = 2L;
-    private static final String CREATED_NAME = "김철수";
-    private static final String CREATED_EMAIL = "qwer@naver.com";
-    private static final String CREATED_NICKNAME = "qwer";
-    private static final String CREATED_PASSWORD = "5678";
-    private static final String CREATED_PROFILEIMAGE = "picture";
+    private static final String CREATED_NAME = "creatName";
+    private static final String CREATED_EMAIL = "createEmail";
+    private static final String CREATED_NICKNAME = "createNickname";
+    private static final String CREATED_PASSWORD = "0987654321";
+    private static final String CREATED_PROFILEIMAGE = "createdImage";
 
     private static final String UPDATED_NICKNAME = "qwer";
     private static final String UPDATED_PASSWORD = "5678";
     private static final String UPDATED_PROFILEIMAGE = "picture";
 
-    private static final String EXISTED_EMAIL = "abcd@naver.com";
+    private static final String EXISTED_EMAIL = "email";
 
     private User setUpUser;
     private User createdUser;
@@ -117,12 +117,12 @@ class UserApiControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(1L))
-                .andExpect(jsonPath("name").value("홍길동"))
-                .andExpect(jsonPath("email").value("abcd@naver.com"))
-                .andExpect(jsonPath("nickname").value("abcd"))
-                .andExpect(jsonPath("password").value("1234"))
-                .andExpect(jsonPath("profileImage").value("image"))
+                .andExpect(jsonPath("id").value(setUpUser.getId()))
+                .andExpect(jsonPath("name").value(setUpUser.getName()))
+                .andExpect(jsonPath("email").value(setUpUser.getEmail()))
+                .andExpect(jsonPath("nickname").value(setUpUser.getNickname()))
+                .andExpect(jsonPath("password").value(setUpUser.getPassword()))
+                .andExpect(jsonPath("profileImage").value(setUpUser.getProfileImage()))
                 .andExpect(jsonPath("deleted").value(false));
     }
 
