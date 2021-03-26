@@ -6,4 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface JapStudyRepository
         extends StudyRepository, CrudRepository<Study, Long> {
+    Study save(Study study);
 }

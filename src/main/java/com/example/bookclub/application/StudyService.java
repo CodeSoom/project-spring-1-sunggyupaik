@@ -1,5 +1,6 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
@@ -14,6 +15,10 @@ public class StudyService {
     }
 
     public StudyResultDto createStudy(StudyCreateDto studyCreateDto) {
-        return null;
+        Study study = studyCreateDto.toEntity();
+
+        studyRepository.save(study);
+
+        return StudyResultDto.of(study);
     }
 }
