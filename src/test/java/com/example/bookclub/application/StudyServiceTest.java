@@ -5,6 +5,7 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.errors.StudyNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -40,6 +42,8 @@ public class StudyServiceTest {
     private static final String UPDATE_ENDTIME = "14:30";
     private static final StudyState UPDATE_STUDYSTATE = StudyState.CLOSE;
     private static final Zone UPDATE_ZONE = Zone.BUSAN;
+
+    private static final Long NOT_EXISTED_ID = 2L;
 
     private Study setUpStudy;
 
@@ -74,5 +78,13 @@ public class StudyServiceTest {
         Study study = studyService.getStudy(EXISTED_ID);
 
         assertThat(study.getId()).isEqualTo(EXISTED_ID);
+    }
+
+    @Test
+    void detailWithNotExistedId() {
+        given(studyRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> studyService.getStudy(NOT_EXISTED_ID))
+                .isInstanceOf(StudyNotFoundException.class);
     }
 }
