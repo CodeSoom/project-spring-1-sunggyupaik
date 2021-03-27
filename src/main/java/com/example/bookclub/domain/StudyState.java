@@ -28,6 +28,6 @@ public enum StudyState implements EnumMapperType {
 
     @Override
     public String getTitle() {
-        return studyState;
+        return this.studyState;
     }
 }

@@ -10,11 +10,11 @@ public class EnumMapperValue {
     }
 
     public String getCode() {
-        return this.getCode();
+        return this.code;
     }
 
     public String getTitle() {
-        return this.code;
+        return this.title;
     }
 
     @Override

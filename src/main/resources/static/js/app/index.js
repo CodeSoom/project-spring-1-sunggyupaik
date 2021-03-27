@@ -95,9 +95,9 @@ var main = {
             endDate: $('#endDate').val(),
             startTime: $('#startTime').val(),
             endTime: $('#endTime').val(),
-            day: $('#day').val(),
-            studyState: $('#studyState').val(),
-            zone: $('#zone').val()
+            day: $('#day option:selected').val(),
+            studyState: $('#studyState option:selected').val(),
+            zone: $('#zone option:selected').val()
         };
 
         $.ajax({
