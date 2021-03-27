@@ -28,4 +28,8 @@ public class StudyService {
 
         return StudyResultDto.of(study);
     }
+
+    public Study getStudy(Long existedId) {
+        return null;
+    }
 }

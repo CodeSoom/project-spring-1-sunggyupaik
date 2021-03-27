@@ -107,8 +107,8 @@ class StudyApiControllerTest {
                 .size(UPDATE_SIZE)
                 .startDate(UPDATE_STARTDATE)
                 .endDate(UPDATE_ENDDATE)
-                .startTime(SETUP_STARTTIME)
-                .endTime(SETUP_ENDTIME)
+                .startTime(UPDATE_STARTTIME)
+                .endTime(UPDATE_ENDTIME)
                 .day(UPDATE_DAY)
                 .studyState(UPDATE_STUDYSTATE)
                 .zone(UPDATE_ZONE)
@@ -120,8 +120,8 @@ class StudyApiControllerTest {
 
     @Test
     void detailWithExistedId() throws Exception {
-        given(studyService.getStudy(EXISTED_ID)).willReturn(studyResultDto);
-        
+        given(studyService.getStudy(EXISTED_ID)).willReturn(setUpStudy);
+
         mockMvc.perform(
                 get("/api/study{id}", EXISTED_ID)
         )
