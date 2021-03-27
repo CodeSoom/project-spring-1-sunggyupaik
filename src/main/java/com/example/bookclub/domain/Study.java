@@ -1,5 +1,6 @@
 package com.example.bookclub.domain;
 
+import com.example.bookclub.dto.StudyUpdateDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -61,5 +62,17 @@ public class Study {
         this.day = day;
         this.studyState = studyState;
         this.zone = zone;
+    }
+
+    public void updateWith(StudyUpdateDto studyUpdateDto) {
+        this.name = studyUpdateDto.getName();
+        this.description = studyUpdateDto.getDescription();
+        this.contact = studyUpdateDto.getContact();
+        this.size = studyUpdateDto.getSize();
+        this.startDate = studyUpdateDto.getStartDate();
+        this.endDate = studyUpdateDto.getEndDate();
+        this.day = studyUpdateDto.getDay();
+        this.studyState = studyUpdateDto.getStudyState();
+        this.zone = studyUpdateDto.getZone();
     }
 }
