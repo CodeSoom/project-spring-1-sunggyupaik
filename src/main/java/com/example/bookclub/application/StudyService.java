@@ -37,4 +37,7 @@ public class StudyService {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
     }
+
+    public StudyResultDto deleteStudy(Long id) {
+    }
 }
