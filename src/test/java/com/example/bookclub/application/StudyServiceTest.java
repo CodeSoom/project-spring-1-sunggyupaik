@@ -133,7 +133,7 @@ public class StudyServiceTest {
         assertThat(studyResultDto.getName()).isEqualTo(setUpStudy.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(setUpStudy.getDescription());
     }
-    
+
     @Test
     void updateWithValidateAttribute() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));

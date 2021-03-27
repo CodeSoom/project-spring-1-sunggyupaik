@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -159,5 +160,16 @@ class StudyApiControllerTest {
                 .andExpect(jsonPath("name").value(updatedStudyResultDto.getName()))
                 .andExpect(jsonPath("description").value(updatedStudyResultDto.getDescription()))
                 .andExpect(jsonPath("contact").value(updatedStudyResultDto.getContact()));
+    }
+
+    @Test
+    void deleteByExistedId() throws Exception {
+        given(studyService.deleteStudy(EXISTED_ID)).willReturn(studyResultDto);
+
+        mockMvc.perform(
+                delete("/api/study/{id}", EXISTED_ID)
+        )
+                .andDo(print())
+                .andExpect(status().isNoContent());
     }
 }
