@@ -6,4 +6,6 @@ public interface StudyRepository {
     Optional<Study> findById(Long id);
 
     Study save(Study study);
+
+    void delete(Study study);
 }

@@ -11,4 +11,6 @@ public interface JapStudyRepository
     Optional<Study> findById(Long id);
 
     Study save(Study study);
+
+    void delete(Study study);
 }

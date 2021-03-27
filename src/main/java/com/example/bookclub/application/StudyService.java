@@ -33,11 +33,14 @@ public class StudyService {
         return StudyResultDto.of(study);
     }
 
+    public StudyResultDto deleteStudy(Long id) {
+        Study study = getStudy(id);
+        studyRepository.delete(study);
+        return StudyResultDto.of(study);
+    }
+
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
-    }
-
-    public StudyResultDto deleteStudy(Long id) {
     }
 }
