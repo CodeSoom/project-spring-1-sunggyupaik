@@ -41,7 +41,7 @@ class StudyApiControllerTest {
     private static final String SETUP_STARTTIME = "13:00";
     private static final String SETUP_ENDTIME = "15:30";
     private static final StudyState SETUP_STUDYSTATE = StudyState.OPEN;
-    private static final Zone SETUP_ZONE = Zone.A01;
+    private static final Zone SETUP_ZONE = Zone.SEOUL;
 
     @Autowired
     private MockMvc mockMvc;

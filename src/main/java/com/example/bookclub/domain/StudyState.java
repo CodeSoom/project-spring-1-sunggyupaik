@@ -4,25 +4,30 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum StudyState {
+public enum StudyState implements EnumMapperType {
     OPEN("모집중"),
     CLOSE("마감"),
     End("완료");
 
-    String studyState;
+    private String studyState;
 
     StudyState(String studyState) {
         this.studyState = studyState;
     }
 
-    public static List<String> getAllStudyStates () {
-        return Arrays.stream(values())
-                .map(StudyState -> StudyState.studyState)
+    public static List<EnumMapperValue> getAllStudyStates() {
+        return Arrays.stream(StudyState.values())
+                .map(EnumMapperValue::new)
                 .collect(Collectors.toList());
     }
 
-    public String getStudyState() {
-        return this.studyState = studyState;
+    @Override
+    public String getCode() {
+        return name();
     }
 
+    @Override
+    public String getTitle() {
+        return studyState;
+    }
 }

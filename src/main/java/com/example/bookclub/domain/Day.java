@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public enum Day {
+public enum Day implements EnumMapperType {
     MONDAY("월요일"),
     TUESDAY("화요일"),
     WEDNESDAY("수요일"),
@@ -19,13 +19,19 @@ public enum Day {
         this.day = day;
     }
 
-    public static List<String> getAllDays() {
-        return Arrays.stream(values())
-                .map(Day -> Day.day)
+    public static List<EnumMapperValue> getAllDays() {
+        return Arrays.stream(Day.values())
+                .map(EnumMapperValue::new)
                 .collect(Collectors.toList());
     }
 
-    public String getDay() {
+    @Override
+    public String getCode() {
+        return name();
+    }
+
+    @Override
+    public String getTitle() {
         return this.day;
     }
 }
