@@ -25,6 +25,7 @@ import java.time.LocalDate;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -118,6 +119,17 @@ class StudyApiControllerTest {
     }
 
     @Test
+    void detailWithExistedId() throws Exception {
+        given(studyService.getStudy(EXISTED_ID)).willReturn(studyResultDto);
+        
+        mockMvc.perform(
+                get("/api/study{id}", EXISTED_ID)
+        )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void createWithValidateAttribute() throws Exception {
         given(studyService.createStudy(any(StudyCreateDto.class))).willReturn(studyResultDto);
 
@@ -138,7 +150,7 @@ class StudyApiControllerTest {
         given(studyService.updateStudy(eq(EXISTED_ID), any(StudyUpdateDto.class))).willReturn(updatedStudyResultDto);
 
         mockMvc.perform(
-                patch("/api/study{id}", EXISTED_ID)
+                patch("/api/study/{id}", EXISTED_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedStudy))
         )
@@ -146,6 +158,6 @@ class StudyApiControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value(updatedStudyResultDto.getName()))
                 .andExpect(jsonPath("description").value(updatedStudyResultDto.getDescription()))
-                .andExpect(jsonPath("description").value(updatedStudyResultDto.getDescription()));
+                .andExpect(jsonPath("contact").value(updatedStudyResultDto.getContact()));
     }
 }
