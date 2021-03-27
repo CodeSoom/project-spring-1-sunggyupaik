@@ -143,4 +143,14 @@ public class StudyServiceTest {
         assertThat(studyResultDto.getName()).isEqualTo(studyUpdateDto.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
     }
+
+    @Test
+    void deleteWithExistedId() {
+        given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
+
+        StudyResultDto studyResultDto = studyService.deleteStudy(EXISTED_ID);
+
+        assertThat(studyResultDto.getName()).isEqualTo(setUpStudy.getName());
+        assertThat(studyResultDto.getDescription()).isEqualTo(setUpStudy.getDescription());
+    }
 }
