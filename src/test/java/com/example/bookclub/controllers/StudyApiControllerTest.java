@@ -7,6 +7,7 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
+import com.example.bookclub.dto.StudyUpdateDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -44,6 +46,7 @@ class StudyApiControllerTest {
     private static final StudyState SETUP_STUDYSTATE = StudyState.OPEN;
     private static final Zone SETUP_ZONE = Zone.SEOUL;
 
+    private static final String UPDATE_NAME = "updatedName";
     private static final String UPDATE_DESCRIPTION = "updatedDescription";
     private static final String UPDATE_CONTACT = "updatedContact";
     private static final int UPDATE_SIZE = 10;
@@ -97,7 +100,7 @@ class StudyApiControllerTest {
 
         updatedStudy = Study.builder()
                 .id(EXISTED_ID)
-                .name(SETUP_NAME)
+                .name(UPDATE_NAME)
                 .description(UPDATE_DESCRIPTION)
                 .contact(UPDATE_CONTACT)
                 .size(UPDATE_SIZE)
@@ -132,7 +135,7 @@ class StudyApiControllerTest {
 
     @Test
     void updateWithValidateAttribute() throws Exception {
-        given(studyService.updateStudy(any(StudyUpdateDto.class))).willReturn(updatedStudyResultDto);
+        given(studyService.updateStudy(eq(EXISTED_ID), any(StudyUpdateDto.class))).willReturn(updatedStudyResultDto);
 
         mockMvc.perform(
                 patch("/api/study{id}", EXISTED_ID)
