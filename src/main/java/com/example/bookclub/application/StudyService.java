@@ -5,6 +5,7 @@ import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.StudyNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -29,7 +30,8 @@ public class StudyService {
         return StudyResultDto.of(study);
     }
 
-    public Study getStudy(Long existedId) {
-        return null;
+    public Study getStudy(Long id) {
+        return studyRepository.findById(id)
+                .orElseThrow(() -> new StudyNotFoundException(id));
     }
 }

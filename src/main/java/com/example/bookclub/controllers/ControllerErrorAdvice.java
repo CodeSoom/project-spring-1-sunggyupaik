@@ -3,6 +3,7 @@ package com.example.bookclub.controllers;
 import com.example.bookclub.dto.ErrorResponse;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import com.example.bookclub.errors.UserNotFoundException;
@@ -50,6 +51,12 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserPasswordBadRequestException.class)
     public ErrorResponse handlePasswordBadRequest(UserPasswordBadRequestException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(StudyNotFoundException.class)
+    public ErrorResponse handleStudyNotFound(StudyNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
