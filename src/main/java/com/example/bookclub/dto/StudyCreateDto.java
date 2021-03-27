@@ -5,9 +5,9 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -16,7 +16,6 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
 public class StudyCreateDto {
     private String name;
 
@@ -57,5 +56,22 @@ public class StudyCreateDto {
                 .studyState(this.studyState)
                 .zone(this.zone)
                 .build();
+    }
+
+    @Builder
+    public StudyCreateDto(String name, String description, String contact,
+                          int size, LocalDate startDate, LocalDate endDate, String startTime,
+                          String endTime, Day day, StudyState studyState, Zone zone) {
+        this.name = name;
+        this.description = description;
+        this.contact = contact;
+        this.size = size;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.day = day;
+        this.studyState = studyState;
+        this.zone = zone;
     }
 }

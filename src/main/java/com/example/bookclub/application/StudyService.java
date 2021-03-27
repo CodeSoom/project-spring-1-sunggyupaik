@@ -8,7 +8,10 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
+@Transactional
 public class StudyService {
     private final StudyRepository studyRepository;
 
@@ -18,8 +21,8 @@ public class StudyService {
 
     public StudyResultDto createStudy(StudyCreateDto studyCreateDto) {
         Study study = studyCreateDto.toEntity();
-        studyRepository.save(study);
-        return StudyResultDto.of(study);
+        Study createdStudy = studyRepository.save(study);
+        return StudyResultDto.of(createdStudy);
     }
 
     public StudyResultDto updateStudy(Long id, StudyUpdateDto studyUpdateDto) {

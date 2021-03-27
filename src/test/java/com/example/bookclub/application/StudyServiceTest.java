@@ -5,6 +5,9 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.dto.StudyCreateDto;
+import com.example.bookclub.dto.StudyResultDto;
+import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +17,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -47,6 +51,9 @@ public class StudyServiceTest {
 
     private Study setUpStudy;
 
+    private StudyCreateDto studyCreateDto;
+    private StudyUpdateDto studyUpdateDto;
+
     private StudyService studyService;
     private StudyRepository studyRepository;
 
@@ -69,6 +76,34 @@ public class StudyServiceTest {
                 .studyState(SETUP_STUDYSTATE)
                 .zone(SETUP_ZONE)
                 .build();
+
+        studyCreateDto = StudyCreateDto.builder()
+                .name(SETUP_NAME)
+                .description(SETUP_DESCRIPTION)
+                .contact(SETUP_CONTACT)
+                .size(SETUP_SIZE)
+                .startDate(SETUP_STARTDATE)
+                .endDate(SETUP_ENDDATE)
+                .startTime(SETUP_STARTTIME)
+                .endTime(SETUP_ENDTIME)
+                .day(SETUP_DAY)
+                .studyState(SETUP_STUDYSTATE)
+                .zone(SETUP_ZONE)
+                .build();
+
+        studyUpdateDto = StudyUpdateDto.builder()
+                .name(UPDATE_NAME)
+                .description(UPDATE_DESCRIPTION)
+                .contact(UPDATE_CONTACT)
+                .size(UPDATE_SIZE)
+                .startDate(UPDATE_STARTDATE)
+                .endDate(UPDATE_ENDDATE)
+                .startTime(UPDATE_STARTTIME)
+                .endTime(UPDATE_ENDTIME)
+                .day(UPDATE_DAY)
+                .studyState(UPDATE_STUDYSTATE)
+                .zone(UPDATE_ZONE)
+                .build();
     }
 
     @Test
@@ -86,5 +121,16 @@ public class StudyServiceTest {
 
         assertThatThrownBy(() -> studyService.getStudy(NOT_EXISTED_ID))
                 .isInstanceOf(StudyNotFoundException.class);
+    }
+
+    @Test
+    void createWithValidateAttribute() {
+        given(studyRepository.save(any(Study.class))).willReturn(setUpStudy);
+
+        StudyResultDto studyResultDto = studyService.createStudy(studyCreateDto);
+
+        assertThat(studyResultDto.getId()).isEqualTo(setUpStudy.getId());
+        assertThat(studyResultDto.getName()).isEqualTo(setUpStudy.getName());
+        assertThat(studyResultDto.getDescription()).isEqualTo(setUpStudy.getDescription());
     }
 }

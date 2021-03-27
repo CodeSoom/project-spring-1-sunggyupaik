@@ -13,7 +13,6 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 public class StudyResultDto {
     private Long id;
 
@@ -39,6 +38,7 @@ public class StudyResultDto {
 
     private Zone zone;
 
+    @Builder
     public StudyResultDto(Long id, String name, String description, String contact,
                           int size, LocalDate startDate, LocalDate endDate, String startTime,
                           String endTime, Day day, StudyState studyState, Zone zone) {
