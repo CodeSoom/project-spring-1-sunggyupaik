@@ -23,6 +23,7 @@ import java.time.LocalDate;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -43,6 +44,17 @@ class StudyApiControllerTest {
     private static final StudyState SETUP_STUDYSTATE = StudyState.OPEN;
     private static final Zone SETUP_ZONE = Zone.SEOUL;
 
+    private static final String UPDATE_DESCRIPTION = "updatedDescription";
+    private static final String UPDATE_CONTACT = "updatedContact";
+    private static final int UPDATE_SIZE = 10;
+    private static final LocalDate UPDATE_STARTDATE = LocalDate.now().plusDays(1);
+    private static final LocalDate UPDATE_ENDDATE = LocalDate.now().plusDays(5);
+    private static final Day UPDATE_DAY = Day.THURSDAY;
+    private static final String UPDATE_STARTTIME = "12:00";
+    private static final String UPDATE_ENDTIME = "14:30";
+    private static final StudyState UPDATE_STUDYSTATE = StudyState.CLOSE;
+    private static final Zone UPDATE_ZONE = Zone.BUSAN;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -56,8 +68,10 @@ class StudyApiControllerTest {
     private ObjectMapper objectMapper;
 
     private Study setUpStudy;
+    private Study updatedStudy;
 
     private StudyResultDto studyResultDto;
+    private StudyResultDto updatedStudyResultDto;
 
     @BeforeEach
     void setUp() {
@@ -81,7 +95,23 @@ class StudyApiControllerTest {
                 .zone(SETUP_ZONE)
                 .build();
 
+        updatedStudy = Study.builder()
+                .id(EXISTED_ID)
+                .name(SETUP_NAME)
+                .description(UPDATE_DESCRIPTION)
+                .contact(UPDATE_CONTACT)
+                .size(UPDATE_SIZE)
+                .startDate(UPDATE_STARTDATE)
+                .endDate(UPDATE_ENDDATE)
+                .startTime(SETUP_STARTTIME)
+                .endTime(SETUP_ENDTIME)
+                .day(UPDATE_DAY)
+                .studyState(UPDATE_STUDYSTATE)
+                .zone(UPDATE_ZONE)
+                .build();
+
         studyResultDto = StudyResultDto.of(setUpStudy);
+        updatedStudyResultDto = StudyResultDto.of(updatedStudy);
     }
 
     @Test
@@ -98,5 +128,21 @@ class StudyApiControllerTest {
                 .andExpect(jsonPath("id").value(studyResultDto.getId()))
                 .andExpect(jsonPath("name").value(studyResultDto.getName()))
                 .andExpect(jsonPath("description").value(studyResultDto.getDescription()));
+    }
+
+    @Test
+    void updateWithValidateAttribute() throws Exception {
+        given(studyService.updateStudy(any(StudyUpdateDto.class))).willReturn(updatedStudyResultDto);
+
+        mockMvc.perform(
+                patch("/api/study{id}", EXISTED_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updatedStudy))
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("name").value(updatedStudyResultDto.getName()))
+                .andExpect(jsonPath("description").value(updatedStudyResultDto.getDescription()))
+                .andExpect(jsonPath("description").value(updatedStudyResultDto.getDescription()));
     }
 }
