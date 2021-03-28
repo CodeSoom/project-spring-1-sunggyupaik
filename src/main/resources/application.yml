@@ -34,3 +34,6 @@ spring:
         transport:
           protocol: smtp
         debug: true
+
+interpark:
+  apiKey: 0556AC2C10B20DE12D9542F0F297FA49B77E4C80832EFAC91AFB16C6555384CC
