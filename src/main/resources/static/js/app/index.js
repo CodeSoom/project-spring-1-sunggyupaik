@@ -13,6 +13,10 @@ var main = {
             _this.update();
         });
 
+        $('#btn-user-delete').on('click', function () {
+            _this.deleteUser();
+        });
+
         $('#btn-save-study').on('click', function () {
             _this.saveStudy();
         });
@@ -87,6 +91,22 @@ var main = {
             data: JSON.stringify(data)
         }).done(function() {
             alert('회원정보가 수정되었습니다.');
+            window.location.href = '/';
+        }).fail(function (request) {
+            alert(request.responseText);
+        });
+    },
+
+    deleteUser : function () {
+        var id = $('#id').val();
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/users/' + id,
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8',
+        }).done(function() {
+            alert('사용자 삭제가 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
             alert(request.responseText);
