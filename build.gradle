@@ -75,6 +75,9 @@ dependencies {
 
 	// Spring Email
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//Spring Boot Configuration Processor
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 
 application {
