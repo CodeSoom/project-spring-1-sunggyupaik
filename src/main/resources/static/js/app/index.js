@@ -20,6 +20,10 @@ var main = {
         $('#btn-update-study').on('click', function () {
             _this.updateStudy();
         });
+
+        $('#btn-delete-study').on('click', function () {
+            _this.deleteStudy();
+        });
     },
 
     sendMessage : function() {
@@ -142,6 +146,22 @@ var main = {
             data: JSON.stringify(data)
         }).done(function() {
             alert('스터디 수정이 완료되었습니다.');
+            window.location.href = '/';
+        }).fail(function (request) {
+            alert(request.responseText);
+        });
+    },
+
+    deleteStudy : function () {
+        var id = $('#id').val();
+
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/study/' + id,
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8',
+        }).done(function() {
+            alert('스터디 삭제가 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
             alert(request.responseText);
