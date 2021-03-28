@@ -1,11 +1,12 @@
 {{>layout/header}}
 
-<h1>Book Club12345678</h1>
+<h1>Book Club</h1>
 <div class="col-md-12">
     <div class="row">
         <div class="col-md-6">
             <a href="/users/save" role="button" class="btn btn-primary">회원가입</a>
             <a href="/studys/save" role="button" class="btn btn-primary">스터디 생성</a>
+            <a href="/books/bestseller" role="button" class="btn btn-primary">베스트셀러 조회</a>
             {{#userName}}
                 Logged in as: <span id="user">{{userName}}</span>
                 <a href="/logout" class="btn btn-info active" role="button">Logout</a>
