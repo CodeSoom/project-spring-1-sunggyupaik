@@ -32,6 +32,9 @@ public class StudyController {
     public String studyUpdate(@PathVariable Long id, Model model) {
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
+        model.addAttribute("day", Day.getAllDays());
+        model.addAttribute("studyState", StudyState.getAllStudyStates());
+        model.addAttribute("zone", Zone.getAllZones());
         return "studys/studys-update";
     }
 }

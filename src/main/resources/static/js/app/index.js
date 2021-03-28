@@ -16,6 +16,10 @@ var main = {
         $('#btn-save-study').on('click', function () {
             _this.saveStudy();
         });
+
+        $('#btn-update-study').on('click', function () {
+            _this.updateStudy();
+        });
     },
 
     sendMessage : function() {
@@ -113,6 +117,36 @@ var main = {
             alert(request.responseText);
         });
     },
+
+    updateStudy : function () {
+        var id = $('#id').val();
+        var data = {
+            name: $('#name').val(),
+            description: $('#description').val(),
+            contact: $('#contact').val(),
+            size: $('#size').val(),
+            startDate: $('#startDate').val(),
+            endDate: $('#endDate').val(),
+            startTime: $('#startTime').val(),
+            endTime: $('#endTime').val(),
+            day: $('#day option:selected').val(),
+            studyState: $('#studyState option:selected').val(),
+            zone: $('#zone option:selected').val()
+        };
+
+        $.ajax({
+            type: 'PATCH',
+            url: '/api/study/' + id,
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function() {
+            alert('스터디 수정이 완료되었습니다.');
+            window.location.href = '/';
+        }).fail(function (request) {
+            alert(request.responseText);
+        });
+    }
 };
 
 main.init();
