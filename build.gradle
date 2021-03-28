@@ -78,6 +78,9 @@ dependencies {
 
 	//Spring Boot Configuration Processor
 	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+	//Json Simple
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
 }
 
 application {

@@ -1,5 +1,9 @@
 package com.example.bookclub.application;
 
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +24,9 @@ public class BookService {
         return new URL(address);
     }
 
-    public String getBestSellers() throws IOException {
+    public JSONArray getBestSellers() throws IOException, ParseException {
         URL url = getBestSellerUrl();
+        String stringValue;
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()))) {
             StringBuilder sb = new StringBuilder();
@@ -30,7 +35,12 @@ public class BookService {
             while ((line = br.readLine()) != null) {
                 sb.append(line);
             }
-            return sb.toString();
+
+            stringValue = sb.toString();
+            JSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = (JSONObject) jsonParser.parse(stringValue);
+
+            return (JSONArray) jsonObject.get("item");
         }
     }
 }

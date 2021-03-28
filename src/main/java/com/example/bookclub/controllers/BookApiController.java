@@ -1,6 +1,8 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.BookService;
+import org.json.simple.JSONArray;
+import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +19,7 @@ public class BookApiController {
     }
 
     @GetMapping("/bestseller")
-    public String lists() throws IOException {
+    public JSONArray lists() throws IOException, ParseException {
         return bookService.getBestSellers();
     }
 }
