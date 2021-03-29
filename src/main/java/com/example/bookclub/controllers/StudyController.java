@@ -20,6 +20,13 @@ public class StudyController {
         this.studyService = studyService;
     }
 
+    @GetMapping("/{id}")
+    public String studyDetail(@PathVariable Long id, Model model) {
+        Study study = studyService.getStudy(id);
+        model.addAttribute("study", study);
+        return "studys/studys-detail";
+    }
+
     @GetMapping("/save")
     public String studySave(Model model) {
         model.addAttribute("day", Day.getAllDays());
