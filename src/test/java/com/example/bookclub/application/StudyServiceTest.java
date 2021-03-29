@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,14 +49,18 @@ public class StudyServiceTest {
     private static final Zone UPDATE_ZONE = Zone.BUSAN;
 
     private static final Long NOT_EXISTED_ID = 2L;
+    private static final Long CREATED_ID = 3L;
 
     private Study setUpStudy;
+    private Study createStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyUpdateDto studyUpdateDto;
 
     private StudyService studyService;
     private StudyRepository studyRepository;
+
+    private List<Study> listAllStudies;
 
     @BeforeEach
     void setUp() {
@@ -75,6 +80,21 @@ public class StudyServiceTest {
                 .day(SETUP_DAY)
                 .studyState(SETUP_STUDYSTATE)
                 .zone(SETUP_ZONE)
+                .build();
+
+        createStudy = Study.builder()
+                .id(CREATED_ID)
+                .name(UPDATE_NAME)
+                .description(UPDATE_DESCRIPTION)
+                .contact(UPDATE_CONTACT)
+                .size(UPDATE_SIZE)
+                .startDate(UPDATE_STARTDATE)
+                .endDate(UPDATE_ENDDATE)
+                .startTime(UPDATE_STARTTIME)
+                .endTime(UPDATE_ENDTIME)
+                .day(UPDATE_DAY)
+                .studyState(UPDATE_STUDYSTATE)
+                .zone(UPDATE_ZONE)
                 .build();
 
         studyCreateDto = StudyCreateDto.builder()
@@ -104,6 +124,16 @@ public class StudyServiceTest {
                 .studyState(UPDATE_STUDYSTATE)
                 .zone(UPDATE_ZONE)
                 .build();
+
+        listAllStudies = List.of(setUpStudy, createStudy);
+    }
+    @Test
+    void listAllStudies() {
+        given(studyRepository.findAll()).willReturn(listAllStudies);
+
+        List<Study> lists = studyService.getStudies();
+
+        assertThat(lists).containsExactly(setUpStudy, createStudy);
     }
 
     @Test
