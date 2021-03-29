@@ -46,6 +46,6 @@ public class StudyService {
     }
 
     public List<Study> getStudies() {
-        return null;
+        return studyRepository.findAll();
     }
 }
