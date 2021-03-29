@@ -32,6 +32,12 @@ public class StudyApiController {
         return studyService.getStudies();
     }
 
+    @GetMapping("/{id}")
+    public StudyResultDto detail(@PathVariable Long id) {
+        Study study = studyService.getStudy(id);
+        return StudyResultDto.of(study);
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public StudyResultDto create(@RequestBody StudyCreateDto studyCreateDto) {
