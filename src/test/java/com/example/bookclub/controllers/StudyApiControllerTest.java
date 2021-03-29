@@ -9,6 +9,7 @@ import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -30,6 +32,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -78,6 +81,8 @@ class StudyApiControllerTest {
     private StudyResultDto studyResultDto;
     private StudyResultDto updatedStudyResultDto;
 
+    private List<Study> list;
+
     @BeforeEach
     void setUp() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(ctx)
@@ -117,6 +122,21 @@ class StudyApiControllerTest {
 
         studyResultDto = StudyResultDto.of(setUpStudy);
         updatedStudyResultDto = StudyResultDto.of(updatedStudy);
+
+        list = List.of(setUpStudy, updatedStudy);
+    }
+
+    @Test
+    void listAllStudies() throws Exception {
+        given(studyService.getStudies()).willReturn(list);
+
+        mockMvc.perform(
+                get("/api/study")
+        )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().string(StringContains.containsString("\"name\":\"" +  SETUP_NAME)))
+                .andExpect(content().string(StringContains.containsString("\"name\":\"" + UPDATE_NAME)));
     }
 
     @Test
@@ -124,7 +144,7 @@ class StudyApiControllerTest {
         given(studyService.getStudy(EXISTED_ID)).willReturn(setUpStudy);
 
         mockMvc.perform(
-                get("/api/study{id}", EXISTED_ID)
+                get("/api/study/{id}", EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isOk());
