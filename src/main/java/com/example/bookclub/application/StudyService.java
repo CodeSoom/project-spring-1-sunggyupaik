@@ -9,6 +9,7 @@ import com.example.bookclub.errors.StudyNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -42,5 +43,9 @@ public class StudyService {
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
+    }
+
+    public List<Study> getStudies() {
+        return null;
     }
 }
