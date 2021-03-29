@@ -31,4 +31,16 @@ public enum Zone implements EnumMapperType {
     public String getTitle() {
         return this.zone;
     }
+
+    public static String getTitleFrom(Object object) {
+        Zone zone = (Zone) object;
+        return Arrays.stream(Zone.values())
+                .filter(v -> zone.zone.equals(v.getTitle()))
+                .findFirst()
+                .map(Zone::getTitle)
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format("%s는 지역 형식에 맞지 않습니다.", object.toString())
+                        ));
+    }
 }

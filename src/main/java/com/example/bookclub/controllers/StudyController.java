@@ -24,6 +24,9 @@ public class StudyController {
     public String studyDetail(@PathVariable Long id, Model model) {
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
+        model.addAttribute("day", Day.getTitleFrom(study.getDay()));
+        model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
+        model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
         return "studys/studys-detail";
     }
 

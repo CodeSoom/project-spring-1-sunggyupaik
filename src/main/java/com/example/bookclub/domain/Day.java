@@ -34,4 +34,16 @@ public enum Day implements EnumMapperType {
     public String getTitle() {
         return this.day;
     }
+
+    public static String getTitleFrom(Object object) {
+        Day dayCode = (Day) object;
+        return Arrays.stream(Day.values())
+                .filter(v -> dayCode.day.equals(v.day))
+                .findFirst()
+                .map(Day::getTitle)
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format("%s는 요일 형식에 맞지 않습니다.", object.toString())
+                        ));
+    }
 }
