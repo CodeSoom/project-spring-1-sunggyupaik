@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "interpark.apikey",
+      "type": "java.lang.String",
+      "description": "Description for interpark.apikey."
+    }
+  ]
+}

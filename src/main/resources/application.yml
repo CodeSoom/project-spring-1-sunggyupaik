@@ -1,0 +1,39 @@
+spring:
+
+  # Live Reload
+  devtools:
+    livereload:
+      enabled: true
+
+  # Mustache Cache
+  mustache:
+    cache:
+      false
+
+  # H2 Repository Location
+  datasource:
+    url: jdbc:h2:~/data/bookclub
+
+  # Spring Jpa ddl
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+  #Spring Email
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: melon975123@gmail.com
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        transport:
+          protocol: smtp
+        debug: true
+
+interpark:
+  apikey:

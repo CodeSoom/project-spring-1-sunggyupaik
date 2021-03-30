@@ -1,0 +1,94 @@
+plugins {
+	// Apply the application plugin to add support for building a CLI application in Java.
+	id 'application'
+
+	// Spring
+	id 'org.springframework.boot' version '2.3.5.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+}
+
+group = 'com.example.bookclub'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '15'
+
+configurations {
+	developmentOnly
+	runtimeClasspath {
+		extendsFrom developmentOnly
+	}
+}
+
+repositories {
+	// Use JCenter for resolving dependencies.
+	jcenter()
+}
+
+dependencies {
+	// Use JUnit Jupiter API for testing.
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+
+	// AssertJ
+	testImplementation 'org.assertj:assertj-core:3.18.1'
+
+	// Use JUnit Jupiter Engine for testing.
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+	// This dependency is used by the application.
+	implementation 'com.google.guava:guava:29.0-jre'
+
+	// Jackson for JSON.
+	implementation 'com.fasterxml.jackson.core:jackson-core:2.11.3'
+	implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.3'
+
+	// Lombok
+	compileOnly 'org.projectlombok:lombok:1.18.16'
+	annotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+	// Spring Web
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+
+	// Mustache for Front-end
+	compile 'org.springframework.boot:spring-boot-starter-mustache'
+
+	// Spring Validation
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	// Spring Data JPA
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+
+	//H2 Database
+	runtimeOnly 'com.h2database:h2'
+
+	//MariaDB
+	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client:2.7.2'
+
+	//Hibernate-java8
+	implementation 'org.hibernate.orm:hibernate-java8:6.0.0.Alpha7'
+
+	// Spring Developer Tools
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// Spring Boot Test
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+
+	// Spring Email
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+	//Spring Boot Configuration Processor
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+	//Json Simple
+	implementation 'com.googlecode.json-simple:json-simple:1.1.1'
+}
+
+application {
+	// Define the main class for the application.
+	mainClass = 'com.example.bookclub.App'
+}
+
+test {
+	// Use junit platform for unit tests.
+	useJUnitPlatform()
+}
