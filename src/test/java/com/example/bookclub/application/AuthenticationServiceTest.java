@@ -3,6 +3,7 @@ package com.example.bookclub.application;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.SessionCreateDto;
+import com.example.bookclub.errors.AuthenticationBadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -67,6 +68,14 @@ class AuthenticationServiceTest {
     @Test
     void authenticateUserWithNotExistedEmail() {
         given(userRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> authenticationService.authenticateUser(NotExistedPasswordDto))
+                .isInstanceOf(AuthenticationBadRequestException.class);
+    }
+
+    @Test
+    void authenticateUserWithNotExistedPassword() {
+        given(userRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.of(setUpUser));
 
         assertThatThrownBy(() -> authenticationService.authenticateUser(NotExistedEmailDto))
                 .isInstanceOf(AuthenticationBadRequestException.class);
