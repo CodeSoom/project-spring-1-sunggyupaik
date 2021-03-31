@@ -1,5 +1,6 @@
 package com.example.bookclub.config;
 
+import com.example.bookclub.filters.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,7 +17,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .headers()
                 .frameOptions().disable()
                 .and()
-                //.addFilter()
+                .addFilter(JwtAuthenticationFilter.class)
                 //.addFilterBefore()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
