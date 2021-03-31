@@ -9,6 +9,7 @@ import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,11 +32,15 @@ public class AuthenticationService {
 
     public ParseResultDto parseToken(String token) {
         if(token == null || token.isBlank()) {
-            throw new InvalidTokenException();
+            throw new InvalidTokenException(token);
         }
-        
-        Claims claims = jwtUtil.decode(token);
-        return ParseResultDto.of(claims);
+
+        try {
+            Claims claims = jwtUtil.decode(token);
+            return ParseResultDto.of(claims);
+        } catch(SignatureException e) {
+            throw new InvalidTokenException(token);
+        }
     }
 
     public User authenticateUser(SessionCreateDto sessionCreateDto) {

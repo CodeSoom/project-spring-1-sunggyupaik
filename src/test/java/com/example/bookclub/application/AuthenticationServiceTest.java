@@ -24,8 +24,8 @@ class AuthenticationServiceTest {
     private static final String TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9." +
             "eyJzdWIiOiJzZXRVcEVtYWlsIiwidXNlcklkIjoxLCJleHAiOjE2MTcxNzY2NjF9." +
             "FtWghIoD9JCy8eODomAzagXfPxWOrV-xQBvhfgNhsJo";
-    private static final String INVALID_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9." +
-            "eyJzdWIiOiJzZXRVcEVtYWlsIiwidXNlcklkIjoxLCJleHAiOjE2MTcxNzY2NjF9." +
+    private static final String INVALID_TOKEN = "ayJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9." +
+            "ayJzdWIiOiJzZXRVcEVtYWlsIiwidXNlcklkIjoxLCJleHAiOjE2MTcxNzY2NjF9." +
             "FtWghIoD9JCy8eODomAzagXfPxWOrV-xQBvhfgNhsJO";
     private static final Long EXISTED_ID = 1L;
     private static final String EXISTED_EMAIL = "setUpEmail";
