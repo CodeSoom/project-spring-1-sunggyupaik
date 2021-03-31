@@ -4,24 +4,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class JwtUtilTest {
+    private static final String SECRET = "12345678901234567890123456789010";
     private static final Long EXISTED_ID = 1L;
     private static final String EXISTED_EMAIL = "setUpEmail";
-    private static final String EXISTED_TOKEN = "setUpToken";
 
     private JwtUtil jwtUtil;
 
     @BeforeEach
     void setUp() {
-        jwtUtil = new JwtUtil();
+        jwtUtil = new JwtUtil(SECRET);
     }
 
     @Test
     void encodeWithIdAndEmail() {
         String token = jwtUtil.encode(EXISTED_ID, EXISTED_EMAIL);
 
-        assertThat(token).isEqualTo(EXISTED_TOKEN);
+        assertThat(token).contains(".");
     }
 }

@@ -35,5 +35,8 @@ spring:
           protocol: smtp
         debug: true
 
+jwt:
+  secret: "12345678901234567890123456789010"
+
 interpark:
   apikey:
