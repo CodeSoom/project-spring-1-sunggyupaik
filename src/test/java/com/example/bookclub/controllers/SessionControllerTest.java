@@ -3,6 +3,7 @@ package com.example.bookclub.controllers;
 import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.dto.SessionResultDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(SessionController.class)
@@ -51,6 +52,6 @@ class SessionControllerTest {
         )
             .andDo(print())
             .andExpect(status().isCreated())
-            .andExpect(jsonPath("accessToken").value(sessionResultDto.getAccessToken()));
+                .andExpect(content().string(StringContains.containsString(".")));
     }
 }
