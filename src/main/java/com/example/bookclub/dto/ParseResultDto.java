@@ -15,4 +15,10 @@ public class ParseResultDto {
     public ParseResultDto(Claims claims) {
         this.claims = claims;
     }
+
+    public static ParseResultDto of(Claims claims) {
+        return ParseResultDto.builder()
+                .claims(claims)
+                .build();
+    }
 }

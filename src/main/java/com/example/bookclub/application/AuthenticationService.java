@@ -7,6 +7,7 @@ import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.dto.SessionResultDto;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +29,8 @@ public class AuthenticationService {
     }
 
     public ParseResultDto parseToken(String token) {
-        return null;
+        Claims claims = jwtUtil.decode(token);
+        return ParseResultDto.of(claims);
     }
 
     public User authenticateUser(SessionCreateDto sessionCreateDto) {
