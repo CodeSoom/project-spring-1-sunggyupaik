@@ -2,6 +2,7 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
+import com.example.bookclub.dto.ParseResultDto;
 import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.dto.SessionResultDto;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
@@ -24,6 +25,10 @@ public class AuthenticationService {
         String accessToken = jwtUtil.encode(user.getId(), user.getEmail());
 
         return SessionResultDto.of(accessToken);
+    }
+
+    public ParseResultDto parseToken(String token) {
+        return null;
     }
 
     public User authenticateUser(SessionCreateDto sessionCreateDto) {
