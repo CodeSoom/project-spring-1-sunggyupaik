@@ -2,10 +2,12 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
+import com.example.bookclub.dto.ParseResultDto;
 import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.dto.SessionResultDto;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,6 +20,9 @@ import static org.mockito.Mockito.mock;
 
 class AuthenticationServiceTest {
     private static final String SECRET = "12345678901234567890123456789010";
+    private static final String TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9." +
+            "eyJzdWIiOiJzZXRVcEVtYWlsIiwidXNlcklkIjoxLCJleHAiOjE2MTcxNzY2NjF9." +
+            "FtWghIoD9JCy8eODomAzagXfPxWOrV-xQBvhfgNhsJo";
     private static final Long EXISTED_ID = 1L;
     private static final String EXISTED_EMAIL = "setUpEmail";
     private static final String EXISTED_PASSWORD = "12345678";
@@ -124,5 +129,14 @@ class AuthenticationServiceTest {
         SessionResultDto token = authenticationService.createToken(sessionCreateDto);
 
         assertThat(token.getAccessToken()).contains(".");
+    }
+
+    @Test
+    void parseTokenWithValidToken() {
+        ParseResultDto parseResultDto = authenticationService.parseToken(TOKEN);
+        Claims claims = parseResultDto.getClaims();
+
+        assertThat(claims.getSubject()).isEqualTo(EXISTED_EMAIL);
+        assertThat(claims.get("userId", Long.class)).isEqualTo(EXISTED_ID);
     }
 }
