@@ -1,6 +1,7 @@
 package com.example.bookclub.filters;
 
 import com.example.bookclub.application.AuthenticationService;
+import com.example.bookclub.domain.Role;
 import com.example.bookclub.dto.ParseResultDto;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     private final AuthenticationService authenticationService;
