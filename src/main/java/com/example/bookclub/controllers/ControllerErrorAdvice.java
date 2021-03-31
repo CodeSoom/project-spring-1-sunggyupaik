@@ -1,6 +1,7 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.dto.ErrorResponse;
+import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.StudyNotFoundException;
@@ -18,6 +19,12 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class ControllerErrorAdvice {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AuthenticationBadRequestException.class)
+    public ErrorResponse handleAuthenticationBadRequest(AuthenticationBadRequestException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
     public ErrorResponse handleUserNotFound(UserNotFoundException e) {
