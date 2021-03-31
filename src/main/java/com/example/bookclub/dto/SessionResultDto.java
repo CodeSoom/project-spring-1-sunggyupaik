@@ -13,4 +13,10 @@ public class SessionResultDto {
     public SessionResultDto(String accessToken) {
         this.accessToken = accessToken;
     }
+
+    public static SessionResultDto of(String accessToken) {
+        return SessionResultDto.builder()
+                .accessToken(accessToken)
+                .build();
+    }
 }
