@@ -139,4 +139,10 @@ class AuthenticationServiceTest {
         assertThat(claims.getSubject()).isEqualTo(EXISTED_EMAIL);
         assertThat(claims.get("userId", Long.class)).isEqualTo(EXISTED_ID);
     }
+
+    @Test
+    void parseTokenWithNull() {
+        assertThatThrownBy(() -> authenticationService.parseToken(null))
+                .isInstanceOf(InvalidTokenException.class);
+    }
 }
