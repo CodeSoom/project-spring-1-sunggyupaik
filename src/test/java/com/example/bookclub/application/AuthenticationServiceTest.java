@@ -5,6 +5,7 @@ import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.dto.SessionResultDto;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
+import com.example.bookclub.utils.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
 class AuthenticationServiceTest {
+    private static final String SECRET = "12345678901234567890123456789010";
     private static final Long EXISTED_ID = 1L;
     private static final String EXISTED_EMAIL = "setUpEmail";
     private static final String EXISTED_PASSWORD = "12345678";
@@ -24,9 +26,6 @@ class AuthenticationServiceTest {
 
     private static final String NOT_EXISTED_EMAIL = "invalidEmail";
     private static final String NOT_EXISTED_PASSWORD = "invalidPassword";
-
-    private UserRepository userRepository;
-    private AuthenticationService authenticationService;
 
     private User setUpUser;
     private User deletedUser;
@@ -37,10 +36,16 @@ class AuthenticationServiceTest {
 
     private SessionResultDto sessionResultDto;
 
+
+    private UserRepository userRepository;
+    private JwtUtil jwtUtil;
+    private AuthenticationService authenticationService;
+
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
-        authenticationService = new AuthenticationService(userRepository);
+        jwtUtil = new JwtUtil(SECRET);
+        authenticationService = new AuthenticationService(userRepository, jwtUtil);
 
         setUpUser = User.builder()
                 .id(EXISTED_ID)
@@ -118,6 +123,6 @@ class AuthenticationServiceTest {
 
         SessionResultDto token = authenticationService.createToken(sessionCreateDto);
 
-        assertThat(token).isEqualTo(sessionResultDto);
+        assertThat(token.getAccessToken()).contains(".");
     }
 }
