@@ -3,6 +3,7 @@ package com.example.bookclub.application;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.SessionCreateDto;
+import com.example.bookclub.dto.SessionResultDto;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ class AuthenticationServiceTest {
     private static final String EXISTED_EMAIL = "setUpEmail";
     private static final String EXISTED_PASSWORD = "12345678";
     private static final String DELETED_EMAIL = "deletedEmail";
+    private static final String EXISTED_ACCESSTOKEN = "setUpaccessToken";
 
     private static final String NOT_EXISTED_EMAIL = "invalidEmail";
     private static final String NOT_EXISTED_PASSWORD = "invalidPassword";
@@ -33,12 +35,15 @@ class AuthenticationServiceTest {
     private SessionCreateDto NotExistedPasswordDto;
     private SessionCreateDto DeletedEmailDto;
 
+    private SessionResultDto sessionResultDto;
+
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
         authenticationService = new AuthenticationService(userRepository);
 
         setUpUser = User.builder()
+                .id(EXISTED_ID)
                 .email(EXISTED_EMAIL)
                 .password(EXISTED_PASSWORD)
                 .build();
@@ -67,6 +72,10 @@ class AuthenticationServiceTest {
         DeletedEmailDto = SessionCreateDto.builder()
                 .email(DELETED_EMAIL)
                 .password(EXISTED_PASSWORD)
+                .build();
+
+        sessionResultDto = SessionResultDto.builder()
+                .accessToken(EXISTED_ACCESSTOKEN)
                 .build();
     }
 
@@ -101,5 +110,14 @@ class AuthenticationServiceTest {
 
         assertThatThrownBy(() -> authenticationService.authenticateUser(DeletedEmailDto))
                 .isInstanceOf(AuthenticationBadRequestException.class);
+    }
+
+    @Test
+    void createTokenWithValidUser() {
+        given(userRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.of(setUpUser));
+
+        SessionResultDto token = authenticationService.createToken(sessionCreateDto);
+
+        assertThat(token).isEqualTo(sessionResultDto);
     }
 }

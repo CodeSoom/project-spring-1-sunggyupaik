@@ -1,9 +1,11 @@
 package com.example.bookclub.dto;
 
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class SessionResultDto {
     private String accessToken;
 
