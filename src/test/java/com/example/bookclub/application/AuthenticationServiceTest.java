@@ -18,6 +18,7 @@ class AuthenticationServiceTest {
     private static final Long EXISTED_ID = 1L;
     private static final String EXISTED_EMAIL = "setUpEmail";
     private static final String EXISTED_PASSWORD = "12345678";
+    private static final String DELETED_EMAIL = "deletedEmail";
 
     private static final String NOT_EXISTED_EMAIL = "invalidEmail";
     private static final String NOT_EXISTED_PASSWORD = "invalidPassword";
@@ -26,9 +27,11 @@ class AuthenticationServiceTest {
     private AuthenticationService authenticationService;
 
     private User setUpUser;
+    private User deletedUser;
     private SessionCreateDto sessionCreateDto;
     private SessionCreateDto NotExistedEmailDto;
     private SessionCreateDto NotExistedPasswordDto;
+    private SessionCreateDto DeletedEmailDto;
 
     @BeforeEach
     void setUp() {
@@ -38,6 +41,12 @@ class AuthenticationServiceTest {
         setUpUser = User.builder()
                 .email(EXISTED_EMAIL)
                 .password(EXISTED_PASSWORD)
+                .build();
+
+        deletedUser = User.builder()
+                .email(DELETED_EMAIL)
+                .password(EXISTED_PASSWORD)
+                .deleted(true)
                 .build();
 
         sessionCreateDto = SessionCreateDto.builder()
@@ -53,6 +62,11 @@ class AuthenticationServiceTest {
         NotExistedPasswordDto = SessionCreateDto.builder()
                 .email(EXISTED_EMAIL)
                 .password(NOT_EXISTED_PASSWORD)
+                .build();
+
+        DeletedEmailDto = SessionCreateDto.builder()
+                .email(DELETED_EMAIL)
+                .password(EXISTED_PASSWORD)
                 .build();
     }
 
@@ -78,6 +92,14 @@ class AuthenticationServiceTest {
         given(userRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.of(setUpUser));
 
         assertThatThrownBy(() -> authenticationService.authenticateUser(NotExistedEmailDto))
+                .isInstanceOf(AuthenticationBadRequestException.class);
+    }
+
+    @Test
+    void authenticateUserWithDeletedEmail() {
+        given(userRepository.findByEmail(DELETED_EMAIL)).willReturn(Optional.of(deletedUser));
+
+        assertThatThrownBy(() -> authenticationService.authenticateUser(DeletedEmailDto))
                 .isInstanceOf(AuthenticationBadRequestException.class);
     }
 }
