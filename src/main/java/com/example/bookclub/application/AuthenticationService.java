@@ -3,6 +3,7 @@ package com.example.bookclub.application;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.SessionCreateDto;
+import com.example.bookclub.errors.AuthenticationBadRequestException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,9 +15,11 @@ public class AuthenticationService {
     }
 
     public User authenticateUser(SessionCreateDto sessionCreateDto) {
-        return User.builder()
-                .email("setUpEmail")
-                .password("12345678")
-                .build();
+        String email = sessionCreateDto.getEmail();
+        String password = sessionCreateDto.getPassword();
+
+        return userRepository.findByEmail(email)
+                .filter(u -> u.authenticate(password))
+                .orElseThrow(AuthenticationBadRequestException::new);
     }
 }

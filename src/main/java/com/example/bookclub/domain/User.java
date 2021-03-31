@@ -63,4 +63,8 @@ public class User {
     public boolean isPasswordSameWith(String password) {
         return this.password.equals(password);
     }
+
+    public boolean authenticate(String password) {
+        return !this.deleted && this.password.equals(password);
+    }
 }
