@@ -1,5 +1,6 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.ParseResultDto;
@@ -12,6 +13,7 @@ import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -44,17 +46,20 @@ class AuthenticationServiceTest {
     private SessionCreateDto DeletedEmailDto;
 
     private SessionResultDto sessionResultDto;
+    private Role userRole;
 
 
     private UserRepository userRepository;
     private JwtUtil jwtUtil;
     private AuthenticationService authenticationService;
+    private RoleRepository roleRepository;
 
     @BeforeEach
     void setUp() {
         userRepository = mock(UserRepository.class);
+        roleRepository = mock(RoleRepository.class);
         jwtUtil = new JwtUtil(SECRET);
-        authenticationService = new AuthenticationService(userRepository, jwtUtil);
+        authenticationService = new AuthenticationService(userRepository, roleRepository, jwtUtil);
 
         setUpUser = User.builder()
                 .id(EXISTED_ID)
@@ -90,6 +95,11 @@ class AuthenticationServiceTest {
 
         sessionResultDto = SessionResultDto.builder()
                 .accessToken(EXISTED_ACCESSTOKEN)
+                .build();
+
+        userRole = Role.builder()
+                .email(EXISTED_EMAIL)
+                .name("USER")
                 .build();
     }
 
@@ -154,5 +164,14 @@ class AuthenticationServiceTest {
     void parseWithInvalidToken() {
         assertThatThrownBy(() -> authenticationService.parseToken(INVALID_TOKEN))
                 .isInstanceOf(InvalidTokenException.class);
+    }
+
+    @Test
+    void detailRoleOfUser() {
+        given(roleRepository.findAllByEmail(EXISTED_EMAIL)).willReturn(List.of(userRole));
+
+        List<Role> lists = authenticationService.roles(EXISTED_EMAIL);
+
+        assertThat(lists.get(0).getName()).isEqualTo(("USER"));
     }
 }

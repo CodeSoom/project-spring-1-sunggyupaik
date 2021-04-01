@@ -21,7 +21,6 @@ public class Role {
 
     private String name;
 
-    @Builder
     public Role(String name) {
         this(null, name);
     }
