@@ -1,5 +1,7 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.Role;
+import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.ParseResultDto;
@@ -12,13 +14,19 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AuthenticationService {
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final JwtUtil jwtUtil;
 
-    public AuthenticationService(UserRepository userRepository, JwtUtil jwtUtil) {
+    public AuthenticationService(UserRepository userRepository,
+                                 RoleRepository roleRepository,
+                                 JwtUtil jwtUtil) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.jwtUtil = jwtUtil;
     }
 
@@ -50,5 +58,9 @@ public class AuthenticationService {
         return userRepository.findByEmail(email)
                 .filter(u -> u.authenticate(password))
                 .orElseThrow(AuthenticationBadRequestException::new);
+    }
+
+    public List<Role> roles(String email) {
+        return roleRepository.findAllByEmail(email);
     }
 }

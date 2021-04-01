@@ -1,6 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Role;
+import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.ParseResultDto;
