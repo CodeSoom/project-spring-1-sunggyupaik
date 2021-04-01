@@ -35,7 +35,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String authorization = request.getHeader("Authorization");
 
         if(authorization != null) {
-            ParseResultDto parseResultDto = authenticationService.parseToken(accessToken);
+            ParseResultDto parseResultDto = authenticationService.parseToken(authorization);
             Claims claims = parseResultDto.getClaims();
             Long id = claims.get("userId", Long.class);
             String email = claims.getSubject();
