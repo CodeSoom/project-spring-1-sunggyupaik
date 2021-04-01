@@ -1,6 +1,7 @@
 package com.example.bookclub.config;
 
 import com.example.bookclub.application.AuthenticationService;
+import com.example.bookclub.filters.AuthenticationErrorFilter;
 import com.example.bookclub.filters.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -23,13 +24,16 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         Filter authenticationFilter = new JwtAuthenticationFilter(
                 authenticationManager(),authenticationService);
+
+        Filter authenticationErrorFilter = new AuthenticationErrorFilter();
+
         http
                 .csrf().disable()
                 .headers()
                 .frameOptions().disable()
                 .and()
                 .addFilter(authenticationFilter)
-                //.addFilterBefore()
+                .addFilterBefore(authenticationErrorFilter, JwtAuthenticationFilter.class)
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
