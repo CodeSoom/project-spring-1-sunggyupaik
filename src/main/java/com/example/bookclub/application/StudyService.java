@@ -9,6 +9,7 @@ import com.example.bookclub.errors.StudyNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,6 +22,13 @@ public class StudyService {
     }
 
     public StudyResultDto createStudy(StudyCreateDto studyCreateDto) {
+        LocalDate startDate = studyCreateDto.getStartDate();
+        LocalDate endDate = studyCreateDto.getEndDate();
+        LocalDate todayDate = LocalDate.now();
+        if(startDate.isBefore(todayDate) || startDate.isAfter(endDate)) {
+            throw new StartAndEndDateNotValidException();
+        }
+
         Study study = studyCreateDto.toEntity();
         Study createdStudy = studyRepository.save(study);
         return StudyResultDto.of(createdStudy);
