@@ -4,6 +4,7 @@ import com.example.bookclub.dto.ErrorResponse;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.StartAndEndDateNotValidException;
+import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
@@ -19,6 +20,12 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class ControllerErrorAdvice {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StartAndEndTimeNotValidException.class)
+    public ErrorResponse handleStartAndEndTimeNotValid(StartAndEndTimeNotValidException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StartAndEndDateNotValidException.class)
     public ErrorResponse handleStartAndEndDateNotValid(StartAndEndDateNotValidException e) {

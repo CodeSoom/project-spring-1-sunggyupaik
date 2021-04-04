@@ -6,6 +6,7 @@ import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StartAndEndDateNotValidException;
+import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import org.springframework.stereotype.Service;
 
