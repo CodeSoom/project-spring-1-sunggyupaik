@@ -1,51 +1,63 @@
 package com.example.bookclub.security;
 
-import com.example.bookclub.domain.Role;
+import com.example.bookclub.domain.User;
 import lombok.Builder;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class UserAuthentication extends AbstractAuthenticationToken {
-    private final Long id;
-    private final String email;
+public class UserAuthentication implements UserDetails {
+    private final User user;
+    private final List<GrantedAuthority> authorities;
 
     @Builder
-    public UserAuthentication(Long id, String email, List<Role> roles) {
-        super(authorities(roles));
-        this.id = id;
-        this.email = email;
+    public UserAuthentication(User user, List<GrantedAuthority> authorities) {
+        this.user = user;
+        this.authorities = authorities;
     }
 
     @Override
-    public Object getCredentials() {
-        return null;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return authorities;
     }
 
     @Override
-    public Object getPrincipal() {
-        return this.email;
+    public String getPassword() {
+        return user.getPassword();
     }
 
     @Override
-    public boolean isAuthenticated() {
-        return true;
-    }
-
-    public String getEmail() {
-        return this.email;
+    public String getUsername() {
+        return user.getName();
     }
 
     public Long getId() {
-        return this.id;
+        return user.getId();
     }
 
-    private static List<GrantedAuthority> authorities(List<Role> roles) {
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
+    public String getEmail() {
+        return user.getEmail();
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
