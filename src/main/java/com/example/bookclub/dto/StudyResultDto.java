@@ -18,6 +18,8 @@ public class StudyResultDto {
 
     private String name;
 
+    private String email;
+
     private String description;
 
     private String contact;
@@ -39,11 +41,12 @@ public class StudyResultDto {
     private Zone zone;
 
     @Builder
-    public StudyResultDto(Long id, String name, String description, String contact,
+    public StudyResultDto(Long id, String name, String email, String description, String contact,
                           int size, LocalDate startDate, LocalDate endDate, String startTime,
                           String endTime, Day day, StudyState studyState, Zone zone) {
         this.id = id;
         this.name = name;
+        this.email = email;
         this.description = description;
         this.contact = contact;
         this.size = size;
@@ -60,6 +63,7 @@ public class StudyResultDto {
         return StudyResultDto.builder()
                 .id(study.getId())
                 .name(study.getName())
+                .email(study.getEmail())
                 .description(study.getDescription())
                 .contact(study.getContact())
                 .size(study.getSize())

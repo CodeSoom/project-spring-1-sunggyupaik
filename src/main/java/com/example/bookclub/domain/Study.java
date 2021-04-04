@@ -23,6 +23,8 @@ public class Study {
 
     private String name;
 
+    private String email;
+
     private String description;
 
     private String contact;
@@ -47,11 +49,12 @@ public class Study {
     private Zone zone;
 
     @Builder
-    public Study(Long id, String name, String description, String contact,
+    public Study(Long id, String name, String email, String description, String contact,
                  int size, LocalDate startDate, LocalDate endDate, String startTime,
                  String endTime, Day day, StudyState studyState, Zone zone) {
         this.id = id;
         this.name = name;
+        this.email = email;
         this.description = description;
         this.contact = contact;
         this.size = size;
