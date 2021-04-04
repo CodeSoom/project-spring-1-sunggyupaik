@@ -19,6 +19,8 @@ import java.time.LocalDate;
 public class StudyCreateDto {
     private String name;
 
+    private String email;
+
     @Size(min=10, max=1000)
     private String description;
 
@@ -45,6 +47,7 @@ public class StudyCreateDto {
     public Study toEntity() {
         return Study.builder()
                 .name(this.name)
+                .email(this.email)
                 .description(this.description)
                 .contact(this.contact)
                 .size(this.size)
@@ -59,10 +62,11 @@ public class StudyCreateDto {
     }
 
     @Builder
-    public StudyCreateDto(String name, String description, String contact,
+    public StudyCreateDto(String name, String email, String description, String contact,
                           int size, LocalDate startDate, LocalDate endDate, String startTime,
                           String endTime, Day day, StudyState studyState, Zone zone) {
         this.name = name;
+        this.email = email;
         this.description = description;
         this.contact = contact;
         this.size = size;

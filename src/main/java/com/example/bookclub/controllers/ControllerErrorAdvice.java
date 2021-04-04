@@ -5,6 +5,8 @@ import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.InvalidTokenException;
+import com.example.bookclub.errors.StartAndEndDateNotValidException;
+import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserEmailNotFoundException;
@@ -24,6 +26,12 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(UserEmailNotFoundException.class)
     public ErrorResponse handleUserEmailNotFound(UserEmailNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+  
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StartAndEndTimeNotValidException.class)
+    public ErrorResponse handleStartAndEndTimeNotValid(StartAndEndTimeNotValidException e) {
         return new ErrorResponse(e.getMessage());
     }
 

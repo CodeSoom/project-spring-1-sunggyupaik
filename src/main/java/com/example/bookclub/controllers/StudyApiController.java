@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -40,7 +41,7 @@ public class StudyApiController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StudyResultDto create(@RequestBody StudyCreateDto studyCreateDto) {
+    public StudyResultDto create(@RequestBody StudyCreateDto studyCreateDto) throws ParseException {
         return studyService.createStudy(studyCreateDto);
     }
 
