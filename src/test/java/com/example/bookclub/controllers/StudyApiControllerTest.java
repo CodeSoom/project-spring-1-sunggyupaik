@@ -40,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class StudyApiControllerTest {
     private static final Long EXISTED_ID = 1L;
     private static final String SETUP_NAME = "name";
+    private static final String SETUP_EMAIL = "setUpEmail";
     private static final String SETUP_DESCRIPTION = "description";
     private static final String SETUP_CONTACT = "contact";
     private static final int SETUP_SIZE = 5;
@@ -93,6 +94,7 @@ class StudyApiControllerTest {
         setUpStudy = Study.builder()
                 .id(EXISTED_ID)
                 .name(SETUP_NAME)
+                .email(SETUP_EMAIL)
                 .description(SETUP_DESCRIPTION)
                 .contact(SETUP_CONTACT)
                 .size(SETUP_SIZE)
