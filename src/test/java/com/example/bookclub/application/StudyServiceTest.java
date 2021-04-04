@@ -12,6 +12,7 @@ import com.example.bookclub.errors.StudyNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -158,7 +159,7 @@ public class StudyServiceTest {
     }
 
     @Test
-    void createWithValidateAttribute() {
+    void createWithValidateAttribute() throws ParseException {
         given(studyRepository.save(any(Study.class))).willReturn(setUpStudy);
 
         StudyResultDto studyResultDto = studyService.createStudy(studyCreateDto);
