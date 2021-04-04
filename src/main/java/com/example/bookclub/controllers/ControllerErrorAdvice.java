@@ -3,6 +3,7 @@ package com.example.bookclub.controllers;
 import com.example.bookclub.dto.ErrorResponse;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.errors.StartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
@@ -18,6 +19,12 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class ControllerErrorAdvice {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StartAndEndDateNotValidException.class)
+    public ErrorResponse handleStartAndEndDateNotValid(StartAndEndDateNotValidException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
     public ErrorResponse handleUserNotFound(UserNotFoundException e) {
