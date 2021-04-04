@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.User;
 import com.example.bookclub.domain.UserRepository;
+import com.example.bookclub.errors.UserEmailNotFoundException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,7 +39,7 @@ public class UserAuthenticationService implements UserDetailsService {
 
     public User getUser(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> UserEmailNotFoundException(email));
+                .orElseThrow(() -> new UserEmailNotFoundException(email));
     }
 
     public List<GrantedAuthority> getAllAuthorities(String email) {

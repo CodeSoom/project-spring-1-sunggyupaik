@@ -7,6 +7,7 @@ import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.UserEmailDuplicatedException;
+import com.example.bookclub.errors.UserEmailNotFoundException;
 import com.example.bookclub.errors.UserNicknameDuplicatedException;
 import com.example.bookclub.errors.UserNotFoundException;
 import com.example.bookclub.errors.UserPasswordBadRequestException;
@@ -20,6 +21,12 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class ControllerErrorAdvice {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(UserEmailNotFoundException.class)
+    public ErrorResponse handleUserEmailNotFound(UserEmailNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidTokenException.class)
     public ErrorResponse handleInvalidToken(InvalidTokenException e) {
