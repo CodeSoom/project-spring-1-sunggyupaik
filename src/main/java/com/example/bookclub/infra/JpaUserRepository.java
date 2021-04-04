@@ -10,6 +10,8 @@ public interface JpaUserRepository
         extends UserRepository, CrudRepository<User, Long> {
     Optional<User> findById(Long id);
 
+    Optional<User> findByEmail(String email);
+
     User save(User user);
 
     boolean existsByEmail(String email);
