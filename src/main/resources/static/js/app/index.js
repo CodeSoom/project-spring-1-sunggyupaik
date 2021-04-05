@@ -41,7 +41,7 @@ var main = {
             }
             $.ajax({
                 type: 'POST',
-                url: '/api/login',
+                url: '/session',
                 dataType: 'json',
                 contentType:'application/json;',
                 data: JSON.stringify(data)

@@ -38,14 +38,14 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String authorization = request.getHeader("Authorization");
 
         if(authorization != null) {
-            ParseResultDto parseResultDto = authenticationService.parseToken(authorization);
+            String accessToken = authorization.substring("Bearer ".length());
+            ParseResultDto parseResultDto = authenticationService.parseToken(accessToken);
             Claims claims = parseResultDto.getClaims();
             String email = claims.getSubject();
 
             UserDetails userDetails = userAuthenticationService.loadUserByUsername(email);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authentication);
         }

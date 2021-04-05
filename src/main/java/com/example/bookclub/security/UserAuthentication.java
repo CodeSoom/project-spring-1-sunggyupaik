@@ -2,12 +2,14 @@ package com.example.bookclub.security;
 
 import com.example.bookclub.domain.User;
 import lombok.Builder;
+import lombok.ToString;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
+@ToString
 public class UserAuthentication implements UserDetails {
     private final User user;
     private final List<GrantedAuthority> authorities;
