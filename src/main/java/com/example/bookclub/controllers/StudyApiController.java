@@ -82,4 +82,10 @@ public class StudyApiController {
         }
         return studyService.applyStudy(account, id);
     }
+
+    @DeleteMapping("/apply/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Long cancel(@PathVariable Long id) {
+        return 1L;
+    }
 }
