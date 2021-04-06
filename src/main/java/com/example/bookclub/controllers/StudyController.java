@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/studys")
 public class StudyController {
@@ -46,5 +48,12 @@ public class StudyController {
         model.addAttribute("studyState", StudyState.getAllStudyStates());
         model.addAttribute("zone", Zone.getAllZones());
         return "studys/studys-update";
+    }
+
+    @GetMapping
+    public String studyList(Model model) {
+        List<Study> lists = studyService.getStudies();
+        model.addAttribute("studys", lists);
+        return "studys/studys-list";
     }
 }

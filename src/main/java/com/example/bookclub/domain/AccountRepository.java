@@ -2,10 +2,12 @@ package com.example.bookclub.domain;
 
 import java.util.Optional;
 
-public interface UserRepository {
-    Optional<User> findById(Long id);
+public interface AccountRepository {
+    Optional<Account> findById(Long id);
 
-    User save(User user);
+    Optional<Account> findByEmail(String email);
+
+    Account save(Account account);
 
     boolean existsByEmail(String email);
 

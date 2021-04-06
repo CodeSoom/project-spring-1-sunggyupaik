@@ -1,6 +1,6 @@
 package com.example.bookclub.dto;
 
-import com.example.bookclub.domain.User;
+import com.example.bookclub.domain.Account;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class UserResultDto {
+public class AccountResultDto {
     private Long id;
 
     private String name;
@@ -26,8 +26,8 @@ public class UserResultDto {
     private boolean deleted;
 
     @Builder
-    public UserResultDto(Long id, String name, String email, String nickname,
-                         String password, String profileImage, boolean deleted) {
+    public AccountResultDto(Long id, String name, String email, String nickname,
+                            String password, String profileImage, boolean deleted) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -37,15 +37,15 @@ public class UserResultDto {
         this.deleted = deleted;
     }
 
-    public static UserResultDto of(User user) {
-        return UserResultDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .password(user.getPassword())
-                .profileImage(user.getProfileImage())
-                .deleted(user.isDeleted())
+    public static AccountResultDto of(Account account) {
+        return AccountResultDto.builder()
+                .id(account.getId())
+                .name(account.getName())
+                .email(account.getEmail())
+                .nickname(account.getNickname())
+                .password(account.getPassword())
+                .profileImage(account.getProfileImage())
+                .deleted(account.isDeleted())
                 .build();
     }
 }

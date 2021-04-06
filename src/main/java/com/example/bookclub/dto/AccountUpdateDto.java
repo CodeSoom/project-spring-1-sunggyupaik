@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
 @ToString
-public class UserUpdateDto {
+public class AccountUpdateDto {
     @Size(min=3, max=10)
     private String nickname;
 
@@ -24,8 +24,8 @@ public class UserUpdateDto {
     private String profileImage;
 
     @Builder
-    public UserUpdateDto(String nickname, String password,
-                         String newPassword, String profileImage) {
+    public AccountUpdateDto(String nickname, String password,
+                            String newPassword, String profileImage) {
         this.nickname = nickname;
         this.password = password;
         this.newPassword = newPassword;

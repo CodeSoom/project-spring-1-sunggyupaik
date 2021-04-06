@@ -1,15 +1,17 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.dto.ErrorResponse;
+import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNicknameDuplicatedException;
+import com.example.bookclub.errors.AccountNotFoundException;
+import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
-import com.example.bookclub.errors.StartAndEndDateNotValidException;
+import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyNotFoundException;
-import com.example.bookclub.errors.UserEmailDuplicatedException;
-import com.example.bookclub.errors.UserNicknameDuplicatedException;
-import com.example.bookclub.errors.UserNotFoundException;
-import com.example.bookclub.errors.UserPasswordBadRequestException;
+import com.example.bookclub.errors.AccountEmailNotFoundException;
+import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,32 +23,44 @@ import java.util.Objects;
 @RestControllerAdvice
 public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AccountEmailNotFoundException.class)
+    public ErrorResponse handleUserEmailNotFound(AccountEmailNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+  
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StartAndEndTimeNotValidException.class)
     public ErrorResponse handleStartAndEndTimeNotValid(StartAndEndTimeNotValidException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(StartAndEndDateNotValidException.class)
-    public ErrorResponse handleStartAndEndDateNotValid(StartAndEndDateNotValidException e) {
+    @ExceptionHandler(InvalidTokenException.class)
+    public ErrorResponse handleInvalidToken(InvalidTokenException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(AuthenticationBadRequestException.class)
+    public ErrorResponse handleAuthenticationBadRequest(AuthenticationBadRequestException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler(UserNotFoundException.class)
-    public ErrorResponse handleUserNotFound(UserNotFoundException e) {
+    @ExceptionHandler(AccountNotFoundException.class)
+    public ErrorResponse handleUserNotFound(AccountNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(UserEmailDuplicatedException.class)
-    public ErrorResponse handleUserEmailDuplicated(UserEmailDuplicatedException e) {
+    @ExceptionHandler(AccountEmailDuplicatedException.class)
+    public ErrorResponse handleUserEmailDuplicated(AccountEmailDuplicatedException e) {
         return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(UserNicknameDuplicatedException.class)
-    public ErrorResponse UserNicknameDuplicated(UserNicknameDuplicatedException e) {
+    @ExceptionHandler(AccountNicknameDuplicatedException.class)
+    public ErrorResponse UserNicknameDuplicated(AccountNicknameDuplicatedException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -63,8 +77,8 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(UserPasswordBadRequestException.class)
-    public ErrorResponse handlePasswordBadRequest(UserPasswordBadRequestException e) {
+    @ExceptionHandler(AccountPasswordBadRequestException.class)
+    public ErrorResponse handlePasswordBadRequest(AccountPasswordBadRequestException e) {
         return new ErrorResponse(e.getMessage());
     }
 

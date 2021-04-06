@@ -1,6 +1,10 @@
 var main = {
     init : function () {
         var _this = this;
+        $('#btn-login').on('click', function () {
+            _this.login();
+        });
+
         $('#btn-sendMessage').on('click', function () {
             _this.sendMessage();
         });
@@ -29,6 +33,25 @@ var main = {
             _this.deleteStudy();
         });
     },
+
+    login : function() {
+            var data = {
+                email: $('#email').val(),
+                password: $('#password').val()
+            }
+            $.ajax({
+                type: 'POST',
+                url: '/login/signup',
+                dataType: 'json',
+                contentType:'application/json;',
+                data: JSON.stringify(data)
+            }).done(function(data) {
+                alert("로그인이 완료되었습니다.");
+                location.href = data;
+            }).fail(function (request) {
+                location.href = '/';
+            });
+        },
 
     sendMessage : function() {
         var data = {

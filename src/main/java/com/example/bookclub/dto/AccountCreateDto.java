@@ -1,6 +1,6 @@
 package com.example.bookclub.dto;
 
-import com.example.bookclub.domain.User;
+import com.example.bookclub.domain.Account;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class UserCreateDto {
+public class AccountCreateDto {
     @Size(min=2, max=6)
     private String name;
 
@@ -30,8 +30,8 @@ public class UserCreateDto {
     private String authenticationNumber;
 
     @Builder
-    public UserCreateDto(String name, String email, String nickname,
-                         String password, String profileImage, String authenticationNumber) {
+    public AccountCreateDto(String name, String email, String nickname,
+                            String password, String profileImage, String authenticationNumber) {
         this.name = name;
         this.email = email;
         this.nickname = nickname;
@@ -40,8 +40,8 @@ public class UserCreateDto {
         this.authenticationNumber = authenticationNumber;
     }
 
-    public User toEntity() {
-        return User.builder()
+    public Account toEntity() {
+        return Account.builder()
                 .name(this.name)
                 .email(this.email)
                 .nickname(this.nickname)

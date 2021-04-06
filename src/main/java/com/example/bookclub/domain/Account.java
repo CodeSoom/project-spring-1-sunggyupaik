@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -15,7 +16,7 @@ import javax.persistence.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 @Builder
-public class User {
+public class Account {
     @Id
     @GeneratedValue
     private Long id;
@@ -39,8 +40,8 @@ public class User {
     private boolean deleted = false;
 
     @Builder
-    public User(Long id, String name, String email, String nickname,
-                String password, String profileImage, boolean deleted) {
+    public Account(Long id, String name, String email, String nickname,
+                   String password, String profileImage, boolean deleted) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -60,7 +61,11 @@ public class User {
         this.profileImage = profileImage;
     }
 
-    public boolean isPasswordSameWith(String password) {
-        return this.password.equals(password);
+    public boolean isPasswordSameWith(String password, PasswordEncoder passwordEncoder) {
+        return passwordEncoder.matches(password, this.password);
+    }
+
+    public boolean authenticate(String password, PasswordEncoder passwordEncoder) {
+        return !this.deleted && passwordEncoder.matches(password, this.password);
     }
 }
