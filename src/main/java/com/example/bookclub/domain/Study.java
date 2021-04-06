@@ -12,12 +12,16 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
+@Builder
 public class Study {
     @Id
     @GeneratedValue
@@ -32,6 +36,9 @@ public class Study {
     private String contact;
 
     private int size;
+
+    @Builder.Default
+    private int applyCount = 0;
 
     private LocalDate startDate;
 
@@ -50,16 +57,21 @@ public class Study {
     @Enumerated(EnumType.STRING)
     private Zone zone;
 
+    @OneToMany(mappedBy = "study")
+    @Builder.Default
+    List<Account> accounts = new ArrayList<>();
+
     @Builder
     public Study(Long id, String name, String email, String description, String contact,
-                 int size, LocalDate startDate, LocalDate endDate, String startTime,
-                 String endTime, Day day, StudyState studyState, Zone zone) {
+                 int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
+                 String endTime, Day day, StudyState studyState, Zone zone, List<Account> accounts) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.description = description;
         this.contact = contact;
         this.size = size;
+        this.applyCount = applyCount;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
@@ -67,6 +79,7 @@ public class Study {
         this.day = day;
         this.studyState = studyState;
         this.zone = zone;
+        this.accounts = accounts;
     }
 
     public void updateWith(StudyUpdateDto studyUpdateDto) {
