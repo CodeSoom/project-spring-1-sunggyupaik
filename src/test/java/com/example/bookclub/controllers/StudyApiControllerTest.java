@@ -239,4 +239,13 @@ class StudyApiControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void cancelStudyByExistedAccount() throws Exception {
+        mockMvc.perform(
+                delete("/api/study/apply/{id}", EXISTED_ID)
+        )
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
 }
