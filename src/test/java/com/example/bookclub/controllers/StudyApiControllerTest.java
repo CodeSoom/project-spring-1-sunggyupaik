@@ -231,10 +231,10 @@ class StudyApiControllerTest {
 
     @Test
     void applyStudyByExistedAccount() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(token);
         mockMvc.perform(
                 post("/api/study/apply/{id}", EXISTED_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("{}")
         )
                 .andDo(print())
                 .andExpect(status().isOk());
