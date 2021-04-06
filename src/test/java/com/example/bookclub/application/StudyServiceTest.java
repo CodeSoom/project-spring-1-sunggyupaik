@@ -6,6 +6,7 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.dto.StudyApplyDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
@@ -67,6 +68,8 @@ public class StudyServiceTest {
 
     private StudyCreateDto studyCreateDto;
     private StudyUpdateDto studyUpdateDto;
+
+    private StudyApplyDto studyApplyDto;
 
     private StudyService studyService;
     private StudyRepository studyRepository;
@@ -147,6 +150,10 @@ public class StudyServiceTest {
                 .zone(UPDATE_ZONE)
                 .build();
 
+        studyApplyDto = StudyApplyDto.builder()
+                .email(SETUP_EMAIL)
+                .build();
+
         listAllStudies = List.of(setUpStudy, createStudy);
     }
     @Test
@@ -203,5 +210,17 @@ public class StudyServiceTest {
 
         assertThat(studyResultDto.getName()).isEqualTo(setUpStudy.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(setUpStudy.getDescription());
+    }
+
+    @Test
+    void applyWithExistedAccount() {
+        given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
+
+        Study study = studyService.getStudy(EXISTED_ID);
+        int beforeApplyCount = study.getApplyCount();
+        Long studyId = studyService.applyStudy(account, EXISTED_ID);
+        int afterApplyCount = study.getApplyCount();
+
+        assertThat(beforeApplyCount).isEqualTo(afterApplyCount-1);
     }
 }
