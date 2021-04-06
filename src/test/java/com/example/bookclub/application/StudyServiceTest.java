@@ -1,5 +1,6 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
@@ -26,7 +27,7 @@ import static org.mockito.Mockito.mock;
 public class StudyServiceTest {
     private static final Long EXISTED_ID = 1L;
     private static final String SETUP_NAME = "name";
-    private static final String SETUP_EMAIL = "setUpEmail";
+    private static final String SETUP_EMAIL = "email";
     private static final String SETUP_DESCRIPTION = "description";
     private static final String SETUP_CONTACT = "contact";
     private static final int SETUP_SIZE = 5;
@@ -37,6 +38,13 @@ public class StudyServiceTest {
     private static final String SETUP_ENDTIME = "15:30";
     private static final StudyState SETUP_STUDYSTATE = StudyState.OPEN;
     private static final Zone SETUP_ZONE = Zone.SEOUL;
+
+    private static final Long ACCOUNT_ID = 1L;
+    private static final String ACCOUNT_NAME = "name";
+    private static final String ACCOUNT_EMAIL = "email";
+    private static final String ACCOUNT_NICKNAME = "nickname";
+    private static final String ACCOUNT_PASSWORD = "1234567890";
+    private static final String ACCOUNT_PROFILEIMAGE = "image";
 
     private static final String UPDATE_NAME = "updatedName";
     private static final String UPDATE_DESCRIPTION = "updatedDescription";
@@ -53,6 +61,7 @@ public class StudyServiceTest {
     private static final Long NOT_EXISTED_ID = 2L;
     private static final Long CREATED_ID = 3L;
 
+    private Account account;
     private Study setUpStudy;
     private Study createStudy;
 
@@ -68,6 +77,14 @@ public class StudyServiceTest {
     void setUp() {
         studyRepository = mock(StudyRepository.class);
         studyService = new StudyService(studyRepository);
+        account = Account.builder()
+                .id(ACCOUNT_ID)
+                .name(ACCOUNT_NAME)
+                .email(ACCOUNT_EMAIL)
+                .nickname(ACCOUNT_NICKNAME)
+                .password(ACCOUNT_PASSWORD)
+                .profileImage(ACCOUNT_PROFILEIMAGE)
+                .build();
 
         setUpStudy = Study.builder()
                 .id(EXISTED_ID)
@@ -162,7 +179,7 @@ public class StudyServiceTest {
     void createWithValidateAttribute() throws ParseException {
         given(studyRepository.save(any(Study.class))).willReturn(setUpStudy);
 
-        StudyResultDto studyResultDto = studyService.createStudy(studyCreateDto);
+        StudyResultDto studyResultDto = studyService.createStudy(account, studyCreateDto);
 
         assertThat(studyResultDto.getId()).isEqualTo(setUpStudy.getId());
         assertThat(studyResultDto.getName()).isEqualTo(setUpStudy.getName());
@@ -173,8 +190,7 @@ public class StudyServiceTest {
     void updateWithValidateAttribute() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
 
-        StudyResultDto studyResultDto = studyService.updateStudy(EXISTED_ID, studyUpdateDto);
-
+        StudyResultDto studyResultDto = studyService.updateStudy(account, EXISTED_ID, studyUpdateDto);
         assertThat(studyResultDto.getName()).isEqualTo(studyUpdateDto.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
     }
@@ -183,7 +199,7 @@ public class StudyServiceTest {
     void deleteWithExistedId() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
 
-        StudyResultDto studyResultDto = studyService.deleteStudy(EXISTED_ID);
+        StudyResultDto studyResultDto = studyService.deleteStudy(account, EXISTED_ID);
 
         assertThat(studyResultDto.getName()).isEqualTo(setUpStudy.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(setUpStudy.getDescription());
