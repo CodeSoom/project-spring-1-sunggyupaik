@@ -1,9 +1,9 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
-import com.example.bookclub.domain.User;
-import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.ParseResultDto;
 import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.dto.SessionResultDto;
@@ -39,8 +39,8 @@ class AuthenticationServiceTest {
     private static final String NOT_EXISTED_EMAIL = "invalidEmail";
     private static final String NOT_EXISTED_PASSWORD = "invalidPassword";
 
-    private User setUpUser;
-    private User deletedUser;
+    private Account setUpAccount;
+    private Account deletedAccount;
     private SessionCreateDto sessionCreateDto;
     private SessionCreateDto NotExistedEmailDto;
     private SessionCreateDto NotExistedPasswordDto;
@@ -50,25 +50,25 @@ class AuthenticationServiceTest {
     private Role userRole;
 
 
-    private UserRepository userRepository;
+    private AccountRepository accountRepository;
     private JwtUtil jwtUtil;
     private AuthenticationService authenticationService;
     private RoleRepository roleRepository;
 
     @BeforeEach
     void setUp() {
-        userRepository = mock(UserRepository.class);
+        accountRepository = mock(AccountRepository.class);
         roleRepository = mock(RoleRepository.class);
         jwtUtil = new JwtUtil(SECRET);
-        authenticationService = new AuthenticationService(userRepository, roleRepository, jwtUtil);
+        authenticationService = new AuthenticationService(accountRepository, roleRepository, jwtUtil);
 
-        setUpUser = User.builder()
+        setUpAccount = Account.builder()
                 .id(EXISTED_ID)
                 .email(EXISTED_EMAIL)
                 .password(EXISTED_PASSWORD)
                 .build();
 
-        deletedUser = User.builder()
+        deletedAccount = Account.builder()
                 .email(DELETED_EMAIL)
                 .password(EXISTED_PASSWORD)
                 .deleted(true)
@@ -106,16 +106,16 @@ class AuthenticationServiceTest {
 
     @Test
     void authenticateUserWithValidAttribute() {
-        given(userRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.of(setUpUser));
+        given(accountRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.of(setUpAccount));
 
-        User user = authenticationService.authenticateUser(sessionCreateDto);
+        Account account = authenticationService.authenticateUser(sessionCreateDto);
 
-        assertThat(user.getEmail()).isEqualTo(EXISTED_EMAIL);
+        assertThat(account.getEmail()).isEqualTo(EXISTED_EMAIL);
     }
 
     @Test
     void authenticateUserWithNotExistedEmail() {
-        given(userRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.empty());
+        given(accountRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> authenticationService.authenticateUser(NotExistedPasswordDto))
                 .isInstanceOf(AuthenticationBadRequestException.class);
@@ -123,7 +123,7 @@ class AuthenticationServiceTest {
 
     @Test
     void authenticateUserWithNotExistedPassword() {
-        given(userRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.of(setUpUser));
+        given(accountRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.of(setUpAccount));
 
         assertThatThrownBy(() -> authenticationService.authenticateUser(NotExistedEmailDto))
                 .isInstanceOf(AuthenticationBadRequestException.class);
@@ -131,7 +131,7 @@ class AuthenticationServiceTest {
 
     @Test
     void authenticateUserWithDeletedEmail() {
-        given(userRepository.findByEmail(DELETED_EMAIL)).willReturn(Optional.of(deletedUser));
+        given(accountRepository.findByEmail(DELETED_EMAIL)).willReturn(Optional.of(deletedAccount));
 
         assertThatThrownBy(() -> authenticationService.authenticateUser(DeletedEmailDto))
                 .isInstanceOf(AuthenticationBadRequestException.class);
@@ -139,7 +139,7 @@ class AuthenticationServiceTest {
 
     @Test
     void createTokenWithValidUser() {
-        given(userRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.of(setUpUser));
+        given(accountRepository.findByEmail(EXISTED_EMAIL)).willReturn(Optional.of(setUpAccount));
 
         SessionResultDto token = authenticationService.createToken(sessionCreateDto);
 

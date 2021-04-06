@@ -3,14 +3,11 @@ package com.example.bookclub.config;
 import com.example.bookclub.application.AuthenticationService;
 import com.example.bookclub.filters.AuthenticationErrorFilter;
 import com.example.bookclub.filters.JwtAuthenticationFilter;
-import com.example.bookclub.security.UserAuthenticationService;
+import com.example.bookclub.security.AccountAuthenticationService;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 
 import javax.servlet.Filter;
 
@@ -18,33 +15,37 @@ import javax.servlet.Filter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final AuthenticationService authenticationService;
-    private final UserAuthenticationService userAuthenticationService;
+    private final AccountAuthenticationService accountAuthenticationService;
 
     public SecurityJavaConfig(AuthenticationService authenticationService,
-                              UserAuthenticationService userAuthenticationService) {
+                              AccountAuthenticationService accountAuthenticationService) {
         this.authenticationService = authenticationService;
-        this.userAuthenticationService = userAuthenticationService;
+        this.accountAuthenticationService = accountAuthenticationService;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         Filter authenticationFilter = new JwtAuthenticationFilter(
-                authenticationManager(), authenticationService, userAuthenticationService);
+                authenticationManager(), authenticationService, accountAuthenticationService);
 
         Filter authenticationErrorFilter = new AuthenticationErrorFilter();
 
         http
+                .authorizeRequests()
+                .anyRequest().permitAll()
+        .and()
+                .formLogin()
+                .loginPage("/login")
+                .defaultSuccessUrl("/")
+                .permitAll()
+        .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessUrl("/");
+
+        http
                 .csrf().disable()
                 .headers()
-                .frameOptions().disable()
-                .and()
-                .addFilter(authenticationFilter)
-                .addFilterBefore(authenticationErrorFilter, JwtAuthenticationFilter.class)
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling()
-                .authenticationEntryPoint(
-                        new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
+                .frameOptions().disable();
     }
 }

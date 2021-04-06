@@ -41,16 +41,15 @@ var main = {
             }
             $.ajax({
                 type: 'POST',
-                url: '/session',
+                url: '/login/signup',
                 dataType: 'json',
                 contentType:'application/json;',
                 data: JSON.stringify(data)
             }).done(function(data) {
                 alert("로그인이 완료되었습니다.");
-                localStorage.setItem("token", data.accessToken);
-                window.location.href = '/';
+                location.href = data;
             }).fail(function (request) {
-                alert(request.responseText);
+                location.href = '/';
             });
         },
 

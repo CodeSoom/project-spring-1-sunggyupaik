@@ -1,7 +1,7 @@
 package com.example.bookclub.controllers;
 
-import com.example.bookclub.application.UserService;
-import com.example.bookclub.domain.User;
+import com.example.bookclub.application.AccountService;
+import com.example.bookclub.domain.Account;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,11 +10,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/users")
-public class UserController {
-    private final UserService userService;
+public class AccountController {
+    private final AccountService accountService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
+    public AccountController(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @GetMapping("/save")
@@ -24,8 +24,8 @@ public class UserController {
 
     @GetMapping("/update/{id}")
     public String usersUpdate(@PathVariable Long id, Model model) {
-        User user = userService.getUser(id);
-        model.addAttribute("user", user);
+        Account account = accountService.getUser(id);
+        model.addAttribute("user", account);
         return "users/users-update";
     }
 }
