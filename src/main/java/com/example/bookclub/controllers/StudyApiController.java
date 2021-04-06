@@ -3,6 +3,7 @@ package com.example.bookclub.controllers;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.dto.StudyApplyDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
@@ -72,5 +73,11 @@ public class StudyApiController {
             throw new AccessDeniedException("권한이 없습니다");
         }
         return studyService.deleteStudy(account, id);
+    }
+
+    @PostMapping("/apply/{id}")
+    public Long apply(@PathVariable Long id,
+                      @RequestBody StudyApplyDto studyApplyDto) {
+        return id;
     }
 }
