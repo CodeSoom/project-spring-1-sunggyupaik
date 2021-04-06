@@ -1,11 +1,14 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.StudyService;
+import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.security.CurrentAccount;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -41,20 +44,33 @@ public class StudyApiController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public StudyResultDto create(@RequestBody StudyCreateDto studyCreateDto) throws ParseException {
-        return studyService.createStudy(studyCreateDto);
+    public StudyResultDto create(@CurrentAccount Account account,
+                                 @RequestBody StudyCreateDto studyCreateDto)
+            throws ParseException {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+        return studyService.createStudy(account, studyCreateDto);
     }
 
     @PatchMapping("/{id}")
-    public StudyResultDto update(@PathVariable Long id,
+    public StudyResultDto update(@CurrentAccount Account account,
+                                 @PathVariable Long id,
                                  @RequestBody StudyUpdateDto studyUpdateDto
     ) {
-        return studyService.updateStudy(id, studyUpdateDto);
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+        return studyService.updateStudy(account, id, studyUpdateDto);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public StudyResultDto delete(@PathVariable Long id) {
-        return studyService.deleteStudy(id);
+    public StudyResultDto delete(@CurrentAccount Account account,
+                                 @PathVariable Long id) {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+        return studyService.deleteStudy(account, id);
     }
 }

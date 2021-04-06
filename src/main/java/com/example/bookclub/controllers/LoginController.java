@@ -16,6 +16,7 @@ public class LoginController {
     public LoginController(AccountAuthenticationService accountAuthenticationService) {
         this.accountAuthenticationService = accountAuthenticationService;
     }
+
     @GetMapping
     public String login() {
         return "login";

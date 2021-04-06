@@ -78,4 +78,8 @@ public class Study {
         this.studyState = studyUpdateDto.getStudyState();
         this.zone = studyUpdateDto.getZone();
     }
+
+    public boolean isManagedBy(Account account) {
+        return this.email.equals(account.getEmail());
+    }
 }
