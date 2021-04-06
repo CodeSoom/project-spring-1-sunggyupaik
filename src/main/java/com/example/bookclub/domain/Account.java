@@ -56,6 +56,14 @@ public class Account {
         this.study = study;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Account)) return false;
+        Account account = (Account)o;
+        return account.id.equals(this.id);
+    }
+
     public void delete() {
         this.deleted = true;
     }
@@ -80,5 +88,9 @@ public class Account {
 
     public void addStudy(Study study) {
         this.study = study;
+    }
+
+    public void cancelStudy() {
+        this.study = null;
     }
 }

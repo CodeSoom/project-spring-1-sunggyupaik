@@ -87,6 +87,15 @@ public class StudyService {
         return id;
     }
 
+
+    public Long cancelStudy(@CurrentAccount Account account, Long id) {
+        Study study = getStudy(id);
+
+        study.cancelAccount(account);
+
+        return id;
+    }
+
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));

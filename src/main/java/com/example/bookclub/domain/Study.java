@@ -104,6 +104,12 @@ public class Study {
         account.addStudy(this);
     }
 
+    public void cancelAccount(Account account) {
+        this.applyCount -= 1;
+        accounts.remove(account);
+        account.cancelStudy();
+    }
+
     public void addAdmin(String email) {
         this.email = email;
     }
