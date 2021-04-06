@@ -68,4 +68,8 @@ public class Account {
     public boolean authenticate(String password, PasswordEncoder passwordEncoder) {
         return !this.deleted && passwordEncoder.matches(password, this.password);
     }
+
+    public void updatePassword(String password, PasswordEncoder passwordEncoder) {
+        this.password = passwordEncoder.encode(password);
+    }
 }
