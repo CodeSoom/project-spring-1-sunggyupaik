@@ -222,6 +222,8 @@ public class StudyServiceTest {
         int afterApplyCount = study.getApplyCount();
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount-1);
+        assertThat(setUpStudy.getAccounts()).contains(account);
+        assertThat(account.getStudy()).isNotNull();
     }
 
     @Test
@@ -234,5 +236,7 @@ public class StudyServiceTest {
         int afterApplyCount = study.getApplyCount();
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount+1);
+        assertThat(setUpStudy.getAccounts()).doesNotContain(account);
+        assertThat(account.getStudy()).isNull();
     }
 }
