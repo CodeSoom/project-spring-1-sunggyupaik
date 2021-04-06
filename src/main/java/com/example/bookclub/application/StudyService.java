@@ -1,5 +1,6 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.dto.StudyCreateDto;
@@ -8,6 +9,7 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StartAndEndDateNotValidException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,7 +28,13 @@ public class StudyService {
         this.studyRepository = studyRepository;
     }
 
-    public StudyResultDto createStudy(StudyCreateDto studyCreateDto) throws ParseException {
+    public StudyResultDto createStudy(Account account,
+                                      StudyCreateDto studyCreateDto)
+            throws ParseException {
+        if (account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+
         LocalDate startDate = studyCreateDto.getStartDate();
         LocalDate endDate = studyCreateDto.getEndDate();
         LocalDate todayDate = LocalDate.now();
@@ -46,16 +54,24 @@ public class StudyService {
         return StudyResultDto.of(createdStudy);
     }
 
-    public StudyResultDto updateStudy(Long id, StudyUpdateDto studyUpdateDto) {
+    public StudyResultDto updateStudy(Account account,
+                                      Long id,
+                                      StudyUpdateDto studyUpdateDto) {
         Study study = getStudy(id);
+        if (study.isManagedBy(account)) {
+           throw new AccessDeniedException("권한이 없습니다");
+        }
 
         study.updateWith(studyUpdateDto);
-
         return StudyResultDto.of(study);
     }
 
-    public StudyResultDto deleteStudy(Long id) {
+    public StudyResultDto deleteStudy(Account account, Long id) {
         Study study = getStudy(id);
+        if(!study.isManagedBy(account)) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+
         studyRepository.delete(study);
         return StudyResultDto.of(study);
     }
