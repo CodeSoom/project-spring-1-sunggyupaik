@@ -9,6 +9,7 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StartAndEndDateNotValidException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.security.CurrentAccount;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -74,6 +75,14 @@ public class StudyService {
 
         studyRepository.delete(study);
         return StudyResultDto.of(study);
+    }
+
+    public Long applyStudy(@CurrentAccount Account account, Long id) {
+        Study study = getStudy(id);
+
+        study.addAccount(account);
+
+        return id;
     }
 
     public Study getStudy(Long id) {

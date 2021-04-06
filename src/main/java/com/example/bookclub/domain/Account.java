@@ -15,7 +15,7 @@ import javax.persistence.ManyToOne;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(exclude = "study")
 @Builder
 public class Account {
     @Id
@@ -76,5 +76,9 @@ public class Account {
 
     public void updatePassword(String password, PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
+    }
+
+    public void addStudy(Study study) {
+        this.study = study;
     }
 }
