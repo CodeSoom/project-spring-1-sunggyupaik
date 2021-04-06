@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
@@ -39,9 +40,12 @@ public class Account {
     @Builder.Default
     private boolean deleted = false;
 
+    @ManyToOne
+    private Study study;
+
     @Builder
     public Account(Long id, String name, String email, String nickname,
-                   String password, String profileImage, boolean deleted) {
+                   String password, String profileImage, boolean deleted, Study study) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -49,6 +53,7 @@ public class Account {
         this.password = password;
         this.profileImage = profileImage;
         this.deleted = deleted;
+        this.study = study;
     }
 
     public void delete() {
