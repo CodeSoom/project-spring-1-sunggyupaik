@@ -223,4 +223,16 @@ public class StudyServiceTest {
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount-1);
     }
+
+    @Test
+    void cancelWithExistedAccount() {
+        given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
+
+        Study study = studyService.getStudy(EXISTED_ID);
+        int beforeApplyCount = study.getApplyCount();
+        Long studyId = studyService.cancelStudy(account, EXISTED_ID);
+        int afterApplyCount = study.getApplyCount();
+
+        assertThat(beforeApplyCount).isEqualTo(afterApplyCount+1);
+    }
 }
