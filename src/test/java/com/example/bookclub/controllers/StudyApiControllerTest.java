@@ -228,4 +228,15 @@ class StudyApiControllerTest {
                 .andDo(print())
                 .andExpect(status().isNoContent());
     }
+
+    @Test
+    void applyStudyByExistedAccount() throws Exception {
+        mockMvc.perform(
+                post("/api/study/apply/{id}", EXISTED_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}")
+        )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
 }
