@@ -103,4 +103,8 @@ public class Study {
         accounts.add(account);
         account.addStudy(this);
     }
+
+    public void addAdmin(String email) {
+        this.email = email;
+    }
 }
