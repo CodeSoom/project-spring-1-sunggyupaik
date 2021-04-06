@@ -20,7 +20,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(exclude = "accounts")
 @Builder
 public class Study {
     @Id
@@ -96,5 +96,11 @@ public class Study {
 
     public boolean isManagedBy(Account account) {
         return this.email.equals(account.getEmail());
+    }
+
+    public void addAccount(Account account) {
+        this.applyCount += 1;
+        accounts.add(account);
+        account.addStudy(this);
     }
 }
