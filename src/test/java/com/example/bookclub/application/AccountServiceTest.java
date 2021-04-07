@@ -13,6 +13,8 @@ import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -51,6 +53,7 @@ class AccountServiceTest {
 
     private Account setUpAccount;
     private Account createdAccount;
+    private PasswordEncoder passwordEncoder;
 
     private AccountCreateDto accountCreateDto;
     private AccountCreateDto emailExistedAccountCreateDto;
@@ -68,7 +71,9 @@ class AccountServiceTest {
     void setUp() {
         accountRepository = mock(AccountRepository.class);
         emailAuthenticationRepository = mock(EmailAuthenticationRepository.class);
-        accountService = new AccountService(accountRepository, emailAuthenticationRepository);
+        passwordEncoder = new BCryptPasswordEncoder();
+        accountService = new AccountService(accountRepository,
+                emailAuthenticationRepository, passwordEncoder);
 
         setUpAccount = Account.builder()
                 .id(EXISTED_ID)

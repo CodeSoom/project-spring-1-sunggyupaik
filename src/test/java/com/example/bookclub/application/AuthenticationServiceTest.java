@@ -13,6 +13,8 @@ import com.example.bookclub.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,13 +56,16 @@ class AuthenticationServiceTest {
     private JwtUtil jwtUtil;
     private AuthenticationService authenticationService;
     private RoleRepository roleRepository;
+    private PasswordEncoder passwordEncoder;
 
     @BeforeEach
     void setUp() {
         accountRepository = mock(AccountRepository.class);
         roleRepository = mock(RoleRepository.class);
         jwtUtil = new JwtUtil(SECRET);
-        authenticationService = new AuthenticationService(accountRepository, roleRepository, jwtUtil);
+        passwordEncoder = new BCryptPasswordEncoder();
+        authenticationService = new AuthenticationService(
+                accountRepository, roleRepository, jwtUtil, passwordEncoder);
 
         setUpAccount = Account.builder()
                 .id(EXISTED_ID)

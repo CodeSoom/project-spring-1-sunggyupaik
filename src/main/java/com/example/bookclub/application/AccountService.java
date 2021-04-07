@@ -57,6 +57,7 @@ public class AccountService {
 
         Account account = accountCreateDto.toEntity();
         Account createdAccount = accountRepository.save(account);
+        createdAccount.updatePassword(createdAccount.getPassword(), passwordEncoder);
         deleteEmailAuthentication(emailAuthentication.getEmail());
 
         return AccountResultDto.of(createdAccount);

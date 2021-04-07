@@ -32,6 +32,46 @@ var main = {
         $('#btn-delete-study').on('click', function () {
             _this.deleteStudy();
         });
+
+        $('#btn-apply-study').on('click', function () {
+            _this.applyStudy();
+        });
+
+        $('#btn-cancel-study').on('click', function () {
+            _this.cancelStudy();
+        });
+    },
+
+    cancelStudy : function() {
+        var id = $('#id').val()
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/study/apply/' + id,
+            dataType: 'json',
+            contentType:'application/json;',
+        }).done(function(data) {
+            alert("취소가 완료되었습니다.");
+            location.href = '/studys';
+        }).fail(function (request) {
+            alert(request.responseText);
+            location.herf = '/studys';
+        });
+    },
+
+    applyStudy : function() {
+        var id = $('#id').val()
+        $.ajax({
+            type: 'POST',
+            url: '/api/study/apply/' + id,
+            dataType: 'json',
+            contentType:'application/json;',
+        }).done(function(data) {
+            alert("신청이 완료되었습니다.");
+            location.href = '/studys';
+        }).fail(function (request) {
+            alert(request.responseText);
+            location.herf = '/studys';
+        });
     },
 
     login : function() {
@@ -86,7 +126,7 @@ var main = {
 
         $.ajax({
             type: 'POST',
-            url: '/api/study',
+            url: '/api/users',
             dataType: 'json',
             contentType:'application/json; charset=utf-8',
             data: JSON.stringify(data)

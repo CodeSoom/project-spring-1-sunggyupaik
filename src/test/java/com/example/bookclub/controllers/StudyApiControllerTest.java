@@ -1,6 +1,7 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.StudyService;
+import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
@@ -8,6 +9,7 @@ import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.security.UserAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -40,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class StudyApiControllerTest {
     private static final Long EXISTED_ID = 1L;
     private static final String SETUP_NAME = "name";
-    private static final String SETUP_EMAIL = "setUpEmail";
+    private static final String SETUP_EMAIL = "email";
     private static final String SETUP_DESCRIPTION = "description";
     private static final String SETUP_CONTACT = "contact";
     private static final int SETUP_SIZE = 5;
@@ -64,6 +69,13 @@ class StudyApiControllerTest {
     private static final StudyState UPDATE_STUDYSTATE = StudyState.CLOSE;
     private static final Zone UPDATE_ZONE = Zone.BUSAN;
 
+    private static final Long ACCOUNT_ID = 1L;
+    private static final String ACCOUNT_NAME = "name";
+    private static final String ACCOUNT_EMAIL = "email";
+    private static final String ACCOUNT_NICKNAME = "nickname";
+    private static final String ACCOUNT_PASSWORD = "1234567890";
+    private static final String ACCOUNT_PROFILEIMAGE = "image";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -76,6 +88,8 @@ class StudyApiControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private Account account;
+    private UsernamePasswordAuthenticationToken token;
     private Study setUpStudy;
     private Study updatedStudy;
 
@@ -90,6 +104,20 @@ class StudyApiControllerTest {
                 .addFilters(new CharacterEncodingFilter("UTF-8", true))
                 .alwaysDo(print())
                 .build();
+
+        account = Account.builder()
+                .id(ACCOUNT_ID)
+                .name(ACCOUNT_NAME)
+                .email(ACCOUNT_EMAIL)
+                .nickname(ACCOUNT_NICKNAME)
+                .password(ACCOUNT_PASSWORD)
+                .profileImage(ACCOUNT_PROFILEIMAGE)
+                .build();
+
+        token = new UsernamePasswordAuthenticationToken(
+                new UserAccount(account, List.of(new SimpleGrantedAuthority("USER"))),
+                account.getPassword(),
+                List.of(new SimpleGrantedAuthority("USER")));
 
         setUpStudy = Study.builder()
                 .id(EXISTED_ID)
@@ -154,7 +182,9 @@ class StudyApiControllerTest {
 
     @Test
     void createWithValidateAttribute() throws Exception {
-        given(studyService.createStudy(any(StudyCreateDto.class))).willReturn(studyResultDto);
+        SecurityContextHolder.getContext().setAuthentication(token);
+        given(studyService.createStudy(any(Account.class), any(StudyCreateDto.class)))
+                .willReturn(studyResultDto);
 
         mockMvc.perform(
                 post("/api/study")
@@ -170,7 +200,9 @@ class StudyApiControllerTest {
 
     @Test
     void updateWithValidateAttribute() throws Exception {
-        given(studyService.updateStudy(eq(EXISTED_ID), any(StudyUpdateDto.class))).willReturn(updatedStudyResultDto);
+        SecurityContextHolder.getContext().setAuthentication(token);
+        given(studyService.updateStudy(any(Account.class), eq(EXISTED_ID), any(StudyUpdateDto.class)))
+                .willReturn(updatedStudyResultDto);
 
         mockMvc.perform(
                 patch("/api/study/{id}", EXISTED_ID)
@@ -186,10 +218,32 @@ class StudyApiControllerTest {
 
     @Test
     void deleteByExistedId() throws Exception {
-        given(studyService.deleteStudy(EXISTED_ID)).willReturn(studyResultDto);
+        SecurityContextHolder.getContext().setAuthentication(token);
+        given(studyService.deleteStudy(any(Account.class), eq(EXISTED_ID)))
+                .willReturn(studyResultDto);
 
         mockMvc.perform(
                 delete("/api/study/{id}", EXISTED_ID)
+        )
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void applyStudyByExistedAccount() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(token);
+        mockMvc.perform(
+                post("/api/study/apply/{id}", EXISTED_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void cancelStudyByExistedAccount() throws Exception {
+        mockMvc.perform(
+                delete("/api/study/apply/{id}", EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isNoContent());
