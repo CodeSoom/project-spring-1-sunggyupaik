@@ -1,6 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
@@ -11,6 +12,7 @@ import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudySizeFullException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -74,13 +76,15 @@ public class StudyServiceTest {
 
     private StudyService studyService;
     private StudyRepository studyRepository;
+    private AccountRepository accountRepository;
 
     private List<Study> listAllStudies;
 
     @BeforeEach
     void setUp() {
         studyRepository = mock(StudyRepository.class);
-        studyService = new StudyService(studyRepository);
+        accountRepository = mock(AccountRepository.class);
+        studyService = new StudyService(studyRepository, accountRepository);
         account = Account.builder()
                 .id(ACCOUNT_ID)
                 .name(ACCOUNT_NAME)
