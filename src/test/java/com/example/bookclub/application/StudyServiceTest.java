@@ -65,6 +65,7 @@ public class StudyServiceTest {
     private Account account;
     private Study setUpStudy;
     private Study createStudy;
+    private Study fullSizeStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyUpdateDto studyUpdateDto;
@@ -119,6 +120,11 @@ public class StudyServiceTest {
                 .day(UPDATE_DAY)
                 .studyState(UPDATE_STUDYSTATE)
                 .zone(UPDATE_ZONE)
+                .build();
+
+        fullSizeStudy = Study.builder()
+                .size(SETUP_SIZE)
+                .applyCount(SETUP_SIZE)
                 .build();
 
         studyCreateDto = StudyCreateDto.builder()
@@ -224,6 +230,14 @@ public class StudyServiceTest {
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount-1);
         assertThat(setUpStudy.getAccounts()).contains(account);
         assertThat(account.getStudy()).isNotNull();
+    }
+
+    @Test
+    void applyWhenSizeIsFull() {
+        given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(fullSizeStudy));
+
+        assertThatThrownBy(() -> studyService.applyStudy(account, EXISTED_ID))
+                .isInstanceOf(StudySizeFullException.class);
     }
 
     @Test
