@@ -225,6 +225,7 @@ public class StudyServiceTest {
     @Test
     void applyWithExistedAccount() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
 
         Study study = studyService.getStudy(EXISTED_ID);
         int beforeApplyCount = study.getApplyCount();
@@ -248,6 +249,7 @@ public class StudyServiceTest {
     @Test
     void cancelWithExistedAccount() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
 
         Study study = studyService.getStudy(EXISTED_ID);
         int beforeApplyCount = study.getApplyCount();
