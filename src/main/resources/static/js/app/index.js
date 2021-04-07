@@ -36,6 +36,26 @@ var main = {
         $('#btn-apply-study').on('click', function () {
             _this.applyStudy();
         });
+
+        $('#btn-cancel-study').on('click', function () {
+            _this.cancelStudy();
+        });
+    },
+
+    cancelStudy : function() {
+        var id = $('#id').val()
+        $.ajax({
+            type: 'DELETE',
+            url: '/api/study/apply/' + id,
+            dataType: 'json',
+            contentType:'application/json;',
+        }).done(function(data) {
+            alert("취소가 완료되었습니다.");
+            location.href = '/studys';
+        }).fail(function (request) {
+            alert(request.responseText);
+            location.herf = '/studys';
+        });
     },
 
     applyStudy : function() {
