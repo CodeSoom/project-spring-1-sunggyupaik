@@ -73,4 +73,23 @@ public class StudyApiController {
         }
         return studyService.deleteStudy(account, id);
     }
+
+    @PostMapping("/apply/{id}")
+    public Long apply(@CurrentAccount Account account,
+                      @PathVariable Long id) {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+        return studyService.applyStudy(account, id);
+    }
+
+    @DeleteMapping("/apply/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Long cancel(@CurrentAccount Account account,
+                       @PathVariable Long id) {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+        return studyService.cancelStudy(account, id);
+    }
 }

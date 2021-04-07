@@ -10,11 +10,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(exclude = "study")
 @Builder
 public class Account {
     @Id
@@ -39,9 +40,12 @@ public class Account {
     @Builder.Default
     private boolean deleted = false;
 
+    @ManyToOne
+    private Study study;
+
     @Builder
     public Account(Long id, String name, String email, String nickname,
-                   String password, String profileImage, boolean deleted) {
+                   String password, String profileImage, boolean deleted, Study study) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -49,6 +53,15 @@ public class Account {
         this.password = password;
         this.profileImage = profileImage;
         this.deleted = deleted;
+        this.study = study;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Account)) return false;
+        Account account = (Account)o;
+        return account.id.equals(this.id);
     }
 
     public void delete() {
@@ -71,5 +84,13 @@ public class Account {
 
     public void updatePassword(String password, PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(password);
+    }
+
+    public void addStudy(Study study) {
+        this.study = study;
+    }
+
+    public void cancelStudy() {
+        this.study = null;
     }
 }

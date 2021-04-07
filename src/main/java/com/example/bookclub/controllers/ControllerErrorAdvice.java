@@ -2,16 +2,17 @@ package com.example.bookclub.controllers;
 
 import com.example.bookclub.dto.ErrorResponse;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
+import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyNotFoundException;
-import com.example.bookclub.errors.AccountEmailNotFoundException;
-import com.example.bookclub.errors.AccountPasswordBadRequestException;
+import com.example.bookclub.errors.StudySizeFullException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,6 +23,12 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class ControllerErrorAdvice {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StudySizeFullException.class)
+    public ErrorResponse handleStudySizeFull(StudySizeFullException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AccountEmailNotFoundException.class)
     public ErrorResponse handleUserEmailNotFound(AccountEmailNotFoundException e) {

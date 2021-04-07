@@ -26,12 +26,19 @@ public class StudyController {
     }
 
     @GetMapping("/{id}")
-    public String studyDetail(@PathVariable Long id, Model model) {
+    public String studyDetail(@CurrentAccount Account account,
+                              @PathVariable Long id, Model model) {
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
         model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
         model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
+        if (account.getStudy() != null && account.getStudy().getId().equals(id)) {
+            model.addAttribute("alreadyApplied", "true");
+        } else {
+            model.addAttribute("notApplied", "true");
+        }
+
         return "studys/studys-detail";
     }
 
