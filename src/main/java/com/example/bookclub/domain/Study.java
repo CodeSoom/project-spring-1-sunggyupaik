@@ -113,4 +113,8 @@ public class Study {
     public void addAdmin(String email) {
         this.email = email;
     }
+
+    public boolean isSizeFull() {
+        return this.applyCount == this.size;
+    }
 }

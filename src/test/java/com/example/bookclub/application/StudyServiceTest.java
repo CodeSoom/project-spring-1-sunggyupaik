@@ -239,6 +239,7 @@ public class StudyServiceTest {
     @Test
     void applyWhenSizeIsFull() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(fullSizeStudy));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
 
         assertThatThrownBy(() -> studyService.applyStudy(account, EXISTED_ID))
                 .isInstanceOf(StudySizeFullException.class);

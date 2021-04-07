@@ -11,6 +11,7 @@ import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.StartAndEndDateNotValidException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudySizeFullException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -85,6 +86,9 @@ public class StudyService {
 
     public Long applyStudy(Account account, Long id) {
         Study study = getStudy(id);
+        if (study.isSizeFull()){
+            throw new StudySizeFullException();
+        }
         Account user = getAccount(account.getId());
 
         study.addAccount(user);
