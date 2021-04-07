@@ -85,7 +85,11 @@ public class StudyApiController {
 
     @DeleteMapping("/apply/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Long cancel(@PathVariable Long id) {
-        return 1L;
+    public Long cancel(@CurrentAccount Account account,
+                       @PathVariable Long id) {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+        return studyService.cancelStudy(account, id);
     }
 }
