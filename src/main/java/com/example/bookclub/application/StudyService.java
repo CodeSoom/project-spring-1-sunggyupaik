@@ -87,7 +87,6 @@ public class StudyService {
         return id;
     }
 
-
     public Long cancelStudy(@CurrentAccount Account account, Long id) {
         Study study = getStudy(id);
 
