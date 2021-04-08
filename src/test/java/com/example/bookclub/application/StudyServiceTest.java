@@ -70,6 +70,7 @@ public class StudyServiceTest {
     private Study fullSizeStudy;
     private Study openStudy;
     private Study closeStudy;
+    private Study endStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyUpdateDto studyUpdateDto;
@@ -83,6 +84,7 @@ public class StudyServiceTest {
     private List<Study> listAllStudies;
     private List<Study> listOpenStudies;
     private List<Study> listCloseStudies;
+    private List<Study> listEndStudies;
 
     @BeforeEach
     void setUp() {
@@ -139,6 +141,10 @@ public class StudyServiceTest {
                 .studyState(StudyState.OPEN)
                 .build();
 
+        endStudy = Study.builder()
+                .studyState(StudyState.END)
+                .build();
+
         studyCreateDto = StudyCreateDto.builder()
                 .name(SETUP_NAME)
                 .email(SETUP_EMAIL)
@@ -175,6 +181,7 @@ public class StudyServiceTest {
         listAllStudies = List.of(setUpStudy, createStudy);
         listOpenStudies = List.of(openStudy);
         listCloseStudies = List.of(closeStudy);
+        listEndStudies = List.of(endStudy);
     }
     @Test
     void listAllStudies() {
@@ -201,6 +208,15 @@ public class StudyServiceTest {
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
 
         assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.CLOSE);
+    }
+
+    @Test
+    void listEndStudies() {
+        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listCloseStudies);
+
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
+
+        assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.END);
     }
 
     @Test
