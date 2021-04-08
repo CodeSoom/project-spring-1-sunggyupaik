@@ -94,7 +94,7 @@ public class StudyService {
         if (study.isOneLeft()) {
            study.changeOpenToClose();
         }
-        
+
         Account user = getAccount(account.getId());
 
         study.addAccount(user);
@@ -105,6 +105,9 @@ public class StudyService {
     public Long cancelStudy(Account account, Long id) {
         Study study = getStudy(id);
         Account user = getAccount(account.getId());
+        if(study.isSizeFull()) {
+            study.changeCloseToOpen();
+        }
 
         study.cancelAccount(user);
 

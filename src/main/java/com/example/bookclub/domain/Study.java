@@ -125,4 +125,8 @@ public class Study {
     public void changeOpenToClose() {
         this.studyState = StudyState.CLOSE;
     }
+
+    public void changeCloseToOpen() {
+        this.studyState = StudyState.OPEN;
+    }
 }
