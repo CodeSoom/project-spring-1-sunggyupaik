@@ -84,4 +84,14 @@ public class StudyController {
         model.addAttribute("studys", lists);
         return "studys/studys-list";
     }
+
+    @GetMapping("/close")
+    public String studyCloseList(@CurrentAccount Account account, Model model) {
+        if (account != null) {
+            model.addAttribute("account", account);
+        }
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
+        model.addAttribute("studys", lists);
+        return "studys/studys-list";
+    }
 }
