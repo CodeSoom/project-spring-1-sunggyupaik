@@ -186,7 +186,7 @@ public class StudyServiceTest {
     void listOpenStudies() {
         given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenStudies);
 
-        List<Study> lists = studyService.getOpenStudies();
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
 
         assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.OPEN);
     }

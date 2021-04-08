@@ -75,12 +75,12 @@ public class StudyController {
         return "studys/studys-update";
     }
 
-    @GetMapping
-    public String studyList(@CurrentAccount Account account, Model model) {
+    @GetMapping("/open")
+    public String studyOpenList(@CurrentAccount Account account, Model model) {
         if (account != null) {
             model.addAttribute("account", account);
         }
-        List<Study> lists = studyService.getStudies();
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
         model.addAttribute("studys", lists);
         return "studys/studys-list";
     }
