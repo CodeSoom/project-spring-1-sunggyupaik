@@ -75,13 +75,36 @@ public class StudyController {
         return "studys/studys-update";
     }
 
-    @GetMapping
-    public String studyList(@CurrentAccount Account account, Model model) {
+    @GetMapping("/open")
+    public String studyOpenList(@CurrentAccount Account account, Model model) {
         if (account != null) {
             model.addAttribute("account", account);
         }
-        List<Study> lists = studyService.getStudies();
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
         model.addAttribute("studys", lists);
+        model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
+        return "studys/studys-list";
+    }
+
+    @GetMapping("/close")
+    public String studyCloseList(@CurrentAccount Account account, Model model) {
+        if (account != null) {
+            model.addAttribute("account", account);
+        }
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
+        model.addAttribute("studys", lists);
+        model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
+        return "studys/studys-list";
+    }
+
+    @GetMapping("/end")
+    public String studyEndList(@CurrentAccount Account account, Model model) {
+        if (account != null) {
+            model.addAttribute("account", account);
+        }
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
+        model.addAttribute("studys", lists);
+        model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
         return "studys/studys-list";
     }
 }

@@ -1,25 +1,71 @@
 {{>layout/header}}
 
-<table class="table table-horizontal table-bordered">
-    <thead class="thead-strong">
-    <tr>
-        <th>스터디 번호</th>
-        <th>제목</th>
-        <th>인원제한</th>
-        <th>방문하기</th>
-    </tr>
-    </thead>
-    <tbody id="tbody">
-    {{#studys}}
-        <tr>
-            <td>{{id}}</td>
-            <td><a href="/studys/update/{{id}}">{{name}}</a></td>
-            <td>{{size}}</td>
-            <td><a href="/studys/{{id}}">방문하기</a></td>
-        </tr>
-    {{/studys}}
-    </tbody>
-</table>
-<a href="/" role="button" class="btn btn-secondary">취소</a>
+<h1>Book Club</h1>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-6">
+            <a href="/users/save" role="button" class="btn btn-primary">회원가입</a>
+            <a href="/studys/save" role="button" class="btn btn-primary">스터디 생성</a>
+            <a href="/books/bestseller" role="button" class="btn btn-primary">베스트셀러 조회</a>
+            <a href="/studys/open" role="button" class="btn btn-primary">스터디 게시판</a>
+            {{^account}}
+                <a href="/login" role="button" class="btn btn-primary">로그인하기</a>
+            {{/account}}
+            {{#account}}
+                <a href="/logout" role="button" class="btn btn-danger">로그아웃하기</a>
+            {{/account}}
+        </div>
+    </div>
+</div>
+
+{{>layout/footer}}
+
+
+
+
+{{>layout/header}}
+
+<div class="container-fluid" style="margin-top: 100px">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel panel-info">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="/studys/open">모집중</a></li>
+                    <li class="list-group-item"><a href="/studys/close">모집마감</a></li>
+                    <li class="list-group-item"><a href="/studys/end">종료</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="card shadow col-md-9">
+            <div class="card-body">
+                <h4 class="card-title">{{studyState}}</h4>
+                <table class="table table-hover" id='board_list'>
+                    <thead>
+                    <tr>
+                        <th class="text-center d-none d-md-table-cell">스터디 번호</th>
+                        <th class="w-40">스터디 제목</th>
+                        <th class="text-center d-none d-md-table-cell">신청자/제한</th>
+                        <th class="text-center d-none d-md-table-cell">날짜</th>
+                        <th class="text-center d-none d-md-table-cell">시간</th>
+                        <th class="text-center d-none d-md-table-cell">요일</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#studys}}
+                        <tr>
+                            <td class="text-center d-none d-md-table-cell">{{id}}</td>
+                            <td><a href='/studys/' + {{id}}>{{name}}</a></td>
+                            <td class="text-center d-none d-md-table-cell">{{applyCount}} / {{size}}</td>
+                            <td class="text-center d-none d-md-table-cell">{{startDate}} ~ {{endDate}}</td>
+                            <td class="text-center d-none d-md-table-cell">{{startTime}} ~ {{endTime}}</td>
+                            <td class="text-center d-none d-md-table-cell">{{day}}</td>
+                        </tr>
+                    {{/studys}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 {{>layout/footer}}

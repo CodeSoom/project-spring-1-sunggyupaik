@@ -63,12 +63,16 @@ public class StudyServiceTest {
 
     private static final Long NOT_EXISTED_ID = 2L;
     private static final Long CREATED_ID = 3L;
+    private static final Long ONELEFTSTUDY_ID = 4l;
 
     private Account account;
     private Study setUpStudy;
     private Study createStudy;
     private Study fullSizeStudy;
+    private Study oneLeftStudy;
     private Study openStudy;
+    private Study closeStudy;
+    private Study endStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyUpdateDto studyUpdateDto;
@@ -81,6 +85,8 @@ public class StudyServiceTest {
 
     private List<Study> listAllStudies;
     private List<Study> listOpenStudies;
+    private List<Study> listCloseStudies;
+    private List<Study> listEndStudies;
 
     @BeforeEach
     void setUp() {
@@ -131,10 +137,26 @@ public class StudyServiceTest {
         fullSizeStudy = Study.builder()
                 .size(SETUP_SIZE)
                 .applyCount(SETUP_SIZE)
+                .studyState(StudyState.CLOSE)
+                .build();
+
+        oneLeftStudy = Study.builder()
+                .id(ONELEFTSTUDY_ID)
+                .size(SETUP_SIZE)
+                .applyCount(SETUP_SIZE-1)
+                .studyState(StudyState.OPEN)
                 .build();
 
         openStudy = Study.builder()
                 .studyState(StudyState.OPEN)
+                .build();
+
+        closeStudy = Study.builder()
+                .studyState(StudyState.CLOSE)
+                .build();
+
+        endStudy = Study.builder()
+                .studyState(StudyState.END)
                 .build();
 
         studyCreateDto = StudyCreateDto.builder()
@@ -172,6 +194,8 @@ public class StudyServiceTest {
 
         listAllStudies = List.of(setUpStudy, createStudy);
         listOpenStudies = List.of(openStudy);
+        listCloseStudies = List.of(closeStudy);
+        listEndStudies = List.of(endStudy);
     }
     @Test
     void listAllStudies() {
@@ -186,9 +210,27 @@ public class StudyServiceTest {
     void listOpenStudies() {
         given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenStudies);
 
-        List<Study> lists = studyService.getOpenStudies();
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
 
         assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.OPEN);
+    }
+
+    @Test
+    void listCloseStudies() {
+        given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listCloseStudies);
+
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
+
+        assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.CLOSE);
+    }
+
+    @Test
+    void listEndStudies() {
+        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listCloseStudies);
+
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
+
+        assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.END);
     }
 
     @Test
@@ -263,6 +305,16 @@ public class StudyServiceTest {
     }
 
     @Test
+    void applyWhenOneLeft() {
+        given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(oneLeftStudy));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
+
+        assertThat(oneLeftStudy.getStudyState()).isEqualTo(StudyState.OPEN);
+        Long studyId = studyService.applyStudy(account, EXISTED_ID);
+        assertThat(oneLeftStudy.getStudyState()).isEqualTo(StudyState.CLOSE);
+    }
+
+    @Test
     void cancelWithExistedAccount() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
         given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
@@ -275,5 +327,15 @@ public class StudyServiceTest {
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount+1);
         assertThat(setUpStudy.getAccounts()).doesNotContain(account);
         assertThat(account.getStudy()).isNull();
+    }
+
+    @Test
+    void cancelWhenFull() {
+        given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(fullSizeStudy));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
+
+        assertThat(fullSizeStudy.getStudyState()).isEqualTo(StudyState.CLOSE);
+        Long studyId = studyService.cancelStudy(account, EXISTED_ID);
+        assertThat(fullSizeStudy.getStudyState()).isEqualTo(StudyState.OPEN);
     }
 }
