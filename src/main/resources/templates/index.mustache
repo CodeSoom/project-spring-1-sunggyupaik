@@ -8,12 +8,12 @@
             <a href="/studys/save" role="button" class="btn btn-primary">스터디 생성</a>
             <a href="/books/bestseller" role="button" class="btn btn-primary">베스트셀러 조회</a>
             <a href="/studys" role="button" class="btn btn-primary">스터디 게시판</a>
-            {{^userName}}
+            {{^user}}
                 <a href="/login" role="button" class="btn btn-primary">로그인하기</a>
-            {{/userName}}
-            {{#userName}}
+            {{/user}}
+            {{#user}}
                 <a href="/logout" role="button" class="btn btn-danger">로그아웃하기</a>
-            {{/userName}}
+            {{/user}}
         </div>
     </div>
 </div>
