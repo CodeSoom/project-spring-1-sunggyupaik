@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
+import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
@@ -117,5 +118,9 @@ public class StudyService {
 
     public List<Study> getStudies() {
         return studyRepository.findAll();
+    }
+
+    public List<Study> getStudiesByStudyState(StudyState studyState) {
+        return studyRepository.findByStudyState(studyState);
     }
 }
