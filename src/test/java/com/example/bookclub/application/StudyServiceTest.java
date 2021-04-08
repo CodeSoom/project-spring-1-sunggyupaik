@@ -63,11 +63,13 @@ public class StudyServiceTest {
 
     private static final Long NOT_EXISTED_ID = 2L;
     private static final Long CREATED_ID = 3L;
+    private static final Long ONELEFTSTUDY_ID = 4l;
 
     private Account account;
     private Study setUpStudy;
     private Study createStudy;
     private Study fullSizeStudy;
+    private Study oneLeftStudy;
     private Study openStudy;
     private Study closeStudy;
     private Study endStudy;
@@ -137,8 +139,19 @@ public class StudyServiceTest {
                 .applyCount(SETUP_SIZE)
                 .build();
 
+        oneLeftStudy = Study.builder()
+                .id(ONELEFTSTUDY_ID)
+                .size(SETUP_SIZE)
+                .applyCount(SETUP_SIZE-1)
+                .studyState(StudyState.OPEN)
+                .build();
+
         openStudy = Study.builder()
                 .studyState(StudyState.OPEN)
+                .build();
+
+        closeStudy = Study.builder()
+                .studyState(StudyState.CLOSE)
                 .build();
 
         endStudy = Study.builder()
@@ -288,6 +301,16 @@ public class StudyServiceTest {
 
         assertThatThrownBy(() -> studyService.applyStudy(account, EXISTED_ID))
                 .isInstanceOf(StudySizeFullException.class);
+    }
+
+    @Test
+    void applyWhenOneLeft() {
+        given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(oneLeftStudy));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
+
+        assertThat(oneLeftStudy.getStudyState()).isEqualTo(StudyState.OPEN);
+        Long studyId = studyService.applyStudy(account, EXISTED_ID);
+        assertThat(oneLeftStudy.getStudyState()).isEqualTo(StudyState.CLOSE);
     }
 
     @Test
