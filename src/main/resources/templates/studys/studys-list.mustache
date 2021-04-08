@@ -1,0 +1,25 @@
+{{>layout/header}}
+
+<table class="table table-horizontal table-bordered">
+    <thead class="thead-strong">
+    <tr>
+        <th>스터디 번호</th>
+        <th>제목</th>
+        <th>인원제한</th>
+        <th>방문하기</th>
+    </tr>
+    </thead>
+    <tbody id="tbody">
+    {{#studys}}
+        <tr>
+            <td>{{id}}</td>
+            <td><a href="/studys/update/{{id}}">{{name}}</a></td>
+            <td>{{size}}</td>
+            <td><a href="/studys/{{id}}">방문하기</a></td>
+        </tr>
+    {{/studys}}
+    </tbody>
+</table>
+<a href="/" role="button" class="btn btn-secondary">취소</a>
+
+{{>layout/footer}}

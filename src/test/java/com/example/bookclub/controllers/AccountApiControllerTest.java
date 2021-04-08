@@ -1,12 +1,12 @@
 package com.example.bookclub.controllers;
 
-import com.example.bookclub.application.UserService;
-import com.example.bookclub.domain.User;
-import com.example.bookclub.dto.UserCreateDto;
-import com.example.bookclub.dto.UserResultDto;
-import com.example.bookclub.dto.UserUpdateDto;
-import com.example.bookclub.errors.UserEmailDuplicatedException;
-import com.example.bookclub.errors.UserNicknameDuplicatedException;
+import com.example.bookclub.application.AccountService;
+import com.example.bookclub.domain.Account;
+import com.example.bookclub.dto.AccountCreateDto;
+import com.example.bookclub.dto.AccountResultDto;
+import com.example.bookclub.dto.AccountUpdateDto;
+import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,8 +29,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserApiController.class)
-class UserApiControllerTest {
+@WebMvcTest(AccountApiController.class)
+class AccountApiControllerTest {
     private static final Long EXISTED_ID = 1L;
     private static final String SETUP_NAME = "name";
     private static final String SETUP_EMAIL = "email";
@@ -51,11 +51,11 @@ class UserApiControllerTest {
 
     private static final String EXISTED_EMAIL = "email";
 
-    private User setUpUser;
-    private User createdUser;
+    private Account setUpAccount;
+    private Account createdAccount;
 
-    private UserCreateDto userCreateDto;
-    private UserUpdateDto userUpdateDto;
+    private AccountCreateDto accountCreateDto;
+    private AccountUpdateDto accountUpdateDto;
 
     @BeforeEach
     void setUp() {
@@ -64,7 +64,7 @@ class UserApiControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        setUpUser = User.builder()
+        setUpAccount = Account.builder()
                 .id(EXISTED_ID)
                 .name(SETUP_NAME)
                 .email(SETUP_EMAIL)
@@ -73,7 +73,7 @@ class UserApiControllerTest {
                 .profileImage(SETUP_PROFILEIMAGE)
                 .build();
 
-        createdUser = User.builder()
+        createdAccount = Account.builder()
                 .name(CREATED_NAME)
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
@@ -81,7 +81,7 @@ class UserApiControllerTest {
                 .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
-        userCreateDto = UserCreateDto.builder()
+        accountCreateDto = AccountCreateDto.builder()
                 .name(CREATED_NAME)
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
@@ -89,7 +89,7 @@ class UserApiControllerTest {
                 .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
-        userUpdateDto = UserUpdateDto.builder()
+        accountUpdateDto = AccountUpdateDto.builder()
                 .nickname(UPDATED_NICKNAME)
                 .password(UPDATED_PASSWORD)
                 .profileImage(UPDATED_PROFILEIMAGE)
@@ -106,44 +106,44 @@ class UserApiControllerTest {
     private WebApplicationContext ctx;
 
     @MockBean
-    UserService userService;
+    AccountService accountService;
 
     @Test
     void detailWithExistedId() throws Exception {
-        given(userService.getUser(EXISTED_ID)).willReturn(setUpUser);
+        given(accountService.getUser(EXISTED_ID)).willReturn(setUpAccount);
 
         mockMvc.perform(
                 get("/api/users/{id}", EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(setUpUser.getId()))
-                .andExpect(jsonPath("name").value(setUpUser.getName()))
-                .andExpect(jsonPath("email").value(setUpUser.getEmail()))
-                .andExpect(jsonPath("nickname").value(setUpUser.getNickname()))
-                .andExpect(jsonPath("password").value(setUpUser.getPassword()))
-                .andExpect(jsonPath("profileImage").value(setUpUser.getProfileImage()))
+                .andExpect(jsonPath("id").value(setUpAccount.getId()))
+                .andExpect(jsonPath("name").value(setUpAccount.getName()))
+                .andExpect(jsonPath("email").value(setUpAccount.getEmail()))
+                .andExpect(jsonPath("nickname").value(setUpAccount.getNickname()))
+                .andExpect(jsonPath("password").value(setUpAccount.getPassword()))
+                .andExpect(jsonPath("profileImage").value(setUpAccount.getProfileImage()))
                 .andExpect(jsonPath("deleted").value(false));
     }
 
     @Test
     void createWithValidAttribute() throws Exception {
-        given(userService.createUser(any(UserCreateDto.class))).will(invocation -> {
-            UserCreateDto userCreateDto = invocation.getArgument(0);
-            return UserResultDto.builder()
+        given(accountService.createUser(any(AccountCreateDto.class))).will(invocation -> {
+            AccountCreateDto accountCreateDto = invocation.getArgument(0);
+            return AccountResultDto.builder()
                     .id(CREATED_ID)
-                    .name(userCreateDto.getName())
-                    .email(userCreateDto.getEmail())
-                    .nickname(userCreateDto.getNickname())
-                    .password(userCreateDto.getPassword())
-                    .profileImage(userCreateDto.getProfileImage())
+                    .name(accountCreateDto.getName())
+                    .email(accountCreateDto.getEmail())
+                    .nickname(accountCreateDto.getNickname())
+                    .password(accountCreateDto.getPassword())
+                    .profileImage(accountCreateDto.getProfileImage())
                     .build();
         });
 
         mockMvc.perform(
                 post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userCreateDto))
+                        .content(objectMapper.writeValueAsString(accountCreateDto))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -158,13 +158,13 @@ class UserApiControllerTest {
 
     @Test
     void createWithExistedEmail() throws Exception {
-        given(userService.createUser(any(UserCreateDto.class)))
-                .willThrow(UserEmailDuplicatedException.class);
+        given(accountService.createUser(any(AccountCreateDto.class)))
+                .willThrow(AccountEmailDuplicatedException.class);
 
         mockMvc.perform(
                 post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userCreateDto))
+                        .content(objectMapper.writeValueAsString(accountCreateDto))
         )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
@@ -172,13 +172,13 @@ class UserApiControllerTest {
 
     @Test
     void createWithExistedNickname() throws Exception {
-        given(userService.createUser(any(UserCreateDto.class)))
-                .willThrow(UserNicknameDuplicatedException.class);
+        given(accountService.createUser(any(AccountCreateDto.class)))
+                .willThrow(AccountNicknameDuplicatedException.class);
 
         mockMvc.perform(
                 post("/api/users")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userCreateDto))
+                        .content(objectMapper.writeValueAsString(accountCreateDto))
         )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
@@ -198,7 +198,7 @@ class UserApiControllerTest {
         mockMvc.perform(
                 patch("/api/users/{id}", EXISTED_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(userUpdateDto))
+                        .content(objectMapper.writeValueAsString(accountUpdateDto))
         )
                 .andDo(print())
                 .andExpect(status().isOk());

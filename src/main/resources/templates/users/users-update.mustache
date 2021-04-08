@@ -7,23 +7,23 @@
         <form>
             <div class="form-group">
                 <label for="id"> 회원번호 </label>
-                <input type="text" class="form-control" id="id" value="{{user.id}}" readonly>
+                <input type="text" class="form-control" id="id" value="{{account.id}}" readonly>
             </div>
             <div class="form-group">
                 <label for="profileImage"> 프로필 사진 </label>
-                <input type="text" class="form-control" id="profileImage" value="{{user.profileImage}}">
+                <input type="text" class="form-control" id="profileImage" value="{{account.profileImage}}">
             </div>
             <div class="form-group">
                 <label for="name"> 이름 </label>
-                <input type="text" class="form-control" id="name" value="{{user.name}}" readonly>
+                <input type="text" class="form-control" id="name" value="{{account.name}}" readonly>
             </div>
             <div class="form-group">
                 <label for="email"> 이메일 </label>
-                <input type="text" class="form-control" id="email" value="{{user.email}}" readonly>
+                <input type="text" class="form-control" id="email" value="{{account.email}}" readonly>
             </div>
             <div class="form-group">
                 <label for="nickname"> 닉네임 </label>
-                <input type="text" class="form-control" id="nickname" value="{{user.nickname}}">
+                <input type="text" class="form-control" id="nickname" value="{{account.nickname}}">
             </div>
             <div class="form-group">
                 <label for="password"> 비밀번호 </label>
@@ -33,10 +33,16 @@
                 <label for="newPassword"> 새로운 비밀번호 </label>
                 <input type="password" class="form-control" id="newPassword" value="">
             </div>
+            {{#studyName}}
+                <div class="form-group">
+                    <label for="study"> 가입한 스터디 </label>
+                    <input type="text" class="form-control" id="study" value="{{.}}" readonly>
+                </div>
+            {{/studyName}}
         </form>
         <a href="/" role="button" class="btn btn-secondary">취소</a>
         <button type="button" class="btn btn-primary" id="btn-update">수정 완료</button>
-        <button type="button" class="btn btn-danger" id="btn-user-delete">삭제</button>
+        <button type="button" class="btn btn-danger" id="btn-account-delete">삭제</button>
     </div>
 </div>
 

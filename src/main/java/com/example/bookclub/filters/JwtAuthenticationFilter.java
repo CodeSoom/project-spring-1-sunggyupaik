@@ -2,7 +2,7 @@ package com.example.bookclub.filters;
 
 import com.example.bookclub.application.AuthenticationService;
 import com.example.bookclub.dto.ParseResultDto;
-import com.example.bookclub.security.UserAuthenticationService;
+import com.example.bookclub.security.AccountAuthenticationService;
 import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,14 +20,14 @@ import java.io.IOException;
 
 public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
     private final AuthenticationService authenticationService;
-    private final UserAuthenticationService userAuthenticationService;
+    private final AccountAuthenticationService accountAuthenticationService;
 
     public JwtAuthenticationFilter(AuthenticationManager authenticationManager,
                                    AuthenticationService authenticationService,
-                                   UserAuthenticationService userAuthenticationService) {
+                                   AccountAuthenticationService accountAuthenticationService) {
         super(authenticationManager);
         this.authenticationService = authenticationService;
-        this.userAuthenticationService = userAuthenticationService;
+        this.accountAuthenticationService = accountAuthenticationService;
     }
 
     @Override
@@ -38,14 +38,14 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
         String authorization = request.getHeader("Authorization");
 
         if(authorization != null) {
-            ParseResultDto parseResultDto = authenticationService.parseToken(authorization);
+            String accessToken = authorization.substring("Bearer ".length());
+            ParseResultDto parseResultDto = authenticationService.parseToken(accessToken);
             Claims claims = parseResultDto.getClaims();
             String email = claims.getSubject();
 
-            UserDetails userDetails = userAuthenticationService.loadUserByUsername(email);
+            UserDetails userDetails = accountAuthenticationService.loadUserByUsername(email);
             Authentication authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-
             SecurityContext context = SecurityContextHolder.getContext();
             context.setAuthentication(authentication);
         }

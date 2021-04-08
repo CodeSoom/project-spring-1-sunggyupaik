@@ -1,9 +1,9 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
-import com.example.bookclub.domain.User;
-import com.example.bookclub.domain.UserRepository;
 import com.example.bookclub.dto.ParseResultDto;
 import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.dto.SessionResultDto;
@@ -12,28 +12,32 @@ import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.security.SignatureException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class AuthenticationService {
-    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final JwtUtil jwtUtil;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthenticationService(UserRepository userRepository,
+    public AuthenticationService(AccountRepository accountRepository,
                                  RoleRepository roleRepository,
-                                 JwtUtil jwtUtil) {
-        this.userRepository = userRepository;
+                                 JwtUtil jwtUtil,
+                                 PasswordEncoder passwordEncoder) {
+        this.accountRepository = accountRepository;
         this.roleRepository = roleRepository;
         this.jwtUtil = jwtUtil;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public SessionResultDto createToken(SessionCreateDto sessionCreateDto) {
-        User user = authenticateUser(sessionCreateDto);
+        Account account = authenticateUser(sessionCreateDto);
 
-        String accessToken = jwtUtil.encode(user.getId(), user.getEmail());
+        String accessToken = jwtUtil.encode(account.getId(), account.getEmail());
 
         return SessionResultDto.of(accessToken);
     }
@@ -51,12 +55,12 @@ public class AuthenticationService {
         }
     }
 
-    public User authenticateUser(SessionCreateDto sessionCreateDto) {
+    public Account authenticateUser(SessionCreateDto sessionCreateDto) {
         String email = sessionCreateDto.getEmail();
         String password = sessionCreateDto.getPassword();
 
-        return userRepository.findByEmail(email)
-                .filter(u -> u.authenticate(password))
+        return accountRepository.findByEmail(email)
+                .filter(u -> u.authenticate(password, passwordEncoder))
                 .orElseThrow(AuthenticationBadRequestException::new);
     }
 
