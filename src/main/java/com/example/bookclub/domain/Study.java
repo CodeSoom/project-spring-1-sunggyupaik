@@ -117,4 +117,12 @@ public class Study {
     public boolean isSizeFull() {
         return this.applyCount == this.size;
     }
+
+    public boolean isOneLeft() {
+        return this.applyCount + 1 == this.size;
+    }
+
+    public void changeOpenToClose() {
+        this.studyState = StudyState.CLOSE;
+    }
 }

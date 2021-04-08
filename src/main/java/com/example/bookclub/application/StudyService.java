@@ -90,6 +90,11 @@ public class StudyService {
         if (study.isSizeFull()){
             throw new StudySizeFullException();
         }
+
+        if (study.isOneLeft()) {
+           study.changeOpenToClose();
+        }
+        
         Account user = getAccount(account.getId());
 
         study.addAccount(user);
