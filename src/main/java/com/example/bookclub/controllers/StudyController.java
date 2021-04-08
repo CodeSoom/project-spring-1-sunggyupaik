@@ -33,6 +33,10 @@ public class StudyController {
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
         model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
         model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
+        if(account == null) {
+            return "studys/studys-detail";
+        }
+
         if (account.getStudy() != null && account.getStudy().getId().equals(id)) {
             model.addAttribute("alreadyApplied", "true");
         } else {
@@ -72,7 +76,10 @@ public class StudyController {
     }
 
     @GetMapping
-    public String studyList(Model model) {
+    public String studyList(@CurrentAccount Account account, Model model) {
+        if (account != null) {
+            model.addAttribute("account", account);
+        }
         List<Study> lists = studyService.getStudies();
         model.addAttribute("studys", lists);
         return "studys/studys-list";
