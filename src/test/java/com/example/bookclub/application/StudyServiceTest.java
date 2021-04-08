@@ -137,6 +137,7 @@ public class StudyServiceTest {
         fullSizeStudy = Study.builder()
                 .size(SETUP_SIZE)
                 .applyCount(SETUP_SIZE)
+                .studyState(StudyState.CLOSE)
                 .build();
 
         oneLeftStudy = Study.builder()
@@ -326,5 +327,15 @@ public class StudyServiceTest {
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount+1);
         assertThat(setUpStudy.getAccounts()).doesNotContain(account);
         assertThat(account.getStudy()).isNull();
+    }
+
+    @Test
+    void cancelWhenFull() {
+        given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(fullSizeStudy));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
+
+        assertThat(fullSizeStudy.getStudyState()).isEqualTo(StudyState.CLOSE);
+        Long studyId = studyService.cancelStudy(account, EXISTED_ID);
+        assertThat(fullSizeStudy.getStudyState()).isEqualTo(StudyState.OPEN);
     }
 }
