@@ -68,6 +68,7 @@ public class StudyServiceTest {
     private Study setUpStudy;
     private Study createStudy;
     private Study fullSizeStudy;
+    private Study openStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyUpdateDto studyUpdateDto;
@@ -79,6 +80,7 @@ public class StudyServiceTest {
     private AccountRepository accountRepository;
 
     private List<Study> listAllStudies;
+    private List<Study> listOpenStudies;
 
     @BeforeEach
     void setUp() {
@@ -131,6 +133,10 @@ public class StudyServiceTest {
                 .applyCount(SETUP_SIZE)
                 .build();
 
+        openStudy = Study.builder()
+                .studyState(StudyState.OPEN)
+                .build();
+
         studyCreateDto = StudyCreateDto.builder()
                 .name(SETUP_NAME)
                 .email(SETUP_EMAIL)
@@ -165,6 +171,7 @@ public class StudyServiceTest {
                 .build();
 
         listAllStudies = List.of(setUpStudy, createStudy);
+        listOpenStudies = List.of(openStudy);
     }
     @Test
     void listAllStudies() {
@@ -173,6 +180,15 @@ public class StudyServiceTest {
         List<Study> lists = studyService.getStudies();
 
         assertThat(lists).containsExactly(setUpStudy, createStudy);
+    }
+
+    @Test
+    void listOpenStudies() {
+        given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenStudies);
+
+        List<Study> lists = studyService.getOpenStudies();
+
+        assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.OPEN);
     }
 
     @Test
