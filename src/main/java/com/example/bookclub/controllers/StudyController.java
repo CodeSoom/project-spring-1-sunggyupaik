@@ -103,6 +103,7 @@ public class StudyController {
             model.addAttribute("account", account);
         }
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
+        model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
         return "studys/studys-list";
     }
