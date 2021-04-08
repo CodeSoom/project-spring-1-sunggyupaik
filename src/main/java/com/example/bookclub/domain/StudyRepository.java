@@ -8,6 +8,8 @@ public interface StudyRepository {
 
     List<Study> findAll();
 
+    List<Study> findByStudyState(StudyState studyState);
+
     Study save(Study study);
 
     void delete(Study study);

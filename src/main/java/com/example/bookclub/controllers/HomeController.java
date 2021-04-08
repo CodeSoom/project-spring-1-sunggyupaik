@@ -11,7 +11,7 @@ public class HomeController {
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
         if(account != null) {
-            model.addAttribute("userName", account.getEmail());
+            model.addAttribute("account", account);
         }
         return "index";
     }

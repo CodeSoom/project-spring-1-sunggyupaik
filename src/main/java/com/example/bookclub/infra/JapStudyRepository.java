@@ -2,6 +2,7 @@ package com.example.bookclub.infra;
 
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
+import com.example.bookclub.domain.StudyState;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -12,6 +13,8 @@ public interface JapStudyRepository
     Optional<Study> findById(Long id);
 
     List<Study> findAll();
+
+    List<Study> findByStudyState(StudyState studyState);
 
     Study save(Study study);
 
