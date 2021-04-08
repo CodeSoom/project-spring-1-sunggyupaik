@@ -33,6 +33,12 @@
                 <label for="newPassword"> 새로운 비밀번호 </label>
                 <input type="password" class="form-control" id="newPassword" value="">
             </div>
+            {{#studyName}}
+                <div class="form-group">
+                    <label for="study"> 가입한 스터디 </label>
+                    <input type="text" class="form-control" id="study" value="{{.}}" readonly>
+                </div>
+            {{/studyName}}
         </form>
         <a href="/" role="button" class="btn btn-secondary">취소</a>
         <button type="button" class="btn btn-primary" id="btn-update">수정 완료</button>

@@ -15,22 +15,25 @@
     </button>
     <div class="collapse navbar-collapse" id="navMenu">
         <ul class="navbar-nav ml-auto">
-            {{#user}}
+            {{#account}}
                 <li class="nav-item">
                     <a href="/studys/save" class="nav-link">스터디 생성</a>
                 </li>
                 <li class="nav-item">
+                    <a href="/users/update/{{id}}" class="nav-link">정보수정</a>
+                </li>
+                <li class="nav-item">
                     <a href="/logout" class="nav-link">로그아웃</a>
                 </li>
-            {{/user}}
-            {{^user}}
+            {{/account}}
+            {{^account}}
                 <li class="nav-item">
                     <a href="/login" class="nav-link">로그인</a>
                 </li>
                 <li class="nav-item">
                     <a href="/users/save" class="nav-link">회원가입</a>
                 </li>
-            {{/user}}
+            {{/account}}
         </ul>
     </div>
 </nav>
