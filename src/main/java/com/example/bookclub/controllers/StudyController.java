@@ -29,6 +29,9 @@ public class StudyController {
     @GetMapping("/{id}")
     public String studyDetail(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
+        if(account != null) {
+            model.addAttribute("account", account);
+        }
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
@@ -57,6 +60,8 @@ public class StudyController {
                             Model model) {
         if (account == null) {
             throw new AccessDeniedException("권한이 없습니다");
+        } else {
+            model.addAttribute("account", account);
         }
         model.addAttribute("bookName", bookName);
         model.addAttribute("bookImage", bookImage);
@@ -71,6 +76,8 @@ public class StudyController {
                               @PathVariable Long id, Model model) {
         if(account == null) {
             throw new AccessDeniedException("권한이 없습니다");
+        } else {
+            model.addAttribute("account", account);
         }
         Study study = studyService.getStudy(id);
         if (!study.isManagedBy(account)) {
