@@ -19,7 +19,7 @@
         border-radius: 0.4em;
         background-color: #f3f3f3;
         box-shadow: 0.1em 0.1em 0.5em -0.2em #777;
-        width: 225px;
+        width: 228px;
         margin: 50px 5px;
     }
 
@@ -30,6 +30,7 @@
 
     img {
         border-radius: 0.4em 0.4em 0 0;
+        width: 225px;
     }
 
     .gallery-wrapper ul li{
@@ -57,7 +58,7 @@
                     <li class="list-group-item"><a href="/books/recommend">추천도서</a></li>
                     <li class="list-group-item"><a href="/books/new">신간도서</a></li>
                     <li class="list-group-item">
-                        <form class="navbar-form pull-left" action="/books/search">
+                        <form class="navbar-form pull-left" action="/books/search" post="get">
                             <label for="keyword"></label>
                             <input type="text" id="keyword" name="keyword" placeholder="제목을 입력하세요">
                             <button type="submit" class="btn btn-primary btn-sm">검색</button>
