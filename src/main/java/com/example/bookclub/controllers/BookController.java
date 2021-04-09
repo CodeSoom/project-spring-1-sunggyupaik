@@ -2,6 +2,7 @@ package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.BookService;
 import com.example.bookclub.domain.BookType;
+import com.example.bookclub.domain.StudyState;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
@@ -24,20 +25,23 @@ public class BookController {
     public String booksBestSellerLists(Model model) throws IOException, ParseException {
         JSONArray bestSellers = bookService.getBookLists(BookType.BESTSELLER);
         model.addAttribute("book", bestSellers);
+        model.addAttribute("bookType", BookType.getTitleFrom(BookType.BESTSELLER));
         return "books/books-lists";
     }
 
     @GetMapping("/recommend")
     public String booksRecommendLists(Model model) throws IOException, ParseException {
-        JSONArray bestSellers = bookService.getBookLists(BookType.RECOMMEND);
-        model.addAttribute("book", bestSellers);
+        JSONArray recommends = bookService.getBookLists(BookType.RECOMMEND);
+        model.addAttribute("book", recommends);
+        model.addAttribute("bookType", BookType.getTitleFrom(BookType.RECOMMEND));
         return "books/books-lists";
     }
 
     @GetMapping("/new")
     public String booksNewLists(Model model) throws IOException, ParseException {
-        JSONArray bestSellers = bookService.getBookLists(BookType.NEW);
-        model.addAttribute("book", bestSellers);
+        JSONArray newBooks = bookService.getBookLists(BookType.NEW);
+        model.addAttribute("book", newBooks);
+        model.addAttribute("bookType", BookType.getTitleFrom(BookType.NEW));
         return "books/books-lists";
     }
 }
