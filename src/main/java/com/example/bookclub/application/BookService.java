@@ -1,5 +1,6 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.BookType;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,8 +25,13 @@ public class BookService {
         return new URL(address);
     }
 
-    public JSONArray getBestSellers() throws IOException, ParseException {
-        URL url = getBestSellerUrl();
+    public JSONArray getBookLists(BookType bookType) throws IOException, ParseException {
+        URL url = switch (bookType) {
+            case BESTSELLER -> getBestSellerUrl();
+            case RECOMMEND -> getRecommendUrl();
+            case NEW -> getNewUrl();
+        };
+
         String stringValue;
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()))) {
