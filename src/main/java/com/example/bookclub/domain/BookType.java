@@ -3,7 +3,7 @@ package com.example.bookclub.domain;
 import java.util.Arrays;
 
 public enum BookType implements EnumMapperType {
-    BESTSELLER("베스트셀러"), RECOMMEND("추천도서"), NEW("신간도서");
+    BESTSELLER("베스트셀러"), RECOMMEND("추천도서"), NEW("신간도서"), SEARCH("검색도서");
 
     private String bookType;
 
