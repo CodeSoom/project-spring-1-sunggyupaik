@@ -131,4 +131,8 @@ public class StudyService {
     public List<Study> getStudiesByStudyState(StudyState studyState) {
         return studyRepository.findByStudyState(studyState);
     }
+
+    public long countAllStudies() {
+        return getStudies().size();
+    }
 }
