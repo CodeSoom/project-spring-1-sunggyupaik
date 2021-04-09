@@ -31,6 +31,8 @@ public class StudyServiceTest {
     private static final Long EXISTED_ID = 1L;
     private static final String SETUP_NAME = "name";
     private static final String SETUP_EMAIL = "email";
+    private static final String SETUP_BOOKNAME = "자바 세상의 빌드를 이끄는 메이븐";
+    private static final String SETUP_BOOKIMAGE = "http://bimage.interpark.com/goods_image/9/4/7/8/207979478s.jpg";
     private static final String SETUP_DESCRIPTION = "description";
     private static final String SETUP_CONTACT = "contact";
     private static final int SETUP_SIZE = 5;
@@ -105,6 +107,8 @@ public class StudyServiceTest {
         setUpStudy = Study.builder()
                 .id(EXISTED_ID)
                 .name(SETUP_NAME)
+                .bookName(SETUP_BOOKNAME)
+                .bookImage(SETUP_BOOKIMAGE)
                 .email(SETUP_EMAIL)
                 .description(SETUP_DESCRIPTION)
                 .contact(SETUP_CONTACT)
@@ -161,6 +165,8 @@ public class StudyServiceTest {
 
         studyCreateDto = StudyCreateDto.builder()
                 .name(SETUP_NAME)
+                .bookName(SETUP_BOOKNAME)
+                .bookImage(SETUP_BOOKIMAGE)
                 .email(SETUP_EMAIL)
                 .description(SETUP_DESCRIPTION)
                 .contact(SETUP_CONTACT)

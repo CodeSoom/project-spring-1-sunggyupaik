@@ -21,6 +21,10 @@ public class StudyCreateDto {
 
     private String email;
 
+    private String bookName;
+
+    private String bookImage;
+
     @Size(min=10, max=1000)
     private String description;
 
@@ -62,10 +66,12 @@ public class StudyCreateDto {
     }
 
     @Builder
-    public StudyCreateDto(String name, String email, String description, String contact,
-                          int size, LocalDate startDate, LocalDate endDate, String startTime,
+    public StudyCreateDto(String name, String bookName, String bookImage, String email, String description,
+                          String contact, int size, LocalDate startDate, LocalDate endDate, String startTime,
                           String endTime, Day day, StudyState studyState, Zone zone) {
         this.name = name;
+        this.bookName = bookName;
+        this.bookImage = bookImage;
         this.email = email;
         this.description = description;
         this.contact = contact;
