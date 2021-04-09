@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import org.springframework.data.repository.CrudRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface JpaAccountRepository
@@ -19,4 +20,6 @@ public interface JpaAccountRepository
     boolean existsByNickname(String nickname);
 
     boolean existsByIdNotAndNickname(Long id, String nickname);
+
+    List<Account> findAll();
 }

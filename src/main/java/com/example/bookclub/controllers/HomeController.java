@@ -13,6 +13,7 @@ public class HomeController {
         if(account != null) {
             model.addAttribute("account", account);
         }
+
         return "index";
     }
 }
