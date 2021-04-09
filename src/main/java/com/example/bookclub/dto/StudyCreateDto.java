@@ -2,7 +2,6 @@ package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,6 +19,10 @@ public class StudyCreateDto {
     private String name;
 
     private String email;
+
+    private String bookName;
+
+    private String bookImage;
 
     @Size(min=10, max=1000)
     private String description;
@@ -40,13 +43,13 @@ public class StudyCreateDto {
 
     private Day day;
 
-    private StudyState studyState;
-
     private Zone zone;
 
     public Study toEntity() {
         return Study.builder()
                 .name(this.name)
+                .bookName(this.bookName)
+                .bookImage(this.bookImage)
                 .email(this.email)
                 .description(this.description)
                 .contact(this.contact)
@@ -56,16 +59,17 @@ public class StudyCreateDto {
                 .startTime(this.startTime)
                 .endTime(this.endTime)
                 .day(this.day)
-                .studyState(this.studyState)
                 .zone(this.zone)
                 .build();
     }
 
     @Builder
-    public StudyCreateDto(String name, String email, String description, String contact,
-                          int size, LocalDate startDate, LocalDate endDate, String startTime,
-                          String endTime, Day day, StudyState studyState, Zone zone) {
+    public StudyCreateDto(String name, String bookName, String bookImage, String email, String description,
+                          String contact, int size, LocalDate startDate, LocalDate endDate, String startTime,
+                          String endTime, Day day, Zone zone) {
         this.name = name;
+        this.bookName = bookName;
+        this.bookImage = bookImage;
         this.email = email;
         this.description = description;
         this.contact = contact;
@@ -75,7 +79,6 @@ public class StudyCreateDto {
         this.startTime = startTime;
         this.endTime = endTime;
         this.day = day;
-        this.studyState = studyState;
         this.zone = zone;
     }
 }

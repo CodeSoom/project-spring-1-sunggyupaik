@@ -29,6 +29,10 @@ public class Study {
 
     private String name;
 
+    private String bookName;
+
+    private String bookImage;
+
     private String email;
 
     private String description;
@@ -52,7 +56,8 @@ public class Study {
     private Day day;
 
     @Enumerated(EnumType.STRING)
-    private StudyState studyState;
+    @Builder.Default
+    private StudyState studyState = StudyState.OPEN;
 
     @Enumerated(EnumType.STRING)
     private Zone zone;
@@ -62,11 +67,13 @@ public class Study {
     List<Account> accounts = new ArrayList<>();
 
     @Builder
-    public Study(Long id, String name, String email, String description, String contact,
-                 int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
+    public Study(Long id, String name, String bookName, String bookImage, String email, String description,
+                 String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
                  String endTime, Day day, StudyState studyState, Zone zone, List<Account> accounts) {
         this.id = id;
         this.name = name;
+        this.bookName = bookName;
+        this.bookImage = bookImage;
         this.email = email;
         this.description = description;
         this.contact = contact;

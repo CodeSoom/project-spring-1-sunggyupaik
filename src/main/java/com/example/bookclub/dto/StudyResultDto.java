@@ -18,6 +18,10 @@ public class StudyResultDto {
 
     private String name;
 
+    private String bookName;
+
+    private String bookImage;
+
     private String email;
 
     private String description;
@@ -41,11 +45,13 @@ public class StudyResultDto {
     private Zone zone;
 
     @Builder
-    public StudyResultDto(Long id, String name, String email, String description, String contact,
-                          int size, LocalDate startDate, LocalDate endDate, String startTime,
+    public StudyResultDto(Long id, String name, String bookName, String bookImage, String email, String description,
+                          String contact, int size, LocalDate startDate, LocalDate endDate, String startTime,
                           String endTime, Day day, StudyState studyState, Zone zone) {
         this.id = id;
         this.name = name;
+        this.bookName = bookName;
+        this.bookImage = bookImage;
         this.email = email;
         this.description = description;
         this.contact = contact;
@@ -63,6 +69,8 @@ public class StudyResultDto {
         return StudyResultDto.builder()
                 .id(study.getId())
                 .name(study.getName())
+                .bookName(study.getBookName())
+                .bookImage(study.getBookImage())
                 .email(study.getEmail())
                 .description(study.getDescription())
                 .contact(study.getContact())

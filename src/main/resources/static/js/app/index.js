@@ -179,6 +179,8 @@ var main = {
     saveStudy : function () {
         var data = {
             name: $('#name').val(),
+            bookName: $('#bookName').val(),
+            bookImage: $('#bookImage').attr('src'),
             description: $('#description').val(),
             contact: $('#contact').val(),
             size: $('#size').val(),

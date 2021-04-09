@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -28,13 +29,19 @@ public class StudyController {
     @GetMapping("/{id}")
     public String studyDetail(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
+        if(account != null) {
+            model.addAttribute("account", account);
+        }
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
         model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
         model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
-        if(account == null) {
+        if (account == null) {
             return "studys/studys-detail";
+        }
+        if (study.isManagedBy(account)) {
+           model.addAttribute("studyManager", true);
         }
 
         if (account.getStudy() != null && account.getStudy().getId().equals(id)) {
@@ -47,10 +54,17 @@ public class StudyController {
     }
 
     @GetMapping("/save")
-    public String studySave(@CurrentAccount Account account, Model model) {
+    public String studySave(@CurrentAccount Account account,
+                            @RequestParam String bookName,
+                            @RequestParam String bookImage,
+                            Model model) {
         if (account == null) {
             throw new AccessDeniedException("권한이 없습니다");
+        } else {
+            model.addAttribute("account", account);
         }
+        model.addAttribute("bookName", bookName);
+        model.addAttribute("bookImage", bookImage);
         model.addAttribute("day", Day.getAllDays());
         model.addAttribute("studyState", StudyState.getAllStudyStates());
         model.addAttribute("zone", Zone.getAllZones());
@@ -62,6 +76,8 @@ public class StudyController {
                               @PathVariable Long id, Model model) {
         if(account == null) {
             throw new AccessDeniedException("권한이 없습니다");
+        } else {
+            model.addAttribute("account", account);
         }
         Study study = studyService.getStudy(id);
         if (!study.isManagedBy(account)) {
