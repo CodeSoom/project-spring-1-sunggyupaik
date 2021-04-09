@@ -139,4 +139,8 @@ public class StudyService {
     public long countOpenStudies() {
         return getStudiesByStudyState(StudyState.OPEN).size();
     }
+
+    public long countEndStudies() {
+        return getStudiesByStudyState(StudyState.END).size();
+    }
 }

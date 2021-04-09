@@ -30,6 +30,9 @@ public class HomeController {
         long allOpenStudiesCount = studyService.countOpenStudies();
         model.addAttribute("allOpenStudiesCount", allOpenStudiesCount);
 
+        long allEndStudiesCount = studyService.countEndStudies();
+        model.addAttribute("allEndStudiesCount", allEndStudiesCount);
+
         if(account != null) {
             model.addAttribute("account", account);
         }
