@@ -23,9 +23,12 @@ public class HomeController {
     public String home(@CurrentAccount Account account, Model model) {
         long allAccountsCount = accountService.countAllAccounts();
         model.addAttribute("allAccountsCount", allAccountsCount);
-        
+
         long allStudiesCount = studyService.countAllStudies();
         model.addAttribute("allStudiesCount", allStudiesCount);
+
+        long allOpenStudiesCount = studyService.countOpenStudies();
+        model.addAttribute("allOpenStudiesCount", allOpenStudiesCount);
 
         if(account != null) {
             model.addAttribute("account", account);
