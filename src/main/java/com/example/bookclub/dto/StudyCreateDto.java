@@ -51,6 +51,8 @@ public class StudyCreateDto {
     public Study toEntity() {
         return Study.builder()
                 .name(this.name)
+                .bookName(this.bookName)
+                .bookImage(this.bookImage)
                 .email(this.email)
                 .description(this.description)
                 .contact(this.contact)
