@@ -56,7 +56,8 @@ public class Study {
     private Day day;
 
     @Enumerated(EnumType.STRING)
-    private StudyState studyState;
+    @Builder.Default
+    private StudyState studyState = StudyState.OPEN;
 
     @Enumerated(EnumType.STRING)
     private Zone zone;

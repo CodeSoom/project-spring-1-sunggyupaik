@@ -2,7 +2,6 @@ package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -44,8 +43,6 @@ public class StudyCreateDto {
 
     private Day day;
 
-    private StudyState studyState;
-
     private Zone zone;
 
     public Study toEntity() {
@@ -62,7 +59,6 @@ public class StudyCreateDto {
                 .startTime(this.startTime)
                 .endTime(this.endTime)
                 .day(this.day)
-                .studyState(this.studyState)
                 .zone(this.zone)
                 .build();
     }
@@ -70,7 +66,7 @@ public class StudyCreateDto {
     @Builder
     public StudyCreateDto(String name, String bookName, String bookImage, String email, String description,
                           String contact, int size, LocalDate startDate, LocalDate endDate, String startTime,
-                          String endTime, Day day, StudyState studyState, Zone zone) {
+                          String endTime, Day day, Zone zone) {
         this.name = name;
         this.bookName = bookName;
         this.bookImage = bookImage;
@@ -83,7 +79,6 @@ public class StudyCreateDto {
         this.startTime = startTime;
         this.endTime = endTime;
         this.day = day;
-        this.studyState = studyState;
         this.zone = zone;
     }
 }
