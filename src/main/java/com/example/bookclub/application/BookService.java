@@ -19,21 +19,22 @@ public class BookService {
     @Value("${interpark.apikey}")
     private String apikey;
 
-    public URL getBestSellerUrl() throws MalformedURLException {
-        String address = "http://book.interpark.com/api/bestSeller.api?key=" +
-                apikey + "&categoryId=122&output=json";
+    public URL getBooksUrl(BookType bookType) throws MalformedURLException {
+        String address = "";
+        switch (bookType) {
+            case BESTSELLER -> address = "http://book.interpark.com/api/bestSeller.api?key=" +
+                    apikey + "&categoryId=122&output=json";
+            case RECOMMEND -> address = "http://book.interpark.com/api/recommend.api?key=" +
+                    apikey + "&categoryId=122&output=json";
+            case NEW -> address = "http://book.interpark.com/api/newBook.api?key=" +
+                    apikey + "&categoryId=122&output=json";
+        }
         return new URL(address);
     }
 
     public JSONArray getBookLists(BookType bookType) throws IOException, ParseException {
-        URL url = switch (bookType) {
-            case BESTSELLER -> getBestSellerUrl();
-            case RECOMMEND -> getRecommendUrl();
-            case NEW -> getNewUrl();
-        };
-
+        URL url = getBooksUrl(bookType); ;
         String stringValue;
-
         try (BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()))) {
             StringBuilder sb = new StringBuilder();
             String line;
