@@ -1,7 +1,9 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.BookService;
+import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.BookType;
+import com.example.bookclub.security.CurrentAccount;
 import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 import org.springframework.stereotype.Controller;
@@ -22,7 +24,11 @@ public class BookController {
     }
 
     @GetMapping("/bestseller")
-    public String booksBestSellerLists(Model model) throws IOException, ParseException {
+    public String booksBestSellerLists(@CurrentAccount Account account, Model model)
+            throws IOException, ParseException {
+        if(account != null) {
+            model.addAttribute("account", account);
+        }
         JSONArray bestSellers = bookService.getBookLists(BookType.BESTSELLER, "");
         model.addAttribute("book", bestSellers);
         model.addAttribute("bookType", BookType.getTitleFrom(BookType.BESTSELLER));
@@ -30,7 +36,11 @@ public class BookController {
     }
 
     @GetMapping("/recommend")
-    public String booksRecommendLists(Model model) throws IOException, ParseException {
+    public String booksRecommendLists(@CurrentAccount Account account, Model model)
+            throws IOException, ParseException {
+        if(account != null) {
+            model.addAttribute("account", account);
+        }
         JSONArray recommends = bookService.getBookLists(BookType.RECOMMEND, "");
         model.addAttribute("book", recommends);
         model.addAttribute("bookType", BookType.getTitleFrom(BookType.RECOMMEND));
@@ -38,7 +48,11 @@ public class BookController {
     }
 
     @GetMapping("/new")
-    public String booksNewLists(Model model) throws IOException, ParseException {
+    public String booksNewLists(@CurrentAccount Account account, Model model)
+            throws IOException, ParseException {
+        if(account != null) {
+            model.addAttribute("account", account);
+        }
         JSONArray newBooks = bookService.getBookLists(BookType.NEW, "");
         model.addAttribute("book", newBooks);
         model.addAttribute("bookType", BookType.getTitleFrom(BookType.NEW));
@@ -46,8 +60,13 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public String booksSearchLists(Model model, @RequestParam String keyword)
+    public String booksSearchLists(@CurrentAccount Account account,
+                                   Model model,
+                                   @RequestParam String keyword)
             throws IOException, ParseException {
+        if(account != null) {
+            model.addAttribute("account", account);
+        }
         JSONArray searchBooks = bookService.getBookLists(BookType.SEARCH, keyword);
         model.addAttribute("book", searchBooks);
         model.addAttribute("bookType", BookType.getTitleFrom(BookType.SEARCH));
