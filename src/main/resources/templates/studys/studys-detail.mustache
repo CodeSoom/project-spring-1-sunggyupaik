@@ -69,6 +69,9 @@
         {{#alreadyApplied}}
             <button type="button" class="btn btn-danger" id="btn-cancel-study">신청 취소</button>
         {{/alreadyApplied}}
+        {{#studyManager}}
+            <button type="button" class="btn btn-warning" onclick="location.href='/studys/update/{{id}}'">수정</button>
+        {{/studyManager}}
 
     </div>
 </div>

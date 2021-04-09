@@ -34,8 +34,11 @@ public class StudyController {
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
         model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
         model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
-        if(account == null) {
+        if (account == null) {
             return "studys/studys-detail";
+        }
+        if (study.isManagedBy(account)) {
+           model.addAttribute("studyManager", true);
         }
 
         if (account.getStudy() != null && account.getStudy().getId().equals(id)) {
