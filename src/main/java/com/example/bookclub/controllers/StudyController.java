@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -47,10 +48,15 @@ public class StudyController {
     }
 
     @GetMapping("/save")
-    public String studySave(@CurrentAccount Account account, Model model) {
+    public String studySave(@CurrentAccount Account account,
+                            @RequestParam String bookName,
+                            @RequestParam String bookImage,
+                            Model model) {
         if (account == null) {
             throw new AccessDeniedException("권한이 없습니다");
         }
+        model.addAttribute("bookName", bookName);
+        model.addAttribute("bookImage", bookImage);
         model.addAttribute("day", Day.getAllDays());
         model.addAttribute("studyState", StudyState.getAllStudyStates());
         model.addAttribute("zone", Zone.getAllZones());
