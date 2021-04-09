@@ -1,30 +1,4 @@
 {{>layout/header}}
-
-<h1>Book Club</h1>
-<div class="col-md-12">
-    <div class="row">
-        <div class="col-md-6">
-            <a href="/users/save" role="button" class="btn btn-primary">회원가입</a>
-            <a href="/studys/save" role="button" class="btn btn-primary">스터디 생성</a>
-            <a href="/books/bestseller" role="button" class="btn btn-primary">베스트셀러 조회</a>
-            <a href="/studys/open" role="button" class="btn btn-primary">스터디 게시판</a>
-            {{^account}}
-                <a href="/login" role="button" class="btn btn-primary">로그인하기</a>
-            {{/account}}
-            {{#account}}
-                <a href="/logout" role="button" class="btn btn-danger">로그아웃하기</a>
-            {{/account}}
-        </div>
-    </div>
-</div>
-
-{{>layout/footer}}
-
-
-
-
-{{>layout/header}}
-
 <div class="container-fluid" style="margin-top: 100px">
     <div class="row">
         <div class="col-md-2">
@@ -67,5 +41,4 @@
         </div>
     </div>
 </div>
-
 {{>layout/footer}}
