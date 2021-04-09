@@ -15,17 +15,22 @@
 
     .img-wrapper {
         text-align: center;
-        width: 100%;
-        height: 100%;
         border: 0.1em solid #ccc;
         border-radius: 0.4em;
         background-color: #f3f3f3;
         box-shadow: 0.1em 0.1em 0.5em -0.2em #777;
-        margin: 1em 1em;
+        width: 228px;
+        margin: 50px 5px;
+    }
+
+    .img-wrapper:hover {
+        transform:scale(1.2);
+        transition: 0.5s;
     }
 
     img {
         border-radius: 0.4em 0.4em 0 0;
+        width: 225px;
     }
 
     .gallery-wrapper ul li{
@@ -44,20 +49,44 @@
     }
 </style>
 
-<div class="gallery-wrapper">
-    <h1>베스트 셀러</h1>
-    <ul>
-        {{#book}}
-            <li>
-                <div class="img-wrapper">
-                    <img src="{{coverLargeUrl}}" alt="">
-                    <div>
-                        <h4>{{title}}</h4>
-                        <h4>{{pubDate}}</h4>
-                    </div>
+<div class="container-fluid" style="margin-top: 100px">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="panel panel-info">
+                <ul class="list-group">
+                    <li class="list-group-item"><a href="/books/bestseller">베스트셀러</a></li>
+                    <li class="list-group-item"><a href="/books/recommend">추천도서</a></li>
+                    <li class="list-group-item"><a href="/books/new">신간도서</a></li>
+                    <li class="list-group-item">
+                        <form class="navbar-form pull-left" action="/books/search" post="get">
+                            <label for="keyword"></label>
+                            <input type="text" id="keyword" name="keyword" placeholder="제목을 입력하세요">
+                            <button type="submit" class="btn btn-primary btn-sm">검색</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="card shadow col-md-10">
+            <div class="card-body">
+                <h4 class="card-title">{{bookType}}</h4>
+                <div class="gallery-wrapper">
+                    <ul>
+                        {{#book}}
+                            <li>
+                                <div class="img-wrapper">
+                                    <img src="{{coverLargeUrl}}" alt="">
+                                    <div class="title">
+                                        <h4>{{title}}</h4>
+                                        <h4>{{pubDate}}</h4>
+                                    </div>
+                                </div>
+                            </li>
+                        {{/book}}
+                    </ul>
                 </div>
-            </li>
-        {{/book}}
-    </ul>
+            </div>
+        </div>
+    </div>
 </div>
 {{>layout/footer}}

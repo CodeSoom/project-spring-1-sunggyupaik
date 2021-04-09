@@ -38,3 +38,4 @@ out/
 
 ### Binary ###
 app/out/
+*.yml
