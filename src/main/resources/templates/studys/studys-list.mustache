@@ -1,4 +1,9 @@
 {{>layout/header}}
+<style type="text/css">
+    h4 {
+        text-align: center;
+    }
+</style>
 <div class="container-fluid" style="margin-top: 100px">
     <div class="row">
         <div class="col-md-2">
@@ -10,7 +15,7 @@
                 </ul>
             </div>
         </div>
-        <div class="card shadow col-md-9">
+        <div class="card shadow col-md-9" style="min-height:600px;">
             <div class="card-body">
                 <h4 class="card-title">{{studyState}}</h4>
                 <table class="table table-hover" id='board_list'>
