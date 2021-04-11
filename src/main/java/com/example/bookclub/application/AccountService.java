@@ -104,4 +104,8 @@ public class AccountService {
     public boolean isNicknameDuplicated(Long id, String nickname) {
         return accountRepository.existsByIdNotAndNickname(id, nickname);
     }
+
+    public long countAllAccounts() {
+        return accountRepository.findAll().size();
+    }
 }

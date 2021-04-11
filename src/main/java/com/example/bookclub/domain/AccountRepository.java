@@ -1,5 +1,6 @@
 package com.example.bookclub.domain;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface AccountRepository {
@@ -14,4 +15,6 @@ public interface AccountRepository {
     boolean existsByNickname(String nickname);
 
     boolean existsByIdNotAndNickname(Long id, String nickname);
+
+    List<Account> findAll();
 }
