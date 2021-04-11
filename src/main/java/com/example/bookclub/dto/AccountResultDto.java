@@ -1,6 +1,7 @@
 package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.UploadFile;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,19 +22,19 @@ public class AccountResultDto {
 
     private String password;
 
-    private String profileImage;
+    private UploadFile uploadFile;
 
     private boolean deleted;
 
     @Builder
     public AccountResultDto(Long id, String name, String email, String nickname,
-                            String password, String profileImage, boolean deleted) {
+                            String password, UploadFile uploadFile, boolean deleted) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
-        this.profileImage = profileImage;
+        this.uploadFile = uploadFile;
         this.deleted = deleted;
     }
 
@@ -44,7 +45,7 @@ public class AccountResultDto {
                 .email(account.getEmail())
                 .nickname(account.getNickname())
                 .password(account.getPassword())
-                .profileImage(account.getProfileImage())
+                .uploadFile(account.getUploadFile())
                 .deleted(account.isDeleted())
                 .build();
     }

@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.domain.AccountRepository;
+import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
@@ -76,9 +77,9 @@ public class AccountService {
             throw new AccountNicknameDuplicatedException(nickname);
         }
 
-        String profileImage = accountUpdateDto.getProfileImage();
+        UploadFile uploadFile = accountUpdateDto.getUploadFile();
         String newPassword = accountUpdateDto.getNewPassword();
-        account.updateWith(nickname, newPassword, profileImage);
+        account.updateWith(nickname, newPassword, uploadFile);
 
         return AccountResultDto.of(account);
     }

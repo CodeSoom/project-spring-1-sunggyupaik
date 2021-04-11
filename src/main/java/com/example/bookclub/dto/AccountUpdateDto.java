@@ -1,5 +1,6 @@
 package com.example.bookclub.dto;
 
+import com.example.bookclub.domain.UploadFile;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,14 +22,14 @@ public class AccountUpdateDto {
     @Size(min = 4, max = 1024)
     private String newPassword;
 
-    private String profileImage;
+    private UploadFile uploadFile;
 
     @Builder
     public AccountUpdateDto(String nickname, String password,
-                            String newPassword, String profileImage) {
+                            String newPassword, UploadFile uploadFile) {
         this.nickname = nickname;
         this.password = password;
         this.newPassword = newPassword;
-        this.profileImage = profileImage;
+        this.uploadFile = uploadFile;
     }
 }
