@@ -1,7 +1,9 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.AccountService;
+import com.example.bookclub.application.UploadFileService;
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
@@ -13,16 +15,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/users")
 public class AccountApiController {
     private final AccountService accountService;
+    private final UploadFileService uploadFileService;
 
-    public AccountApiController(AccountService accountService) {
+    public AccountApiController(AccountService accountService,
+                                UploadFileService uploadFileService) {
         this.accountService = accountService;
+        this.uploadFileService = uploadFileService;
     }
 
     @GetMapping("/{id}")
@@ -33,9 +43,11 @@ public class AccountApiController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResultDto create(AccountCreateDto accountCreateDto) {
+    public AccountResultDto create(HttpServletRequest request,
+                                   @RequestPart MultipartFile uploadFile,
+                                   AccountCreateDto accountCreateDto) throws IOException {
         AccountResultDto account = accountService.createUser(accountCreateDto);
-
+        UploadFile file = uploadFileService.saveUploadFile(request, uploadFile, account.getId());
         return account;
     }
 
