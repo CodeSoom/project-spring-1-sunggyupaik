@@ -29,6 +29,10 @@ public class UploadFileService {
     public UploadFile saveUploadFile(HttpServletRequest request, MultipartFile file, Long id) throws IOException {
         UploadFile uploadFile = makeUploadFile(request, file);
         Account savedAccount = accountRepository.findById(id).get();
+        UploadFile accountUploadFile = savedAccount.getUploadFile();
+        if (accountUploadFile != null) {
+            deleteUploadFile(accountUploadFile);
+        }
         uploadFileRepository.save(uploadFile);
         uploadFile.addAccount(savedAccount);
 
@@ -52,5 +56,9 @@ public class UploadFileService {
                 .fileOriginalName(sourceFileName)
                 .fileUrl(realPath)
                 .build();
+    }
+
+    public void deleteUploadFile(UploadFile uploadFile) {
+        uploadFileRepository.delete(uploadFile);
     }
 }
