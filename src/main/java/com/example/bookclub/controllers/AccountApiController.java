@@ -51,11 +51,13 @@ public class AccountApiController {
 
     @PostMapping("/{id}")
     public AccountResultDto update(HttpServletRequest request,
-                                   @RequestPart MultipartFile uploadFile,
+                                   @RequestPart(required = false) MultipartFile uploadFile,
                                    @PathVariable Long id,
                                    AccountUpdateDto accountUpdateDto) throws IOException {
         AccountResultDto account = accountService.updateUser(id, accountUpdateDto);
-        UploadFile file = uploadFileService.saveUploadFile(request, uploadFile, account.getId());
+        if (uploadFile != null) {
+            UploadFile file = uploadFileService.saveUploadFile(request, uploadFile, account.getId());
+        }
         return account;
     }
 
