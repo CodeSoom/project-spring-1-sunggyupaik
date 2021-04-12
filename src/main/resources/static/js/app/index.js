@@ -147,18 +147,24 @@ var main = {
 
     update : function () {
         var id = $('#id').val();
-        var data = {
-            nickname: $('#nickname').val(),
-            password: $('#password').val(),
-            profileImage: $('#profileImage').val(),
-        };
+        var formData = new FormData();
+        var uploadFile = document.getElementById("uploadFile").files[0];
+        var nickname = $('#nickname').val();
+        var password = $('#password').val();
+        var newPassword = $('#newPassword').val();
+        formData.append("uploadFile", uploadFile);
+        formData.append("nickname", nickname);
+        formData.append("password", password);
+        formData.append("newPassword", newPassword);
 
         $.ajax({
             type: 'PATCH',
             url: '/api/users/' + id,
             dataType: 'json',
-            contentType:'application/json; charset=utf-8',
-            data: JSON.stringify(data)
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            data: formData
         }).done(function() {
             alert('회원정보가 수정되었습니다.');
             window.location.href = '/';
