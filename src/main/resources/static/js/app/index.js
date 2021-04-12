@@ -75,23 +75,23 @@ var main = {
     },
 
     login : function() {
-            var data = {
-                email: $('#email').val(),
-                password: $('#password').val()
-            }
-            $.ajax({
-                type: 'POST',
-                url: '/login/signup',
-                dataType: 'json',
-                contentType:'application/json;',
-                data: JSON.stringify(data)
-            }).done(function(data) {
-                alert("로그인이 완료되었습니다.");
-                location.href = data;
-            }).fail(function (request) {
-                location.href = '/';
-            });
-        },
+        var data = {
+            email: $('#email').val(),
+            password: $('#password').val()
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/login/signup',
+            dataType: 'json',
+            contentType:'application/json;',
+            data: JSON.stringify(data)
+        }).done(function(data) {
+            alert("로그인이 완료되었습니다.");
+            location.href = data;
+        }).fail(function (request) {
+            location.href = '/';
+        });
+    },
 
     sendMessage : function() {
         var data = {
@@ -115,21 +115,28 @@ var main = {
     },
 
     save : function () {
-        var data = {
-            name: $('#name').val(),
-            email: $('#email').val(),
-            nickname: $('#nickname').val(),
-            password: $('#password').val(),
-            profileImage: $('#profileImage').val(),
-            authenticationNumber: $('#authenticationNumber').val()
-        };
+        var formData = new FormData();
+        var uploadFile = document.getElementById("uploadFile").files[0];
+        var name = $('#name').val();
+        var email = $('#email').val();
+        var nickname = $('#nickname').val();
+        var password = $('#password').val();
+        var authenticationNumber = $('#authenticationNumber').val();
+        formData.append("uploadFile", uploadFile);
+        formData.append("name", name);
+        formData.append("email", email);
+        formData.append("nickname", nickname);
+        formData.append("password", password);
+        formData.append("authenticationNumber", authenticationNumber);
 
         $.ajax({
             type: 'POST',
             url: '/api/users',
             dataType: 'json',
-            contentType:'application/json; charset=utf-8',
-            data: JSON.stringify(data)
+            enctype: 'multipart/form-data',
+            processData: false,
+            contentType: false,
+            data: formData
         }).done(function() {
             alert('회원가입이 완료되었습니다.');
             window.location.href = '/';
