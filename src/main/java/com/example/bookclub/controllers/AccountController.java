@@ -1,7 +1,8 @@
 package com.example.bookclub.controllers;
 
-import com.example.bookclub.application.AccountService;
+import com.example.bookclub.application.UploadFileService;
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/users")
 public class AccountController {
+    private final UploadFileService uploadFileService;
+
+    public AccountController(UploadFileService uploadFileService) {
+        this.uploadFileService = uploadFileService;
+    }
+
     @GetMapping("/save")
     public String usersSave(@CurrentAccount Account account, Model model) {
         if (account != null) {
@@ -26,6 +33,8 @@ public class AccountController {
                               @PathVariable Long id, Model model) {
         if (account != null) {
             model.addAttribute("account", account);
+            UploadFile uploadFile = uploadFileService.getUploadFile(account.getUploadFile().getId());
+            model.addAttribute("uploadFile", uploadFile);
         }
         if (account !=null && account.getStudy() != null) {
             model.addAttribute("studyName", account.getStudy().getName());

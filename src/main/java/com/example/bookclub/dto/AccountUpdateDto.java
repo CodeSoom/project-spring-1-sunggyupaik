@@ -9,7 +9,7 @@ import lombok.ToString;
 import javax.validation.constraints.Size;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class AccountUpdateDto {
     @Size(min=3, max=10)
@@ -21,14 +21,11 @@ public class AccountUpdateDto {
     @Size(min = 4, max = 1024)
     private String newPassword;
 
-    private String profileImage;
-
     @Builder
     public AccountUpdateDto(String nickname, String password,
-                            String newPassword, String profileImage) {
+                            String newPassword) {
         this.nickname = nickname;
         this.password = password;
         this.newPassword = newPassword;
-        this.profileImage = profileImage;
     }
 }

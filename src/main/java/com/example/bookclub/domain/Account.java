@@ -11,11 +11,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "study")
+@ToString(exclude = {"study", "uploadFile"})
 @Builder
 public class Account {
     @Id
@@ -34,8 +35,8 @@ public class Account {
     @Builder.Default
     private String password = "";
 
-    @Builder.Default
-    private String profileImage = "";
+    @OneToOne
+    private UploadFile uploadFile;
 
     @Builder.Default
     private boolean deleted = false;
@@ -45,13 +46,13 @@ public class Account {
 
     @Builder
     public Account(Long id, String name, String email, String nickname,
-                   String password, String profileImage, boolean deleted, Study study) {
+                   String password, UploadFile uploadFile, boolean deleted, Study study) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
-        this.profileImage = profileImage;
+        this.uploadFile = uploadFile;
         this.deleted = deleted;
         this.study = study;
     }
@@ -66,12 +67,6 @@ public class Account {
 
     public void delete() {
         this.deleted = true;
-    }
-
-    public void updateWith(String nickname, String password, String profileImage) {
-        this.nickname = nickname;
-        this.password = password;
-        this.profileImage = profileImage;
     }
 
     public boolean isPasswordSameWith(String password, PasswordEncoder passwordEncoder) {
@@ -92,5 +87,13 @@ public class Account {
 
     public void cancelStudy() {
         this.study = null;
+    }
+
+    public void addUploadFile(UploadFile uploadFile) {
+        this.uploadFile = uploadFile;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

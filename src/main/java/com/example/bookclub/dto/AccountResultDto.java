@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,19 +22,19 @@ public class AccountResultDto {
 
     private String password;
 
-    private String profileImage;
+    private MultipartFile uploadFile;
 
     private boolean deleted;
 
     @Builder
     public AccountResultDto(Long id, String name, String email, String nickname,
-                            String password, String profileImage, boolean deleted) {
+                            String password, MultipartFile uploadFile, boolean deleted) {
         this.id = id;
         this.name = name;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
-        this.profileImage = profileImage;
+        this.uploadFile = uploadFile;
         this.deleted = deleted;
     }
 
@@ -44,7 +45,6 @@ public class AccountResultDto {
                 .email(account.getEmail())
                 .nickname(account.getNickname())
                 .password(account.getPassword())
-                .profileImage(account.getProfileImage())
                 .deleted(account.isDeleted())
                 .build();
     }

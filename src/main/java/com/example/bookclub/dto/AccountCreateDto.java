@@ -24,19 +24,16 @@ public class AccountCreateDto {
 
     @Size(min = 4, max = 1024)
     private String password;
-
-    private String profileImage;
     
     private String authenticationNumber;
 
     @Builder
     public AccountCreateDto(String name, String email, String nickname,
-                            String password, String profileImage, String authenticationNumber) {
+                            String password, String authenticationNumber) {
         this.name = name;
         this.email = email;
         this.nickname = nickname;
         this.password = password;
-        this.profileImage = profileImage;
         this.authenticationNumber = authenticationNumber;
     }
 
@@ -46,7 +43,6 @@ public class AccountCreateDto {
                 .email(this.email)
                 .nickname(this.nickname)
                 .password(this.password)
-                .profileImage(this.profileImage)
                 .deleted(false)
                 .build();
     }
