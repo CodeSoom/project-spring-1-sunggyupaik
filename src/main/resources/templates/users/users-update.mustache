@@ -33,15 +33,15 @@
                 <input type="text" class="form-control" id="email" value="{{account.email}}" readonly>
             </div>
             <div class="form-group">
-                <label for="nickname"> 닉네임 </label>
+                <label for="nickname"> 닉네임 (필수) </label>
                 <input type="text" class="form-control" id="nickname" value="{{account.nickname}}">
             </div>
             <div class="form-group">
-                <label for="password"> 비밀번호 </label>
+                <label for="password" style="color:#ff0000;"> 비밀번호 (필수) </label>
                 <input type="password" class="form-control" id="password" value="">
             </div>
             <div class="form-group">
-                <label for="newPassword"> 새로운 비밀번호 </label>
+                <label for="newPassword"> 새로운 비밀번호 (선택) </label>
                 <input type="password" class="form-control" id="newPassword" value="">
             </div>
             {{#studyName}}
