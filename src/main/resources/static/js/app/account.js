@@ -18,3 +18,8 @@ $(function() {
         }
     });
 });
+
+$(document).ready(function() {
+   var uploadFile = $("#profileImage").val();
+   $(".imagePreview").css("background-image", "url(../../images/" + uploadFile+")");
+});
