@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/api/users")
 public class AccountApiController {
@@ -35,8 +33,10 @@ public class AccountApiController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResultDto create(@RequestBody @Valid AccountCreateDto accountCreateDto) {
-        return accountService.createUser(accountCreateDto);
+    public AccountResultDto create(AccountCreateDto accountCreateDto) {
+        AccountResultDto account = accountService.createUser(accountCreateDto);
+
+        return account;
     }
 
     @PatchMapping("/{id}")

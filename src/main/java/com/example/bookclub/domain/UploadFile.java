@@ -35,4 +35,9 @@ public class UploadFile {
         this.fileOriginalName = fileOriginalName;
         this.fileUrl = fileUrl;
     }
+
+    public void addAccount(Account savedAccount) {
+        this.account = savedAccount;
+        savedAccount.addUploadFile(this);
+    }
 }

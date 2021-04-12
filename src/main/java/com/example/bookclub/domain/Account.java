@@ -94,4 +94,8 @@ public class Account {
     public void cancelStudy() {
         this.study = null;
     }
+
+    public void addUploadFile(UploadFile uploadFile) {
+        this.uploadFile = uploadFile;
+    }
 }
