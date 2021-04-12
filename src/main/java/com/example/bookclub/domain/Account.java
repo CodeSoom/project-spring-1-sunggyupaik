@@ -16,7 +16,7 @@ import javax.persistence.OneToOne;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "study")
+@ToString(exclude = {"study", "uploadFile"})
 @Builder
 public class Account {
     @Id
@@ -69,11 +69,6 @@ public class Account {
         this.deleted = true;
     }
 
-    public void updateWith(String nickname, String password) {
-        this.nickname = nickname;
-        this.password = password;
-    }
-
     public boolean isPasswordSameWith(String password, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(password, this.password);
     }
@@ -96,5 +91,9 @@ public class Account {
 
     public void addUploadFile(UploadFile uploadFile) {
         this.uploadFile = uploadFile;
+    }
+
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

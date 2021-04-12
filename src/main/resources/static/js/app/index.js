@@ -158,7 +158,7 @@ var main = {
         formData.append("newPassword", newPassword);
 
         $.ajax({
-            type: 'PATCH',
+            type: 'POST',
             url: '/api/users/' + id,
             dataType: 'json',
             enctype: 'multipart/form-data',

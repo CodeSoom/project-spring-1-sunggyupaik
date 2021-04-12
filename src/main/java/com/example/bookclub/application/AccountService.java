@@ -77,7 +77,10 @@ public class AccountService {
         }
 
         String newPassword = accountUpdateDto.getNewPassword();
-        account.updateWith(nickname, newPassword);
+        if (newPassword != null) {
+            account.updatePassword(newPassword, passwordEncoder);
+        }
+        account.updateNickname(nickname);
 
         return AccountResultDto.of(account);
     }

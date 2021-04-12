@@ -14,7 +14,7 @@ import javax.persistence.OneToOne;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "account")
+@ToString(exclude = {"account"})
 public class UploadFile {
     @Id
     @GeneratedValue

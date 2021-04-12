@@ -34,7 +34,7 @@ public class UploadFileService {
 
         return uploadFile;
     }
-
+    
     public UploadFile makeUploadFile(HttpServletRequest request, MultipartFile uploadFile) throws IOException {
         String sourceFileName = uploadFile.getOriginalFilename();
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
