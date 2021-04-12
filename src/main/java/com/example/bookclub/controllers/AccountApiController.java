@@ -42,10 +42,12 @@ public class AccountApiController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AccountResultDto create(HttpServletRequest request,
-                                   @RequestPart MultipartFile uploadFile,
+                                   @RequestPart(required = false) MultipartFile uploadFile,
                                    AccountCreateDto accountCreateDto) throws IOException {
         AccountResultDto account = accountService.createUser(accountCreateDto);
-        UploadFile file = uploadFileService.saveUploadFile(request, uploadFile, account.getId());
+        if (uploadFile != null) {
+            UploadFile file = uploadFileService.saveUploadFile(request, uploadFile, account.getId());
+        }
         return account;
     }
 
