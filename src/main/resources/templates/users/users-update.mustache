@@ -10,12 +10,11 @@
                 <input type="text" class="form-control" id="id" value="{{account.id}}" readonly>
             </div>
             <div class="form-group">
-                <input type="hidden" id="profileImage" value="{{account.uploadFile.fileName}}">
                 <label for="uploadFile"> 프로필 사진 </label>
                 <div class="container">
                     <div class="row">
                         <div class="col-sm-2 imgUp">
-                            <div class="imagePreview"></div>
+                            <div class="imagePreview"><img class="imgPreview" src="/images/{{uploadFile.fileName}}" alt=""></div>
                             <label class="btn btn-primary">
                                 Upload<input type="file" id="uploadFile" class="uploadFile img" value="Upload Photo" style="width: 0px;height: 0px;overflow: hidden;">
                             </label>

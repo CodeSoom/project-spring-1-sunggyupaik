@@ -14,12 +14,8 @@ $(function() {
 
             reader.onloadend = function(){
                 uploadFile.closest(".imgUp").find('.imagePreview').css("background-image", "url("+this.result+")");
+                $(".imgPreview").hide();
             }
         }
     });
-});
-
-$(document).ready(function() {
-   var uploadFile = $("#profileImage").val();
-   $(".imagePreview").css("background-image", "url(../../images/" + uploadFile+")");
 });

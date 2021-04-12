@@ -69,10 +69,9 @@ public class Account {
         this.deleted = true;
     }
 
-    public void updateWith(String nickname, String password, UploadFile uploadFile) {
+    public void updateWith(String nickname, String password) {
         this.nickname = nickname;
         this.password = password;
-        this.uploadFile = uploadFile;
     }
 
     public boolean isPasswordSameWith(String password, PasswordEncoder passwordEncoder) {

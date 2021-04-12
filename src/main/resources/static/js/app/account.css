@@ -2,7 +2,7 @@ body {
     background-color:#f5f5f5;
 }
 
-.imagePreview {
+.imagePreview, .imgPreview {
     width: 250px;
     height: 250px;
     background-position: center center;

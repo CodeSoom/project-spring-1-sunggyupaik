@@ -1,6 +1,6 @@
 package com.example.bookclub.controllers;
 
-import com.example.bookclub.application.AccountService;
+import com.example.bookclub.application.UploadFileService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.security.access.AccessDeniedException;
@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/users")
 public class AccountController {
+    private final UploadFileService uploadFileService;
+
+    public AccountController(UploadFileService uploadFileService) {
+        this.uploadFileService = uploadFileService;
+    }
+
     @GetMapping("/save")
     public String usersSave(@CurrentAccount Account account, Model model) {
         if (account != null) {

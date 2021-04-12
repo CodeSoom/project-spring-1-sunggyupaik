@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -56,6 +55,9 @@ public class AccountApiController {
                                    @RequestPart MultipartFile uploadFile,
                                    @PathVariable Long id,
                                    AccountUpdateDto accountUpdateDto) throws IOException {
+        System.out.println(uploadFile+"************************************");
+        System.out.println(id+"************************************");
+        System.out.println(accountUpdateDto+"************************************");
         AccountResultDto account = accountService.updateUser(id, accountUpdateDto);
         UploadFile file = uploadFileService.saveUploadFile(request, uploadFile, account.getId());
         return account;

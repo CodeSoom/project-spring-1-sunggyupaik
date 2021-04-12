@@ -1,18 +1,17 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
-import com.example.bookclub.domain.AccountRepository;
-import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
-import com.example.bookclub.errors.AccountNotFoundException;
-import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
+import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
+import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -77,9 +76,8 @@ public class AccountService {
             throw new AccountNicknameDuplicatedException(nickname);
         }
 
-        UploadFile uploadFile = accountUpdateDto.getUploadFile();
         String newPassword = accountUpdateDto.getNewPassword();
-        account.updateWith(nickname, newPassword, uploadFile);
+        account.updateWith(nickname, newPassword);
 
         return AccountResultDto.of(account);
     }

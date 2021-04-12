@@ -29,10 +29,6 @@ public class UploadFileService {
     public UploadFile saveUploadFile(HttpServletRequest request, MultipartFile file, Long id) throws IOException {
         UploadFile uploadFile = makeUploadFile(request, file);
         Account savedAccount = accountRepository.findById(id).get();
-        UploadFile accountUploadFile = savedAccount.getUploadFile();
-        if (accountUploadFile != null) {
-            deleteUploadFile(accountUploadFile);
-        }
         uploadFileRepository.save(uploadFile);
         uploadFile.addAccount(savedAccount);
 
@@ -45,8 +41,8 @@ public class UploadFileService {
         String destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
         String realPath = request.getSession().getServletContext().getRealPath("/");
         realPath = request.getSession().getServletContext().getRealPath("/")
-                .substring(0,realPath.length()-"webapp\\".length())+"resources\\static\\images";
-        File destinationFile = new File(realPath + "/" + destinationFileName);
+                .substring(0,realPath.length()-"webapp\\".length())+"resources\\static\\images\\";
+        File destinationFile = new File(realPath + destinationFileName);
 
         destinationFile.getParentFile().mkdirs();
         uploadFile.transferTo(destinationFile);
@@ -60,5 +56,10 @@ public class UploadFileService {
 
     public void deleteUploadFile(UploadFile uploadFile) {
         uploadFileRepository.delete(uploadFile);
+    }
+
+    public UploadFile getUploadFile(Long id) {
+        return uploadFileRepository.findById(id)
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
