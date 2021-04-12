@@ -7,4 +7,6 @@ import org.springframework.data.repository.CrudRepository;
 public interface JpaUploadFileRepository
         extends UploadFileRepository, CrudRepository<UploadFile, Long> {
     UploadFile save(UploadFile uploadFile);
+
+    void delete(UploadFile uploadFile);
 }
