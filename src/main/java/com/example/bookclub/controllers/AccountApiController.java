@@ -52,8 +52,13 @@ public class AccountApiController {
     }
 
     @PatchMapping("/{id}")
-    public AccountResultDto update(@PathVariable Long id, @RequestBody AccountUpdateDto accountUpdateDto) {
-        return accountService.updateUser(id, accountUpdateDto);
+    public AccountResultDto update(HttpServletRequest request,
+                                   @RequestPart MultipartFile uploadFile,
+                                   @PathVariable Long id,
+                                   AccountUpdateDto accountUpdateDto) throws IOException {
+        AccountResultDto account = accountService.updateUser(id, accountUpdateDto);
+        UploadFile file = uploadFileService.saveUploadFile(request, uploadFile, account.getId());
+        return account;
     }
 
     @DeleteMapping("/{id}")
