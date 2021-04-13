@@ -134,6 +134,7 @@ public class StudyController {
         } else {
             model.addAttribute("account", account);
         }
+        model.addAttribute("study", account.getStudy());
         List<Account> accounts = studyService.getStudy(id).getAccounts();
         model.addAttribute("accounts", accounts);
         return "studys/studys-users-list";
