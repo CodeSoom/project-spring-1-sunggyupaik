@@ -6,6 +6,8 @@ import java.util.Optional;
 public interface StudyRepository {
     Optional<Study> findById(Long id);
 
+    Optional<Study> findByEmail(String email);
+
     List<Study> findAll();
 
     List<Study> findByStudyState(StudyState studyState);

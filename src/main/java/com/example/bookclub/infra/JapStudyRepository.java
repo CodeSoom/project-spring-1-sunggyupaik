@@ -12,6 +12,8 @@ public interface JapStudyRepository
         extends StudyRepository, CrudRepository<Study, Long> {
     Optional<Study> findById(Long id);
 
+    Optional<Study> findByEmail(String email);
+
     List<Study> findAll();
 
     List<Study> findByStudyState(StudyState studyState);
