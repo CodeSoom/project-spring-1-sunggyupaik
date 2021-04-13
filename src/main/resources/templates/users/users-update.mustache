@@ -15,7 +15,9 @@
                     <div class="row">
                         <div class="col-sm-2 imgUp">
                             <div class="imagePreview">
-                                    <img class="imgPreview" src="/images/{{uploadFile.fileName}}" alt="">
+                                {{#uploadFile}}
+                                    <img class="imgPreview" src="/images/{{fileName}}" alt="">
+                                {{/uploadFile}}
                             </div>
                             <label class="btn btn-primary">
                                 Upload<input type="file" id="uploadFile" class="uploadFile img" value="Upload Photo" style="width: 0px;height: 0px;overflow: hidden;">

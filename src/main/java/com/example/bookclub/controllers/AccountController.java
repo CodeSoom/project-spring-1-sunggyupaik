@@ -35,8 +35,11 @@ public class AccountController {
             throw new AccessDeniedException("권한이 없습니다");
         }
         model.addAttribute("account", account);
-        UploadFile uploadFile = uploadFileService.getUploadFile(account.getUploadFile().getId());
-        model.addAttribute("uploadFile", uploadFile);
+        if (account.getUploadFile() != null) {
+            UploadFile uploadFile = uploadFileService.getUploadFile(account.getUploadFile().getId());
+            model.addAttribute("uploadFile", uploadFile);
+        }
+
         if (account.getStudy() != null) {
             model.addAttribute("studyName", account.getStudy().getName());
         }
