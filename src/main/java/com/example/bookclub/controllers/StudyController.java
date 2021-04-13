@@ -124,4 +124,18 @@ public class StudyController {
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.END));
         return "studys/studys-list";
     }
+
+    @GetMapping("/{id}/users")
+    public String studyApplyUserList(@CurrentAccount Account account,
+                                     @PathVariable Long id,
+                                     Model model) {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        } else {
+            model.addAttribute("account", account);
+        }
+        List<Account> accounts = studyService.getStudy(id).getAccounts();
+        model.addAttribute("accounts", accounts);
+        return "studys/studys-users-list";
+    }
 }

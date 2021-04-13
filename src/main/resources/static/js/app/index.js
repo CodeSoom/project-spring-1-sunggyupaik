@@ -67,10 +67,10 @@ var main = {
             contentType:'application/json;',
         }).done(function(data) {
             alert("신청이 완료되었습니다.");
-            location.href = '/studys';
+            location.href = '/studys/open';
         }).fail(function (request) {
             alert(request.responseText);
-            location.herf = '/studys';
+            location.herf = '/studys/open';
         });
     },
 
