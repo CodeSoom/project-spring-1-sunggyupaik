@@ -16,12 +16,11 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         .and()
                 .formLogin()
                 .loginPage("/login")
-                .defaultSuccessUrl("/")
+                .loginProcessingUrl("/")
                 .permitAll()
         .and()
                 .logout()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/");
+                .logoutUrl("/logout");
 
         http
                 .csrf().disable()

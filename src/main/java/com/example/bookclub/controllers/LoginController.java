@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/login")
@@ -23,8 +24,9 @@ public class LoginController {
     }
 
     @PostMapping("/signup")
+    @ResponseBody
     public String signup(@RequestBody SessionCreateDto sessionCreateDto) {
         accountAuthenticationService.login(sessionCreateDto);
-        return "redirect:/";
+        return "true";
     }
 }

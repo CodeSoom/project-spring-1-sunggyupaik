@@ -87,9 +87,9 @@ var main = {
             data: JSON.stringify(data)
         }).done(function(data) {
             alert("로그인이 완료되었습니다.");
-            location.href = data;
-        }).fail(function (request) {
             location.href = '/';
+        }).fail(function (request) {
+            alert("아이디 혹은 비밀번호를 확인하세요.");
         });
     },
 
