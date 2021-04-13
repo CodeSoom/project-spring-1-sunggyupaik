@@ -42,6 +42,7 @@ public class StudyController {
         }
         if (study.isManagedBy(account)) {
            model.addAttribute("studyManager", true);
+            return "studys/studys-detail";
         }
 
         if (account.getStudy() != null && account.getStudy().getId().equals(id)) {
