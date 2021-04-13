@@ -116,7 +116,12 @@ public class StudyService {
 
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
-                .orElseThrow(() -> new StudyNotFoundException(id));
+                .orElseThrow(StudyNotFoundException::new);
+    }
+
+    public Study getStudyByEmail(String email) {
+        return studyRepository.findByEmail(email)
+                .orElseThrow(StudyNotFoundException::new);
     }
 
     public Account getAccount(Long id) {
