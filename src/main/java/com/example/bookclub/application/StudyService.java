@@ -59,6 +59,8 @@ public class StudyService {
         Study study = studyCreateDto.toEntity();
         Study createdStudy = studyRepository.save(study);
         createdStudy.addAdmin(account.getEmail());
+        Account adminAccount = getAccount(account.getId());
+        adminAccount.addStudy(study);
 
         return StudyResultDto.of(createdStudy);
     }

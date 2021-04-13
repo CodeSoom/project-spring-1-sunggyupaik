@@ -3,6 +3,8 @@ package com.example.bookclub.controllers;
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.Study;
+import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,7 +37,7 @@ public class HomeController {
         if ( account == null) {
             return "index";
         }
-
+        
         model.addAttribute("account", account);
         if (account.getStudy() != null &&
                 account.getStudy().getEmail().equals(account.getEmail())) {
