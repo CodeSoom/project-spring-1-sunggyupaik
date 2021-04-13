@@ -28,6 +28,10 @@ public class BookController {
             throws IOException, ParseException {
         if(account != null) {
             model.addAttribute("account", account);
+            if (account.getStudy() != null &&
+                    account.getStudy().getEmail().equals(account.getEmail())) {
+                model.addAttribute("admin", account.getStudy());
+            }
         }
         JSONArray bestSellers = bookService.getBookLists(BookType.BESTSELLER, "");
         model.addAttribute("book", bestSellers);
@@ -40,6 +44,10 @@ public class BookController {
             throws IOException, ParseException {
         if(account != null) {
             model.addAttribute("account", account);
+            if (account.getStudy() != null &&
+                    account.getStudy().getEmail().equals(account.getEmail())) {
+                model.addAttribute("admin", account.getStudy());
+            }
         }
         JSONArray recommends = bookService.getBookLists(BookType.RECOMMEND, "");
         model.addAttribute("book", recommends);
@@ -52,6 +60,10 @@ public class BookController {
             throws IOException, ParseException {
         if(account != null) {
             model.addAttribute("account", account);
+            if (account.getStudy() != null &&
+                    account.getStudy().getEmail().equals(account.getEmail())) {
+                model.addAttribute("admin", account.getStudy());
+            }
         }
         JSONArray newBooks = bookService.getBookLists(BookType.NEW, "");
         model.addAttribute("book", newBooks);
@@ -66,6 +78,10 @@ public class BookController {
             throws IOException, ParseException {
         if(account != null) {
             model.addAttribute("account", account);
+            if (account.getStudy() != null &&
+                    account.getStudy().getEmail().equals(account.getEmail())) {
+                model.addAttribute("admin", account.getStudy());
+            }
         }
         JSONArray searchBooks = bookService.getBookLists(BookType.SEARCH, keyword);
         model.addAttribute("book", searchBooks);

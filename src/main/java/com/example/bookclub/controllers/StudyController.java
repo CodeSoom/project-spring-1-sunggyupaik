@@ -32,6 +32,10 @@ public class StudyController {
         if(account != null) {
             model.addAttribute("account", account);
         }
+        if (account.getStudy() != null &&
+                account.getStudy().getEmail().equals(account.getEmail())) {
+            model.addAttribute("admin", account.getStudy());
+        }
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
@@ -80,6 +84,10 @@ public class StudyController {
         } else {
             model.addAttribute("account", account);
         }
+        if (account.getStudy() != null &&
+                account.getStudy().getEmail().equals(account.getEmail())) {
+            model.addAttribute("admin", account.getStudy());
+        }
         Study study = studyService.getStudy(id);
         if (!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");
@@ -97,6 +105,10 @@ public class StudyController {
         if (account != null) {
             model.addAttribute("account", account);
         }
+        if (account.getStudy() != null &&
+                account.getStudy().getEmail().equals(account.getEmail())) {
+            model.addAttribute("admin", account.getStudy());
+        }
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
@@ -108,6 +120,10 @@ public class StudyController {
         if (account != null) {
             model.addAttribute("account", account);
         }
+        if (account.getStudy() != null &&
+                account.getStudy().getEmail().equals(account.getEmail())) {
+            model.addAttribute("admin", account.getStudy());
+        }
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.CLOSE));
@@ -118,6 +134,10 @@ public class StudyController {
     public String studyEndList(@CurrentAccount Account account, Model model) {
         if (account != null) {
             model.addAttribute("account", account);
+        }
+        if (account.getStudy() != null &&
+                account.getStudy().getEmail().equals(account.getEmail())) {
+            model.addAttribute("admin", account.getStudy());
         }
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
         model.addAttribute("studys", lists);
@@ -133,6 +153,10 @@ public class StudyController {
             throw new AccessDeniedException("권한이 없습니다");
         } else {
             model.addAttribute("account", account);
+        }
+        if (account.getStudy() != null &&
+                account.getStudy().getEmail().equals(account.getEmail())) {
+            model.addAttribute("admin", account.getStudy());
         }
         model.addAttribute("study", account.getStudy());
         List<Account> accounts = studyService.getStudy(id).getAccounts();
