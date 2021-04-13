@@ -31,15 +31,16 @@ public class AccountController {
     @GetMapping("/update/{id}")
     public String usersUpdate(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
-        if (account != null) {
-            model.addAttribute("account", account);
-            UploadFile uploadFile = uploadFileService.getUploadFile(account.getUploadFile().getId());
-            model.addAttribute("uploadFile", uploadFile);
+        if (account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
         }
-        if (account !=null && account.getStudy() != null) {
+        model.addAttribute("account", account);
+        UploadFile uploadFile = uploadFileService.getUploadFile(account.getUploadFile().getId());
+        model.addAttribute("uploadFile", uploadFile);
+        if (account.getStudy() != null) {
             model.addAttribute("studyName", account.getStudy().getName());
         }
-        if (account != null && !account.getId().equals(id)) {
+        if (!account.getId().equals(id)) {
             throw new AccessDeniedException("권한이 없습니다");
         }
         return "users/users-update";
