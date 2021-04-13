@@ -32,9 +32,14 @@ public class HomeController {
 
         long allEndStudiesCount = studyService.countEndStudies();
         model.addAttribute("allEndStudiesCount", allEndStudiesCount);
+        if ( account == null) {
+            return "index";
+        }
 
-        if(account != null) {
-            model.addAttribute("account", account);
+        model.addAttribute("account", account);
+        if (account.getStudy() != null &&
+                account.getStudy().getEmail().equals(account.getEmail())) {
+            model.addAttribute("admin", account.getStudy());
         }
 
         return "index";
