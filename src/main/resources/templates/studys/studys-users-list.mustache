@@ -1,0 +1,32 @@
+{{>layout/header}}
+<style type="text/css">
+    h4 {
+        text-align: center;
+    }
+</style>
+<div class="container-fluid" style="margin-top: 100px">
+    <div class="card shadow col-md-9" style="min-height:600px;">
+        <div class="card-body">
+            <h4 class="card-title">스터디 신청자</h4>
+            <table class="table table-hover" id='board_list'>
+                <thead>
+                <tr>
+                    <th class="text-center d-none d-md-table-cell">이름</th>
+                    <th class="w-40">이메일</th>
+                    <th class="text-center d-none d-md-table-cell">닉네임</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#accounts}}
+                    <tr>
+                        <td class="text-center d-none d-md-table-cell">{{name}}</td>
+                        <td class="text-center d-none d-md-table-cell">{{email}}</td>
+                        <td class="text-center d-none d-md-table-cell">{{nickname}}</td>
+                    </tr>
+                {{/accounts}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{{>layout/footer}}
