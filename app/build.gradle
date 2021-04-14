@@ -8,7 +8,7 @@ plugins {
 }
 
 group = 'com.example.bookclub'
-sourceCompatibility = '15'
+sourceCompatibility = '11'
 
 configurations {
 	developmentOnly
