@@ -15,9 +15,9 @@
                     <div class="row">
                         <div class="col-sm-2 imgUp">
                             <div class="imagePreview">
-                                {{#uploadFile}}
+                                {{#account.uploadFile}}
                                     <img class="imgPreview" src="/images/{{fileName}}" alt="">
-                                {{/uploadFile}}
+                                {{/account.uploadFile}}
                             </div>
                             <label class="btn btn-primary">
                                 Upload<input type="file" id="uploadFile" class="uploadFile img" value="Upload Photo" style="width: 0px;height: 0px;overflow: hidden;">
@@ -46,12 +46,12 @@
                 <label for="newPassword"> 새로운 비밀번호 (선택) </label>
                 <input type="password" class="form-control" id="newPassword" value="">
             </div>
-            {{#studyName}}
+            {{#account.study}}
                 <div class="form-group">
-                    <label for="study"> 가입한 스터디 </label>
-                    <input type="text" class="form-control" id="study" value="{{.}}" readonly>
+                    <label for="study"> 신청 스터디 </label>
+                    <input type="text" class="form-control" id="study" value="{{name}}" readonly>
                 </div>
-            {{/studyName}}
+            {{/account.study}}
         </form>
         <a href="/" role="button" class="btn btn-secondary">돌아가기</a>
         <button type="button" class="btn btn-primary" id="btn-update">수정 완료</button>

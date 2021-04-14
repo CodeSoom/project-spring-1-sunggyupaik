@@ -30,14 +30,22 @@ public class BookService {
         }
 
         switch (bookType) {
-            case BESTSELLER -> address = "http://book.interpark.com/api/bestSeller.api?key=" +
+            case BESTSELLER:
+                address = "http://book.interpark.com/api/bestSeller.api?key=" +
                     apikey + "&categoryId=122&output=json";
-            case RECOMMEND -> address = "http://book.interpark.com/api/recommend.api?key=" +
+                break;
+            case RECOMMEND:
+                address = "http://book.interpark.com/api/recommend.api?key=" +
                     apikey + "&categoryId=122&output=json";
-            case NEW -> address = "http://book.interpark.com/api/newBook.api?key=" +
+                break;
+            case NEW:
+                address = "http://book.interpark.com/api/newBook.api?key=" +
                     apikey + "&categoryId=122&output=json";
-            case SEARCH -> address = "http://book.interpark.com/api/search.api?key=" +
+                break;
+            case SEARCH:
+                address = "http://book.interpark.com/api/search.api?key=" +
                     apikey + "&query=" + keyword + "&output=json";
+                break;
         }
         return new URL(address);
     }
