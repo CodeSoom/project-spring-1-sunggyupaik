@@ -1,0 +1,79 @@
+{{>layout/header}}
+
+<h1>스터디 조회</h1>
+
+<div class="col-md-12">
+    <div class="col-md-6">
+        <form>
+            <div class="form-group">
+                <label for="id"> 스터디 번호 </label>
+                <input type="text" class="form-control" id="id" value="{{study.id}}"  readOnly>
+            </div>
+            <div class="form-group">
+                <label for="name"> 스터디 이름 </label>
+                <input type="text" class="form-control" id="name" value="{{study.name}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="bookName"> 스터디 책 </label>
+                <input type="text" class="form-control" id="bookName" value="{{study.bookName}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="bookImage"></label>
+                <img src="{{study.bookImage}}" id="bookImage" alt="">
+            </div>
+            <div class="form-group">
+                <label for="description"> 설명 </label>
+                <input type="text" class="form-control" id="description" value="{{study.description}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="contact"> 연락처 </label>
+                <input type="text" class="form-control" id="contact" value="{{study.contact}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="size"> 인원 제한 </label>
+                <input type="number" class="form-control" id="size" value="{{study.size}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="startDate"> 시작 날짜 </label>
+                <input type="date" class="form-control" id="startDate" value="{{study.startDate}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="endDate"> 종료 날짜 </label>
+                <input type="date" class="form-control" id="endDate" value="{{study.endDate}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="day"> 요일 </label>
+                <input type="text" class="form-control" id="day" value="{{day}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="startTime"> 시작 시간 </label>
+                <input type="time" class="form-control" id="startTime" value="{{study.startTime}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="endTime"> 종료 시간 </label>
+                <input type="time" class="form-control" id="endTime" value="{{study.endTime}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="studyState"> 스터디 모집 상황 </label>
+                <input type="text" class="form-control" id="studyState" value="{{studyState}}" readOnly>
+            </div>
+            <div class="form-group">
+                <label for="zone"> 지역 </label>
+                <input type="text" class="form-control" id="zone" value="{{zone}}" readOnly>
+            </div>
+        </form>
+        <a href="/" role="button" class="btn btn-secondary">돌아가기</a>
+        {{#notApplied}}
+            <button type="button" class="btn btn-primary" id="btn-apply-study">신청</button>
+        {{/notApplied}}
+        {{#alreadyApplied}}
+            <button type="button" class="btn btn-danger" id="btn-cancel-study">신청 취소</button>
+        {{/alreadyApplied}}
+        {{#studyManager}}
+            <button type="button" class="btn btn-warning" onclick="location.href='/studys/update/{{id}}'">수정</button>
+        {{/studyManager}}
+
+    </div>
+</div>
+
+{{>layout/footer}}

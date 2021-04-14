@@ -1,0 +1,78 @@
+{{>layout/header}}
+
+<h1>스터디 생성</h1>
+
+<div class="col-md-12">
+    <div class="col-md-6">
+        <form>
+            <div class="form-group">
+                <label for="name"> 스터디 이름 </label>
+                <input type="text" class="form-control" id="name" placeholder="스터디 이름을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="bookName"> 책제목 </label>
+                <input type="text" class="form-control" id="bookName" value="{{bookName}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="bookImage"></label>
+                <img src="{{bookImage}}" id="bookImage" alt="">
+            </div>
+            <div class="form-group">
+                <label for="description"> 설명 </label>
+                <input type="text" class="form-control" id="description" placeholder="설명을 입력하세요">
+            </div>
+            <div class="form-group">
+                <label for="contact"> 연락처 </label>
+                <input type="text" class="form-control" id="contact" placeholder="연락처를 입력하세요(카카오 id, sns, 전화번호 등등)">
+            </div>
+            <div class="form-group">
+                <label for="size"> 인원 제한 </label>
+                <input type="number" class="form-control" id="size" placeholder="인원 제한을 입력하세요(1~20)">
+            </div>
+        </form>
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="startDate"> 시작 날짜 </label>
+                <input type="date" class="form-control" id="startDate">
+            </div>
+            <div class="form-group">
+                <label for="endDate"> 종료 날짜 </label>
+                <input type="date" class="form-control" id="endDate">
+            </div>
+        </form>
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="day"> 요일
+                    <select id="day">
+                        {{#day}}
+                            <option value="{{code}}">{{title}}</option>
+                        {{/day}}
+                    </select>
+                </label>
+            </div>
+            <div class="form-group">
+                <label for="startTime"> 시작 시간 </label>
+                <input type="time" class="form-control" id="startTime">
+            </div>
+            <div class="form-group">
+                <label for="endTime"> 종료 시간 </label>
+                <input type="time" class="form-control" id="endTime">
+            </div>
+        </form>
+        <form>
+            <div class="form-group">
+                <label for="zone"> 지역
+                    <select id="zone">
+                        {{#zone}}
+                            <option value="{{code}}">{{title}}</option>
+                        {{/zone}}
+                    </select>
+                </label>
+            </div>
+        </form>
+        <a href="/" role="button" class="btn btn-secondary">돌아가기</a>
+        <button type="button" class="btn btn-primary" id="btn-save-study">등록</button>
+    </div>
+</div>
+
+{{>layout/footer}}
