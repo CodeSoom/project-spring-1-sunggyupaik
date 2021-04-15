@@ -29,21 +29,13 @@ public class StudyController {
     @GetMapping("/{id}")
     public String studyDetail(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
-        if(account != null) {
-            model.addAttribute("account", account);
-        }
-        if (account.getStudy() != null &&
-                account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("admin", account.getStudy());
-        }
+        checkTopMenu(account, model);
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
         model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
         model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
-        if (account == null) {
-            return "studys/studys-detail";
-        }
+
         if (study.isManagedBy(account)) {
            model.addAttribute("studyManager", true);
             return "studys/studys-detail";
@@ -65,9 +57,8 @@ public class StudyController {
                             Model model) {
         if (account == null) {
             throw new AccessDeniedException("권한이 없습니다");
-        } else {
-            model.addAttribute("account", account);
         }
+        checkTopMenu(account, model);
         model.addAttribute("bookName", bookName);
         model.addAttribute("bookImage", bookImage);
         model.addAttribute("day", Day.getAllDays());
@@ -81,13 +72,8 @@ public class StudyController {
                               @PathVariable Long id, Model model) {
         if(account == null) {
             throw new AccessDeniedException("권한이 없습니다");
-        } else {
-            model.addAttribute("account", account);
         }
-        if (account.getStudy() != null &&
-                account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("admin", account.getStudy());
-        }
+        checkTopMenu(account, model);
         Study study = studyService.getStudy(id);
         if (!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");
@@ -102,13 +88,7 @@ public class StudyController {
 
     @GetMapping("/open")
     public String studyOpenList(@CurrentAccount Account account, Model model) {
-        if (account != null) {
-            model.addAttribute("account", account);
-        }
-        if (account.getStudy() != null &&
-                account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("admin", account.getStudy());
-        }
+        checkTopMenu(account, model);
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
@@ -117,13 +97,7 @@ public class StudyController {
 
     @GetMapping("/close")
     public String studyCloseList(@CurrentAccount Account account, Model model) {
-        if (account != null) {
-            model.addAttribute("account", account);
-        }
-        if (account.getStudy() != null &&
-                account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("admin", account.getStudy());
-        }
+        checkTopMenu(account, model);
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.CLOSE));
@@ -132,13 +106,7 @@ public class StudyController {
 
     @GetMapping("/end")
     public String studyEndList(@CurrentAccount Account account, Model model) {
-        if (account != null) {
-            model.addAttribute("account", account);
-        }
-        if (account.getStudy() != null &&
-                account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("admin", account.getStudy());
-        }
+        checkTopMenu(account, model);
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.END));
@@ -151,16 +119,21 @@ public class StudyController {
                                      Model model) {
         if(account == null) {
             throw new AccessDeniedException("권한이 없습니다");
-        } else {
-            model.addAttribute("account", account);
         }
-        if (account.getStudy() != null &&
-                account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("admin", account.getStudy());
-        }
+        checkTopMenu(account, model);
         model.addAttribute("study", account.getStudy());
         List<Account> accounts = studyService.getStudy(id).getAccounts();
         model.addAttribute("accounts", accounts);
         return "studys/studys-users-list";
+    }
+
+    private void checkTopMenu(@CurrentAccount Account account, Model model) {
+        if (account != null) {
+            model.addAttribute("account", account);
+            if (account.getStudy() != null &&
+                    account.getStudy().getEmail().equals(account.getEmail())) {
+                model.addAttribute("studyManager", account.getStudy());
+            }
+        }
     }
 }
