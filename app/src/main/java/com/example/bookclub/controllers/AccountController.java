@@ -30,7 +30,7 @@ public class AccountController {
 
         if (account.getStudy() != null &&
                 account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("admin", account.getStudy());
+            model.addAttribute("studyManager", account.getStudy());
         }
 
         return "users/users-update";

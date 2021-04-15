@@ -32,16 +32,18 @@ public class HomeController {
 
         long allEndStudiesCount = studyService.countEndStudies();
         model.addAttribute("allEndStudiesCount", allEndStudiesCount);
-        if (account == null) {
-            return "index";
-        }
-
-        model.addAttribute("account", account);
-        if (account.getStudy() != null &&
-                account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("admin", account.getStudy());
-        }
+        checkTopMenu(account, model);
 
         return "index";
+    }
+
+    private void checkTopMenu(@CurrentAccount Account account, Model model) {
+        if (account != null) {
+            model.addAttribute("account", account);
+            if (account.getStudy() != null &&
+                    account.getStudy().getEmail().equals(account.getEmail())) {
+                model.addAttribute("studyManager", account.getStudy());
+            }
+        }
     }
 }
