@@ -42,6 +42,10 @@ public class StudyService {
             throw new AccessDeniedException("권한이 없습니다");
         }
 
+        if (account.getStudy() != null) {
+            throw new StudyAlreadyExisted();
+        }
+
         LocalDate startDate = studyCreateDto.getStartDate();
         LocalDate endDate = studyCreateDto.getEndDate();
         LocalDate todayDate = LocalDate.now();
@@ -88,6 +92,10 @@ public class StudyService {
     }
 
     public Long applyStudy(Account account, Long id) {
+        if (account.getStudy() != null) {
+            throw new StudyAlreadyExisted();
+        }
+        
         Study study = getStudy(id);
         if (study.isSizeFull()){
             throw new StudySizeFullException();
