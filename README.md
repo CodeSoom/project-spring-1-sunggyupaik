@@ -1,1 +1,9 @@
-# project-spring-1-sunggyupaik
+## Bookclub
+
+IT 서적 스터디를 위한 사이트입니다. 
+
+자신이 원하는 책을 검색하여 방을 만들고 관심있는 사람들과 스터디를 결성합니다.
+
+방장은 스터디를 신청한 스터디원들의 이메일을 확인할 수 있습니다.
+
+[bookclub](http://ec2-3-140-201-214.us-east-2.compute.amazonaws.com:8081)
