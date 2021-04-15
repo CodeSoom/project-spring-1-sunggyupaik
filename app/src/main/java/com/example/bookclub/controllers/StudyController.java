@@ -79,6 +79,9 @@ public class StudyController {
         if (!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");
         }
+        if(study.isAlreadyStarted()) {
+            throw new StudyAlreadyStartedException();
+        }
 
         model.addAttribute("study", study);
         model.addAttribute("day", Day.getAllDays());
