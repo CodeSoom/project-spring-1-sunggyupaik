@@ -33,6 +33,11 @@ public class AccountController {
             model.addAttribute("studyManager", account.getStudy());
         }
 
+        if (account.getStudy() != null &&
+                !account.getStudy().getEmail().equals(account.getEmail())) {
+            model.addAttribute("studyApply", account.getStudy());
+        }
+
         return "users/users-update";
     }
 }

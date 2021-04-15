@@ -72,6 +72,10 @@ public class BookController {
                     account.getStudy().getEmail().equals(account.getEmail())) {
                 model.addAttribute("studyManager", account.getStudy());
             }
+            if (account.getStudy() != null &&
+                    !account.getStudy().getEmail().equals(account.getEmail())) {
+                model.addAttribute("studyApply", account.getStudy());
+            }
         }
     }
 }
