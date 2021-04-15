@@ -25,19 +25,20 @@ public class AccountController {
                               @PathVariable Long id, Model model) {
         if (account == null || !account.getId().equals(id)) {
             throw new AccessDeniedException("권한이 없습니다");
-        }
-        model.addAttribute("account", account);
-
-        if (account.getStudy() != null &&
-                account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("studyManager", account.getStudy());
-        }
-
-        if (account.getStudy() != null &&
-                !account.getStudy().getEmail().equals(account.getEmail())) {
-            model.addAttribute("studyApply", account.getStudy());
+        } else {
+            checkTopMenu(account, model);
         }
 
         return "users/users-update";
+    }
+
+    private void checkTopMenu(@CurrentAccount Account account, Model model) {
+        model.addAttribute("account", account);
+        if (account.isMangerOf(account.getStudy())) {
+            model.addAttribute("studyManager", account.getStudy());
+        }
+        if (account.isApplierOf(account.getStudy())) {
+            model.addAttribute("studyApply", account.getStudy());
+        }
     }
 }

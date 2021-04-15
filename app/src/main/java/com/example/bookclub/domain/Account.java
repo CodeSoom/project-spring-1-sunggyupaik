@@ -96,4 +96,12 @@ public class Account {
     public void updateNickname(String nickname) {
         this.nickname = nickname;
     }
+
+    public boolean isMangerOf(Study study) {
+        return this.study != null && this.study.getEmail().equals(this.email);
+    }
+
+    public boolean isApplierOf(Study study) {
+        return this.study != null && !this.study.getEmail().equals(this.email);
+    }
 }

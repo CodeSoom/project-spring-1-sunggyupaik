@@ -26,7 +26,10 @@ public class BookController {
     @GetMapping("/bestseller")
     public String booksBestSellerLists(@CurrentAccount Account account, Model model)
             throws IOException, ParseException {
-        checkTopMenu(account, model);
+        if(account != null) {
+            checkTopMenu(account, model);
+        }
+
         JSONArray bestSellers = bookService.getBookLists(BookType.BESTSELLER, "");
         model.addAttribute("book", bestSellers);
         model.addAttribute("bookType", BookType.getTitleFrom(BookType.BESTSELLER));
@@ -36,7 +39,10 @@ public class BookController {
     @GetMapping("/recommend")
     public String booksRecommendLists(@CurrentAccount Account account, Model model)
             throws IOException, ParseException {
-        checkTopMenu(account, model);
+        if(account != null) {
+            checkTopMenu(account, model);
+        }
+
         JSONArray recommends = bookService.getBookLists(BookType.RECOMMEND, "");
         model.addAttribute("book", recommends);
         model.addAttribute("bookType", BookType.getTitleFrom(BookType.RECOMMEND));
@@ -46,7 +52,10 @@ public class BookController {
     @GetMapping("/new")
     public String booksNewLists(@CurrentAccount Account account, Model model)
             throws IOException, ParseException {
-        checkTopMenu(account, model);
+        if(account != null) {
+            checkTopMenu(account, model);
+        }
+
         JSONArray newBooks = bookService.getBookLists(BookType.NEW, "");
         model.addAttribute("book", newBooks);
         model.addAttribute("bookType", BookType.getTitleFrom(BookType.NEW));
@@ -58,7 +67,10 @@ public class BookController {
                                    Model model,
                                    @RequestParam String keyword)
             throws IOException, ParseException {
-        checkTopMenu(account, model);
+        if(account != null) {
+            checkTopMenu(account, model);
+        }
+
         JSONArray searchBooks = bookService.getBookLists(BookType.SEARCH, keyword);
         model.addAttribute("book", searchBooks);
         model.addAttribute("bookType", BookType.getTitleFrom(BookType.SEARCH));
@@ -66,16 +78,12 @@ public class BookController {
     }
 
     private void checkTopMenu(@CurrentAccount Account account, Model model) {
-        if (account != null) {
-            model.addAttribute("account", account);
-            if (account.getStudy() != null &&
-                    account.getStudy().getEmail().equals(account.getEmail())) {
-                model.addAttribute("studyManager", account.getStudy());
-            }
-            if (account.getStudy() != null &&
-                    !account.getStudy().getEmail().equals(account.getEmail())) {
-                model.addAttribute("studyApply", account.getStudy());
-            }
+        model.addAttribute("account", account);
+        if (account.isMangerOf(account.getStudy())) {
+            model.addAttribute("studyManager", account.getStudy());
+        }
+        if (account.isApplierOf(account.getStudy())) {
+            model.addAttribute("studyApply", account.getStudy());
         }
     }
 }
