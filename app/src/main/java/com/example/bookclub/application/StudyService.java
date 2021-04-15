@@ -11,6 +11,7 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.StartAndEndDateNotValidException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
+import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import org.springframework.security.access.AccessDeniedException;
@@ -43,7 +44,7 @@ public class StudyService {
         }
 
         if (account.getStudy() != null) {
-            throw new StudyAlreadyExisted();
+            throw new StudyAlreadyExistedException();
         }
 
         LocalDate startDate = studyCreateDto.getStartDate();
@@ -93,9 +94,9 @@ public class StudyService {
 
     public Long applyStudy(Account account, Long id) {
         if (account.getStudy() != null) {
-            throw new StudyAlreadyExisted();
+            throw new StudyAlreadyExistedException();
         }
-        
+
         Study study = getStudy(id);
         if (study.isSizeFull()){
             throw new StudySizeFullException();
