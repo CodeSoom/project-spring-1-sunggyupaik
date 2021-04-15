@@ -28,6 +28,11 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             {{#account}}
+                {{#studyApply}}
+                    <li class="nav-item">
+                        <a href="/studys/{{id}}" class="nav-link">신청 스터디</a>
+                    </li>
+                {{/studyApply}}
                 {{#studyManager}}
                     <li class="nav-item">
                         <a href="/studys/{{id}}/users" class="nav-link">스터디 참가자</a>

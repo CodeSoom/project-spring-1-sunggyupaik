@@ -29,23 +29,20 @@ public class StudyController {
     @GetMapping("/{id}")
     public String studyDetail(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
-        checkTopMenu(account, model);
+        if(account != null) {
+            checkTopMenu(account, model);
+            if(account.getStudy() != null) {
+                model.addAttribute("alreadyApplied", "true");
+            } else {
+                model.addAttribute("notApplied", "true");
+            }
+        }
+
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
         model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
         model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
-
-        if (study.isManagedBy(account)) {
-           model.addAttribute("studyManager", true);
-            return "studys/studys-detail";
-        }
-
-        if (account.getStudy() != null && account.getStudy().getId().equals(id)) {
-            model.addAttribute("alreadyApplied", "true");
-        } else {
-            model.addAttribute("notApplied", "true");
-        }
 
         return "studys/studys-detail";
     }
@@ -57,8 +54,10 @@ public class StudyController {
                             Model model) {
         if (account == null) {
             throw new AccessDeniedException("권한이 없습니다");
+        } else {
+            checkTopMenu(account, model);
         }
-        checkTopMenu(account, model);
+
         model.addAttribute("bookName", bookName);
         model.addAttribute("bookImage", bookImage);
         model.addAttribute("day", Day.getAllDays());
@@ -72,8 +71,10 @@ public class StudyController {
                               @PathVariable Long id, Model model) {
         if(account == null) {
             throw new AccessDeniedException("권한이 없습니다");
+        } else {
+            checkTopMenu(account, model);
         }
-        checkTopMenu(account, model);
+
         Study study = studyService.getStudy(id);
         if (!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");
@@ -88,7 +89,10 @@ public class StudyController {
 
     @GetMapping("/open")
     public String studyOpenList(@CurrentAccount Account account, Model model) {
-        checkTopMenu(account, model);
+        if(account != null) {
+            checkTopMenu(account, model);
+        }
+
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
@@ -97,7 +101,10 @@ public class StudyController {
 
     @GetMapping("/close")
     public String studyCloseList(@CurrentAccount Account account, Model model) {
-        checkTopMenu(account, model);
+        if(account != null) {
+            checkTopMenu(account, model);
+        }
+
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.CLOSE));
@@ -106,7 +113,10 @@ public class StudyController {
 
     @GetMapping("/end")
     public String studyEndList(@CurrentAccount Account account, Model model) {
-        checkTopMenu(account, model);
+        if(account != null) {
+            checkTopMenu(account, model);
+        }
+
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.END));
@@ -119,8 +129,10 @@ public class StudyController {
                                      Model model) {
         if(account == null) {
             throw new AccessDeniedException("권한이 없습니다");
+        } else {
+            checkTopMenu(account, model);
         }
-        checkTopMenu(account, model);
+
         model.addAttribute("study", account.getStudy());
         List<Account> accounts = studyService.getStudy(id).getAccounts();
         model.addAttribute("accounts", accounts);
@@ -128,12 +140,12 @@ public class StudyController {
     }
 
     private void checkTopMenu(@CurrentAccount Account account, Model model) {
-        if (account != null) {
-            model.addAttribute("account", account);
-            if (account.getStudy() != null &&
-                    account.getStudy().getEmail().equals(account.getEmail())) {
-                model.addAttribute("studyManager", account.getStudy());
-            }
+        model.addAttribute("account", account);
+        if (account.isMangerOf(account.getStudy())) {
+            model.addAttribute("studyManager", account.getStudy());
+        }
+        if (account.isApplierOf(account.getStudy())) {
+            model.addAttribute("studyApply", account.getStudy());
         }
     }
 }

@@ -21,6 +21,10 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
+        if(account != null) {
+            checkTopMenu(account, model);
+        }
+
         long allAccountsCount = accountService.countAllAccounts();
         model.addAttribute("allAccountsCount", allAccountsCount);
 
@@ -32,18 +36,17 @@ public class HomeController {
 
         long allEndStudiesCount = studyService.countEndStudies();
         model.addAttribute("allEndStudiesCount", allEndStudiesCount);
-        checkTopMenu(account, model);
 
         return "index";
     }
 
     private void checkTopMenu(@CurrentAccount Account account, Model model) {
-        if (account != null) {
-            model.addAttribute("account", account);
-            if (account.getStudy() != null &&
-                    account.getStudy().getEmail().equals(account.getEmail())) {
-                model.addAttribute("studyManager", account.getStudy());
-            }
+        model.addAttribute("account", account);
+        if (account.isMangerOf(account.getStudy())) {
+            model.addAttribute("studyManager", account.getStudy());
+        }
+        if (account.isApplierOf(account.getStudy())) {
+            model.addAttribute("studyApply", account.getStudy());
         }
     }
 }
