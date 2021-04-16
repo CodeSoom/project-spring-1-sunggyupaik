@@ -63,15 +63,17 @@
             </div>
         </form>
         <a href="/" role="button" class="btn btn-secondary">돌아가기</a>
-        {{#notApplied}}
-            <button type="button" class="btn btn-primary" id="btn-apply-study">신청</button>
-        {{/notApplied}}
-        {{#alreadyApplied}}
+        {{#account}}
+            {{^study}}
+                <button type="button" class="btn btn-primary" id="btn-apply-study">신청</button>
+            {{/study}}
+        {{/account}}
+        {{#studyApplier}}
             <button type="button" class="btn btn-danger" id="btn-cancel-study">신청 취소</button>
-        {{/alreadyApplied}}
-        {{#studyManager}}
+        {{/studyApplier}}
+        {{#studyAdmin}}
             <button type="button" class="btn btn-warning" onclick="location.href='/studys/update/{{id}}'">수정</button>
-        {{/studyManager}}
+        {{/studyAdmin}}
 
     </div>
 </div>
