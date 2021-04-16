@@ -171,4 +171,19 @@ public class StudyService {
             }
         }
     }
+
+    @Scheduled(cron = "0 0 0 * * * *")
+    public void scheduleCloseToEnd() {
+        List<Study> lists = getStudies().stream()
+                .filter(s -> s.getStudyState().equals(StudyState.CLOSE))
+                .collect(Collectors.toList());
+
+        for (Study study : lists) {
+            LocalDate studyEndDate = study.getEndDate();
+            LocalDate nowDate = LocalDate.now();
+            if (nowDate.isAfter(studyEndDate)) {
+                study.changeCloseToEnd();
+            }
+        }
+    }
 }
