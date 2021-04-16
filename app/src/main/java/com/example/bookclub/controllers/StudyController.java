@@ -6,6 +6,7 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.errors.StudyAlreadyStartedException;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
@@ -29,7 +30,16 @@ public class StudyController {
     @GetMapping("/{id}")
     public String studyDetail(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
+        Study study = studyService.getStudy(id);
+        model.addAttribute("study", study);
+        model.addAttribute("day", Day.getTitleFrom(study.getDay()));
+        model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
+        model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
+
         if(account != null) {
+            if(study.isAlreadyStarted()) {
+                return "studys/studys-detail";
+            }
             checkTopMenu(account, model);
             if(account.getStudy() != null) {
                 model.addAttribute("alreadyApplied", "true");
@@ -37,12 +47,6 @@ public class StudyController {
                 model.addAttribute("notApplied", "true");
             }
         }
-
-        Study study = studyService.getStudy(id);
-        model.addAttribute("study", study);
-        model.addAttribute("day", Day.getTitleFrom(study.getDay()));
-        model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
-        model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
 
         return "studys/studys-detail";
     }
@@ -69,13 +73,17 @@ public class StudyController {
     @GetMapping("/update/{id}")
     public String studyUpdate(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
+        Study study = studyService.getStudy(id);
+        if(study.isAlreadyStarted()) {
+            throw new StudyAlreadyStartedException();
+        }
+        
         if(account == null) {
             throw new AccessDeniedException("권한이 없습니다");
         } else {
             checkTopMenu(account, model);
         }
 
-        Study study = studyService.getStudy(id);
         if (!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");
         }
