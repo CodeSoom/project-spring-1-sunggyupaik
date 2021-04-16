@@ -6,6 +6,7 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.errors.StudyAlreadyStartedException;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;

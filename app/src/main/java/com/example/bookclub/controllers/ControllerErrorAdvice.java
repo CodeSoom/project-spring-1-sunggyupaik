@@ -12,6 +12,7 @@ import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
+import com.example.bookclub.errors.StudyAlreadyStartedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,12 @@ import java.util.Objects;
 
 @RestControllerAdvice
 public class ControllerErrorAdvice {
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StudyAlreadyStartedException.class)
+    public ErrorResponse handleStudyAlreadyStarted(StudyAlreadyStartedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyAlreadyExistedException.class)
     public ErrorResponse handleStudyAlreadyExisted(StudyAlreadyExistedException e) {
