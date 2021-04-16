@@ -136,4 +136,11 @@ public class Study {
     public void changeCloseToOpen() {
         this.studyState = StudyState.OPEN;
     }
+
+    public boolean isAlreadyStarted() {
+        LocalDate startDate = this.startDate;
+        LocalDate nowDate = LocalDate.now();
+
+        return startDate.isEqual(nowDate) || startDate.isBefore(nowDate);
+    }
 }
