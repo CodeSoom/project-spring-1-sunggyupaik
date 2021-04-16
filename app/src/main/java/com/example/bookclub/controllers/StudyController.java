@@ -83,7 +83,7 @@ public class StudyController {
         } else {
             checkTopMenu(account, model);
         }
-
+        
         if (!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");
         }

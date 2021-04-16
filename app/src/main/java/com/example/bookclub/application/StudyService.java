@@ -14,6 +14,7 @@ import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -153,5 +155,35 @@ public class StudyService {
 
     public long countEndStudies() {
         return getStudiesByStudyState(StudyState.END).size();
+    }
+
+    @Scheduled(cron = "0 0 0 * * * *")
+    public void scheduleOpenToClose() {
+        List<Study> lists = getStudies().stream()
+                .filter(s -> s.getStudyState().equals(StudyState.OPEN))
+                .collect(Collectors.toList());
+
+        for (Study study : lists) {
+            LocalDate studyEndDate = study.getStartDate();
+            LocalDate nowDate = LocalDate.now();
+            if (studyEndDate.isEqual(nowDate)) {
+               study.changeOpenToClose();
+            }
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * * *")
+    public void scheduleCloseToEnd() {
+        List<Study> lists = getStudies().stream()
+                .filter(s -> s.getStudyState().equals(StudyState.CLOSE))
+                .collect(Collectors.toList());
+
+        for (Study study : lists) {
+            LocalDate studyEndDate = study.getEndDate();
+            LocalDate nowDate = LocalDate.now();
+            if (nowDate.isAfter(studyEndDate)) {
+                study.changeCloseToEnd();
+            }
+        }
     }
 }
