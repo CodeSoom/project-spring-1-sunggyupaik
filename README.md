@@ -6,4 +6,4 @@ IT 서적 스터디를 위한 사이트입니다.
 
 방장은 스터디를 신청한 스터디원들의 이메일을 확인할 수 있습니다.
 
-[bookclub](ec2-3-140-201-214.us-east-2.compute.amazonaws.com:8081)
+[bookclub](http://ec2-3-143-246-43.us-east-2.compute.amazonaws.com:8081)
