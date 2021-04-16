@@ -137,6 +137,10 @@ public class Study {
         this.studyState = StudyState.OPEN;
     }
 
+    public void changeCloseToEnd() {
+        this.studyState = StudyState.END;
+    }
+
     public boolean isAlreadyStarted() {
         LocalDate startDate = this.startDate;
         LocalDate nowDate = LocalDate.now();
