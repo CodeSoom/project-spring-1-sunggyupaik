@@ -147,4 +147,8 @@ public class Study {
 
         return startDate.isEqual(nowDate) || startDate.isBefore(nowDate);
     }
+
+    public boolean isNotOpened() {
+        return !this.studyState.equals(StudyState.OPEN);
+    }
 }

@@ -102,6 +102,7 @@ public class Account {
     }
 
     public boolean isApplierOf(Study study) {
-        return this.study != null && !this.email.equals(study.getEmail());
+        return this.study != null && this.study.getId().equals(study.getId())
+                && !this.email.equals(study.getEmail());
     }
 }

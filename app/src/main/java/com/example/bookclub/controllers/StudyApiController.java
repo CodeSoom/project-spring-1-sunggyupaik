@@ -80,7 +80,8 @@ public class StudyApiController {
         if(account == null) {
             throw new AccessDeniedException("권한이 없습니다");
         }
-        return studyService.applyStudy(account, id);
+        Long studyId = studyService.applyStudy(account, id);
+        return studyId;
     }
 
     @DeleteMapping("/apply/{id}")
