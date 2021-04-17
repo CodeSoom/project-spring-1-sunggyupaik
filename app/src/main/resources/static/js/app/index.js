@@ -51,10 +51,10 @@ var main = {
             contentType:'application/json;',
         }).done(function(data) {
             alert("취소가 완료되었습니다.");
-            location.href = '/studys';
+            location.href = '/studys/open';
         }).fail(function (request) {
             alert(request.responseText);
-            location.herf = '/studys';
+            location.herf = '/studys/open';
         });
     },
 

@@ -98,10 +98,11 @@ public class Account {
     }
 
     public boolean isMangerOf(Study study) {
-        return this.study != null && this.study.getEmail().equals(this.email);
+        return this.study != null && this.email.equals(study.getEmail());
     }
 
     public boolean isApplierOf(Study study) {
-        return this.study != null && !this.study.getEmail().equals(this.email);
+        return this.study != null && this.study.getId().equals(study.getId())
+                && !this.email.equals(study.getEmail());
     }
 }

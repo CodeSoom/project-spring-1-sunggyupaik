@@ -14,8 +14,13 @@ import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
+import com.example.bookclub.security.UserAccount;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -68,6 +73,7 @@ public class StudyService {
         createdStudy.addAdmin(account.getEmail());
         Account adminAccount = getAccount(account.getId());
         adminAccount.addStudy(study);
+        login(adminAccount);
 
         return StudyResultDto.of(createdStudy);
     }
@@ -111,6 +117,7 @@ public class StudyService {
         Account user = getAccount(account.getId());
 
         study.addAccount(user);
+        login(user);
 
         return id;
     }
@@ -123,6 +130,7 @@ public class StudyService {
         }
 
         study.cancelAccount(user);
+        login(user);
 
         return id;
     }
@@ -157,7 +165,7 @@ public class StudyService {
         return getStudiesByStudyState(StudyState.END).size();
     }
 
-    @Scheduled(cron = "0 0 0 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void scheduleOpenToClose() {
         List<Study> lists = getStudies().stream()
                 .filter(s -> s.getStudyState().equals(StudyState.OPEN))
@@ -172,7 +180,7 @@ public class StudyService {
         }
     }
 
-    @Scheduled(cron = "0 0 0 * * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void scheduleCloseToEnd() {
         List<Study> lists = getStudies().stream()
                 .filter(s -> s.getStudyState().equals(StudyState.CLOSE))
@@ -185,5 +193,15 @@ public class StudyService {
                 study.changeCloseToEnd();
             }
         }
+    }
+
+    public void login(Account account) {
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                new UserAccount(account, authorities),
+                account.getPassword(),
+                authorities);
+        SecurityContextHolder.getContext().setAuthentication(token);
     }
 }

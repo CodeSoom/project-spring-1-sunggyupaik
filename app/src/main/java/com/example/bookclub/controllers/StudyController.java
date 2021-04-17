@@ -30,22 +30,26 @@ public class StudyController {
     @GetMapping("/{id}")
     public String studyDetail(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
+        if(account == null) {
+            return "studys/studys-detail";
+        } else {
+            checkTopMenu(account, model);
+        }
+
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
         model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
         model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
-
-        if(account != null) {
-            if(study.isAlreadyStarted()) {
-                return "studys/studys-detail";
-            }
-            checkTopMenu(account, model);
-            if(account.getStudy() != null) {
-                model.addAttribute("alreadyApplied", "true");
-            } else {
-                model.addAttribute("notApplied", "true");
-            }
+        
+        if(study.isAlreadyStarted() || study.isNotOpened()) {
+            return "studys/studys-detail";
+        }
+        if(account.isMangerOf(study)) {
+            model.addAttribute("studyAdmin", "true");
+        }
+        if(account.isApplierOf(study)) {
+            model.addAttribute("studyApplier", "true");
         }
 
         return "studys/studys-detail";

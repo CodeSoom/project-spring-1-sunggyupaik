@@ -12,10 +12,16 @@ import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.security.UserAccount;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -81,6 +87,7 @@ public class AccountService {
             account.updatePassword(newPassword, passwordEncoder);
         }
         account.updateNickname(nickname);
+        login(account);
 
         return AccountResultDto.of(account);
     }
@@ -109,5 +116,15 @@ public class AccountService {
 
     public long countAllAccounts() {
         return accountRepository.findAll().size();
+    }
+
+    public void login(Account account) {
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                new UserAccount(account, authorities),
+                account.getPassword(),
+                authorities);
+        SecurityContextHolder.getContext().setAuthentication(token);
     }
 }
