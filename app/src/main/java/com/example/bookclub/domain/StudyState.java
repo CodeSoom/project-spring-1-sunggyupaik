@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 public enum StudyState implements EnumMapperType {
     OPEN("모집중"),
     CLOSE("마감"),
-    END("완료");
+    END("종료");
 
     private String studyState;
 
