@@ -10,7 +10,7 @@
             <div class="panel panel-info">
                 <ul class="list-group">
                     <li class="list-group-item"><a href="/studys/open">모집중</a></li>
-                    <li class="list-group-item"><a href="/studys/close">모집마감</a></li>
+                    <li class="list-group-item"><a href="/studys/close">진행중</a></li>
                     <li class="list-group-item"><a href="/studys/end">종료</a></li>
                 </ul>
             </div>
@@ -22,8 +22,9 @@
                     <thead>
                     <tr>
                         <th class="text-center d-none d-md-table-cell">스터디 번호</th>
-                        <th class="w-40">스터디 제목</th>
-                        <th class="text-center d-none d-md-table-cell">신청자/제한</th>
+                        <th class="text-center d-none d-md-table-cell">스터디 제목</th>
+                        <th class="text-center d-none d-md-table-cell">책 이름</th>
+                        <th class="text-center d-none d-md-table-cell">신청현황</th>
                         <th class="text-center d-none d-md-table-cell">날짜</th>
                         <th class="text-center d-none d-md-table-cell">시간</th>
                         <th class="text-center d-none d-md-table-cell">요일</th>
@@ -33,7 +34,8 @@
                     {{#studys}}
                         <tr>
                             <td class="text-center d-none d-md-table-cell">{{id}}</td>
-                            <td><a href='/studys/{{id}}'>{{name}}</a></td>
+                            <td class="text-center d-none d-md-table-cell"><a href='/studys/{{id}}'>{{name}}</a></td>
+                            <td class="text-center d-none d-md-table-cell">{{bookName}}</td>
                             <td class="text-center d-none d-md-table-cell">{{applyCount}} / {{size}}</td>
                             <td class="text-center d-none d-md-table-cell">{{startDate}} ~ {{endDate}}</td>
                             <td class="text-center d-none d-md-table-cell">{{startTime}} ~ {{endTime}}</td>
