@@ -110,12 +110,7 @@ public class StudyService {
             throw new StudySizeFullException();
         }
 
-        if (study.isOneLeft()) {
-           study.changeOpenToClose();
-        }
-
         Account user = getAccount(account.getId());
-
         study.addAccount(user);
         login(user);
 
@@ -125,10 +120,6 @@ public class StudyService {
     public Long cancelStudy(Account account, Long id) {
         Study study = getStudy(id);
         Account user = getAccount(account.getId());
-        if(study.isSizeFull()) {
-            study.changeCloseToOpen();
-        }
-
         study.cancelAccount(user);
         login(user);
 
