@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/studys")
@@ -101,12 +102,20 @@ public class StudyController {
     }
 
     @GetMapping("/open")
-    public String studyOpenList(@CurrentAccount Account account, Model model) {
+    public String studyOpenList(@CurrentAccount Account account,
+                                @RequestParam(required = false) String title,
+                                Model model) {
         if(account != null) {
             checkTopMenu(account, model);
         }
 
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
+        if(title != null) {
+            lists = lists.stream()
+                    .filter(s -> s.getBookName().equals(title))
+                    .collect(Collectors.toList());
+            model.addAttribute("keyword", title);
+        }
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
         return "studys/studys-list";
