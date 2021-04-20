@@ -140,6 +140,10 @@ public class StudyService {
         return studyRepository.findAll();
     }
 
+    public List<Study> getStudiesBySearch(String keyword) {
+        return studyRepository.findByKeyword(keyword);
+    }
+
     public List<Study> getStudiesByStudyState(StudyState studyState) {
         return studyRepository.findByStudyState(studyState);
     }
