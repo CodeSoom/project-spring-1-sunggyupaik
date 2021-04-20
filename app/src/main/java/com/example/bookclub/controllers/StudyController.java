@@ -118,6 +118,7 @@ public class StudyController {
         }
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
+        model.addAttribute("studyStatusCode", "open");
         return "studys/studys-list";
     }
 
@@ -130,6 +131,7 @@ public class StudyController {
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.CLOSE));
+        model.addAttribute("studyStatusCode", "close");
         return "studys/studys-list";
     }
 
@@ -142,6 +144,7 @@ public class StudyController {
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.END));
+        model.addAttribute("studyStatusCode", "end");
         return "studys/studys-list";
     }
 
