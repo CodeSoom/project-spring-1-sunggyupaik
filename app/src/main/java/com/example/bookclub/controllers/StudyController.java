@@ -104,6 +104,7 @@ public class StudyController {
     @GetMapping("/open")
     public String studyOpenList(@CurrentAccount Account account,
                                 @RequestParam(required = false) String title,
+                                @RequestParam(required = false) String keyword,
                                 Model model) {
         if(account != null) {
             checkTopMenu(account, model);
@@ -115,6 +116,9 @@ public class StudyController {
                     .filter(s -> s.getBookName().equals(title))
                     .collect(Collectors.toList());
             model.addAttribute("keyword", title);
+        }
+        if(keyword != null) {
+            lists = studyService.getStudiesBySearch(keyword);
         }
         model.addAttribute("studys", lists);
         model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
