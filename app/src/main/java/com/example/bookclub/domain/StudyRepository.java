@@ -12,6 +12,8 @@ public interface StudyRepository {
 
     List<Study> findByStudyState(StudyState studyState);
 
+    List<Study> findByKeyword(String keyword);
+
     Study save(Study study);
 
     void delete(Study study);

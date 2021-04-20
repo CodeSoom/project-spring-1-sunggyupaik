@@ -12,12 +12,26 @@
                     <li class="list-group-item"><a href="/studys/open">모집중</a></li>
                     <li class="list-group-item"><a href="/studys/close">진행중</a></li>
                     <li class="list-group-item"><a href="/studys/end">종료</a></li>
+                    <li class="list-group-item">
+                        <form class="navbar-form pull-left" action="/studys/{{studyStatusCode}}" method="get">
+                            <label for="keyword"></label>
+                            <input type="text" id="title" name="keyword" placeholder="책 제목을 입력하세요">
+                            <button type="submit" class="btn btn-primary btn-sm">검색</button>
+                        </form>
+                    </li>
                 </ul>
             </div>
         </div>
         <div class="card shadow col-md-9" style="min-height:600px;">
             <div class="card-body">
-                <h4 class="card-title">{{studyState}}</h4>
+                <h4 class="card-title">
+                    {{#keyword}}
+                        {{studyState}}<br><{{.}}>
+                    {{/keyword}}
+                    {{^keyword}}
+                        {{studyState}}
+                    {{/keyword}}
+                </h4>
                 <table class="table table-hover" id='board_list'>
                     <thead>
                     <tr>
