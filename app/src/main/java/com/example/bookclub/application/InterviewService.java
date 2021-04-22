@@ -111,4 +111,8 @@ public class InterviewService {
         }
         return interview;
     }
+
+    public List<Interview> getInterviews() {
+        return interviewRepository.findAll();
+    }
 }
