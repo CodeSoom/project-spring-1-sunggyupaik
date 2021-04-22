@@ -1,16 +1,39 @@
 {{>layout/header}}
+<link rel="stylesheet" type="text/css" href="/js/app/interviews.css">
+
 <div class="container-fluid" style="margin-top: 100px; text-align: center">
-    <button type="submit" id="crawlAll" class="btn btn-primary btn-sm">전체 크롤링</button>
     <div class="row">
         <div class="card shadow col-md-12">
             <div class="card-body">
                 <h4 class="card-title" style="text-align: center;"></h4>
-                <h6> 이미지, 글씨 등을 클릭하면 해당 기사를 볼 수 있습니다. </h6>
-                <div class="gallery-wrapper">
-                    <ul>
-
-                    </ul>
-                </div>
+                <ul class="list_author_interview">
+                    {{#interviews}}
+                        <hr>
+                        <li>
+                            <div class="photo">
+                                <a href="{{interviewUrl}}">
+                                    <img src="{{imgUrl}}" width="230px" height="200px" alt="">
+                                </a>
+                            </div>
+                            <div class="author">
+                                    {{author}}
+                            </div>
+                            <div class="title">
+                                <a href="{{interviewUrl}}">
+                                    <strong>{{title}}</strong>
+                                </a>
+                            </div>
+                            <div class="date">
+                                    {{date}}
+                            </div>
+                            <div class="content">
+                                <a href="{{interviewUrl}}">
+                                    {{content}}
+                                </a>
+                            </div>
+                        </li>
+                    {{/interviews}}
+                </ul>
             </div>
         </div>
     </div>
