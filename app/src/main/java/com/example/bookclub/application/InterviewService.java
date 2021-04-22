@@ -25,8 +25,9 @@ public class InterviewService {
         this.interviewRepository = interviewRepository;
     }
 
-    public void crawlAllInterviews() {
+    public List<Interview> crawlAllInterviews() {
         List<Interview> list = new ArrayList<>();
+        boolean isLastPage = false;
         try {
             int page = 1;
             while(true) {
@@ -35,6 +36,10 @@ public class InterviewService {
                 Document doc = conn.get();
 
                 Elements interviewsLiElements = doc.select(".list_author_interview > li");
+                if(isLastPage && interviewsLiElements.size() == 1) {
+                    break;
+                }
+
                 for(Element interviewElement : interviewsLiElements) {
                     Element photoChildElement = interviewElement.getElementsByClass("photo").first().child(0);
                     String boardId = photoChildElement.attr("href").split(",")[1].trim();;
@@ -53,17 +58,18 @@ public class InterviewService {
                             .date(LocalDate.parse(date, DateTimeFormatter.ISO_DATE))
                             .content(content)
                             .build();
+                    interviewRepository.save(interview);
                     list.add(interview);
                 }
 
                 if(interviewsLiElements.size() != 20) {
-                    break;
+                    isLastPage = true;
                 }
                 page++;
             }
-            interviewRepository.saveAll(list);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return list;
     }
 }
