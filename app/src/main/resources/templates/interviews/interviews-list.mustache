@@ -6,6 +6,19 @@
         <div class="card shadow col-md-12">
             <div class="card-body">
                 <h4 class="card-title" style="text-align: center;"></h4>
+                <form name="frmList" method="post">
+                    <input type="hidden" name="targetPage" value="1">
+                </form>
+                <div class="list_button_wrap">
+                    <div class="list_paging">
+                        <a class="btn_prev" href="javascript:void(0)">
+                            <img src="http://image.kyobobook.co.kr/ink/images/common/btn_prev03_on.gif" alt="이전">
+                        </a>
+                        <a class="btn_next" href="javascript:void(0)">
+                            <img src="http://image.kyobobook.co.kr/ink/images/common/btn_next03_on.gif" alt="이후">
+                        </a>
+                    </div>
+                </div>
                 <ul class="list_author_interview">
                     {{#interviews}}
                         <hr>
@@ -38,4 +51,5 @@
         </div>
     </div>
 </div>
+<script src="/js/app/interviews.js"></script>
 {{>layout/footer}}

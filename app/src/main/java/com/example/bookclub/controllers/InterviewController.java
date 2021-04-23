@@ -19,6 +19,7 @@ public class InterviewController {
     public InterviewController(InterviewService interviewService) {
         this.interviewService = interviewService;
     }
+
     @GetMapping
     public String interviewLists(@CurrentAccount Account account,
                                  Model model) {
