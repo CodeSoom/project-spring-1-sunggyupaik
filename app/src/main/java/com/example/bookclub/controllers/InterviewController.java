@@ -53,7 +53,7 @@ public class InterviewController {
         }
         List<Interview> interviews = interviewService
                 .getNowPageInterviews((nowPage - 1) * countList, countList);
-        
+
         //List<Interview> list = interviewService.crawlAllInterviews();
         return "interviews/interviews-list";
     }

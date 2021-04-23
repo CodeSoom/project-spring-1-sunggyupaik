@@ -115,4 +115,8 @@ public class InterviewService {
     public List<Interview> getInterviews() {
         return interviewRepository.findAll();
     }
+
+    public List<Interview> getNowPageInterviews(int startIndex, int countList) {
+        return interviewRepository.findTargetPageInterviews(startIndex, countList);
+    }
 }
