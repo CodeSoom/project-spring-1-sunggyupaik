@@ -37,7 +37,8 @@ public class InterviewController {
         if(account != null) {
             checkTopMenu(account, model);
         }
-        makePageable(targetPage, model);
+        int allInterviewsCount = interviewService.getInterviewsAll().size();
+        makePageable(allInterviewsCount, targetPage, model);
         return "interviews/interviews-list";
     }
 
@@ -51,8 +52,7 @@ public class InterviewController {
         }
     }
 
-    private void makePageable(String targetPage, Model model) {
-        int allInterviewsCount = interviewService.getInterviewsAll().size();
+    private void makePageable(int allInterviewsCount, String targetPage, Model model) {
         int totalPage = allInterviewsCount / countList;
         if(allInterviewsCount % countList > 0) {
             totalPage += 1;
