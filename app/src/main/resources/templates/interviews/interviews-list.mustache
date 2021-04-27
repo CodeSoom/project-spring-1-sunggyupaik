@@ -1,0 +1,87 @@
+{{>layout/header}}
+<link rel="stylesheet" type="text/css" href="/js/app/interviews.css">
+
+<div class="container-fluid" style="margin-top: 100px; text-align: center">
+    <div class="row">
+        <div class="card shadow col-md-12">
+            <div class="card-body">
+                <h4 class="card-title" style="text-align: center;"></h4>
+                <form name="frmList" method="get">
+                    <input type="hidden" name="targetPage" class="targetPage" value="{{pageUtils.targetPage}}">
+                    <input type="hidden" class="totalPage" value="{{pageUtils.totalPage}}">
+                    <input type="hidden" class="next" value="{{pageUtils.next}}">
+                </form>
+                <div class="list_button_wrap">
+                    <div class="list_paging">
+                        <a class="btn_first" href="javascript:void(0)" onclick="go_targetPage('1')">
+                            <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_prev10.gif" alt="처음">
+                        </a>
+                        <a class="btn_prev" href="javascript:void(0)" onclick="go_targetPage('{{pageUtils.previous}}')">
+                            <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_prev.gif" alt="이전">
+                        </a>
+                        {{#pageUtils.pageNumberList}}
+                            <a class="page{{.}}" href="javascript:void(0)" onclick="go_targetPage('{{.}}')">
+                                {{.}}
+                            </a>
+                        {{/pageUtils.pageNumberList}}
+                        <a class="btn_next" href="javascript:void(0)" onclick="go_targetPage('{{pageUtils.next}}')">
+                            <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_next.gif" alt="이후">
+                        </a>
+                        <a class="btn_last" href="javascript:void(0)" onclick="go_targetPage('{{pageUtils.totalPage}}')">
+                            <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_next10.gif" alt="마지막">
+                        </a>
+                    </div>
+                </div>
+                <ul class="list_author_interview">
+                    {{#lists}}
+                        <hr>
+                        <li>
+                            <div class="photo">
+                                <a href="{{interviewUrl}}">
+                                    <img src="{{imgUrl}}" width="230px" height="200px" alt="">
+                                </a>
+                            </div>
+                            <div class="author">
+                                    {{author}}
+                            </div>
+                            <div class="title">
+                                <a href="{{interviewUrl}}">
+                                    <strong>{{title}}</strong>
+                                </a>
+                            </div>
+                            <div class="date">
+                                    {{date}}
+                            </div>
+                            <div class="content">
+                                <a href="{{interviewUrl}}">
+                                    {{content}}
+                                </a>
+                            </div>
+                        </li>
+                    {{/lists}}
+                </ul>
+                <div class="list_paging">
+                    <a class="btn_first" href="javascript:void(0)" onclick="go_targetPage('1')">
+                        <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_prev10.gif" alt="처음">
+                    </a>
+                    <a class="btn_prev" href="javascript:void(0)" onclick="go_targetPage('{{pageUtils.previous}}')">
+                        <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_prev.gif" alt="이전">
+                    </a>
+                    {{#pageUtils.pageNumberList}}
+                        <a class="page{{.}}" href="javascript:void(0)" onclick="go_targetPage('{{.}}')">
+                            {{.}}
+                        </a>
+                    {{/pageUtils.pageNumberList}}
+                    <a class="btn_next" href="javascript:void(0)" onclick="go_targetPage('{{pageUtils.next}}')">
+                        <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_next.gif" alt="이후">
+                    </a>
+                    <a class="btn_last" href="javascript:void(0)" onclick="go_targetPage('{{pageUtils.totalPage}}')">
+                        <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_next10.gif" alt="마지막">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/app/interviews.js"></script>
+{{>layout/footer}}

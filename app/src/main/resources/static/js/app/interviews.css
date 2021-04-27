@@ -1,0 +1,45 @@
+li, ul {
+    list-style: none;
+}
+
+.photo {
+    float: left;
+    margin-right: 20px;
+}
+
+.list_author_interview {
+    padding: 0 120px;
+}
+
+.list_author_interview li {
+    padding: 40px;
+    margin: 20px;
+}
+
+a, a:link, a:visited, a:hover {
+    color: black;
+    text-decoration: none;
+}
+
+.author {
+    text-align: left;
+    font-size: 20px;
+    color: blue;
+    margin-bottom: 10px;
+}
+
+.title {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.date {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.content {
+    text-align: left;
+    margin-bottom: 10px;
+    font-size: 15px;
+}

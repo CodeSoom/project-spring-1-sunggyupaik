@@ -31,8 +31,8 @@ public class HomeController {
         long allStudiesCount = studyService.countAllStudies();
         model.addAttribute("allStudiesCount", allStudiesCount);
 
-        long allOpenStudiesCount = studyService.countOpenStudies();
-        model.addAttribute("allOpenStudiesCount", allOpenStudiesCount);
+        long allCloseStudiesCount = studyService.countCloseStudies();
+        model.addAttribute("allCloseStudiesCount", allCloseStudiesCount);
 
         long allEndStudiesCount = studyService.countEndStudies();
         model.addAttribute("allEndStudiesCount", allEndStudiesCount);
