@@ -13,8 +13,8 @@ var main = {
             _this.save();
         });
 
-        $('#btn-update').on('click', function () {
-            _this.update();
+        $('#btn-account-update').on('click', function () {
+            _this.updateUser();
         });
 
         $('#btn-user-delete').on('click', function () {
@@ -145,7 +145,7 @@ var main = {
         });
     },
 
-    update : function () {
+    updateUser : function () {
         var id = $('#id').val();
         var formData = new FormData();
         var uploadFile = document.getElementById("uploadFile").files[0];
@@ -169,7 +169,13 @@ var main = {
             alert('회원정보가 수정되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
-            alert(request.responseText);
+            if(request.responseText.match("Password")) {
+                alert("비밀번호가 틀렸습니다.");
+            } else if(request.responseText.match("Nickname")) {
+                alert("닉네임이 중복되었습니다.");
+            } else {
+                alert(request.responseText);
+            }
         });
     },
 

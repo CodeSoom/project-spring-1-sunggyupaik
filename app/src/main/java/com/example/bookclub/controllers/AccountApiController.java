@@ -3,7 +3,6 @@ package com.example.bookclub.controllers;
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.UploadFileService;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.IOException;
 
 @RestController
@@ -46,7 +46,7 @@ public class AccountApiController {
                                    AccountCreateDto accountCreateDto) throws IOException {
         AccountResultDto account = accountService.createUser(accountCreateDto);
         if (uploadFile != null) {
-            UploadFile file = uploadFileService.saveUploadFile(request, uploadFile, account.getId());
+            uploadFileService.saveUploadFile(request, uploadFile, account.getId());
         }
         return account;
     }
@@ -55,10 +55,10 @@ public class AccountApiController {
     public AccountResultDto update(HttpServletRequest request,
                                    @RequestPart(required = false) MultipartFile uploadFile,
                                    @PathVariable Long id,
-                                   AccountUpdateDto accountUpdateDto) throws IOException {
+                                   @Valid AccountUpdateDto accountUpdateDto) throws IOException {
         AccountResultDto account = accountService.updateUser(id, accountUpdateDto);
         if (uploadFile != null) {
-            UploadFile file = uploadFileService.saveUploadFile(request, uploadFile, account.getId());
+            uploadFileService.saveUploadFile(request, uploadFile, account.getId());
         }
         return account;
     }

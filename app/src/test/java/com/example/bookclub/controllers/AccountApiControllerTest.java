@@ -36,18 +36,15 @@ class AccountApiControllerTest {
     private static final String SETUP_EMAIL = "email";
     private static final String SETUP_NICKNAME = "nickname";
     private static final String SETUP_PASSWORD = "1234567890";
-    private static final String SETUP_PROFILEIMAGE = "image";
 
     private static final Long CREATED_ID = 2L;
     private static final String CREATED_NAME = "creatName";
     private static final String CREATED_EMAIL = "createEmail";
     private static final String CREATED_NICKNAME = "createNickname";
     private static final String CREATED_PASSWORD = "0987654321";
-    private static final String CREATED_PROFILEIMAGE = "createdImage";
 
     private static final String UPDATED_NICKNAME = "qwer";
     private static final String UPDATED_PASSWORD = "5678";
-    private static final String UPDATED_PROFILEIMAGE = "picture";
 
     private static final String EXISTED_EMAIL = "email";
 
@@ -70,7 +67,6 @@ class AccountApiControllerTest {
                 .email(SETUP_EMAIL)
                 .nickname(SETUP_NICKNAME)
                 .password(SETUP_PASSWORD)
-                .profileImage(SETUP_PROFILEIMAGE)
                 .build();
 
         createdAccount = Account.builder()
@@ -78,7 +74,6 @@ class AccountApiControllerTest {
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
         accountCreateDto = AccountCreateDto.builder()
@@ -86,13 +81,11 @@ class AccountApiControllerTest {
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
         accountUpdateDto = AccountUpdateDto.builder()
                 .nickname(UPDATED_NICKNAME)
                 .password(UPDATED_PASSWORD)
-                .profileImage(UPDATED_PROFILEIMAGE)
                 .build();
     }
 
@@ -122,7 +115,6 @@ class AccountApiControllerTest {
                 .andExpect(jsonPath("email").value(setUpAccount.getEmail()))
                 .andExpect(jsonPath("nickname").value(setUpAccount.getNickname()))
                 .andExpect(jsonPath("password").value(setUpAccount.getPassword()))
-                .andExpect(jsonPath("profileImage").value(setUpAccount.getProfileImage()))
                 .andExpect(jsonPath("deleted").value(false));
     }
 
@@ -136,7 +128,6 @@ class AccountApiControllerTest {
                     .email(accountCreateDto.getEmail())
                     .nickname(accountCreateDto.getNickname())
                     .password(accountCreateDto.getPassword())
-                    .profileImage(accountCreateDto.getProfileImage())
                     .build();
         });
 
@@ -152,7 +143,6 @@ class AccountApiControllerTest {
                 .andExpect(jsonPath("email").value(CREATED_EMAIL))
                 .andExpect(jsonPath("nickname").value(CREATED_NICKNAME))
                 .andExpect(jsonPath("password").value(CREATED_PASSWORD))
-                .andExpect(jsonPath("profileImage").value(CREATED_PROFILEIMAGE))
                 .andExpect(jsonPath("deleted").value(false));
     }
 
