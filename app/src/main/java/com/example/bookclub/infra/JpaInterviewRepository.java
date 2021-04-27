@@ -12,8 +12,8 @@ public interface JpaInterviewRepository
         extends InterviewRepository, CrudRepository<Interview, Long> {
     Interview save(Interview interview);
 
-    @Query("SELECT i from Interview i ORDER BY i.date DESC")
     List<Interview> findAll(Pageable pageable);
 
+    @Query("SELECT i from Interview i ORDER BY i.date DESC")
     List<Interview> findAll();
 }
