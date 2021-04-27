@@ -151,11 +151,9 @@ var main = {
         var uploadFile = document.getElementById("uploadFile").files[0];
         var nickname = $('#nickname').val();
         var password = $('#password').val();
-        var newPassword = $('#newPassword').val();
         formData.append("uploadFile", uploadFile);
         formData.append("nickname", nickname);
         formData.append("password", password);
-        formData.append("newPassword", newPassword);
 
         $.ajax({
             type: 'POST',
@@ -169,6 +167,7 @@ var main = {
             alert('회원정보가 수정되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
+            alert(request.responseText);
             if(request.responseText.match("Password")) {
                 alert("비밀번호가 틀렸습니다.");
             } else if(request.responseText.match("Nickname")) {

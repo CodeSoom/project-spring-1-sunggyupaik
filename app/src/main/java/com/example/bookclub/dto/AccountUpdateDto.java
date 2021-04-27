@@ -15,17 +15,11 @@ public class AccountUpdateDto {
     @Size(min=3, max=10)
     private String nickname;
 
-    @Size(min = 4, max = 1024)
     private String password;
 
-    @Size(min = 4, max = 1024)
-    private String newPassword;
-
     @Builder
-    public AccountUpdateDto(String nickname, String password,
-                            String newPassword) {
+    public AccountUpdateDto(String nickname, String password) {
         this.nickname = nickname;
         this.password = password;
-        this.newPassword = newPassword;
     }
 }

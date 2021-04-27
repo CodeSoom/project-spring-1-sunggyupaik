@@ -81,11 +81,6 @@ public class AccountService {
         if (isNicknameDuplicated(id, nickname)) {
             throw new AccountNicknameDuplicatedException(nickname);
         }
-
-        String newPassword = accountUpdateDto.getNewPassword();
-        if (!newPassword.equals("")) {
-            account.updatePassword(newPassword, passwordEncoder);
-        }
         account.updateNickname(nickname);
         login(account);
 
