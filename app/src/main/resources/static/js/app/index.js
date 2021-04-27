@@ -17,6 +17,10 @@ var main = {
             _this.updateUser();
         });
 
+        $('#btn-account-update-password').on('click', function () {
+            _this.updateUserPassword();
+        });
+
         $('#btn-user-delete').on('click', function () {
             _this.deleteUser();
         });
@@ -175,6 +179,28 @@ var main = {
             } else {
                 alert(request.responseText);
             }
+        });
+    },
+
+    updateUserPassword : function() {
+        var id = $('#id').val();
+        var data = {
+            password: $('#password').val(),
+            newPassword: $('#newPassword').val(),
+            newPasswordConfirmed: $('#newPasswordConfirmed').val()
+        };
+
+        $.ajax({
+            type: 'PATCH',
+            url: 'api/users/password/' + id,
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function() {
+            alert('비밀번호 수정이 완료되었습니다.');
+            window.location.href = '/users/update/' + id;
+        }).fail(function (request) {
+            alert(request.responseText);
         });
     },
 
