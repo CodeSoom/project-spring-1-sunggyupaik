@@ -12,6 +12,7 @@ import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.errors.NewPasswordNotMatchedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
