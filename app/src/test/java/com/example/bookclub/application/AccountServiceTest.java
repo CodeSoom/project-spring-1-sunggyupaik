@@ -116,7 +116,7 @@ class AccountServiceTest {
 
         nicknameExistedAccountUpdateDto = AccountUpdateDto.builder()
                 .nickname(SETUP_NICKNAME)
-                .password(SETUP_PASSWORD)
+                .password(CREATED_PASSWORD)
                 .build();
 
         passwordNotExistedAccountUpdateDto = AccountUpdateDto.builder()
@@ -181,9 +181,9 @@ class AccountServiceTest {
 
     @Test
     public void updatedWithExistedNickname() {
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpAccount));
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
 
-        assertThatThrownBy(() -> accountService.updateUser(EXISTED_ID, nicknameExistedAccountUpdateDto))
+        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, nicknameExistedAccountUpdateDto))
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
     }
 
