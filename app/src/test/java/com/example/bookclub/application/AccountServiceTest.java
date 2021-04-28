@@ -76,7 +76,7 @@ class AccountServiceTest {
                 .name(SETUP_NAME)
                 .email(SETUP_EMAIL)
                 .nickname(SETUP_NICKNAME)
-                .password(SETUP_PASSWORD)
+                .password(passwordEncoder.encode(SETUP_PASSWORD))
                 .build();
 
         createdAccount = Account.builder()
@@ -84,7 +84,7 @@ class AccountServiceTest {
                 .name(CREATED_NAME)
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
-                .password(CREATED_PASSWORD)
+                .password(passwordEncoder.encode(CREATED_PASSWORD))
                 .build();
 
         accountCreateDto = AccountCreateDto.builder()
@@ -97,7 +97,7 @@ class AccountServiceTest {
 
         accountUpdateDto = AccountUpdateDto.builder()
                 .nickname(UPDATED_NICKNAME)
-                .password(UPDATED_PASSWORD)
+                .password(CREATED_PASSWORD)
                 .build();
 
         emailExistedAccountCreateDto = AccountCreateDto.builder()
@@ -172,12 +172,11 @@ class AccountServiceTest {
 
     @Test
     public void updateWithValidAttribute() {
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpAccount));
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
 
-        AccountResultDto accountResultDto = accountService.updateUser(EXISTED_ID, accountUpdateDto);
-        
+        AccountResultDto accountResultDto = accountService.updateUser(CREATED_ID, accountUpdateDto);
+
         assertThat(accountResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
-        assertThat(accountResultDto.getPassword()).isEqualTo(accountUpdateDto.getPassword());
     }
 
     @Test
