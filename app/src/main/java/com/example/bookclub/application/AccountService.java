@@ -128,6 +128,11 @@ public class AccountService {
     public AccountResultDto updateUserPassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
         Account account = getUser(id);
 
+        String password = accountUpdatePasswordDto.getPassword();
+        if(!passwordEncoder.matches(password, account.getPassword())) {
+            throw new AccountPasswordBadRequestException();
+        }
+
         String newPassword = accountUpdatePasswordDto.getNewPassword();
         String newPasswordConfirmed = accountUpdatePasswordDto.getNewPasswordConfirmed();
         if(!newPassword.equals(newPasswordConfirmed)) {
