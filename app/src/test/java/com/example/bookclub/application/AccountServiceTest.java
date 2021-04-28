@@ -1,16 +1,17 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
-import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
-import com.example.bookclub.errors.AccountNicknameDuplicatedException;
-import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
+import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -40,7 +41,7 @@ class AccountServiceTest {
 
     private static final String UPDATED_NICKNAME = "qwer";
     private static final String NOT_EXISTED_PASSWORD = "5678";
-    private static final String UPDATED_PASSWORD = "1234";
+    private static final String UPDATED_PASSWORD = "4321";
 
     private static final String EXISTED_EMAIL = "abcd@naver.com";
     private static final String EXISTED_NICKNAME = "abcd";
@@ -57,6 +58,7 @@ class AccountServiceTest {
     private AccountUpdateDto accountUpdateDto;
     private AccountUpdateDto nicknameExistedAccountUpdateDto;
     private AccountUpdateDto passwordNotExistedAccountUpdateDto;
+    private AccountUpdatePasswordDto accountUpdatePasswordDto;
     private EmailAuthentication emailAuthentication;
 
     private AccountService accountService;
@@ -122,6 +124,12 @@ class AccountServiceTest {
         passwordNotExistedAccountUpdateDto = AccountUpdateDto.builder()
                 .nickname(SETUP_NICKNAME)
                 .password("")
+                .build();
+
+        accountUpdatePasswordDto = AccountUpdatePasswordDto.builder()
+                .password(CREATED_PASSWORD)
+                .newPassword(UPDATED_PASSWORD)
+                .newPasswordConfirmed(UPDATED_PASSWORD)
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
@@ -194,5 +202,17 @@ class AccountServiceTest {
 
         assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, passwordNotExistedAccountUpdateDto))
                 .isInstanceOf(AccountPasswordBadRequestException.class);
+    }
+
+    @Test
+    public void updatePasswordWithValidAttribute() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        AccountResultDto accountResultDto = accountService.updateUserPassword(CREATED_ID, accountUpdatePasswordDto);
+
+        assertThat(passwordEncoder.matches(
+                accountUpdatePasswordDto.getNewPassword(),
+                accountResultDto.getPassword())
+        ).isTrue();
     }
 }
