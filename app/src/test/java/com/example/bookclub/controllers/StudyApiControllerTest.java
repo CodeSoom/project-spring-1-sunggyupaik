@@ -111,7 +111,6 @@ class StudyApiControllerTest {
                 .email(ACCOUNT_EMAIL)
                 .nickname(ACCOUNT_NICKNAME)
                 .password(ACCOUNT_PASSWORD)
-                .profileImage(ACCOUNT_PROFILEIMAGE)
                 .build();
 
         token = new UsernamePasswordAuthenticationToken(
