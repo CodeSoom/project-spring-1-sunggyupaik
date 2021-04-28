@@ -10,7 +10,7 @@ import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.InvalidTokenException;
-import com.example.bookclub.errors.NewPasswordNotMatchedException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
@@ -27,8 +27,8 @@ import java.util.Objects;
 @RestControllerAdvice
 public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NewPasswordNotMatchedException.class)
-    public ErrorResponse handleNewPasswordNotMatched(NewPasswordNotMatchedException e) {
+    @ExceptionHandler(AccountNewPasswordNotMatchedException.class)
+    public ErrorResponse handleAccountNewPasswordNotMatched(AccountNewPasswordNotMatchedException e) {
         return new ErrorResponse(e.getMessage());
     }
 

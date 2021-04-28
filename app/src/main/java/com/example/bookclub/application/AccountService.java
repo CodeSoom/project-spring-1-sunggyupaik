@@ -9,6 +9,7 @@ import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
@@ -126,6 +127,12 @@ public class AccountService {
 
     public AccountResultDto updateUserPassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
         Account account = getUser(id);
+
+        String newPassword = accountUpdatePasswordDto.getNewPassword();
+        String newPasswordConfirmed = accountUpdatePasswordDto.getNewPasswordConfirmed();
+        if(!newPassword.equals(newPasswordConfirmed)) {
+            throw new AccountNewPasswordNotMatchedException();
+        }
 
         account.updatePassword(accountUpdatePasswordDto.getNewPassword(), passwordEncoder);
 

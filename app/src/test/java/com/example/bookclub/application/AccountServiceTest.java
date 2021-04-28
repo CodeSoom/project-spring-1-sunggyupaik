@@ -12,7 +12,7 @@ import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
-import com.example.bookclub.errors.NewPasswordNotMatchedException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -229,6 +229,6 @@ class AccountServiceTest {
         given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
 
         assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
-                .isInstanceOf(NewPasswordNotMatchedException.class);
+                .isInstanceOf(AccountNewPasswordNotMatchedException.class);
     }
 }
