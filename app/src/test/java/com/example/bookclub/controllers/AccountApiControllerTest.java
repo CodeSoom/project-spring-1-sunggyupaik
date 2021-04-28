@@ -85,7 +85,6 @@ class AccountApiControllerTest {
 
         accountUpdateDto = AccountUpdateDto.builder()
                 .nickname(UPDATED_NICKNAME)
-                .password(UPDATED_PASSWORD)
                 .build();
     }
 

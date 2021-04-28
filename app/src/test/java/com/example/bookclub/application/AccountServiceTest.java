@@ -31,20 +31,16 @@ class AccountServiceTest {
     private static final String SETUP_EMAIL = "abcd@naver.com";
     private static final String SETUP_NICKNAME = "abcd";
     private static final String SETUP_PASSWORD = "1234";
-    private static final String SETUP_PROFILEIMAGE = "image";
 
     private static final Long CREATED_ID = 2L;
     private static final String CREATED_NAME = "김철수";
     private static final String CREATED_EMAIL = "qwer@naver.com";
     private static final String CREATED_NICKNAME = "qwer";
     private static final String CREATED_PASSWORD = "5678";
-    private static final String CREATED_PROFILEIMAGE = "picture";
 
     private static final String UPDATED_NICKNAME = "qwer";
     private static final String NOT_EXISTED_PASSWORD = "5678";
     private static final String UPDATED_PASSWORD = "1234";
-
-    private static final String UPDATED_PROFILEIMAGE = "picture";
 
     private static final String EXISTED_EMAIL = "abcd@naver.com";
     private static final String EXISTED_NICKNAME = "abcd";
@@ -81,7 +77,6 @@ class AccountServiceTest {
                 .email(SETUP_EMAIL)
                 .nickname(SETUP_NICKNAME)
                 .password(SETUP_PASSWORD)
-                .profileImage(SETUP_PROFILEIMAGE)
                 .build();
 
         createdAccount = Account.builder()
@@ -90,7 +85,6 @@ class AccountServiceTest {
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
         accountCreateDto = AccountCreateDto.builder()
@@ -98,14 +92,12 @@ class AccountServiceTest {
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
                 .authenticationNumber(EXISTED_AUTHENTICATIONNUMBER)
                 .build();
 
         accountUpdateDto = AccountUpdateDto.builder()
                 .nickname(UPDATED_NICKNAME)
                 .password(UPDATED_PASSWORD)
-                .profileImage(UPDATED_PROFILEIMAGE)
                 .build();
 
         emailExistedAccountCreateDto = AccountCreateDto.builder()
@@ -113,7 +105,6 @@ class AccountServiceTest {
                 .email(EXISTED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
         nicknameExistedAccountCreateDto = AccountCreateDto.builder()
@@ -121,19 +112,15 @@ class AccountServiceTest {
                 .email(CREATED_EMAIL)
                 .nickname(EXISTED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
         nicknameExistedAccountUpdateDto = AccountUpdateDto.builder()
                 .nickname(SETUP_NICKNAME)
                 .password(SETUP_PASSWORD)
-                .profileImage(UPDATED_PROFILEIMAGE)
                 .build();
 
         passwordNotExistedAccountUpdateDto = AccountUpdateDto.builder()
                 .nickname(SETUP_NICKNAME)
-                .password(NOT_EXISTED_PASSWORD)
-                .profileImage(SETUP_PROFILEIMAGE)
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
@@ -155,7 +142,6 @@ class AccountServiceTest {
         assertThat(accountResultDto.getEmail()).isEqualTo(accountCreateDto.getEmail());
         assertThat(accountResultDto.getNickname()).isEqualTo(accountCreateDto.getNickname());
         assertThat(accountResultDto.getPassword()).isEqualTo(accountCreateDto.getPassword());
-        assertThat(accountResultDto.getProfileImage()).isEqualTo(accountCreateDto.getProfileImage());
 
         verify(emailAuthenticationRepository).delete(emailAuthentication);
     }
@@ -192,7 +178,6 @@ class AccountServiceTest {
         
         assertThat(accountResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
         assertThat(accountResultDto.getPassword()).isEqualTo(accountUpdateDto.getPassword());
-        assertThat(accountResultDto.getProfileImage()).isEqualTo(accountUpdateDto.getProfileImage());
     }
 
     @Test
