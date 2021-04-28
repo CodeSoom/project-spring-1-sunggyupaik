@@ -61,6 +61,7 @@ class AccountServiceTest {
     private AccountUpdateDto passwordNotExistedAccountUpdateDto;
     private AccountUpdatePasswordDto accountUpdatePasswordDto;
     private AccountUpdatePasswordDto newPasswordNotMatchedDto;
+    private AccountUpdatePasswordDto passwordNotMatchedDto;
     private EmailAuthentication emailAuthentication;
 
     private AccountService accountService;
@@ -138,6 +139,12 @@ class AccountServiceTest {
                 .password(CREATED_PASSWORD)
                 .newPassword(UPDATED_PASSWORD)
                 .newPasswordConfirmed(SETUP_PASSWORD)
+                .build();
+
+        passwordNotMatchedDto = AccountUpdatePasswordDto.builder()
+                .password("")
+                .newPassword(UPDATED_PASSWORD)
+                .newPasswordConfirmed(UPDATED_PASSWORD)
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
@@ -230,5 +237,13 @@ class AccountServiceTest {
 
         assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
                 .isInstanceOf(AccountNewPasswordNotMatchedException.class);
+    }
+
+    @Test
+    public void updatePasswordWithNotValidPassword() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, passwordNotMatchedDto))
+                .isInstanceOf(AccountPasswordBadRequestException.class);
     }
 }
