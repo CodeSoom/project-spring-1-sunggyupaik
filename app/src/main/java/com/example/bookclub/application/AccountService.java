@@ -7,6 +7,7 @@ import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
+import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
@@ -121,5 +122,13 @@ public class AccountService {
                 account.getPassword(),
                 authorities);
         SecurityContextHolder.getContext().setAuthentication(token);
+    }
+
+    public AccountResultDto updateUserPassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
+        Account account = getUser(id);
+
+        account.updatePassword(accountUpdatePasswordDto.getNewPassword(), passwordEncoder);
+
+        return AccountResultDto.of(account);
     }
 }
