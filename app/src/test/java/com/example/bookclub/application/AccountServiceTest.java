@@ -50,6 +50,7 @@ class AccountServiceTest {
     private static final String NOT_EXISTED_AUTHENTICATIONNUMBER = "67890";
 
     private Account setUpAccount;
+    private Account notEncodedCreatedAccount;
     private Account createdAccount;
     private PasswordEncoder passwordEncoder;
 
@@ -82,6 +83,14 @@ class AccountServiceTest {
                 .email(SETUP_EMAIL)
                 .nickname(SETUP_NICKNAME)
                 .password(passwordEncoder.encode(SETUP_PASSWORD))
+                .build();
+
+        notEncodedCreatedAccount = Account.builder()
+                .id(CREATED_ID)
+                .name(CREATED_NAME)
+                .email(CREATED_EMAIL)
+                .nickname(CREATED_NICKNAME)
+                .password(CREATED_PASSWORD)
                 .build();
 
         createdAccount = Account.builder()
@@ -155,7 +164,7 @@ class AccountServiceTest {
 
     @Test
     public void createWithValidAttribute() {
-        given(accountRepository.save(any(Account.class))).willReturn(createdAccount);
+        given(accountRepository.save(any(Account.class))).willReturn(notEncodedCreatedAccount);
         given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL))
                 .willReturn(Optional.of(emailAuthentication));
 
@@ -165,7 +174,12 @@ class AccountServiceTest {
         assertThat(accountResultDto.getName()).isEqualTo(accountCreateDto.getName());
         assertThat(accountResultDto.getEmail()).isEqualTo(accountCreateDto.getEmail());
         assertThat(accountResultDto.getNickname()).isEqualTo(accountCreateDto.getNickname());
-        assertThat(accountResultDto.getPassword()).isEqualTo(accountCreateDto.getPassword());
+        assertThat(passwordEncoder.matches(
+                accountCreateDto.getPassword(),
+                accountResultDto.getPassword())
+        ).isTrue();
+        assertThat(emailAuthentication.getAuthenticationNumber())
+                .isEqualTo(accountCreateDto.getAuthenticationNumber());
 
         verify(emailAuthenticationRepository).delete(emailAuthentication);
     }
