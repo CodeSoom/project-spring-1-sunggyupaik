@@ -59,6 +59,7 @@ class AccountServiceTest {
     private AccountUpdateDto nicknameExistedAccountUpdateDto;
     private AccountUpdateDto passwordNotExistedAccountUpdateDto;
     private AccountUpdatePasswordDto accountUpdatePasswordDto;
+    private AccountUpdatePasswordDto newPasswordNotMatchedDto;
     private EmailAuthentication emailAuthentication;
 
     private AccountService accountService;
@@ -130,6 +131,12 @@ class AccountServiceTest {
                 .password(CREATED_PASSWORD)
                 .newPassword(UPDATED_PASSWORD)
                 .newPasswordConfirmed(UPDATED_PASSWORD)
+                .build();
+
+        newPasswordNotMatchedDto = AccountUpdatePasswordDto.builder()
+                .password(CREATED_PASSWORD)
+                .newPassword(UPDATED_PASSWORD)
+                .newPasswordConfirmed(SETUP_PASSWORD)
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
@@ -214,5 +221,13 @@ class AccountServiceTest {
                 accountUpdatePasswordDto.getNewPassword(),
                 accountResultDto.getPassword())
         ).isTrue();
+    }
+
+    @Test
+    public void updatePasswordWithNotMatchedNewPassword() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
+                .isInstanceOf(NewPasswordNotMatchedException.class);
     }
 }
