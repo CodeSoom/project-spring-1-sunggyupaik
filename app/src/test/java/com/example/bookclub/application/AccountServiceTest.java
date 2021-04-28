@@ -55,6 +55,7 @@ class AccountServiceTest {
     private PasswordEncoder passwordEncoder;
 
     private AccountCreateDto accountCreateDto;
+    private AccountCreateDto authenticationNumberNotMatchedAccountCreateDto;
     private AccountCreateDto emailExistedAccountCreateDto;
     private AccountCreateDto nicknameExistedAccountCreateDto;
     private AccountUpdateDto accountUpdateDto;
@@ -107,6 +108,10 @@ class AccountServiceTest {
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
                 .authenticationNumber(EXISTED_AUTHENTICATIONNUMBER)
+                .build();
+
+        authenticationNumberNotMatchedAccountCreateDto = AccountCreateDto.builder()
+                .authenticationNumber(NOT_EXISTED_AUTHENTICATIONNUMBER)
                 .build();
 
         accountUpdateDto = AccountUpdateDto.builder()
@@ -193,19 +198,28 @@ class AccountServiceTest {
     }
 
     @Test
+    public void createWithNotMatchedAuthenticationNumber() {
+        given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL))
+                .willReturn(Optional.of(emailAuthentication));
+
+        assertThatThrownBy(() -> accountService.createUser(authenticationNumberNotMatchedAccountCreateDto))
+                .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
+
+    @Test
+    public void createWithNotExistedAuthenticationNumber() {
+        given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountService.createUser(accountCreateDto))
+                .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
+
+    @Test
     public void createWithDuplicatedNickname() {
         given(accountRepository.existsByNickname(EXISTED_NICKNAME)).willReturn(true);
 
         assertThatThrownBy(() -> accountService.createUser(nicknameExistedAccountCreateDto))
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
-    }
-
-    @Test
-    public void createWithNotValidAuthenticationNumber() {
-        given(emailAuthenticationRepository.findByEmail(SETUP_EMAIL)).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> accountService.createUser(accountCreateDto))
-                .isInstanceOf(EmailNotAuthenticatedException.class);
     }
 
     @Test
