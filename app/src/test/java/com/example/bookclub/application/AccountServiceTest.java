@@ -121,6 +121,7 @@ class AccountServiceTest {
 
         passwordNotExistedAccountUpdateDto = AccountUpdateDto.builder()
                 .nickname(SETUP_NICKNAME)
+                .password("")
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
@@ -189,9 +190,9 @@ class AccountServiceTest {
 
     @Test
     public void updateWithNotValidPassword() {
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpAccount));
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
 
-        assertThatThrownBy(() -> accountService.updateUser(EXISTED_ID, passwordNotExistedAccountUpdateDto))
+        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, passwordNotExistedAccountUpdateDto))
                 .isInstanceOf(AccountPasswordBadRequestException.class);
     }
 }

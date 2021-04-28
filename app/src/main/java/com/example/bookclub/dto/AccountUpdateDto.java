@@ -11,11 +11,13 @@ import javax.validation.constraints.Size;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
+@Builder
 public class AccountUpdateDto {
     @Size(min=3, max=10)
     private String nickname;
 
-    private String password;
+    @Builder.Default
+    private String password = "";
 
     @Builder
     public AccountUpdateDto(String nickname, String password) {
