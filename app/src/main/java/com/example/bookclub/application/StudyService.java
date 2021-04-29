@@ -47,6 +47,10 @@ public class StudyService {
     public StudyResultDto createStudy(Account account,
                                       StudyCreateDto studyCreateDto)
             throws ParseException {
+        if(account.getStudy() != null) {
+            throw new StudyAlreadyExistedException();
+        }
+
         LocalDate startDate = studyCreateDto.getStartDate();
         LocalDate today = LocalDate.now();
         if(startDate.isBefore(today) || startDate.isEqual(today)) {
