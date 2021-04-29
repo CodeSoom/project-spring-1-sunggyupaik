@@ -71,7 +71,8 @@ public class StudyServiceTest {
     private Study createStudy;
     private Study fullSizeStudy;
     private Study oneLeftStudy;
-    private Study openStudy;
+    private Study openedStudyOne;
+    private Study openedStudyTwo;
     private Study closeStudy;
     private Study endStudy;
 
@@ -85,7 +86,7 @@ public class StudyServiceTest {
     private AccountRepository accountRepository;
 
     private List<Study> listAllStudies;
-    private List<Study> listOpenStudies;
+    private List<Study> listOpenedStudies;
     private List<Study> listCloseStudies;
     private List<Study> listEndStudies;
 
@@ -149,7 +150,11 @@ public class StudyServiceTest {
                 .studyState(StudyState.OPEN)
                 .build();
 
-        openStudy = Study.builder()
+        openedStudyOne = Study.builder()
+                .studyState(StudyState.OPEN)
+                .build();
+
+        openedStudyTwo = Study.builder()
                 .studyState(StudyState.OPEN)
                 .build();
 
@@ -196,10 +201,11 @@ public class StudyServiceTest {
                 .build();
 
         listAllStudies = List.of(setUpStudy, createStudy);
-        listOpenStudies = List.of(openStudy);
+        listOpenedStudies = List.of(openedStudyOne, openedStudyTwo);
         listCloseStudies = List.of(closeStudy);
         listEndStudies = List.of(endStudy);
     }
+
     @Test
     void listAllStudies() {
         given(studyRepository.findAll()).willReturn(listAllStudies);
@@ -210,16 +216,18 @@ public class StudyServiceTest {
     }
 
     @Test
-    void listOpenStudies() {
-        given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenStudies);
+    void listOpenedStudies() {
+        given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenedStudies);
 
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
 
-        assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.OPEN);
+        for(Study study : lists) {
+            assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+        }
     }
 
     @Test
-    void listCloseStudies() {
+    void listClosedStudies() {
         given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listCloseStudies);
 
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
