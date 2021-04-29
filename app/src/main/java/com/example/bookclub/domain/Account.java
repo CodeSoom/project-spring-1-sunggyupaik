@@ -105,4 +105,8 @@ public class Account {
         return this.study != null && this.study.getId().equals(study.getId())
                 && !this.email.equals(study.getEmail());
     }
+
+    public void deleteStudy() {
+        this.study = null;
+    }
 }

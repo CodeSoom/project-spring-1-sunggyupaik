@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class StudyServiceTest {
     private static final Long EXISTED_ID = 1L;
@@ -447,10 +448,12 @@ public class StudyServiceTest {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
         given(accountRepository.findById(MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
 
-        List<Account> listsBeforeDelete = setUpStudy.getAccounts();
-        for(Account account : listsBeforeDelete) {
+
+        for(Account account : listApplierOfSetUpStudy) {
+            account.addStudy(setUpStudy);
             assertThat(account.getStudy()).isEqualTo(setUpStudy);
         }
+        managerOfSetUpStudy.addStudy(setUpStudy);
         assertThat(managerOfSetUpStudy.getStudy()).isEqualTo(setUpStudy);
 
         StudyResultDto studyResultDto = studyService.deleteStudy(managerOfSetUpStudy, EXISTED_ID);
@@ -460,7 +463,7 @@ public class StudyServiceTest {
         for(Account account : listsAfterDelete) {
             assertThat(account.getStudy()).isNull();
         }
-        assertThat(managerOfSetUpStudy.getStudy()).isNull();
+        verify(studyRepository).delete(setUpStudy);
     }
 
     @Test

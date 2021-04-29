@@ -104,6 +104,7 @@ public class StudyService {
         }
 
         studyRepository.delete(study);
+        study.deleteAccounts();
         return StudyResultDto.of(study);
     }
 

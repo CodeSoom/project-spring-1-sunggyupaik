@@ -152,4 +152,10 @@ public class Study {
     public boolean isNotOpened() {
         return !this.studyState.equals(StudyState.OPEN);
     }
+
+    public void deleteAccounts() {
+        for(Account account : accounts) {
+            account.deleteStudy();
+        }
+    }
 }
