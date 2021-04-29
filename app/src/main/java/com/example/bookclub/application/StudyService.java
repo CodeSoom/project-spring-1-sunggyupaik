@@ -47,6 +47,10 @@ public class StudyService {
     public StudyResultDto createStudy(Account account,
                                       StudyCreateDto studyCreateDto)
             throws ParseException {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+
         if(account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
