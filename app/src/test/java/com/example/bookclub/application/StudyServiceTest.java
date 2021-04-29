@@ -11,6 +11,7 @@ import com.example.bookclub.dto.StudyApplyDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.StartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
@@ -68,6 +69,8 @@ public class StudyServiceTest {
 
     private static final LocalDate PAST_STARTDATE = LocalDate.now().minusDays(3);
     private static final LocalDate TODAY_STARTDATE = LocalDate.now();
+    private static final LocalDate LATE_STARTDATE = LocalDate.now().plusDays(5);
+    private static final LocalDate EARLY_ENDDATE = LocalDate.now().plusDays(3);
 
     private static final Long NOT_EXISTED_ID = 2L;
     private static final Long CREATED_ID = 3L;
@@ -89,6 +92,7 @@ public class StudyServiceTest {
     private StudyCreateDto studyCreateDto;
     private StudyCreateDto studyStartDateInThePastDto;
     private StudyCreateDto studyStartDateTodayDto;
+    private StudyCreateDto endDateIsBeforeStartDateDto;
     private StudyUpdateDto studyUpdateDto;
 
     private StudyApplyDto studyApplyDto;
@@ -221,6 +225,11 @@ public class StudyServiceTest {
                 .startDate(TODAY_STARTDATE)
                 .build();
 
+        endDateIsBeforeStartDateDto = StudyCreateDto.builder()
+                .startDate(LATE_STARTDATE)
+                .endDate(EARLY_ENDDATE)
+                .build();
+
         studyUpdateDto = StudyUpdateDto.builder()
                 //업데이트 테스트에서 변수에 값을 할당할 것
 //                .name(UPDATE_NAME)
@@ -335,6 +344,14 @@ public class StudyServiceTest {
 
         assertThatThrownBy(() -> studyService.createStudy(account, studyStartDateTodayDto))
                 .isInstanceOf(StudyStartDateInThePastException.class);
+    }
+
+    @Test
+    void createWithEndDateIsBeforeStartDate() {
+        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(account));
+
+        assertThatThrownBy(() -> studyService.createStudy(account, endDateIsBeforeStartDateDto))
+                .isInstanceOf(StartAndEndDateNotValidException.class);
     }
 
     @Test
