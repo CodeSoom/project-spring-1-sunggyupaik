@@ -64,6 +64,9 @@ public class StudyServiceTest {
     private static final StudyState CREATED_STUDYSTATE = StudyState.OPEN;
     private static final Zone CREATED_ZONE = Zone.BUSAN;
 
+    private static final LocalDate PAST_STARTDATE = LocalDate.now().minusDays(3);
+    private static final LocalDate TODAY_STARTDATE = LocalDate.now();
+
     private static final Long NOT_EXISTED_ID = 2L;
     private static final Long CREATED_ID = 3L;
     private static final Long ONELEFTSTUDY_ID = 4L;
@@ -81,6 +84,8 @@ public class StudyServiceTest {
     private Study endedStudyTwo;
 
     private StudyCreateDto studyCreateDto;
+    private StudyCreateDto studyStartDateInThePastDto;
+    private StudyCreateDto studyStartDateTodayDto;
     private StudyUpdateDto studyUpdateDto;
 
     private StudyApplyDto studyApplyDto;
@@ -196,6 +201,14 @@ public class StudyServiceTest {
                 .zone(SETUP_ZONE)
                 .build();
 
+        studyStartDateInThePastDto = StudyCreateDto.builder()
+                .startDate(PAST_STARTDATE)
+                .build();
+
+        studyStartDateTodayDto = StudyCreateDto.builder()
+                .startDate(TODAY_STARTDATE)
+                .build();
+
         studyUpdateDto = StudyUpdateDto.builder()
                 //업데이트 테스트에서 변수에 값을 할당할 것
 //                .name(UPDATE_NAME)
@@ -291,6 +304,17 @@ public class StudyServiceTest {
         assertThat(studyResultDto.getName()).isEqualTo(createdStudy.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(createdStudy.getDescription());
         assertThat(studyResultDto.getStudyState()).isEqualTo(StudyState.OPEN);
+    }
+
+    @Test
+    void createWithStartDateInThePast() {
+        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(account));
+
+        assertThatThrownBy(() -> studyService.createStudy(account, studyStartDateInThePastDto))
+                .isInstanceOf(StudyStartDateInThePastException.class);
+
+        assertThatThrownBy(() -> studyService.createStudy(account, studyStartDateTodayDto))
+                .isInstanceOf(StudyStartDateInThePastException.class);
     }
 
     @Test
