@@ -14,6 +14,7 @@ import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
+import com.example.bookclub.errors.StudyStartDateInThePastException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
@@ -46,15 +47,12 @@ public class StudyService {
     public StudyResultDto createStudy(Account account,
                                       StudyCreateDto studyCreateDto)
             throws ParseException {
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
-
-        if (account.getStudy() != null) {
-            throw new StudyAlreadyExistedException();
-        }
-
         LocalDate startDate = studyCreateDto.getStartDate();
+        LocalDate today = LocalDate.now();
+        if(startDate.isBefore(today) || startDate.isEqual(today)) {
+            throw new StudyStartDateInThePastException();
+        }
+
         LocalDate endDate = studyCreateDto.getEndDate();
         LocalDate todayDate = LocalDate.now();
         if(startDate.isBefore(todayDate) || startDate.isAfter(endDate)) {
