@@ -11,6 +11,7 @@ import com.example.bookclub.dto.StudyApplyDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
@@ -39,7 +40,7 @@ public class StudyServiceTest {
     private static final String SETUP_DESCRIPTION = "description";
     private static final String SETUP_CONTACT = "contact";
     private static final int SETUP_SIZE = 5;
-    private static final LocalDate SETUP_STARTDATE = LocalDate.now();
+    private static final LocalDate SETUP_STARTDATE = LocalDate.now().plusDays(1);
     private static final LocalDate SETUP_ENDDATE = LocalDate.now().plusDays(7);
     private static final Day SETUP_DAY = Day.MONDAY;
     private static final String SETUP_STARTTIME = "13:00";
@@ -73,6 +74,7 @@ public class StudyServiceTest {
     private static final Long ONELEFTSTUDY_ID = 4L;
 
     private Account account;
+    private Account accountWithStudy;
     private Study setUpStudy;
     private Study createdStudy;
     private Study fullSizeStudy;
@@ -131,6 +133,15 @@ public class StudyServiceTest {
                 .day(SETUP_DAY)
                 .studyState(SETUP_STUDYSTATE)
                 .zone(SETUP_ZONE)
+                .build();
+
+        accountWithStudy = Account.builder()
+                .id(ACCOUNT_ID)
+                .name(ACCOUNT_NAME)
+                .email(ACCOUNT_EMAIL)
+                .nickname(ACCOUNT_NICKNAME)
+                .password(passwordEncoder.encode(ACCOUNT_PASSWORD))
+                .study(setUpStudy)
                 .build();
 
         createdStudy = Study.builder()
@@ -305,6 +316,14 @@ public class StudyServiceTest {
         assertThat(studyResultDto.getName()).isEqualTo(createdStudy.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(createdStudy.getDescription());
         assertThat(studyResultDto.getStudyState()).isEqualTo(StudyState.OPEN);
+    }
+
+    @Test
+    void createWithAccountAlreadyStudyExisted() {
+        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(accountWithStudy));
+
+        assertThatThrownBy(() -> studyService.createStudy(accountWithStudy, studyCreateDto))
+                .isInstanceOf(StudyAlreadyExistedException.class);
     }
 
     @Test
