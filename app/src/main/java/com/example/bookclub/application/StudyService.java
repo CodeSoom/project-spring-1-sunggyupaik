@@ -94,6 +94,10 @@ public class StudyService {
     }
 
     public StudyResultDto deleteStudy(Account account, Long id) {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+
         Study study = getStudy(id);
         if(!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");

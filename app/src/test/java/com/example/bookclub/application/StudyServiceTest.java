@@ -35,12 +35,12 @@ import static org.mockito.Mockito.mock;
 
 public class StudyServiceTest {
     private static final Long EXISTED_ID = 1L;
-    private static final String SETUP_NAME = "name";
-    private static final String SETUP_EMAIL = "email";
+    private static final String SETUP_NAME = "setUpName";
+    private static final String SETUP_EMAIL = "setUpEmail";
     private static final String SETUP_BOOKNAME = "자바 세상의 빌드를 이끄는 메이븐";
     private static final String SETUP_BOOKIMAGE = "http://bimage.interpark.com/goods_image/9/4/7/8/207979478s.jpg";
-    private static final String SETUP_DESCRIPTION = "description";
-    private static final String SETUP_CONTACT = "contact";
+    private static final String SETUP_DESCRIPTION = "setUpDescription";
+    private static final String SETUP_CONTACT = "setUpContact";
     private static final int SETUP_SIZE = 5;
     private static final LocalDate SETUP_STARTDATE = LocalDate.now().plusDays(1);
     private static final LocalDate SETUP_ENDDATE = LocalDate.now().plusDays(7);
@@ -51,10 +51,34 @@ public class StudyServiceTest {
     private static final Zone SETUP_ZONE = Zone.SEOUL;
 
     private static final Long ACCOUNT_ID = 1L;
-    private static final String ACCOUNT_NAME = "name";
-    private static final String ACCOUNT_EMAIL = "email";
-    private static final String ACCOUNT_NICKNAME = "nickname";
+    private static final String ACCOUNT_NAME = "accountName";
+    private static final String ACCOUNT_EMAIL = "accountEmail";
+    private static final String ACCOUNT_NICKNAME = "accountNickName";
     private static final String ACCOUNT_PASSWORD = "1234567890";
+
+    private static final Long MANAGER_ID = 2L;
+    private static final String MANAGER_NAME = "managerName";
+    private static final String MANAGER_EMAIL = "managerEmail";
+    private static final String MANAGER_NICKNAME = "managerNickName";
+    private static final String MANAGER_PASSWORD = "0987654321";
+
+    private static final Long APPLIER_ONE_ID = 3L;
+    private static final String APPLIER_ONE_NAME = "applierOneName";
+    private static final String APPLIER_ONE_EMAIL = "applierOneEmail";
+    private static final String APPLIER_ONE_NICKNAME = "applierOneNickName";
+    private static final String APPLIER_ONE_PASSWORD = "11111111";
+
+    private static final Long APPLIER_TWO_ID = 4L;
+    private static final String APPLIER_TWO_NAME = "applierTwoName";
+    private static final String APPLIER_TWO_EMAIL = "applierTwoEmail";
+    private static final String APPLIER_TWO_NICKNAME = "applierTwoNickName";
+    private static final String APPLIER_TWO_PASSWORD = "22222222";
+
+    private static final Long APPLIER_THREE_ID = 5L;
+    private static final String APPLIER_THREE_NAME = "applierThreeName";
+    private static final String APPLIER_THREE_EMAIL = "applierThreeEmail";
+    private static final String APPLIER_THREE_NICKNAME = "applierThreeNickName";
+    private static final String APPLIER_THREE_PASSWORD = "33333333";
 
     private static final String CREATED_NAME = "createdName";
     private static final String CREATED_BOOKNAME = "Do it! 점프 투 파이썬";
@@ -78,12 +102,15 @@ public class StudyServiceTest {
     private static final String LATE_STARTTIME = "15:00";
     private static final String EARLY_ENDTIME = "13:00";
 
-    private static final Long NOT_EXISTED_ID = 2L;
+    private static final Long NOT_EXISTED_ID = 100L;
     private static final Long CREATED_ID = 3L;
     private static final Long ONELEFTSTUDY_ID = 4L;
 
-    private Account account;
-    private Account accountWithStudy;
+    private Account accountWithOutStudy;
+    private Account managerOfSetUpStudy;
+    private Account applierOfSetUpStudyOne;
+    private Account applierOfSetUpStudyTwo;
+    private Account applierOfSetUpStudyThree;
     private Study setUpStudy;
     private Study createdStudy;
     private Study fullSizeStudy;
@@ -113,6 +140,7 @@ public class StudyServiceTest {
     private List<Study> listOpenedStudies;
     private List<Study> listClosedStudies;
     private List<Study> listEndedStudies;
+    private List<Account> listApplierOfSetUpStudy;
 
     @BeforeEach
     void setUp() {
@@ -120,7 +148,7 @@ public class StudyServiceTest {
         accountRepository = mock(AccountRepository.class);
         studyService = new StudyService(studyRepository, accountRepository);
         passwordEncoder = new BCryptPasswordEncoder();
-        account = Account.builder()
+        accountWithOutStudy = Account.builder()
                 .id(ACCOUNT_ID)
                 .name(ACCOUNT_NAME)
                 .email(ACCOUNT_EMAIL)
@@ -128,12 +156,45 @@ public class StudyServiceTest {
                 .password(passwordEncoder.encode(ACCOUNT_PASSWORD))
                 .build();
 
+        managerOfSetUpStudy = Account.builder()
+                .id(MANAGER_ID)
+                .name(MANAGER_NAME)
+                .email(MANAGER_EMAIL)
+                .nickname(MANAGER_NICKNAME)
+                .password(passwordEncoder.encode(MANAGER_PASSWORD))
+                .study(setUpStudy)
+                .build();
+
+        applierOfSetUpStudyOne = Account.builder()
+                .id(APPLIER_ONE_ID)
+                .study(setUpStudy)
+                .build();
+
+        applierOfSetUpStudyTwo = Account.builder()
+                .id(APPLIER_TWO_ID)
+                .study(setUpStudy)
+                .build();
+
+        applierOfSetUpStudyThree = Account.builder()
+                .id(APPLIER_THREE_ID)
+                .study(setUpStudy)
+                .build();
+
+        listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
+                applierOfSetUpStudyTwo, applierOfSetUpStudyThree);
+
+        //addStudy를 쓰지 않고 builder로 Study 주입이 안되는 이유 확인하기
+        applierOfSetUpStudyOne.addStudy(setUpStudy);
+        applierOfSetUpStudyTwo.addStudy(setUpStudy);
+        applierOfSetUpStudyThree.addStudy(setUpStudy);
+        managerOfSetUpStudy.addStudy(setUpStudy);
+
         setUpStudy = Study.builder()
                 .id(EXISTED_ID)
                 .name(SETUP_NAME)
                 .bookName(SETUP_BOOKNAME)
                 .bookImage(SETUP_BOOKIMAGE)
-                .email(SETUP_EMAIL)
+                .email(MANAGER_EMAIL)
                 .description(SETUP_DESCRIPTION)
                 .contact(SETUP_CONTACT)
                 .size(SETUP_SIZE)
@@ -144,15 +205,7 @@ public class StudyServiceTest {
                 .day(SETUP_DAY)
                 .studyState(SETUP_STUDYSTATE)
                 .zone(SETUP_ZONE)
-                .build();
-
-        accountWithStudy = Account.builder()
-                .id(ACCOUNT_ID)
-                .name(ACCOUNT_NAME)
-                .email(ACCOUNT_EMAIL)
-                .nickname(ACCOUNT_NICKNAME)
-                .password(passwordEncoder.encode(ACCOUNT_PASSWORD))
-                .study(setUpStudy)
+                .accounts(listApplierOfSetUpStudy)
                 .build();
 
         createdStudy = Study.builder()
@@ -333,50 +386,50 @@ public class StudyServiceTest {
     @Test
     void createWithValidateAttribute() throws ParseException {
         given(studyRepository.save(any(Study.class))).willReturn(createdStudy);
-        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(account));
+        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(accountWithOutStudy));
 
-        StudyResultDto studyResultDto = studyService.createStudy(account, studyCreateDto);
+        StudyResultDto studyResultDto = studyService.createStudy(accountWithOutStudy, studyCreateDto);
 
         assertThat(studyResultDto.getId()).isEqualTo(createdStudy.getId());
         assertThat(studyResultDto.getName()).isEqualTo(createdStudy.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(createdStudy.getDescription());
         assertThat(studyResultDto.getStudyState()).isEqualTo(StudyState.OPEN);
-        assertThat(studyResultDto.getEmail()).isEqualTo(account.getEmail());
-        assertThat(account.getStudy()).isEqualTo(createdStudy);
+        assertThat(studyResultDto.getEmail()).isEqualTo(accountWithOutStudy.getEmail());
+        assertThat(accountWithOutStudy.getStudy()).isEqualTo(createdStudy);
     }
 
     @Test
     void createWithAccountAlreadyStudyExisted() {
-        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(accountWithStudy));
+        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(managerOfSetUpStudy));
 
-        assertThatThrownBy(() -> studyService.createStudy(accountWithStudy, studyCreateDto))
+        assertThatThrownBy(() -> studyService.createStudy(managerOfSetUpStudy, studyCreateDto))
                 .isInstanceOf(StudyAlreadyExistedException.class);
     }
 
     @Test
     void createWithStartDateInThePast() {
-        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(account));
+        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(accountWithOutStudy));
 
-        assertThatThrownBy(() -> studyService.createStudy(account, studyStartDateInThePastDto))
+        assertThatThrownBy(() -> studyService.createStudy(accountWithOutStudy, studyStartDateInThePastDto))
                 .isInstanceOf(StudyStartDateInThePastException.class);
 
-        assertThatThrownBy(() -> studyService.createStudy(account, studyStartDateTodayDto))
+        assertThatThrownBy(() -> studyService.createStudy(accountWithOutStudy, studyStartDateTodayDto))
                 .isInstanceOf(StudyStartDateInThePastException.class);
     }
 
     @Test
     void createWithEndDateIsBeforeStartDate() {
-        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(account));
+        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(accountWithOutStudy));
 
-        assertThatThrownBy(() -> studyService.createStudy(account, endDateIsBeforeStartDateDto))
+        assertThatThrownBy(() -> studyService.createStudy(accountWithOutStudy, endDateIsBeforeStartDateDto))
                 .isInstanceOf(StartAndEndDateNotValidException.class);
     }
 
     @Test
     void createWithEndTimeIsBeforeStartTime() {
-        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(account));
+        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(accountWithOutStudy));
 
-        assertThatThrownBy(() -> studyService.createStudy(account, endTimeIsBeforeStartTimeDto))
+        assertThatThrownBy(() -> studyService.createStudy(accountWithOutStudy, endTimeIsBeforeStartTimeDto))
                 .isInstanceOf(StartAndEndTimeNotValidException.class);
     }
 
@@ -384,7 +437,7 @@ public class StudyServiceTest {
     void updateWithValidateAttribute() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
 
-        StudyResultDto studyResultDto = studyService.updateStudy(account, EXISTED_ID, studyUpdateDto);
+        StudyResultDto studyResultDto = studyService.updateStudy(accountWithOutStudy, EXISTED_ID, studyUpdateDto);
         assertThat(studyResultDto.getName()).isEqualTo(studyUpdateDto.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
     }
@@ -392,69 +445,80 @@ public class StudyServiceTest {
     @Test
     void deleteWithExistedId() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
+        given(accountRepository.findById(MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
 
-        StudyResultDto studyResultDto = studyService.deleteStudy(account, EXISTED_ID);
+        List<Account> listsBeforeDelete = setUpStudy.getAccounts();
+        for(Account account : listsBeforeDelete) {
+            assertThat(account.getStudy()).isEqualTo(setUpStudy);
+        }
+        assertThat(managerOfSetUpStudy.getStudy()).isEqualTo(setUpStudy);
 
-        assertThat(studyResultDto.getName()).isEqualTo(setUpStudy.getName());
-        assertThat(studyResultDto.getDescription()).isEqualTo(setUpStudy.getDescription());
+        StudyResultDto studyResultDto = studyService.deleteStudy(managerOfSetUpStudy, EXISTED_ID);
+
+        assertThat(studyResultDto.getId()).isEqualTo(setUpStudy.getId());
+        List<Account> listsAfterDelete = setUpStudy.getAccounts();
+        for(Account account : listsAfterDelete) {
+            assertThat(account.getStudy()).isNull();
+        }
+        assertThat(managerOfSetUpStudy.getStudy()).isNull();
     }
 
     @Test
     void applyWithExistedAccount() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(accountWithOutStudy));
 
         Study study = studyService.getStudy(EXISTED_ID);
         int beforeApplyCount = study.getApplyCount();
-        Long studyId = studyService.applyStudy(account, EXISTED_ID);
+        Long studyId = studyService.applyStudy(accountWithOutStudy, EXISTED_ID);
         int afterApplyCount = study.getApplyCount();
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount-1);
-        assertThat(setUpStudy.getAccounts()).contains(account);
-        assertThat(account.getStudy()).isNotNull();
+        assertThat(setUpStudy.getAccounts()).contains(accountWithOutStudy);
+        assertThat(accountWithOutStudy.getStudy()).isNotNull();
     }
 
     @Test
     void applyWhenSizeIsFull() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(fullSizeStudy));
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(accountWithOutStudy));
 
-        assertThatThrownBy(() -> studyService.applyStudy(account, EXISTED_ID))
+        assertThatThrownBy(() -> studyService.applyStudy(accountWithOutStudy, EXISTED_ID))
                 .isInstanceOf(StudySizeFullException.class);
     }
 
     @Test
     void applyWhenOneLeft() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(oneLeftStudy));
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(accountWithOutStudy));
 
         assertThat(oneLeftStudy.getStudyState()).isEqualTo(StudyState.OPEN);
-        Long studyId = studyService.applyStudy(account, EXISTED_ID);
+        Long studyId = studyService.applyStudy(accountWithOutStudy, EXISTED_ID);
         assertThat(oneLeftStudy.getStudyState()).isEqualTo(StudyState.CLOSE);
     }
 
     @Test
     void cancelWithExistedAccount() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(accountWithOutStudy));
 
         Study study = studyService.getStudy(EXISTED_ID);
         int beforeApplyCount = study.getApplyCount();
-        Long studyId = studyService.cancelStudy(account, EXISTED_ID);
+        Long studyId = studyService.cancelStudy(accountWithOutStudy, EXISTED_ID);
         int afterApplyCount = study.getApplyCount();
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount+1);
-        assertThat(setUpStudy.getAccounts()).doesNotContain(account);
-        assertThat(account.getStudy()).isNull();
+        assertThat(setUpStudy.getAccounts()).doesNotContain(accountWithOutStudy);
+        assertThat(accountWithOutStudy.getStudy()).isNull();
     }
 
     @Test
     void cancelWhenFull() {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(fullSizeStudy));
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(account));
+        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(accountWithOutStudy));
 
         assertThat(fullSizeStudy.getStudyState()).isEqualTo(StudyState.CLOSE);
-        Long studyId = studyService.cancelStudy(account, EXISTED_ID);
+        Long studyId = studyService.cancelStudy(accountWithOutStudy, EXISTED_ID);
         assertThat(fullSizeStudy.getStudyState()).isEqualTo(StudyState.OPEN);
     }
 }

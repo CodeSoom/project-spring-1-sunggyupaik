@@ -65,9 +65,6 @@ public class StudyApiController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public StudyResultDto delete(@CurrentAccount Account account,
                                  @PathVariable Long id) {
-        if(account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
         return studyService.deleteStudy(account, id);
     }
 
