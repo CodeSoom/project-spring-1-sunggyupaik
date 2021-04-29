@@ -75,7 +75,8 @@ public class StudyServiceTest {
     private Study openedStudyTwo;
     private Study closedStudyOne;
     private Study closedStudyTwo;
-    private Study endStudy;
+    private Study endedStudyOne;
+    private Study endedStudyTwo;
 
     private StudyCreateDto studyCreateDto;
     private StudyUpdateDto studyUpdateDto;
@@ -89,7 +90,7 @@ public class StudyServiceTest {
     private List<Study> listAllStudies;
     private List<Study> listOpenedStudies;
     private List<Study> listClosedStudies;
-    private List<Study> listEndStudies;
+    private List<Study> listEndedStudies;
 
     @BeforeEach
     void setUp() {
@@ -167,7 +168,11 @@ public class StudyServiceTest {
                 .studyState(StudyState.CLOSE)
                 .build();
 
-        endStudy = Study.builder()
+        endedStudyOne = Study.builder()
+                .studyState(StudyState.END)
+                .build();
+
+        endedStudyTwo = Study.builder()
                 .studyState(StudyState.END)
                 .build();
 
@@ -208,7 +213,7 @@ public class StudyServiceTest {
         listAllStudies = List.of(setUpStudy, createStudy);
         listOpenedStudies = List.of(openedStudyOne, openedStudyTwo);
         listClosedStudies = List.of(closedStudyOne, closedStudyTwo);
-        listEndStudies = List.of(endStudy);
+        listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
     }
 
     @Test
@@ -243,12 +248,14 @@ public class StudyServiceTest {
     }
 
     @Test
-    void listEndStudies() {
-        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listCloseStudies);
+    void listEndedStudies() {
+        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listEndedStudies);
 
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
 
-        assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.END);
+        for(Study study : lists) {
+            assertThat(study.getStudyState()).isEqualTo(StudyState.END);
+        }
     }
 
     @Test
