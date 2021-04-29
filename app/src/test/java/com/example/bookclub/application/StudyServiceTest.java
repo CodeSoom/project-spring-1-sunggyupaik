@@ -73,7 +73,8 @@ public class StudyServiceTest {
     private Study oneLeftStudy;
     private Study openedStudyOne;
     private Study openedStudyTwo;
-    private Study closeStudy;
+    private Study closedStudyOne;
+    private Study closedStudyTwo;
     private Study endStudy;
 
     private StudyCreateDto studyCreateDto;
@@ -87,7 +88,7 @@ public class StudyServiceTest {
 
     private List<Study> listAllStudies;
     private List<Study> listOpenedStudies;
-    private List<Study> listCloseStudies;
+    private List<Study> listClosedStudies;
     private List<Study> listEndStudies;
 
     @BeforeEach
@@ -158,7 +159,11 @@ public class StudyServiceTest {
                 .studyState(StudyState.OPEN)
                 .build();
 
-        closeStudy = Study.builder()
+        closedStudyOne = Study.builder()
+                .studyState(StudyState.CLOSE)
+                .build();
+
+        closedStudyTwo = Study.builder()
                 .studyState(StudyState.CLOSE)
                 .build();
 
@@ -202,7 +207,7 @@ public class StudyServiceTest {
 
         listAllStudies = List.of(setUpStudy, createStudy);
         listOpenedStudies = List.of(openedStudyOne, openedStudyTwo);
-        listCloseStudies = List.of(closeStudy);
+        listClosedStudies = List.of(closedStudyOne, closedStudyTwo);
         listEndStudies = List.of(endStudy);
     }
 
@@ -228,11 +233,13 @@ public class StudyServiceTest {
 
     @Test
     void listClosedStudies() {
-        given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listCloseStudies);
+        given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listClosedStudies);
 
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
 
-        assertThat(lists.get(0).getStudyState()).isEqualTo(StudyState.CLOSE);
+        for(Study study : lists) {
+            assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
+        }
     }
 
     @Test
