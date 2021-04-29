@@ -13,6 +13,7 @@ import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
+import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
