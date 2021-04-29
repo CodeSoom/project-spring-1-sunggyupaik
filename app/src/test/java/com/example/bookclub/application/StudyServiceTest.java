@@ -49,7 +49,6 @@ public class StudyServiceTest {
     private static final String ACCOUNT_EMAIL = "email";
     private static final String ACCOUNT_NICKNAME = "nickname";
     private static final String ACCOUNT_PASSWORD = "1234567890";
-    private static final String ACCOUNT_PROFILEIMAGE = "image";
 
     private static final String UPDATE_NAME = "updatedName";
     private static final String UPDATE_DESCRIPTION = "updatedDescription";
@@ -101,7 +100,6 @@ public class StudyServiceTest {
                 .email(ACCOUNT_EMAIL)
                 .nickname(ACCOUNT_NICKNAME)
                 .password(ACCOUNT_PASSWORD)
-                .profileImage(ACCOUNT_PROFILEIMAGE)
                 .build();
 
         setUpStudy = Study.builder()
@@ -176,7 +174,6 @@ public class StudyServiceTest {
                 .startTime(SETUP_STARTTIME)
                 .endTime(SETUP_ENDTIME)
                 .day(SETUP_DAY)
-                .studyState(SETUP_STUDYSTATE)
                 .zone(SETUP_ZONE)
                 .build();
 

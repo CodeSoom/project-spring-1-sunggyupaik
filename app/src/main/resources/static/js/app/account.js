@@ -1,9 +1,9 @@
 $(document).on("click", "i.del" , function() {
     $(this).parent().remove();
 });
+
 $(function() {
-    $(document).on("change",".uploadFile", function()
-    {
+    $(document).on("change",".uploadFile", function() {
         var uploadFile = $(this);
         var files = !!this.files ? this.files : [];
         if (!files.length || !window.FileReader) return;

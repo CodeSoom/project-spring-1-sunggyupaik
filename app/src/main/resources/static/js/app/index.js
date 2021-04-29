@@ -13,8 +13,12 @@ var main = {
             _this.save();
         });
 
-        $('#btn-update').on('click', function () {
-            _this.update();
+        $('#btn-account-update').on('click', function () {
+            _this.updateUser();
+        });
+
+        $('#btn-account-update-password').on('click', function () {
+            _this.updateUserPassword();
         });
 
         $('#btn-user-delete').on('click', function () {
@@ -145,17 +149,15 @@ var main = {
         });
     },
 
-    update : function () {
+    updateUser : function () {
         var id = $('#id').val();
         var formData = new FormData();
         var uploadFile = document.getElementById("uploadFile").files[0];
         var nickname = $('#nickname').val();
         var password = $('#password').val();
-        var newPassword = $('#newPassword').val();
         formData.append("uploadFile", uploadFile);
         formData.append("nickname", nickname);
         formData.append("password", password);
-        formData.append("newPassword", newPassword);
 
         $.ajax({
             type: 'POST',
@@ -168,6 +170,35 @@ var main = {
         }).done(function() {
             alert('회원정보가 수정되었습니다.');
             window.location.href = '/';
+        }).fail(function (request) {
+            alert(request.responseText);
+            if(request.responseText.match("Password")) {
+                alert("비밀번호가 틀렸습니다.");
+            } else if(request.responseText.match("Nickname")) {
+                alert("닉네임이 중복되었습니다.");
+            } else {
+                alert(request.responseText);
+            }
+        });
+    },
+
+    updateUserPassword : function() {
+        var id = $('#id').val();
+        var data = {
+            password: $('#password').val(),
+            newPassword: $('#newPassword').val(),
+            newPasswordConfirmed: $('#newPasswordConfirmed').val()
+        };
+
+        $.ajax({
+            type: 'PATCH',
+            url: 'api/users/password/' + id,
+            dataType: 'json',
+            contentType:'application/json; charset=utf-8',
+            data: JSON.stringify(data)
+        }).done(function() {
+            alert('비밀번호 수정이 완료되었습니다.');
+            window.location.href = '/users/update/' + id;
         }).fail(function (request) {
             alert(request.responseText);
         });

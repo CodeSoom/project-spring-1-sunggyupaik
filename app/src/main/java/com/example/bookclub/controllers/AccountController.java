@@ -32,6 +32,18 @@ public class AccountController {
         return "users/users-update";
     }
 
+    @GetMapping("/update/password/{id}")
+    public String usersPasswordUpdate(@CurrentAccount Account account,
+                                      @PathVariable Long id, Model model) {
+        if (account == null || !account.getId().equals(id)) {
+            throw new AccessDeniedException("권한이 없습니다");
+        } else {
+            checkTopMenu(account, model);
+        }
+
+        return "users/users-update-password";
+    }
+
     private void checkTopMenu(@CurrentAccount Account account, Model model) {
         model.addAttribute("account", account);
         if (account.isMangerOf(account.getStudy())) {

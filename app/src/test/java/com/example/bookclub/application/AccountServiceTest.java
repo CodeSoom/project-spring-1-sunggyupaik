@@ -1,16 +1,18 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
-import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
-import com.example.bookclub.errors.AccountNicknameDuplicatedException;
-import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
+import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -31,20 +33,16 @@ class AccountServiceTest {
     private static final String SETUP_EMAIL = "abcd@naver.com";
     private static final String SETUP_NICKNAME = "abcd";
     private static final String SETUP_PASSWORD = "1234";
-    private static final String SETUP_PROFILEIMAGE = "image";
 
     private static final Long CREATED_ID = 2L;
     private static final String CREATED_NAME = "김철수";
     private static final String CREATED_EMAIL = "qwer@naver.com";
     private static final String CREATED_NICKNAME = "qwer";
     private static final String CREATED_PASSWORD = "5678";
-    private static final String CREATED_PROFILEIMAGE = "picture";
 
     private static final String UPDATED_NICKNAME = "qwer";
     private static final String NOT_EXISTED_PASSWORD = "5678";
-    private static final String UPDATED_PASSWORD = "1234";
-
-    private static final String UPDATED_PROFILEIMAGE = "picture";
+    private static final String UPDATED_PASSWORD = "4321";
 
     private static final String EXISTED_EMAIL = "abcd@naver.com";
     private static final String EXISTED_NICKNAME = "abcd";
@@ -52,15 +50,20 @@ class AccountServiceTest {
     private static final String NOT_EXISTED_AUTHENTICATIONNUMBER = "67890";
 
     private Account setUpAccount;
+    private Account notEncodedCreatedAccount;
     private Account createdAccount;
     private PasswordEncoder passwordEncoder;
 
     private AccountCreateDto accountCreateDto;
+    private AccountCreateDto authenticationNumberNotMatchedAccountCreateDto;
     private AccountCreateDto emailExistedAccountCreateDto;
     private AccountCreateDto nicknameExistedAccountCreateDto;
     private AccountUpdateDto accountUpdateDto;
     private AccountUpdateDto nicknameExistedAccountUpdateDto;
     private AccountUpdateDto passwordNotExistedAccountUpdateDto;
+    private AccountUpdatePasswordDto accountUpdatePasswordDto;
+    private AccountUpdatePasswordDto newPasswordNotMatchedDto;
+    private AccountUpdatePasswordDto passwordNotMatchedDto;
     private EmailAuthentication emailAuthentication;
 
     private AccountService accountService;
@@ -80,8 +83,15 @@ class AccountServiceTest {
                 .name(SETUP_NAME)
                 .email(SETUP_EMAIL)
                 .nickname(SETUP_NICKNAME)
-                .password(SETUP_PASSWORD)
-                .profileImage(SETUP_PROFILEIMAGE)
+                .password(passwordEncoder.encode(SETUP_PASSWORD))
+                .build();
+
+        notEncodedCreatedAccount = Account.builder()
+                .id(CREATED_ID)
+                .name(CREATED_NAME)
+                .email(CREATED_EMAIL)
+                .nickname(CREATED_NICKNAME)
+                .password(CREATED_PASSWORD)
                 .build();
 
         createdAccount = Account.builder()
@@ -89,8 +99,7 @@ class AccountServiceTest {
                 .name(CREATED_NAME)
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
-                .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
+                .password(passwordEncoder.encode(CREATED_PASSWORD))
                 .build();
 
         accountCreateDto = AccountCreateDto.builder()
@@ -98,14 +107,16 @@ class AccountServiceTest {
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
                 .authenticationNumber(EXISTED_AUTHENTICATIONNUMBER)
+                .build();
+
+        authenticationNumberNotMatchedAccountCreateDto = AccountCreateDto.builder()
+                .authenticationNumber(NOT_EXISTED_AUTHENTICATIONNUMBER)
                 .build();
 
         accountUpdateDto = AccountUpdateDto.builder()
                 .nickname(UPDATED_NICKNAME)
-                .password(UPDATED_PASSWORD)
-                .profileImage(UPDATED_PROFILEIMAGE)
+                .password(CREATED_PASSWORD)
                 .build();
 
         emailExistedAccountCreateDto = AccountCreateDto.builder()
@@ -113,7 +124,6 @@ class AccountServiceTest {
                 .email(EXISTED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
         nicknameExistedAccountCreateDto = AccountCreateDto.builder()
@@ -121,19 +131,34 @@ class AccountServiceTest {
                 .email(CREATED_EMAIL)
                 .nickname(EXISTED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .profileImage(CREATED_PROFILEIMAGE)
                 .build();
 
         nicknameExistedAccountUpdateDto = AccountUpdateDto.builder()
                 .nickname(SETUP_NICKNAME)
-                .password(SETUP_PASSWORD)
-                .profileImage(UPDATED_PROFILEIMAGE)
+                .password(CREATED_PASSWORD)
                 .build();
 
         passwordNotExistedAccountUpdateDto = AccountUpdateDto.builder()
                 .nickname(SETUP_NICKNAME)
-                .password(NOT_EXISTED_PASSWORD)
-                .profileImage(SETUP_PROFILEIMAGE)
+                .password("")
+                .build();
+
+        accountUpdatePasswordDto = AccountUpdatePasswordDto.builder()
+                .password(CREATED_PASSWORD)
+                .newPassword(UPDATED_PASSWORD)
+                .newPasswordConfirmed(UPDATED_PASSWORD)
+                .build();
+
+        newPasswordNotMatchedDto = AccountUpdatePasswordDto.builder()
+                .password(CREATED_PASSWORD)
+                .newPassword(UPDATED_PASSWORD)
+                .newPasswordConfirmed(SETUP_PASSWORD)
+                .build();
+
+        passwordNotMatchedDto = AccountUpdatePasswordDto.builder()
+                .password("")
+                .newPassword(UPDATED_PASSWORD)
+                .newPasswordConfirmed(UPDATED_PASSWORD)
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
@@ -144,7 +169,7 @@ class AccountServiceTest {
 
     @Test
     public void createWithValidAttribute() {
-        given(accountRepository.save(any(Account.class))).willReturn(createdAccount);
+        given(accountRepository.save(any(Account.class))).willReturn(notEncodedCreatedAccount);
         given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL))
                 .willReturn(Optional.of(emailAuthentication));
 
@@ -154,8 +179,12 @@ class AccountServiceTest {
         assertThat(accountResultDto.getName()).isEqualTo(accountCreateDto.getName());
         assertThat(accountResultDto.getEmail()).isEqualTo(accountCreateDto.getEmail());
         assertThat(accountResultDto.getNickname()).isEqualTo(accountCreateDto.getNickname());
-        assertThat(accountResultDto.getPassword()).isEqualTo(accountCreateDto.getPassword());
-        assertThat(accountResultDto.getProfileImage()).isEqualTo(accountCreateDto.getProfileImage());
+        assertThat(passwordEncoder.matches(
+                accountCreateDto.getPassword(),
+                accountResultDto.getPassword())
+        ).isTrue();
+        assertThat(emailAuthentication.getAuthenticationNumber())
+                .isEqualTo(accountCreateDto.getAuthenticationNumber());
 
         verify(emailAuthenticationRepository).delete(emailAuthentication);
     }
@@ -169,6 +198,23 @@ class AccountServiceTest {
     }
 
     @Test
+    public void createWithNotMatchedAuthenticationNumber() {
+        given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL))
+                .willReturn(Optional.of(emailAuthentication));
+
+        assertThatThrownBy(() -> accountService.createUser(authenticationNumberNotMatchedAccountCreateDto))
+                .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
+
+    @Test
+    public void createWithNotExistedAuthenticationNumber() {
+        given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountService.createUser(accountCreateDto))
+                .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
+
+    @Test
     public void createWithDuplicatedNickname() {
         given(accountRepository.existsByNickname(EXISTED_NICKNAME)).willReturn(true);
 
@@ -177,37 +223,55 @@ class AccountServiceTest {
     }
 
     @Test
-    public void createWithNotValidAuthenticationNumber() {
-        given(emailAuthenticationRepository.findByEmail(SETUP_EMAIL)).willReturn(Optional.empty());
-
-        assertThatThrownBy(() -> accountService.createUser(accountCreateDto))
-                .isInstanceOf(EmailNotAuthenticatedException.class);
-    }
-
-    @Test
     public void updateWithValidAttribute() {
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpAccount));
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
 
-        AccountResultDto accountResultDto = accountService.updateUser(EXISTED_ID, accountUpdateDto);
-        
+        AccountResultDto accountResultDto = accountService.updateUser(CREATED_ID, accountUpdateDto);
+
         assertThat(accountResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
-        assertThat(accountResultDto.getPassword()).isEqualTo(accountUpdateDto.getPassword());
-        assertThat(accountResultDto.getProfileImage()).isEqualTo(accountUpdateDto.getProfileImage());
     }
 
     @Test
     public void updatedWithExistedNickname() {
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpAccount));
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
 
-        assertThatThrownBy(() -> accountService.updateUser(EXISTED_ID, nicknameExistedAccountUpdateDto))
+        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, nicknameExistedAccountUpdateDto))
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
     }
 
     @Test
     public void updateWithNotValidPassword() {
-        given(accountRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpAccount));
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
 
-        assertThatThrownBy(() -> accountService.updateUser(EXISTED_ID, passwordNotExistedAccountUpdateDto))
+        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, passwordNotExistedAccountUpdateDto))
+                .isInstanceOf(AccountPasswordBadRequestException.class);
+    }
+
+    @Test
+    public void updatePasswordWithValidAttribute() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        AccountResultDto accountResultDto = accountService.updateUserPassword(CREATED_ID, accountUpdatePasswordDto);
+
+        assertThat(passwordEncoder.matches(
+                accountUpdatePasswordDto.getNewPassword(),
+                accountResultDto.getPassword())
+        ).isTrue();
+    }
+
+    @Test
+    public void updatePasswordWithNotMatchedNewPassword() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
+                .isInstanceOf(AccountNewPasswordNotMatchedException.class);
+    }
+
+    @Test
+    public void updatePasswordWithNotValidPassword() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, passwordNotMatchedDto))
                 .isInstanceOf(AccountPasswordBadRequestException.class);
     }
 }

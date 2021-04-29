@@ -7,7 +7,9 @@ import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
+import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
@@ -81,11 +83,6 @@ public class AccountService {
         if (isNicknameDuplicated(id, nickname)) {
             throw new AccountNicknameDuplicatedException(nickname);
         }
-
-        String newPassword = accountUpdateDto.getNewPassword();
-        if (!newPassword.equals("")) {
-            account.updatePassword(newPassword, passwordEncoder);
-        }
         account.updateNickname(nickname);
         login(account);
 
@@ -126,5 +123,24 @@ public class AccountService {
                 account.getPassword(),
                 authorities);
         SecurityContextHolder.getContext().setAuthentication(token);
+    }
+
+    public AccountResultDto updateUserPassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
+        Account account = getUser(id);
+
+        String password = accountUpdatePasswordDto.getPassword();
+        if(!passwordEncoder.matches(password, account.getPassword())) {
+            throw new AccountPasswordBadRequestException();
+        }
+
+        String newPassword = accountUpdatePasswordDto.getNewPassword();
+        String newPasswordConfirmed = accountUpdatePasswordDto.getNewPasswordConfirmed();
+        if(!newPassword.equals(newPasswordConfirmed)) {
+            throw new AccountNewPasswordNotMatchedException();
+        }
+
+        account.updatePassword(accountUpdatePasswordDto.getNewPassword(), passwordEncoder);
+
+        return AccountResultDto.of(account);
     }
 }
