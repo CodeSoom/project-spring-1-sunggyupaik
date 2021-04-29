@@ -56,9 +56,11 @@ public class StudyServiceTest {
     private static final String ACCOUNT_NICKNAME = "nickname";
     private static final String ACCOUNT_PASSWORD = "1234567890";
 
-    private static final String CREATED_NAME = "updatedName";
-    private static final String CREATED_DESCRIPTION = "updatedDescription";
-    private static final String CREATED_CONTACT = "updatedContact";
+    private static final String CREATED_NAME = "createdName";
+    private static final String CREATED_BOOKNAME = "Do it! 점프 투 파이썬";
+    private static final String CREATED_BOOKIMAGE = "http://bimage.interpark.com/goods_image/7/4/8/4/310327484s.jpg";
+    private static final String CREATED_DESCRIPTION = "createdDescription";
+    private static final String CREATED_CONTACT = "createdContact";
     private static final int CREATED_SIZE = 10;
     private static final LocalDate CREATED_STARTDATE = LocalDate.now().plusDays(1);
     private static final LocalDate CREATED_ENDDATE = LocalDate.now().plusDays(5);
@@ -156,6 +158,8 @@ public class StudyServiceTest {
         createdStudy = Study.builder()
                 .id(CREATED_ID)
                 .name(CREATED_NAME)
+                .bookName(CREATED_BOOKNAME)
+                .bookImage(CREATED_BOOKIMAGE)
                 .email(SETUP_EMAIL)
                 .description(CREATED_DESCRIPTION)
                 .contact(CREATED_CONTACT)
@@ -207,19 +211,19 @@ public class StudyServiceTest {
                 .build();
 
         studyCreateDto = StudyCreateDto.builder()
-                .name(SETUP_NAME)
-                .bookName(SETUP_BOOKNAME)
-                .bookImage(SETUP_BOOKIMAGE)
+                .name(CREATED_NAME)
+                .bookName(CREATED_BOOKNAME)
+                .bookImage(CREATED_BOOKIMAGE)
                 .email(SETUP_EMAIL)
-                .description(SETUP_DESCRIPTION)
-                .contact(SETUP_CONTACT)
-                .size(SETUP_SIZE)
-                .startDate(SETUP_STARTDATE)
-                .endDate(SETUP_ENDDATE)
-                .startTime(SETUP_STARTTIME)
-                .endTime(SETUP_ENDTIME)
-                .day(SETUP_DAY)
-                .zone(SETUP_ZONE)
+                .description(CREATED_DESCRIPTION)
+                .contact(CREATED_CONTACT)
+                .size(CREATED_SIZE)
+                .startDate(CREATED_STARTDATE)
+                .endDate(CREATED_ENDDATE)
+                .startTime(CREATED_STARTTIME)
+                .endTime(CREATED_ENDTIME)
+                .day(CREATED_DAY)
+                .zone(CREATED_ZONE)
                 .build();
 
         studyStartDateInThePastDto = StudyCreateDto.builder()
@@ -337,6 +341,8 @@ public class StudyServiceTest {
         assertThat(studyResultDto.getName()).isEqualTo(createdStudy.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(createdStudy.getDescription());
         assertThat(studyResultDto.getStudyState()).isEqualTo(StudyState.OPEN);
+        assertThat(studyResultDto.getEmail()).isEqualTo(account.getEmail());
+        assertThat(account.getStudy()).isEqualTo(createdStudy);
     }
 
     @Test
