@@ -58,8 +58,7 @@ public class StudyService {
         }
 
         LocalDate endDate = studyCreateDto.getEndDate();
-        LocalDate todayDate = LocalDate.now();
-        if(startDate.isBefore(todayDate) || startDate.isAfter(endDate)) {
+        if(startDate.isAfter(endDate)) {
             throw new StartAndEndDateNotValidException();
         }
 
