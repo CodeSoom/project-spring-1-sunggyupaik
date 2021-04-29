@@ -15,6 +15,8 @@ import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -50,25 +52,25 @@ public class StudyServiceTest {
     private static final String ACCOUNT_NICKNAME = "nickname";
     private static final String ACCOUNT_PASSWORD = "1234567890";
 
-    private static final String UPDATE_NAME = "updatedName";
-    private static final String UPDATE_DESCRIPTION = "updatedDescription";
-    private static final String UPDATE_CONTACT = "updatedContact";
-    private static final int UPDATE_SIZE = 10;
-    private static final LocalDate UPDATE_STARTDATE = LocalDate.now().plusDays(1);
-    private static final LocalDate UPDATE_ENDDATE = LocalDate.now().plusDays(5);
-    private static final Day UPDATE_DAY = Day.THURSDAY;
-    private static final String UPDATE_STARTTIME = "12:00";
-    private static final String UPDATE_ENDTIME = "14:30";
-    private static final StudyState UPDATE_STUDYSTATE = StudyState.CLOSE;
-    private static final Zone UPDATE_ZONE = Zone.BUSAN;
+    private static final String CREATED_NAME = "updatedName";
+    private static final String CREATED_DESCRIPTION = "updatedDescription";
+    private static final String CREATED_CONTACT = "updatedContact";
+    private static final int CREATED_SIZE = 10;
+    private static final LocalDate CREATED_STARTDATE = LocalDate.now().plusDays(1);
+    private static final LocalDate CREATED_ENDDATE = LocalDate.now().plusDays(5);
+    private static final Day CREATED_DAY = Day.THURSDAY;
+    private static final String CREATED_STARTTIME = "12:00";
+    private static final String CREATED_ENDTIME = "14:30";
+    private static final StudyState CREATED_STUDYSTATE = StudyState.OPEN;
+    private static final Zone CREATED_ZONE = Zone.BUSAN;
 
     private static final Long NOT_EXISTED_ID = 2L;
     private static final Long CREATED_ID = 3L;
-    private static final Long ONELEFTSTUDY_ID = 4l;
+    private static final Long ONELEFTSTUDY_ID = 4L;
 
     private Account account;
     private Study setUpStudy;
-    private Study createStudy;
+    private Study createdStudy;
     private Study fullSizeStudy;
     private Study oneLeftStudy;
     private Study openedStudyOne;
@@ -86,6 +88,7 @@ public class StudyServiceTest {
     private StudyService studyService;
     private StudyRepository studyRepository;
     private AccountRepository accountRepository;
+    private PasswordEncoder passwordEncoder;
 
     private List<Study> listAllStudies;
     private List<Study> listOpenedStudies;
@@ -97,12 +100,13 @@ public class StudyServiceTest {
         studyRepository = mock(StudyRepository.class);
         accountRepository = mock(AccountRepository.class);
         studyService = new StudyService(studyRepository, accountRepository);
+        passwordEncoder = new BCryptPasswordEncoder();
         account = Account.builder()
                 .id(ACCOUNT_ID)
                 .name(ACCOUNT_NAME)
                 .email(ACCOUNT_EMAIL)
                 .nickname(ACCOUNT_NICKNAME)
-                .password(ACCOUNT_PASSWORD)
+                .password(passwordEncoder.encode(ACCOUNT_PASSWORD))
                 .build();
 
         setUpStudy = Study.builder()
@@ -123,20 +127,20 @@ public class StudyServiceTest {
                 .zone(SETUP_ZONE)
                 .build();
 
-        createStudy = Study.builder()
+        createdStudy = Study.builder()
                 .id(CREATED_ID)
-                .name(UPDATE_NAME)
+                .name(CREATED_NAME)
                 .email(SETUP_EMAIL)
-                .description(UPDATE_DESCRIPTION)
-                .contact(UPDATE_CONTACT)
-                .size(UPDATE_SIZE)
-                .startDate(UPDATE_STARTDATE)
-                .endDate(UPDATE_ENDDATE)
-                .startTime(UPDATE_STARTTIME)
-                .endTime(UPDATE_ENDTIME)
-                .day(UPDATE_DAY)
-                .studyState(UPDATE_STUDYSTATE)
-                .zone(UPDATE_ZONE)
+                .description(CREATED_DESCRIPTION)
+                .contact(CREATED_CONTACT)
+                .size(CREATED_SIZE)
+                .startDate(CREATED_STARTDATE)
+                .endDate(CREATED_ENDDATE)
+                .startTime(CREATED_STARTTIME)
+                .endTime(CREATED_ENDTIME)
+                .day(CREATED_DAY)
+                .studyState(CREATED_STUDYSTATE)
+                .zone(CREATED_ZONE)
                 .build();
 
         fullSizeStudy = Study.builder()
@@ -193,24 +197,25 @@ public class StudyServiceTest {
                 .build();
 
         studyUpdateDto = StudyUpdateDto.builder()
-                .name(UPDATE_NAME)
-                .description(UPDATE_DESCRIPTION)
-                .contact(UPDATE_CONTACT)
-                .size(UPDATE_SIZE)
-                .startDate(UPDATE_STARTDATE)
-                .endDate(UPDATE_ENDDATE)
-                .startTime(UPDATE_STARTTIME)
-                .endTime(UPDATE_ENDTIME)
-                .day(UPDATE_DAY)
-                .studyState(UPDATE_STUDYSTATE)
-                .zone(UPDATE_ZONE)
+                //업데이트 테스트에서 변수에 값을 할당할 것
+//                .name(UPDATE_NAME)
+//                .description(UPDATE_DESCRIPTION)
+//                .contact(UPDATE_CONTACT)
+//                .size(UPDATE_SIZE)
+//                .startDate(UPDATE_STARTDATE)
+//                .endDate(UPDATE_ENDDATE)
+//                .startTime(UPDATE_STARTTIME)
+//                .endTime(UPDATE_ENDTIME)
+//                .day(UPDATE_DAY)
+//                .studyState(UPDATE_STUDYSTATE)
+//                .zone(UPDATE_ZONE)
                 .build();
 
         studyApplyDto = StudyApplyDto.builder()
                 .email(SETUP_EMAIL)
                 .build();
 
-        listAllStudies = List.of(setUpStudy, createStudy);
+        listAllStudies = List.of(setUpStudy, createdStudy);
         listOpenedStudies = List.of(openedStudyOne, openedStudyTwo);
         listClosedStudies = List.of(closedStudyOne, closedStudyTwo);
         listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
@@ -222,7 +227,7 @@ public class StudyServiceTest {
 
         List<Study> lists = studyService.getStudies();
 
-        assertThat(lists).containsExactly(setUpStudy, createStudy);
+        assertThat(lists).containsExactly(setUpStudy, createdStudy);
     }
 
     @Test
@@ -277,13 +282,15 @@ public class StudyServiceTest {
 
     @Test
     void createWithValidateAttribute() throws ParseException {
-        given(studyRepository.save(any(Study.class))).willReturn(setUpStudy);
+        given(studyRepository.save(any(Study.class))).willReturn(createdStudy);
+        given(accountRepository.findById(ACCOUNT_ID)).willReturn(Optional.of(account));
 
         StudyResultDto studyResultDto = studyService.createStudy(account, studyCreateDto);
 
-        assertThat(studyResultDto.getId()).isEqualTo(setUpStudy.getId());
-        assertThat(studyResultDto.getName()).isEqualTo(setUpStudy.getName());
-        assertThat(studyResultDto.getDescription()).isEqualTo(setUpStudy.getDescription());
+        assertThat(studyResultDto.getId()).isEqualTo(createdStudy.getId());
+        assertThat(studyResultDto.getName()).isEqualTo(createdStudy.getName());
+        assertThat(studyResultDto.getDescription()).isEqualTo(createdStudy.getDescription());
+        assertThat(studyResultDto.getStudyState()).isEqualTo(StudyState.OPEN);
     }
 
     @Test
