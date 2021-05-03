@@ -109,7 +109,10 @@ public class StudyServiceTest {
 
     private static final Long NOT_EXISTED_ID = 100L;
     private static final Long ONELEFTSTUDY_ID = 4L;
+    private static final Long FULL_SIZE_ID = 5L;
     private static final Long ACCOUNT_WITHOUT_STUDY_ID = 6L;
+
+
 
     private Account managerOfCreatedStudy;
     private Account managerOfSetUpStudy;
@@ -160,7 +163,7 @@ public class StudyServiceTest {
                 .email(CREATED_MANAGER_EMAIL)
                 .nickname(CREATED_MANAGER_NICKNAME)
                 .password(passwordEncoder.encode(CREATED_MANAGER_PASSWORD))
-                .study(createdStudy)
+//                .study(createdStudy)
                 .build();
 
         managerOfSetUpStudy = Account.builder()
@@ -169,22 +172,22 @@ public class StudyServiceTest {
                 .email(SETUP_MANAGER_EMAIL)
                 .nickname(SETUP_MANAGER_NICKNAME)
                 .password(passwordEncoder.encode(SETUP_MANAGER_PASSWORD))
-                .study(setUpStudy)
+//                .study(setUpStudy)
                 .build();
 
         applierOfSetUpStudyOne = Account.builder()
                 .id(APPLIER_ONE_ID)
-                .study(setUpStudy)
+//                .study(setUpStudy)
                 .build();
 
         applierOfSetUpStudyTwo = Account.builder()
                 .id(APPLIER_TWO_ID)
-                .study(setUpStudy)
+//                .study(setUpStudy)
                 .build();
 
         applierOfSetUpStudyThree = Account.builder()
                 .id(APPLIER_THREE_ID)
-                .study(setUpStudy)
+//                .study(setUpStudy)
                 .build();
 
         accountWithoutStudy = Account.builder()
@@ -194,12 +197,6 @@ public class StudyServiceTest {
                 .nickname(SETUP_MANAGER_NICKNAME)
                 .password(passwordEncoder.encode(SETUP_MANAGER_PASSWORD))
                 .build();
-        //addStudy를 쓰지 않고 builder로 Study 주입이 안되는 이유 확인하기
-        applierOfSetUpStudyOne.addStudy(setUpStudy);
-        System.out.println(managerOfCreatedStudy.getStudy()+"========");
-        applierOfSetUpStudyTwo.addStudy(setUpStudy);
-        applierOfSetUpStudyThree.addStudy(setUpStudy);
-        managerOfSetUpStudy.addStudy(setUpStudy);
 
 //        listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
 //                applierOfSetUpStudyTwo, applierOfSetUpStudyThree);
@@ -524,10 +521,10 @@ public class StudyServiceTest {
 
     @Test
     void applyWhenSizeIsFull() {
-        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(fullSizeStudy));
-        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(managerOfCreatedStudy));
+        given(studyRepository.findById(FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
+        given(accountRepository.findById(ACCOUNT_WITHOUT_STUDY_ID)).willReturn(Optional.of(accountWithoutStudy));
 
-        assertThatThrownBy(() -> studyService.applyStudy(managerOfCreatedStudy, SETUP_ID))
+        assertThatThrownBy(() -> studyService.applyStudy(accountWithoutStudy, FULL_SIZE_ID))
                 .isInstanceOf(StudySizeFullException.class);
     }
 
