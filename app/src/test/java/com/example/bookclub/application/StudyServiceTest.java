@@ -19,6 +19,7 @@ import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -446,6 +447,15 @@ public class StudyServiceTest {
         assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
         assertThat(studyResultDto.getName()).isEqualTo(studyUpdateDto.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
+    }
+
+    @Test
+    void updateWithInvalidAccount() {
+        given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
+        given(accountRepository.findById(SETUP_MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
+
+        assertThatThrownBy(() -> studyService.updateStudy(managerOfSetUpStudy, CREATED_ID, studyUpdateDto))
+                .isInstanceOf(AccessDeniedException.class);
     }
 
     @Test
