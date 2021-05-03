@@ -55,21 +55,17 @@ public class StudyService {
             throw new StudyAlreadyExistedException();
         }
 
-        LocalDate startDate = studyCreateDto.getStartDate();
-        LocalDate today = LocalDate.now();
-        if(startDate.isBefore(today) || startDate.isEqual(today)) {
+        if(startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
 
-        LocalDate endDate = studyCreateDto.getEndDate();
-        if(startDate.isAfter(endDate)) {
+        if(startDateIsAfterEndDate(studyCreateDto.getStartDate(),
+                studyCreateDto.getEndDate())) {
             throw new StartAndEndDateNotValidException();
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        Date startTime = sdf.parse(studyCreateDto.getStartTime());
-        Date endTime = sdf.parse(studyCreateDto.getEndTime());
-        if(startTime.after(endTime)) {
+        if(startTimeIsAfterEndTime(studyCreateDto.getStartTime(),
+                studyCreateDto.getEndTime())) {
             throw new StartAndEndTimeNotValidException();
         }
 
@@ -79,6 +75,22 @@ public class StudyService {
         login(account);
 
         return StudyResultDto.of(createdStudy);
+    }
+
+    private boolean startTimeIsAfterEndTime(String startTime, String endTime) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        Date startTimeDate = sdf.parse(startTime);
+        Date endTimeDate = sdf.parse(endTime);
+        return startTimeDate.after(endTimeDate);
+    }
+
+    private boolean startDateIsAfterEndDate(LocalDate startDate, LocalDate endDate) {
+        return startDate.isAfter(endDate);
+    }
+
+    private boolean startDateIsTodayOrBefore(LocalDate startDate) {
+        LocalDate today = LocalDate.now();
+        return startDate.isBefore(today) || startDate.isEqual(today);
     }
 
     public StudyResultDto updateStudy(Account account,
@@ -103,8 +115,9 @@ public class StudyService {
             throw new AccessDeniedException("권한이 없습니다");
         }
 
-        studyRepository.delete(study);
         study.deleteAccounts();
+        studyRepository.delete(study);
+
         return StudyResultDto.of(study);
     }
 

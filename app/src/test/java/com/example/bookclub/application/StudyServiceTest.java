@@ -448,7 +448,6 @@ public class StudyServiceTest {
         given(studyRepository.findById(EXISTED_ID)).willReturn(Optional.of(setUpStudy));
         given(accountRepository.findById(MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
 
-
         for(Account account : listApplierOfSetUpStudy) {
             account.addStudy(setUpStudy);
             assertThat(account.getStudy()).isEqualTo(setUpStudy);
