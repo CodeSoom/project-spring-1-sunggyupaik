@@ -520,6 +520,16 @@ public class StudyServiceTest {
     }
 
     @Test
+    void applyWithStudyAlready() {
+        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
+        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
+        managerOfCreatedStudy.addStudy(createdStudy);
+
+        assertThatThrownBy(() -> studyService.applyStudy(managerOfCreatedStudy, SETUP_ID))
+                .isInstanceOf(StudyAlreadyExistedException.class);
+    }
+
+    @Test
     void applyWhenSizeIsFull() {
         given(studyRepository.findById(FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
         given(accountRepository.findById(ACCOUNT_WITHOUT_STUDY_ID)).willReturn(Optional.of(accountWithoutStudy));
