@@ -439,7 +439,7 @@ public class StudyServiceTest {
     }
 
     @Test
-    void updateWithValidateAttribute() {
+    void updateWithValidateAttribute() throws ParseException {
         given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
         given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
 

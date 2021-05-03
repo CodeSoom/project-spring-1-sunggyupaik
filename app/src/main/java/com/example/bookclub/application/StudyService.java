@@ -77,6 +77,32 @@ public class StudyService {
         return StudyResultDto.of(createdStudy);
     }
 
+    public StudyResultDto updateStudy(Account account,
+                                      Long id,
+                                      StudyUpdateDto studyUpdateDto) throws ParseException {
+        Study study = getStudy(id);
+        if (!study.isManagedBy(account)) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+
+        if(startDateIsTodayOrBefore(studyUpdateDto.getStartDate())) {
+            throw new StudyStartDateInThePastException();
+        }
+
+        if(startDateIsAfterEndDate(studyUpdateDto.getStartDate(),
+                studyUpdateDto.getEndDate())) {
+            throw new StartAndEndDateNotValidException();
+        }
+
+        if(startTimeIsAfterEndTime(studyUpdateDto.getStartTime(),
+                studyUpdateDto.getEndTime())) {
+            throw new StartAndEndTimeNotValidException();
+        }
+
+        study.updateWith(studyUpdateDto);
+        return StudyResultDto.of(study);
+    }
+
     private boolean startTimeIsAfterEndTime(String startTime, String endTime) throws ParseException {
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         Date startTimeDate = sdf.parse(startTime);
@@ -91,18 +117,6 @@ public class StudyService {
     private boolean startDateIsTodayOrBefore(LocalDate startDate) {
         LocalDate today = LocalDate.now();
         return startDate.isBefore(today) || startDate.isEqual(today);
-    }
-
-    public StudyResultDto updateStudy(Account account,
-                                      Long id,
-                                      StudyUpdateDto studyUpdateDto) {
-        Study study = getStudy(id);
-        if (!study.isManagedBy(account)) {
-           throw new AccessDeniedException("권한이 없습니다");
-        }
-
-        study.updateWith(studyUpdateDto);
-        return StudyResultDto.of(study);
     }
 
     public StudyResultDto deleteStudy(Account account, Long id) {
