@@ -450,9 +450,18 @@ public class StudyServiceTest {
     }
 
     @Test
+    void updateWithNullAccount() {
+        given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
+        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> studyService.updateStudy(null , CREATED_ID, studyUpdateDto))
+                .isInstanceOf(AccessDeniedException.class);
+    }
+
+    @Test
     void updateWithInvalidAccount() {
         given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
-        given(accountRepository.findById(SETUP_MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
+        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
 
         assertThatThrownBy(() -> studyService.updateStudy(managerOfSetUpStudy, CREATED_ID, studyUpdateDto))
                 .isInstanceOf(AccessDeniedException.class);

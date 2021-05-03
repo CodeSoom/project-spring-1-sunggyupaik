@@ -55,9 +55,6 @@ public class StudyApiController {
                                  @PathVariable Long id,
                                  @RequestBody StudyUpdateDto studyUpdateDto
     ) throws ParseException {
-        if(account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
         return studyService.updateStudy(account, id, studyUpdateDto);
     }
 

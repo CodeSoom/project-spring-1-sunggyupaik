@@ -80,6 +80,10 @@ public class StudyService {
     public StudyResultDto updateStudy(Account account,
                                       Long id,
                                       StudyUpdateDto studyUpdateDto) throws ParseException {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+
         Study study = getStudy(id);
         if (!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");
