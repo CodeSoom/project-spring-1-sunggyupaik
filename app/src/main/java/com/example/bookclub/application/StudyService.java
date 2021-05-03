@@ -140,7 +140,11 @@ public class StudyService {
     }
 
     public Long applyStudy(Account account, Long id) {
-        if (account.getStudy() != null) {
+        if(account == null) {
+            throw new AccessDeniedException("권한이 없습니다");
+        }
+
+        if(account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
 
@@ -149,9 +153,8 @@ public class StudyService {
             throw new StudySizeFullException();
         }
 
-        Account user = getAccount(account.getId());
-        study.addAccount(user);
-        login(user);
+        study.addAccount(account);
+        login(account);
 
         return id;
     }

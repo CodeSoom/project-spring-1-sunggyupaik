@@ -68,9 +68,6 @@ public class StudyApiController {
     @PostMapping("/apply/{id}")
     public Long apply(@CurrentAccount Account account,
                       @PathVariable Long id) {
-        if(account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
         return studyService.applyStudy(account, id);
     }
 

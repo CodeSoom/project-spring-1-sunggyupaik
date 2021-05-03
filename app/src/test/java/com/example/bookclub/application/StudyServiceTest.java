@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,6 +45,7 @@ public class StudyServiceTest {
     private static final String SETUP_DESCRIPTION = "setUpDescription";
     private static final String SETUP_CONTACT = "setUpContact";
     private static final int SETUP_SIZE = 5;
+    private static final int SETUP_APPLYCOUNT = 3;
     private static final LocalDate SETUP_STARTDATE = LocalDate.now().plusDays(1);
     private static final LocalDate SETUP_ENDDATE = LocalDate.now().plusDays(7);
     private static final Day SETUP_DAY = Day.MONDAY;
@@ -107,12 +109,14 @@ public class StudyServiceTest {
 
     private static final Long NOT_EXISTED_ID = 100L;
     private static final Long ONELEFTSTUDY_ID = 4L;
+    private static final Long ACCOUNT_WITHOUT_STUDY_ID = 6L;
 
     private Account managerOfCreatedStudy;
     private Account managerOfSetUpStudy;
     private Account applierOfSetUpStudyOne;
     private Account applierOfSetUpStudyTwo;
     private Account applierOfSetUpStudyThree;
+    private Account accountWithoutStudy;
     private Study setUpStudy;
     private Study createdStudy;
     private Study fullSizeStudy;
@@ -183,14 +187,26 @@ public class StudyServiceTest {
                 .study(setUpStudy)
                 .build();
 
-        listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
-                applierOfSetUpStudyTwo, applierOfSetUpStudyThree);
-
+        accountWithoutStudy = Account.builder()
+                .id(ACCOUNT_WITHOUT_STUDY_ID)
+                .name(SETUP_MANAGER_NAME)
+                .email(SETUP_MANAGER_EMAIL)
+                .nickname(SETUP_MANAGER_NICKNAME)
+                .password(passwordEncoder.encode(SETUP_MANAGER_PASSWORD))
+                .build();
         //addStudy를 쓰지 않고 builder로 Study 주입이 안되는 이유 확인하기
         applierOfSetUpStudyOne.addStudy(setUpStudy);
+        System.out.println(managerOfCreatedStudy.getStudy()+"========");
         applierOfSetUpStudyTwo.addStudy(setUpStudy);
         applierOfSetUpStudyThree.addStudy(setUpStudy);
         managerOfSetUpStudy.addStudy(setUpStudy);
+
+//        listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
+//                applierOfSetUpStudyTwo, applierOfSetUpStudyThree);
+        listApplierOfSetUpStudy = new ArrayList<>();
+        listApplierOfSetUpStudy.add(applierOfSetUpStudyOne);
+        listApplierOfSetUpStudy.add(applierOfSetUpStudyTwo);
+        listApplierOfSetUpStudy.add(applierOfSetUpStudyThree);
 
         setUpStudy = Study.builder()
                 .id(SETUP_ID)
@@ -201,6 +217,7 @@ public class StudyServiceTest {
                 .description(SETUP_DESCRIPTION)
                 .contact(SETUP_CONTACT)
                 .size(SETUP_SIZE)
+                .applyCount(SETUP_APPLYCOUNT)
                 .startDate(SETUP_STARTDATE)
                 .endDate(SETUP_ENDDATE)
                 .startTime(SETUP_STARTTIME)
@@ -490,18 +507,19 @@ public class StudyServiceTest {
     }
 
     @Test
-    void applyWithExistedAccount() {
+    void applyWithValidAttribute() {
         given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(managerOfCreatedStudy));
+        given(accountRepository.findById(ACCOUNT_WITHOUT_STUDY_ID))
+                .willReturn(Optional.of(accountWithoutStudy));
 
         Study study = studyService.getStudy(SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
-        Long studyId = studyService.applyStudy(managerOfCreatedStudy, SETUP_ID);
+        studyService.applyStudy(accountWithoutStudy, SETUP_ID);
         int afterApplyCount = study.getApplyCount();
 
-        assertThat(beforeApplyCount).isEqualTo(afterApplyCount-1);
-        assertThat(setUpStudy.getAccounts()).contains(managerOfCreatedStudy);
-        assertThat(managerOfCreatedStudy.getStudy()).isNotNull();
+        assertThat(beforeApplyCount).isEqualTo(afterApplyCount - 1);
+        assertThat(setUpStudy.getAccounts()).contains(accountWithoutStudy);
+        assertThat(accountWithoutStudy.getStudy()).isNotNull();
     }
 
     @Test
