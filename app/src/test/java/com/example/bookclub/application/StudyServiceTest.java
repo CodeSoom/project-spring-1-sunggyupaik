@@ -112,8 +112,6 @@ public class StudyServiceTest {
     private static final Long FULL_SIZE_ID = 5L;
     private static final Long ACCOUNT_WITHOUT_STUDY_ID = 6L;
 
-
-
     private Account managerOfCreatedStudy;
     private Account managerOfSetUpStudy;
     private Account applierOfSetUpStudyOne;
@@ -536,16 +534,6 @@ public class StudyServiceTest {
 
         assertThatThrownBy(() -> studyService.applyStudy(accountWithoutStudy, FULL_SIZE_ID))
                 .isInstanceOf(StudySizeFullException.class);
-    }
-
-    @Test
-    void applyWhenOneLeft() {
-        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(oneLeftStudy));
-        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-
-        assertThat(oneLeftStudy.getStudyState()).isEqualTo(StudyState.OPEN);
-        Long studyId = studyService.applyStudy(managerOfCreatedStudy, SETUP_ID);
-        assertThat(oneLeftStudy.getStudyState()).isEqualTo(StudyState.CLOSE);
     }
 
     @Test
