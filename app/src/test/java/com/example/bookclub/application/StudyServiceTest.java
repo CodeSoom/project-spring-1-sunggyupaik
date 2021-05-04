@@ -556,14 +556,4 @@ public class StudyServiceTest {
         assertThat(setUpStudy.getAccounts()).doesNotContain(applierOfSetUpStudyOne);
         assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
     }
-
-    @Test
-    void cancelWhenFull() {
-        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(fullSizeStudy));
-        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-
-        assertThat(fullSizeStudy.getStudyState()).isEqualTo(StudyState.CLOSE);
-        Long studyId = studyService.cancelStudy(managerOfCreatedStudy, SETUP_ID);
-        assertThat(fullSizeStudy.getStudyState()).isEqualTo(StudyState.OPEN);
-    }
 }
