@@ -1,7 +1,6 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
@@ -35,12 +34,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class StudyService {
     private final StudyRepository studyRepository;
-    private final AccountRepository accountRepository;
 
-    public StudyService(StudyRepository studyRepository,
-                        AccountRepository accountRepository) {
+    public StudyService(StudyRepository studyRepository) {
         this.studyRepository = studyRepository;
-        this.accountRepository = accountRepository;
     }
 
     public StudyResultDto createStudy(Account account,

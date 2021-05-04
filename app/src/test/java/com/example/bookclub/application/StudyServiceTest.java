@@ -145,7 +145,7 @@ public class StudyServiceTest {
     void setUp() {
         studyRepository = mock(StudyRepository.class);
         accountRepository = mock(AccountRepository.class);
-        studyService = new StudyService(studyRepository, accountRepository);
+        studyService = new StudyService(studyRepository);
         passwordEncoder = new BCryptPasswordEncoder();
         managerOfCreatedStudy = Account.builder()
                 .id(CREATED_MANAGER_ID)
