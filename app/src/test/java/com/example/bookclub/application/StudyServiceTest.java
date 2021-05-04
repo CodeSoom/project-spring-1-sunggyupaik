@@ -85,6 +85,10 @@ public class StudyServiceTest {
     private static final StudyState CREATED_STUDYSTATE = StudyState.OPEN;
     private static final Zone CREATED_ZONE = Zone.BUSAN;
 
+    private static final String PYTHON_KEYWORD = "파이썬";
+    private static final String PYTHON_BOOKNAME_ONE = "러닝 파이썬 - 상편";
+    private static final String PYTHON_BOOKNAME_TWO = "파이썬 웹 프로그래밍";
+
     private static final LocalDate PAST_STARTDATE = LocalDate.now().minusDays(3);
     private static final LocalDate TODAY_STARTDATE = LocalDate.now();
     private static final LocalDate LATE_STARTDATE = LocalDate.now().plusDays(5);
@@ -115,6 +119,8 @@ public class StudyServiceTest {
     private Study closedStudyTwo;
     private Study endedStudyOne;
     private Study endedStudyTwo;
+    private Study pythonBookNameStudyOne;
+    private Study pythonBookNameStudyTwo;
 
     private StudyCreateDto studyCreateDto;
     private StudyCreateDto studyStartDateInThePastDto;
@@ -128,20 +134,18 @@ public class StudyServiceTest {
     private AccountRepository accountRepository;
     private PasswordEncoder passwordEncoder;
 
-    private StudyService cronStudyService;
-
     private List<Study> listAllStudies;
     private List<Study> listOpenedStudies;
     private List<Study> listClosedStudies;
     private List<Study> listEndedStudies;
     private List<Account> listApplierOfSetUpStudy;
+    private List<Study> listPythonKeywordStudies;
 
     @BeforeEach
     void setUp() {
         studyRepository = mock(StudyRepository.class);
         accountRepository = mock(AccountRepository.class);
         studyService = new StudyService(studyRepository, accountRepository);
-        cronStudyService = mock(StudyService.class);
         passwordEncoder = new BCryptPasswordEncoder();
         managerOfCreatedStudy = Account.builder()
                 .id(CREATED_MANAGER_ID)
@@ -263,6 +267,14 @@ public class StudyServiceTest {
                 .studyState(StudyState.END)
                 .build();
 
+        pythonBookNameStudyOne = Study.builder()
+                .bookName(PYTHON_BOOKNAME_ONE)
+                .build();
+
+        pythonBookNameStudyTwo = Study.builder()
+                .bookName(PYTHON_BOOKNAME_TWO)
+                .build();
+
         studyCreateDto = StudyCreateDto.builder()
                 .name(CREATED_NAME)
                 .bookName(CREATED_BOOKNAME)
@@ -319,6 +331,7 @@ public class StudyServiceTest {
         listOpenedStudies = List.of(openedStudyOne, openedStudyTwo);
         listClosedStudies = List.of(closedStudyOne, closedStudyTwo);
         listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
+        listPythonKeywordStudies = List.of(pythonBookNameStudyOne, pythonBookNameStudyTwo);
     }
 
     @Test
@@ -532,5 +545,17 @@ public class StudyServiceTest {
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);
         assertThat(setUpStudy.getAccounts()).doesNotContain(applierOfSetUpStudyOne);
         assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
+    }
+
+    @Test
+    void listsStudiesWithKeyword() {
+        given(studyRepository.findByKeyword(PYTHON_KEYWORD)).willReturn(listPythonKeywordStudies);
+
+        List<Study> list = studyService.getStudiesBySearch(PYTHON_KEYWORD);
+
+        for(Study study : list) {
+            assertThat(study.getBookName()).contains(PYTHON_KEYWORD);
+        }
+        assertThat(setUpStudy.getBookName()).doesNotContain(PYTHON_KEYWORD);
     }
 }
