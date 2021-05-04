@@ -117,8 +117,9 @@ public class Study {
         account.cancelStudy();
     }
 
-    public void addAdmin(String email) {
-        this.email = email;
+    public void addAdmin(Account account) {
+        this.email = account.getEmail();
+        account.addStudy(this);
     }
 
     public boolean isSizeFull() {
@@ -150,5 +151,11 @@ public class Study {
 
     public boolean isNotOpened() {
         return !this.studyState.equals(StudyState.OPEN);
+    }
+
+    public void deleteAccounts() {
+        for(Account account : accounts) {
+            account.deleteStudy();
+        }
     }
 }

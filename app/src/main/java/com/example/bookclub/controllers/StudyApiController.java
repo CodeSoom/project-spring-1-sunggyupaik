@@ -47,9 +47,6 @@ public class StudyApiController {
     public StudyResultDto create(@CurrentAccount Account account,
                                  @RequestBody StudyCreateDto studyCreateDto)
             throws ParseException {
-        if(account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
         return studyService.createStudy(account, studyCreateDto);
     }
 
@@ -57,10 +54,7 @@ public class StudyApiController {
     public StudyResultDto update(@CurrentAccount Account account,
                                  @PathVariable Long id,
                                  @RequestBody StudyUpdateDto studyUpdateDto
-    ) {
-        if(account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
+    ) throws ParseException {
         return studyService.updateStudy(account, id, studyUpdateDto);
     }
 
@@ -68,18 +62,12 @@ public class StudyApiController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public StudyResultDto delete(@CurrentAccount Account account,
                                  @PathVariable Long id) {
-        if(account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
         return studyService.deleteStudy(account, id);
     }
 
     @PostMapping("/apply/{id}")
     public Long apply(@CurrentAccount Account account,
                       @PathVariable Long id) {
-        if(account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
         return studyService.applyStudy(account, id);
     }
 

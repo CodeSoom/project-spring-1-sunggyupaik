@@ -69,11 +69,17 @@ var main = {
             url: '/api/study/apply/' + id,
             dataType: 'json',
             contentType:'application/json;',
-        }).done(function(data) {
+        }).done(function() {
             alert("신청이 완료되었습니다.");
             location.href = '/studys/open';
         }).fail(function (request) {
-            alert(request.responseText);
+            if(request.responseText.match("Study already existed")) {
+                alert("이미 스터디에 참여하고 있어서 신청이 불가능합니다");
+            } else if(request.responseText.match("Study size is full")) {
+                alert("스터디 모집인원이 꽉 찼습니다");
+            } else {
+                alert(request.responseText);
+            }
             location.herf = '/studys/open';
         });
     },
@@ -171,8 +177,13 @@ var main = {
             alert('회원정보가 수정되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
-            alert(request.responseText);
-            if(request.responseText.match("Password")) {
+            if(request.responseText.match("in the past")) {
+                alert("시작날짜를 다시 확인해주세요");
+            } else if(request.responseText.match("StartDate and EndDate")) {
+                alert("시작날짜와 종료날짜를 다시 확인해주세요");
+            } else if(request.responseText.match("StartTime and EndTime")) {
+                alert("시작시간과 종료시간을 다시 확인해주세요");
+            }  else if(request.responseText.match("Password")) {
                 alert("비밀번호가 틀렸습니다.");
             } else if(request.responseText.match("Nickname")) {
                 alert("닉네임이 중복되었습니다.");
@@ -247,7 +258,15 @@ var main = {
             alert('스터디 생성이 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
-            alert(request.responseText);
+            if(request.responseText.match("in the past")) {
+                alert("시작날짜를 다시 확인해주세요");
+            } else if(request.responseText.match("StartDate and EndDate")) {
+                alert("시작날짜와 종료날짜를 다시 확인해주세요");
+            } else if(request.responseText.match("StartTime and EndTime")) {
+                alert("시작시간과 종료시간을 다시 확인해주세요");
+            } else {
+                alert(request.responseText);
+            }
         });
     },
 
@@ -277,7 +296,15 @@ var main = {
             alert('스터디 수정이 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
-            alert(request.responseText);
+            if(request.responseText.match("in the past")) {
+                alert("시작날짜를 다시 확인해주세요");
+            } else if(request.responseText.match("StartDate and EndDate")) {
+                alert("시작날짜와 종료날짜를 다시 확인해주세요");
+            } else if(request.responseText.match("StartTime and EndTime")) {
+                alert("시작시간과 종료시간을 다시 확인해주세요");
+            } else {
+                alert(request.responseText);
+            }
         });
     },
 
