@@ -7,7 +7,6 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
-import com.example.bookclub.dto.StudyApplyDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
@@ -39,7 +38,6 @@ import static org.mockito.Mockito.verify;
 public class StudyServiceTest {
     private static final Long SETUP_ID = 1L;
     private static final String SETUP_NAME = "setUpName";
-    private static final String SETUP_EMAIL = "setUpEmail";
     private static final String SETUP_BOOKNAME = "자바 세상의 빌드를 이끄는 메이븐";
     private static final String SETUP_BOOKIMAGE = "http://bimage.interpark.com/goods_image/9/4/7/8/207979478s.jpg";
     private static final String SETUP_DESCRIPTION = "setUpDescription";
@@ -72,18 +70,6 @@ public class StudyServiceTest {
     private static final String APPLIER_ONE_NICKNAME = "applierOneNickName";
     private static final String APPLIER_ONE_PASSWORD = "11111111";
 
-    private static final Long APPLIER_TWO_ID = 4L;
-    private static final String APPLIER_TWO_NAME = "applierTwoName";
-    private static final String APPLIER_TWO_EMAIL = "applierTwoEmail";
-    private static final String APPLIER_TWO_NICKNAME = "applierTwoNickName";
-    private static final String APPLIER_TWO_PASSWORD = "22222222";
-
-    private static final Long APPLIER_THREE_ID = 5L;
-    private static final String APPLIER_THREE_NAME = "applierThreeName";
-    private static final String APPLIER_THREE_EMAIL = "applierThreeEmail";
-    private static final String APPLIER_THREE_NICKNAME = "applierThreeNickName";
-    private static final String APPLIER_THREE_PASSWORD = "33333333";
-
     private static final Long CREATED_ID = 3L;
     private static final String CREATED_NAME = "createdName";
     private static final String CREATED_BOOKNAME = "Do it! 점프 투 파이썬";
@@ -108,8 +94,10 @@ public class StudyServiceTest {
     private static final String EARLY_ENDTIME = "13:00";
 
     private static final Long NOT_EXISTED_ID = 100L;
-    private static final Long ONELEFTSTUDY_ID = 4L;
     private static final Long FULL_SIZE_ID = 5L;
+
+    private static final Long APPLIER_TWO_ID = 4L;
+    private static final Long APPLIER_THREE_ID = 5L;
     private static final Long ACCOUNT_WITHOUT_STUDY_ID = 6L;
 
     private Account managerOfCreatedStudy;
@@ -121,7 +109,6 @@ public class StudyServiceTest {
     private Study setUpStudy;
     private Study createdStudy;
     private Study fullSizeStudy;
-    private Study oneLeftStudy;
     private Study openedStudyOne;
     private Study openedStudyTwo;
     private Study closedStudyOne;
@@ -136,12 +123,12 @@ public class StudyServiceTest {
     private StudyCreateDto endTimeIsBeforeStartTimeDto;
     private StudyUpdateDto studyUpdateDto;
 
-    private StudyApplyDto studyApplyDto;
-
     private StudyService studyService;
     private StudyRepository studyRepository;
     private AccountRepository accountRepository;
     private PasswordEncoder passwordEncoder;
+
+    private StudyService cronStudyService;
 
     private List<Study> listAllStudies;
     private List<Study> listOpenedStudies;
@@ -154,6 +141,7 @@ public class StudyServiceTest {
         studyRepository = mock(StudyRepository.class);
         accountRepository = mock(AccountRepository.class);
         studyService = new StudyService(studyRepository, accountRepository);
+        cronStudyService = mock(StudyService.class);
         passwordEncoder = new BCryptPasswordEncoder();
         managerOfCreatedStudy = Account.builder()
                 .id(CREATED_MANAGER_ID)
@@ -251,13 +239,6 @@ public class StudyServiceTest {
                 .studyState(StudyState.CLOSE)
                 .build();
 
-        oneLeftStudy = Study.builder()
-                .id(ONELEFTSTUDY_ID)
-                .size(SETUP_SIZE)
-                .applyCount(SETUP_SIZE-1)
-                .studyState(StudyState.OPEN)
-                .build();
-
         openedStudyOne = Study.builder()
                 .studyState(StudyState.OPEN)
                 .build();
@@ -287,7 +268,7 @@ public class StudyServiceTest {
                 .bookName(CREATED_BOOKNAME)
                 .bookImage(CREATED_BOOKIMAGE)
                 //스터디가 생성될 때는 이메일 입력이 없다
-//                .email(SETUP_EMAIL)
+//                .email(SETUP_MANAGER_EMAIL)
                 .description(CREATED_DESCRIPTION)
                 .contact(CREATED_CONTACT)
                 .size(CREATED_SIZE)
@@ -332,10 +313,6 @@ public class StudyServiceTest {
                 .day(SETUP_DAY)
                 .studyState(SETUP_STUDYSTATE)
                 .zone(SETUP_ZONE)
-                .build();
-
-        studyApplyDto = StudyApplyDto.builder()
-                .email(SETUP_EMAIL)
                 .build();
 
         listAllStudies = List.of(setUpStudy, createdStudy);
