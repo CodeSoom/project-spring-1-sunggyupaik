@@ -161,9 +161,8 @@ public class StudyService {
 
     public Long cancelStudy(Account account, Long id) {
         Study study = getStudy(id);
-        Account user = getAccount(account.getId());
-        study.cancelAccount(user);
-        login(user);
+        study.cancelAccount(account);
+        login(account);
 
         return id;
     }
@@ -171,11 +170,6 @@ public class StudyService {
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(StudyNotFoundException::new);
-    }
-
-    public Account getAccount(Long id) {
-        return accountRepository.findById(id)
-                .orElseThrow(() -> new AccountNotFoundException(id));
     }
 
     public List<Study> getStudies() {

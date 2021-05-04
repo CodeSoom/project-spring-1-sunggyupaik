@@ -175,6 +175,10 @@ public class StudyServiceTest {
 
         applierOfSetUpStudyOne = Account.builder()
                 .id(APPLIER_ONE_ID)
+                .name(APPLIER_ONE_NAME)
+                .email(APPLIER_ONE_EMAIL)
+                .nickname(APPLIER_ONE_NICKNAME)
+                .password(APPLIER_ONE_PASSWORD)
 //                .study(setUpStudy)
                 .build();
 
@@ -511,6 +515,7 @@ public class StudyServiceTest {
         int beforeApplyCount = study.getApplyCount();
         studyService.applyStudy(accountWithoutStudy, SETUP_ID);
         int afterApplyCount = study.getApplyCount();
+        assertThat(accountWithoutStudy.getStudy()).isEqualTo(study);
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount - 1);
         assertThat(setUpStudy.getAccounts()).contains(accountWithoutStudy);
@@ -537,18 +542,19 @@ public class StudyServiceTest {
     }
 
     @Test
-    void cancelWithExistedAccount() {
+    void cancelWithValidAttribute() {
         given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(managerOfCreatedStudy));
+        given(accountRepository.findById(APPLIER_ONE_ID)).willReturn(Optional.of(applierOfSetUpStudyOne));
+        applierOfSetUpStudyOne.addStudy(setUpStudy);
 
         Study study = studyService.getStudy(SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
-        Long studyId = studyService.cancelStudy(managerOfCreatedStudy, SETUP_ID);
+        studyService.cancelStudy(applierOfSetUpStudyOne, SETUP_ID);
         int afterApplyCount = study.getApplyCount();
 
-        assertThat(beforeApplyCount).isEqualTo(afterApplyCount+1);
-        assertThat(setUpStudy.getAccounts()).doesNotContain(managerOfCreatedStudy);
-        assertThat(managerOfCreatedStudy.getStudy()).isNull();
+        assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);
+        assertThat(setUpStudy.getAccounts()).doesNotContain(applierOfSetUpStudyOne);
+        assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
     }
 
     @Test
