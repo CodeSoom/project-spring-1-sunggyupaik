@@ -171,7 +171,6 @@ var main = {
             alert('회원정보가 수정되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
-            alert(request.responseText);
             if(request.responseText.match("Password")) {
                 alert("비밀번호가 틀렸습니다.");
             } else if(request.responseText.match("Nickname")) {
@@ -247,7 +246,15 @@ var main = {
             alert('스터디 생성이 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
-            alert(request.responseText);
+            if(request.responseText.match("in the past")) {
+                alert("시작날짜를 다시 확인해주세요");
+            } else if(request.responseText.match("StartDate and EndDate")) {
+                alert("시작날짜와 종료날짜를 다시 확인해주세요");
+            } else if(request.responseText.match("StartTime and EndTime")) {
+                alert("시작시간과 종료시간을 다시 확인해주세요");
+            } else {
+                alert(request.responseText);
+            }
         });
     },
 
