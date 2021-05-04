@@ -69,11 +69,17 @@ var main = {
             url: '/api/study/apply/' + id,
             dataType: 'json',
             contentType:'application/json;',
-        }).done(function(data) {
+        }).done(function() {
             alert("신청이 완료되었습니다.");
             location.href = '/studys/open';
         }).fail(function (request) {
-            alert(request.responseText);
+            if(request.responseText.match("Study already existed")) {
+                alert("이미 스터디에 참여하고 있어서 신청이 불가능합니다");
+            } else if(request.responseText.match("Study size is full")) {
+                alert("스터디 모집인원이 꽉 찼습니다");
+            } else {
+                alert(request.responseText);
+            }
             location.herf = '/studys/open';
         });
     },
