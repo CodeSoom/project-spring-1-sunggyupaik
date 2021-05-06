@@ -9,11 +9,11 @@ import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
-import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -177,7 +177,7 @@ class AccountServiceTest {
 
         assertThat(account.getId()).isEqualTo(SETUP_ID);
     }
-    
+
     @Test
     public void detailWithNotExistedId() {
         given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
@@ -249,6 +249,9 @@ class AccountServiceTest {
         AccountResultDto accountResultDto = accountService.updateUser(CREATED_ID, accountUpdateDto);
 
         assertThat(accountResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
+        assertThat(passwordEncoder.matches(
+                accountUpdateDto.getPassword(), accountResultDto.getPassword())
+        ).isTrue();
     }
 
     @Test
