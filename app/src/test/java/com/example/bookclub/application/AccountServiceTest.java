@@ -44,9 +44,9 @@ class AccountServiceTest {
     private static final String NOT_EXISTED_PASSWORD = "notExistedPassword";
     private static final String UPDATED_PASSWORD = "updatedPassword";
 
-    private static final String EXISTED_EMAIL = "existedEmail";
-    private static final String EXISTED_NICKNAME = "existedNickName";
-    private static final String EXISTED_AUTHENTICATIONNUMBER = "existedAuthentication";
+    private static final String DUPLICATED_EMAIL = "existedEmail";
+    private static final String DUPLICATED_NICKNAME = "existedNickName";
+    private static final String CREATED_AUTHENTICATIONNUMBER = "existedAuthentication";
     private static final String NOT_EXISTED_AUTHENTICATIONNUMBER = "notExistedAuthentication";
 
     private Account setUpAccount;
@@ -107,7 +107,7 @@ class AccountServiceTest {
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
-                .authenticationNumber(EXISTED_AUTHENTICATIONNUMBER)
+                .authenticationNumber(CREATED_AUTHENTICATIONNUMBER)
                 .build();
 
         authenticationNumberNotMatchedAccountCreateDto = AccountCreateDto.builder()
@@ -121,7 +121,7 @@ class AccountServiceTest {
 
         emailExistedAccountCreateDto = AccountCreateDto.builder()
                 .name(CREATED_NAME)
-                .email(EXISTED_EMAIL)
+                .email(DUPLICATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
                 .build();
@@ -129,7 +129,7 @@ class AccountServiceTest {
         nicknameExistedAccountCreateDto = AccountCreateDto.builder()
                 .name(CREATED_NAME)
                 .email(CREATED_EMAIL)
-                .nickname(EXISTED_NICKNAME)
+                .nickname(DUPLICATED_NICKNAME)
                 .password(CREATED_PASSWORD)
                 .build();
 
@@ -163,7 +163,7 @@ class AccountServiceTest {
 
         emailAuthentication = EmailAuthentication.builder()
                 .email(CREATED_EMAIL)
-                .authenticationNumber(EXISTED_AUTHENTICATIONNUMBER)
+                .authenticationNumber(CREATED_AUTHENTICATIONNUMBER)
                 .build();
     }
 
@@ -191,7 +191,7 @@ class AccountServiceTest {
 
     @Test
     public void createWithDuplicatedEmail() {
-        given(accountRepository.existsByEmail(EXISTED_EMAIL)).willReturn(true);
+        given(accountRepository.existsByEmail(DUPLICATED_EMAIL)).willReturn(true);
 
         assertThatThrownBy(() -> accountService.createUser(emailExistedAccountCreateDto))
                 .isInstanceOf(AccountEmailDuplicatedException.class);
@@ -216,7 +216,8 @@ class AccountServiceTest {
 
     @Test
     public void createWithDuplicatedNickname() {
-        given(accountRepository.existsByNickname(EXISTED_NICKNAME)).willReturn(true);
+        given(accountRepository.existsByNickname(DUPLICATED_NICKNAME)).willReturn(true);
+        given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL)).willReturn(Optional.of(emailAuthentication));
 
         assertThatThrownBy(() -> accountService.createUser(nicknameExistedAccountCreateDto))
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
