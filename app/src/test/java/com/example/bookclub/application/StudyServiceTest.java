@@ -411,7 +411,8 @@ public class StudyServiceTest {
 
     @Test
     void createWithAccountAlreadyStudyExisted() {
-        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
+        given(accountRepository.findById(SETUP_MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
+        managerOfSetUpStudy.addStudy(setUpStudy);
 
         assertThatThrownBy(() -> studyService.createStudy(managerOfSetUpStudy, studyCreateDto))
                 .isInstanceOf(StudyAlreadyExistedException.class);
