@@ -29,25 +29,25 @@ import static org.mockito.Mockito.verify;
 
 class AccountServiceTest {
     private static final Long EXISTED_ID = 1L;
-    private static final String SETUP_NAME = "홍길동";
-    private static final String SETUP_EMAIL = "abcd@naver.com";
-    private static final String SETUP_NICKNAME = "abcd";
-    private static final String SETUP_PASSWORD = "1234";
+    private static final String SETUP_NAME = "setupName";
+    private static final String SETUP_EMAIL = "setupEmail";
+    private static final String SETUP_NICKNAME = "setupNickName";
+    private static final String SETUP_PASSWORD = "setupPassword";
 
     private static final Long CREATED_ID = 2L;
-    private static final String CREATED_NAME = "김철수";
-    private static final String CREATED_EMAIL = "qwer@naver.com";
-    private static final String CREATED_NICKNAME = "qwer";
-    private static final String CREATED_PASSWORD = "5678";
+    private static final String CREATED_NAME = "createdName";
+    private static final String CREATED_EMAIL = "createdEmail";
+    private static final String CREATED_NICKNAME = "createdNickName";
+    private static final String CREATED_PASSWORD = "createdPassword";
 
-    private static final String UPDATED_NICKNAME = "qwer";
-    private static final String NOT_EXISTED_PASSWORD = "5678";
-    private static final String UPDATED_PASSWORD = "4321";
+    private static final String UPDATED_NICKNAME = "updatedNickName";
+    private static final String NOT_EXISTED_PASSWORD = "notExistedPassword";
+    private static final String UPDATED_PASSWORD = "updatedPassword";
 
-    private static final String EXISTED_EMAIL = "abcd@naver.com";
-    private static final String EXISTED_NICKNAME = "abcd";
-    private static final String EXISTED_AUTHENTICATIONNUMBER = "12345";
-    private static final String NOT_EXISTED_AUTHENTICATIONNUMBER = "67890";
+    private static final String EXISTED_EMAIL = "existedEmail";
+    private static final String EXISTED_NICKNAME = "existedNickName";
+    private static final String EXISTED_AUTHENTICATIONNUMBER = "existedAuthentication";
+    private static final String NOT_EXISTED_AUTHENTICATIONNUMBER = "notExistedAuthentication";
 
     private Account setUpAccount;
     private Account notEncodedCreatedAccount;
