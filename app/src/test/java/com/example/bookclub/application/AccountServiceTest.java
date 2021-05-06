@@ -28,7 +28,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 class AccountServiceTest {
-    private static final Long EXISTED_ID = 1L;
+    private static final Long SETUP_ID = 1L;
     private static final String SETUP_NAME = "setupName";
     private static final String SETUP_EMAIL = "setupEmail";
     private static final String SETUP_NICKNAME = "setupNickName";
@@ -79,7 +79,7 @@ class AccountServiceTest {
                 emailAuthenticationRepository, passwordEncoder);
 
         setUpAccount = Account.builder()
-                .id(EXISTED_ID)
+                .id(SETUP_ID)
                 .name(SETUP_NAME)
                 .email(SETUP_EMAIL)
                 .nickname(SETUP_NICKNAME)
@@ -165,6 +165,15 @@ class AccountServiceTest {
                 .email(CREATED_EMAIL)
                 .authenticationNumber(CREATED_AUTHENTICATIONNUMBER)
                 .build();
+    }
+
+    @Test
+    public void detailWithExistedId() {
+        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpAccount));
+
+        Account account = accountService.getUser(SETUP_ID);
+
+        assertThat(account.getId()).isEqualTo(SETUP_ID);
     }
 
     @Test
