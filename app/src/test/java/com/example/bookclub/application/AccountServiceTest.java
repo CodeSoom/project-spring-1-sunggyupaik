@@ -308,4 +308,12 @@ class AccountServiceTest {
         assertThat(accountResultDto.getId()).isEqualTo(SETUP_ID);
         assertThat(accountResultDto.isDeleted()).isTrue();
     }
+
+    @Test
+    public void deleteAccountWithNotExistedId() {
+        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountService.deleteUser(NOT_EXISTED_ID))
+                .isInstanceOf(AccountNotFoundException.class);
+    }
 }
