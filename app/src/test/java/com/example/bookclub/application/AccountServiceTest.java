@@ -42,7 +42,7 @@ class AccountServiceTest {
     private static final String CREATED_PASSWORD = "createdPassword";
 
     private static final String UPDATED_NICKNAME = "updatedNickName";
-    private static final String NOT_EXISTED_PASSWORD = "notExistedPassword";
+    private static final String NOT_VALID_PASSWORD = "notValidPassword";
     private static final String UPDATED_PASSWORD = "updatedPassword";
 
     private static final Long NOT_EXISTED_ID = 100L;
@@ -62,7 +62,7 @@ class AccountServiceTest {
     private AccountCreateDto nicknameExistedAccountCreateDto;
     private AccountUpdateDto accountUpdateDto;
     private AccountUpdateDto nicknameDuplicatedAccountUpdateDto;
-    private AccountUpdateDto passwordNotExistedAccountUpdateDto;
+    private AccountUpdateDto passwordNotValidAccountUpdateDto;
     private AccountUpdatePasswordDto accountUpdatePasswordDto;
     private AccountUpdatePasswordDto newPasswordNotMatchedDto;
     private AccountUpdatePasswordDto passwordNotMatchedDto;
@@ -140,9 +140,9 @@ class AccountServiceTest {
                 .password(CREATED_PASSWORD)
                 .build();
 
-        passwordNotExistedAccountUpdateDto = AccountUpdateDto.builder()
+        passwordNotValidAccountUpdateDto = AccountUpdateDto.builder()
                 .nickname(SETUP_NICKNAME)
-                .password("")
+                .password(NOT_VALID_PASSWORD)
                 .build();
 
         accountUpdatePasswordDto = AccountUpdatePasswordDto.builder()
@@ -267,7 +267,7 @@ class AccountServiceTest {
     public void updateWithNotValidPassword() {
         given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
 
-        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, passwordNotExistedAccountUpdateDto))
+        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, passwordNotValidAccountUpdateDto))
                 .isInstanceOf(AccountPasswordBadRequestException.class);
     }
 
