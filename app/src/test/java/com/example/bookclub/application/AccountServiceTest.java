@@ -10,6 +10,7 @@ import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
+import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
@@ -44,6 +45,7 @@ class AccountServiceTest {
     private static final String NOT_EXISTED_PASSWORD = "notExistedPassword";
     private static final String UPDATED_PASSWORD = "updatedPassword";
 
+    private static final Long NOT_EXISTED_ID = 100L;
     private static final String DUPLICATED_EMAIL = "existedEmail";
     private static final String DUPLICATED_NICKNAME = "existedNickName";
     private static final String CREATED_AUTHENTICATIONNUMBER = "existedAuthentication";
@@ -174,6 +176,14 @@ class AccountServiceTest {
         Account account = accountService.getUser(SETUP_ID);
 
         assertThat(account.getId()).isEqualTo(SETUP_ID);
+    }
+    
+    @Test
+    public void detailWithNotExistedId() {
+        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountService.getUser(NOT_EXISTED_ID))
+                .isInstanceOf(AccountNotFoundException.class);
     }
 
     @Test
