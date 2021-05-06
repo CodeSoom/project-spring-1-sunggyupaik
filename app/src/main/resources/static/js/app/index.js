@@ -9,8 +9,8 @@ var main = {
             _this.sendMessage();
         });
 
-        $('#btn-save').on('click', function () {
-            _this.save();
+        $('#btn-account-save').on('click', function () {
+            _this.saveUser();
         });
 
         $('#btn-account-update').on('click', function () {
@@ -21,7 +21,7 @@ var main = {
             _this.updateUserPassword();
         });
 
-        $('#btn-user-delete').on('click', function () {
+        $('#btn-account-delete').on('click', function () {
             _this.deleteUser();
         });
 
@@ -124,7 +124,7 @@ var main = {
         });
     },
 
-    save : function () {
+    saveUser : function () {
         var formData = new FormData();
         var uploadFile = document.getElementById("uploadFile").files[0];
         var name = $('#name').val();
