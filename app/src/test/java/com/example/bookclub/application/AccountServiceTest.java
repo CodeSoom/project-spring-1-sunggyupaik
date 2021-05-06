@@ -298,4 +298,14 @@ class AccountServiceTest {
         assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, passwordNotMatchedDto))
                 .isInstanceOf(AccountPasswordBadRequestException.class);
     }
+
+    @Test
+    public void deleteAccount() {
+        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpAccount));
+
+        AccountResultDto accountResultDto = accountService.deleteUser(SETUP_ID);
+
+        assertThat(accountResultDto.getId()).isEqualTo(SETUP_ID);
+        assertThat(accountResultDto.isDeleted()).isTrue();
+    }
 }
