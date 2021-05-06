@@ -217,6 +217,10 @@ var main = {
 
     deleteUser : function () {
         var id = $('#id').val();
+        var result = confirm("정말로 탈퇴하시겠습니까?");
+        if(!result) {
+            return;
+        }
 
         $.ajax({
             type: 'DELETE',
@@ -224,7 +228,7 @@ var main = {
             dataType: 'json',
             contentType:'application/json; charset=utf-8',
         }).done(function() {
-            alert('사용자 삭제가 완료되었습니다.');
+            alert('사용자 탈퇴가 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
             alert(request.responseText);
