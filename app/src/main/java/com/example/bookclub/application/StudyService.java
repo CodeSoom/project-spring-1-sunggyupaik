@@ -172,7 +172,7 @@ public class StudyService {
     }
 
     public List<Study> getStudiesBySearch(String keyword) {
-        return studyRepository.findByKeyword(keyword);
+        return studyRepository.findByBookNameContaining(keyword);
     }
 
     public List<Study> getStudiesByStudyState(StudyState studyState) {

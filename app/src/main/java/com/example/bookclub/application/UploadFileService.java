@@ -28,6 +28,9 @@ public class UploadFileService {
 
     public UploadFile saveUploadFile(HttpServletRequest request, MultipartFile file, Long id) throws IOException {
         UploadFile uploadFile = makeUploadFile(request, file);
+        System.out.println(uploadFile.getFileName()+"********");
+        System.out.println(uploadFile.getFileUrl()+"********");
+        System.out.println(uploadFile.getFileOriginalName()+"********");
         Account savedAccount = accountRepository.findById(id).get();
         uploadFileRepository.save(uploadFile);
         uploadFile.addAccount(savedAccount);
@@ -39,9 +42,10 @@ public class UploadFileService {
         String sourceFileName = uploadFile.getOriginalFilename();
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
         String destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
-        String realPath = request.getSession().getServletContext().getRealPath("/");
-        realPath = request.getSession().getServletContext().getRealPath("/")
-                .substring(0,realPath.length()-"webapp\\".length())+"resources\\static\\images\\";
+        String realPath = "C:\\Users\\melon\\OneDrive\\바탕 화면\\과제 코드숨\\bookclub\\app\\src\\main\\resources\\static\\images\\";
+//        String realPath = request.getSession().getServletContext().getRealPath("/");
+//        realPath = request.getSession().getServletContext().getRealPath("/")
+//                .substring(0,realPath.length()-"webapp\\".length())+"\\resources\\static\\images\\";
         File destinationFile = new File(realPath + destinationFileName);
 
         destinationFile.getParentFile().mkdirs();

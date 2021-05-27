@@ -28,7 +28,6 @@ public class AccountController {
         } else {
             checkTopMenu(account, model);
         }
-
         return "users/users-update";
     }
 
