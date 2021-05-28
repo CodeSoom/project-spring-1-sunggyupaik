@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
+import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
@@ -46,7 +47,7 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(id));
     }
 
-    public AccountResultDto createUser(AccountCreateDto accountCreateDto) {
+    public AccountResultDto createUser(AccountCreateDto accountCreateDto, UploadFile uploadFile) {
         String email = accountCreateDto.getEmail();
         if (accountRepository.existsByEmail(email)) {
             throw new AccountEmailDuplicatedException(email);
@@ -64,6 +65,7 @@ public class AccountService {
         }
 
         Account account = accountCreateDto.toEntity();
+        account.addUploadFile(uploadFile);
         Account createdAccount = accountRepository.save(account);
         createdAccount.updatePassword(createdAccount.getPassword(), passwordEncoder);
         deleteEmailAuthentication(emailAuthentication.getEmail());

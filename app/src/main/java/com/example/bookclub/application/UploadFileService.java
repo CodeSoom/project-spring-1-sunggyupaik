@@ -1,6 +1,5 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.domain.UploadFileRepository;
@@ -9,7 +8,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -26,19 +24,17 @@ public class UploadFileService {
         this.accountRepository = accountRepository;
     }
 
-    public UploadFile saveUploadFile(HttpServletRequest request, MultipartFile file, Long id) throws IOException {
-        UploadFile uploadFile = makeUploadFile(request, file);
+    public UploadFile saveUploadFile(MultipartFile file) throws IOException {
+        UploadFile uploadFile = makeUploadFile(file);
         System.out.println(uploadFile.getFileName()+"********");
         System.out.println(uploadFile.getFileUrl()+"********");
         System.out.println(uploadFile.getFileOriginalName()+"********");
-        Account savedAccount = accountRepository.findById(id).get();
-        uploadFileRepository.save(uploadFile);
-        uploadFile.addAccount(savedAccount);
+        //uploadFileRepository.save(uploadFile);
 
         return uploadFile;
     }
     
-    public UploadFile makeUploadFile(HttpServletRequest request, MultipartFile uploadFile) throws IOException {
+    public UploadFile makeUploadFile(MultipartFile uploadFile) throws IOException {
         String sourceFileName = uploadFile.getOriginalFilename();
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
         String destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;

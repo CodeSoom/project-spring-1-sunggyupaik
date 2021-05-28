@@ -3,6 +3,7 @@ package com.example.bookclub.controllers;
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.UploadFileService;
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
@@ -41,14 +42,11 @@ public class AccountApiController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResultDto create(HttpServletRequest request,
-                                   @RequestPart(required = false) MultipartFile uploadFile,
+    public AccountResultDto create(@RequestPart(required = false) MultipartFile uploadFile,
                                    AccountCreateDto accountCreateDto) throws IOException {
-        AccountResultDto account = accountService.createUser(accountCreateDto);
-        if (uploadFile != null) {
-            uploadFileService.saveUploadFile(request, uploadFile, account.getId());
-        }
-        return account;
+        System.out.println(uploadFile+"*************");
+        UploadFile accountFile = uploadFileService.saveUploadFile(uploadFile);
+        return accountService.createUser(accountCreateDto, accountFile);
     }
 
     @PostMapping("/{id}")
@@ -58,7 +56,7 @@ public class AccountApiController {
                                    @Valid AccountUpdateDto accountUpdateDto) throws IOException {
         AccountResultDto account = accountService.updateUser(id, accountUpdateDto);
         if (uploadFile != null) {
-            uploadFileService.saveUploadFile(request, uploadFile, account.getId());
+//            uploadFileService.saveUploadFile(request, uploadFile, account.getId());
         }
         return account;
     }
