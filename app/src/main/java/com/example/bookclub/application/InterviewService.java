@@ -32,13 +32,13 @@ public class InterviewService {
         boolean isLastPage = false;
         try {
             int page = 1;
-            while(true) {
+            while (true) {
                 String url = "https://www.kyobobook.co.kr/author/info/AuthorInterViewMore.laf?perPage=20&targetPage=" + page;
                 Connection conn = Jsoup.connect(url);
                 Document doc = conn.get();
 
                 Elements interviewsLiElements = doc.select(".list_author_interview > li");
-                if(isLastPage && interviewsLiElements.size() == 1) {
+                if (isLastPage && interviewsLiElements.size() == 1) {
                     break;
                 }
 
@@ -64,7 +64,7 @@ public class InterviewService {
                     list.add(interview);
                 }
 
-                if(interviewsLiElements.size() != 20) {
+                if (interviewsLiElements.size() != 20) {
                     isLastPage = true;
                 }
                 page++;
@@ -95,7 +95,7 @@ public class InterviewService {
                 String date = interviewElement.select(".info").text().split("\\|")[0].trim();
                 String content = interviewElement.select(".detail").text().split("더보기")[0];
 
-                if(LocalDate.parse(date, DateTimeFormatter.ISO_DATE).isEqual(LocalDate.now())) {
+                if (LocalDate.parse(date, DateTimeFormatter.ISO_DATE).isEqual(LocalDate.now())) {
                     interview = Interview.builder()
                             .interviewUrl(interviewUrl)
                             .imgUrl(imgUrl)

@@ -102,7 +102,7 @@ class AccountApiControllerTest {
 
     @Test
     void detailWithExistedId() throws Exception {
-        given(accountService.getUser(EXISTED_ID)).willReturn(setUpAccount);
+        given(accountService.findUser(EXISTED_ID)).willReturn(setUpAccount);
 
         mockMvc.perform(
                 get("/api/users/{id}", EXISTED_ID)

@@ -173,7 +173,7 @@ class AccountServiceTest {
     public void detailWithExistedId() {
         given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpAccount));
 
-        Account account = accountService.getUser(SETUP_ID);
+        Account account = accountService.findUser(SETUP_ID);
 
         assertThat(account.getId()).isEqualTo(SETUP_ID);
     }

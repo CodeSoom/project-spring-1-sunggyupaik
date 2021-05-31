@@ -36,24 +36,25 @@ public class InterviewController {
     public String interviewLists(@CurrentAccount Account account,
                                  @RequestParam(defaultValue = "1") int targetPage,
                                  Model model) {
-        if(account != null) {
+        if (account != null) {
             checkTopMenu(account, model);
         }
+
         List<Interview> lists = interviewService.getInterviews(
                 PageRequest.of(targetPage - 1, countList));
         model.addAttribute("lists", lists);
-
         int allListsCount = interviewService.getInterviewsAll().size();
         PageUtil pageUtils = pageUtil.makePage(allListsCount, targetPage, countList, countPage);
         model.addAttribute("pageUtils", pageUtils);
         return "interviews/interviews-list";
     }
 
-    private void checkTopMenu(@CurrentAccount Account account, Model model) {
+    private void checkTopMenu(Account account, Model model) {
         model.addAttribute("account", account);
         if (account.isMangerOf(account.getStudy())) {
             model.addAttribute("studyManager", account.getStudy());
         }
+
         if (account.isApplierOf(account.getStudy())) {
             model.addAttribute("studyApply", account.getStudy());
         }

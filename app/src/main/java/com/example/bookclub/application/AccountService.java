@@ -4,17 +4,22 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
+import com.example.bookclub.domain.Role;
+import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
+import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
+import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.errors.FileUploadBadRequestException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,9 +27,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -32,22 +40,34 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final EmailAuthenticationRepository emailAuthenticationRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UploadFileService uploadFileService;
+    private final RoleRepository roleRepository;
 
     public AccountService(AccountRepository accountRepository,
                           EmailAuthenticationRepository emailAuthenticationRepository,
-                          PasswordEncoder passwordEncoder
+                          PasswordEncoder passwordEncoder,
+                          UploadFileService uploadFileService,
+                          RoleRepository roleRepository
     ) {
         this.accountRepository = accountRepository;
         this.emailAuthenticationRepository = emailAuthenticationRepository;
         this.passwordEncoder = passwordEncoder;
+        this.uploadFileService = uploadFileService;
+        this.roleRepository = roleRepository;
     }
 
-    public Account getUser(Long id) {
+    public Account findUser(Long id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(id));
     }
 
-    public AccountResultDto createUser(AccountCreateDto accountCreateDto, UploadFile uploadFile) {
+    public AccountResultDto getUser(Long id) {
+        return accountRepository.findById(id)
+                .map(AccountResultDto::of)
+                .orElseThrow(() -> new AccountNotFoundException(id));
+    }
+
+    public AccountResultDto createUser(AccountCreateDto accountCreateDto, MultipartFile uploadFile) {
         String email = accountCreateDto.getEmail();
         if (accountRepository.existsByEmail(email)) {
             throw new AccountEmailDuplicatedException(email);
@@ -65,7 +85,15 @@ public class AccountService {
         }
 
         Account account = accountCreateDto.toEntity();
-        account.addUploadFile(uploadFile);
+        if (uploadFile != null) {
+            try {
+                UploadFile accountFile = uploadFileService.makeUploadFile(uploadFile);
+                account.addUploadFile(accountFile);
+            } catch (IOException e) {
+                throw new FileUploadBadRequestException();
+            }
+        }
+
         Account createdAccount = accountRepository.save(account);
         createdAccount.updatePassword(createdAccount.getPassword(), passwordEncoder);
         deleteEmailAuthentication(emailAuthentication.getEmail());
@@ -73,8 +101,8 @@ public class AccountService {
         return AccountResultDto.of(createdAccount);
     }
 
-    public AccountResultDto updateUser(Long id, AccountUpdateDto accountUpdateDto) {
-        Account account = getUser(id);
+    public AccountResultDto updateUser(Long id, AccountUpdateDto accountUpdateDto, MultipartFile uploadFile) {
+        Account account = findUser(id);
 
         String password = accountUpdateDto.getPassword();
         if (!account.isPasswordSameWith(password, passwordEncoder)) {
@@ -86,6 +114,16 @@ public class AccountService {
             throw new AccountNicknameDuplicatedException(nickname);
         }
         account.updateNickname(nickname);
+
+        if (uploadFile != null) {
+            try {
+                UploadFile accountFile = uploadFileService.makeUploadFile(uploadFile);
+                account.addUploadFile(accountFile);
+            } catch (IOException e) {
+                throw new FileUploadBadRequestException();
+            }
+        }
+
         login(account);
 
         return AccountResultDto.of(account);
@@ -102,7 +140,7 @@ public class AccountService {
     }
 
     public AccountResultDto deleteUser(Long id) {
-        Account account = getUser(id);
+        Account account = findUser(id);
 
         account.delete();
 
@@ -117,32 +155,55 @@ public class AccountService {
         return accountRepository.findAll().size();
     }
 
-    public void login(Account account) {
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                new UserAccount(account, authorities),
-                account.getPassword(),
-                authorities);
-        SecurityContextHolder.getContext().setAuthentication(token);
-    }
-
     public AccountResultDto updateUserPassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
-        Account account = getUser(id);
+        Account account = findUser(id);
 
         String password = accountUpdatePasswordDto.getPassword();
-        if(!passwordEncoder.matches(password, account.getPassword())) {
+        if (!passwordEncoder.matches(password, account.getPassword())) {
             throw new AccountPasswordBadRequestException();
         }
 
         String newPassword = accountUpdatePasswordDto.getNewPassword();
         String newPasswordConfirmed = accountUpdatePasswordDto.getNewPasswordConfirmed();
-        if(!newPassword.equals(newPasswordConfirmed)) {
+        if (!newPassword.equals(newPasswordConfirmed)) {
             throw new AccountNewPasswordNotMatchedException();
         }
 
         account.updatePassword(accountUpdatePasswordDto.getNewPassword(), passwordEncoder);
 
         return AccountResultDto.of(account);
+    }
+
+    public void signup(SessionCreateDto sessionCreateDto) {
+        Account account = authenticateUser(sessionCreateDto); // LAZY 강제 초기화를 위한 연관관계 내부 명시적 조인?
+        List<GrantedAuthority> authorities = getAllAuthorities(sessionCreateDto.getEmail());
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                new UserAccount(account, authorities), account.getPassword(), authorities);
+        SecurityContextHolder.getContext().setAuthentication(token);
+    }
+
+    public List<GrantedAuthority> getAllAuthorities(String email) {
+        List<Role> roles = roleRepository.findAllByEmail(email);
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getName()))
+                .collect(Collectors.toList());
+    }
+
+    public Account authenticateUser(SessionCreateDto sessionCreateDto) {
+        String email = sessionCreateDto.getEmail();
+        String password = sessionCreateDto.getPassword();
+
+        return accountRepository.findByEmail(email)
+                .filter(u -> u.authenticate(password, passwordEncoder))
+                .orElseThrow(AuthenticationBadRequestException::new);
+    }
+
+    public void login(Account account) {
+        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
+
+        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+                new UserAccount(account, authorities), account.getPassword(), authorities);
+        SecurityContextHolder.getContext().setAuthentication(token);
     }
 }

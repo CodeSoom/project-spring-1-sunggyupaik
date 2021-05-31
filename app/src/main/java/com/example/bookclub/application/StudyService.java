@@ -42,24 +42,24 @@ public class StudyService {
     public StudyResultDto createStudy(Account account,
                                       StudyCreateDto studyCreateDto)
             throws ParseException {
-        if(account == null) {
+        if (account == null) {
             throw new AccessDeniedException("권한이 없습니다");
         }
 
-        if(account.getStudy() != null) {
+        if (account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
 
-        if(startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
+        if (startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
 
-        if(startDateIsAfterEndDate(studyCreateDto.getStartDate(),
+        if (startDateIsAfterEndDate(studyCreateDto.getStartDate(),
                 studyCreateDto.getEndDate())) {
             throw new StartAndEndDateNotValidException();
         }
 
-        if(startTimeIsAfterEndTime(studyCreateDto.getStartTime(),
+        if (startTimeIsAfterEndTime(studyCreateDto.getStartTime(),
                 studyCreateDto.getEndTime())) {
             throw new StartAndEndTimeNotValidException();
         }
@@ -75,7 +75,7 @@ public class StudyService {
     public StudyResultDto updateStudy(Account account,
                                       Long id,
                                       StudyUpdateDto studyUpdateDto) throws ParseException {
-        if(account == null) {
+        if (account == null) {
             throw new AccessDeniedException("권한이 없습니다");
         }
 
@@ -84,16 +84,16 @@ public class StudyService {
             throw new AccessDeniedException("권한이 없습니다");
         }
 
-        if(startDateIsTodayOrBefore(studyUpdateDto.getStartDate())) {
+        if (startDateIsTodayOrBefore(studyUpdateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
 
-        if(startDateIsAfterEndDate(studyUpdateDto.getStartDate(),
+        if (startDateIsAfterEndDate(studyUpdateDto.getStartDate(),
                 studyUpdateDto.getEndDate())) {
             throw new StartAndEndDateNotValidException();
         }
 
-        if(startTimeIsAfterEndTime(studyUpdateDto.getStartTime(),
+        if (startTimeIsAfterEndTime(studyUpdateDto.getStartTime(),
                 studyUpdateDto.getEndTime())) {
             throw new StartAndEndTimeNotValidException();
         }
@@ -119,12 +119,12 @@ public class StudyService {
     }
 
     public StudyResultDto deleteStudy(Account account, Long id) {
-        if(account == null) {
+        if (account == null) {
             throw new AccessDeniedException("권한이 없습니다");
         }
 
         Study study = getStudy(id);
-        if(!study.isManagedBy(account)) {
+        if (!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");
         }
 
@@ -135,11 +135,11 @@ public class StudyService {
     }
 
     public Long applyStudy(Account account, Long id) {
-        if(account == null) {
+        if (account == null) {
             throw new AccessDeniedException("권한이 없습니다");
         }
 
-        if(account.getStudy() != null) {
+        if (account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
 

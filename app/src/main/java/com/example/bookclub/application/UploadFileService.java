@@ -1,6 +1,5 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.domain.UploadFileRepository;
 import org.apache.commons.io.FilenameUtils;
@@ -16,29 +15,19 @@ import java.io.IOException;
 @Transactional
 public class UploadFileService {
     private final UploadFileRepository uploadFileRepository;
-    private final AccountRepository accountRepository;
 
-    public UploadFileService(UploadFileRepository uploadFileRepository,
-                             AccountRepository accountRepository) {
+    public UploadFileService(UploadFileRepository uploadFileRepository) {
         this.uploadFileRepository = uploadFileRepository;
-        this.accountRepository = accountRepository;
-    }
-
-    public UploadFile saveUploadFile(MultipartFile file) throws IOException {
-        UploadFile uploadFile = makeUploadFile(file);
-        System.out.println(uploadFile.getFileName()+"********");
-        System.out.println(uploadFile.getFileUrl()+"********");
-        System.out.println(uploadFile.getFileOriginalName()+"********");
-        //uploadFileRepository.save(uploadFile);
-
-        return uploadFile;
     }
     
     public UploadFile makeUploadFile(MultipartFile uploadFile) throws IOException {
         String sourceFileName = uploadFile.getOriginalFilename();
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
-        String destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
-        String realPath = "C:\\Users\\melon\\OneDrive\\바탕 화면\\과제 코드숨\\bookclub\\app\\src\\main\\resources\\static\\images\\";
+        String destinationFileName = RandomStringUtils.randomAlphanumeric(10) + "." + sourceFileNameExtension;
+//        String realPath = "C:\\Users\\melon\\OneDrive\\바탕 화면\\과제 코드숨\\bookclub\\app\\src\\main\\resources\\static\\images\\";
+//        String realPath = new File("").getAbsolutePath() + "\\app\\src\\main\\resources\\static\\images\\";
+        String realPath = new File("").getAbsolutePath() + "\\app\\src\\main\\resources\\";
+//        String realPath = "/resources/";
 //        String realPath = request.getSession().getServletContext().getRealPath("/");
 //        realPath = request.getSession().getServletContext().getRealPath("/")
 //                .substring(0,realPath.length()-"webapp\\".length())+"\\resources\\static\\images\\";

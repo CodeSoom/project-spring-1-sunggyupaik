@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
             throws IOException, ServletException {
         String authorization = request.getHeader("Authorization");
 
-        if(authorization != null) {
+        if (authorization != null) {
             String accessToken = authorization.substring("Bearer ".length());
             ParseResultDto parseResultDto = authenticationService.parseToken(accessToken);
             Claims claims = parseResultDto.getClaims();

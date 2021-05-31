@@ -32,7 +32,7 @@ public class PageUtil {
 
     public void calcTotalPage(int allListsCount, int countList) {
         this.totalPage = allListsCount / countList;
-        if(allListsCount % countList > 0) {
+        if (allListsCount % countList > 0) {
             this.totalPage += 1;
         }
     }
@@ -43,14 +43,14 @@ public class PageUtil {
 
     public void calcLastPage(int countPage) {
         this.lastPage = this.firstPage + countPage - 1;
-        if(lastPage > totalPage) {
+        if (lastPage > totalPage) {
             lastPage = totalPage;
         }
     }
 
     public void calcPrevious() {
         this.previous = this.firstPage - 1;
-        if(this.previous < 1) {
+        if (this.previous < 1) {
             this.previous = 1;
         }
     }
