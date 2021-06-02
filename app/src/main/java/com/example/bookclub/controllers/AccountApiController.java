@@ -1,9 +1,12 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.AccountService;
+import com.example.bookclub.application.UploadFileService;
+import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
+import com.example.bookclub.errors.FileUploadBadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,14 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/users")
 public class AccountApiController {
     private final AccountService accountService;
+    private final UploadFileService uploadFileService;
 
-    public AccountApiController(AccountService accountService) {
+    public AccountApiController(AccountService accountService, UploadFileService uploadFileService) {
         this.accountService = accountService;
+        this.uploadFileService = uploadFileService;
     }
 
     @GetMapping("/{id}")
@@ -35,7 +41,12 @@ public class AccountApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public AccountResultDto create(@RequestPart(required = false) MultipartFile uploadFile,
                                    AccountCreateDto accountCreateDto) {
-        return accountService.createUser(accountCreateDto, uploadFile);
+        if (uploadFile == null) {
+            return accountService.createUser(accountCreateDto, null);
+        }
+
+        UploadFile accountFile = uploadFileService.makeUploadFile(uploadFile);
+        return accountService.createUser(accountCreateDto, accountFile);
     }
 
     @PostMapping("/{id}")

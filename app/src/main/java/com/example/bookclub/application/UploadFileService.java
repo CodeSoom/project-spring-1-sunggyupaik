@@ -2,6 +2,7 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.domain.UploadFileRepository;
+import com.example.bookclub.errors.FileUploadBadRequestException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ public class UploadFileService {
         this.uploadFileRepository = uploadFileRepository;
     }
     
-    public UploadFile makeUploadFile(MultipartFile uploadFile) throws IOException {
+    public UploadFile makeUploadFile(MultipartFile uploadFile) {
         String sourceFileName = uploadFile.getOriginalFilename();
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
         String destinationFileName = RandomStringUtils.randomAlphanumeric(10) + "." + sourceFileNameExtension;
@@ -32,9 +33,13 @@ public class UploadFileService {
 //        realPath = request.getSession().getServletContext().getRealPath("/")
 //                .substring(0,realPath.length()-"webapp\\".length())+"\\resources\\static\\images\\";
         File destinationFile = new File(realPath + destinationFileName);
-
         destinationFile.getParentFile().mkdirs();
-        uploadFile.transferTo(destinationFile);
+
+        try {
+            uploadFile.transferTo(destinationFile);
+        } catch (IOException e) {
+            throw new FileUploadBadRequestException();
+        }
 
         return UploadFile.builder()
                 .fileName(destinationFileName)

@@ -67,7 +67,7 @@ public class AccountService {
                 .orElseThrow(() -> new AccountNotFoundException(id));
     }
 
-    public AccountResultDto createUser(AccountCreateDto accountCreateDto, MultipartFile uploadFile) {
+    public AccountResultDto createUser(AccountCreateDto accountCreateDto, UploadFile uploadFile) {
         String email = accountCreateDto.getEmail();
         if (accountRepository.existsByEmail(email)) {
             throw new AccountEmailDuplicatedException(email);
@@ -85,13 +85,8 @@ public class AccountService {
         }
 
         Account account = accountCreateDto.toEntity();
-        if (uploadFile != null) {
-            try {
-                UploadFile accountFile = uploadFileService.makeUploadFile(uploadFile);
-                account.addUploadFile(accountFile);
-            } catch (IOException e) {
-                throw new FileUploadBadRequestException();
-            }
+        if(uploadFile != null) {
+            account.addUploadFile(uploadFile);
         }
 
         Account createdAccount = accountRepository.save(account);
@@ -115,14 +110,14 @@ public class AccountService {
         }
         account.updateNickname(nickname);
 
-        if (uploadFile != null) {
-            try {
-                UploadFile accountFile = uploadFileService.makeUploadFile(uploadFile);
-                account.addUploadFile(accountFile);
-            } catch (IOException e) {
-                throw new FileUploadBadRequestException();
-            }
-        }
+//        if (uploadFile != null) {
+//            try {
+//                UploadFile accountFile = uploadFileService.makeUploadFile(uploadFile);
+//                account.addUploadFile(accountFile);
+//            } catch (IOException e) {
+//                throw new FileUploadBadRequestException();
+//            }
+//        }
 
         login(account);
 
