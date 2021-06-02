@@ -55,7 +55,7 @@ public class AccountAuthenticationService implements UserDetailsService {
                 .orElseThrow(AuthenticationBadRequestException::new);
     }
 
-    @OverrideloadUserByUsername
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account account = getAccount(email);
         List<GrantedAuthority> authorities = getAllAuthorities(email);
