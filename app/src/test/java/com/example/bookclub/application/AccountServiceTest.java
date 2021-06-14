@@ -331,16 +331,16 @@ class AccountServiceTest {
         assertThat(uploadFile.getFileOriginalName()).isEqualTo(UPLOADFILE_UPDATE_FILENORIGINALNAME);
         assertThat(uploadFile.getFileUrl()).isEqualTo(UPLOADFILE_UPDATE_FILEURL);
     }
-//
-//    @Test
-//    public void updatedWithDuplicatedNickname() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//        given(accountRepository.existsByIdNotAndNickname(CREATED_ID, DUPLICATED_NICKNAME)).willReturn(true);
-//
-//        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, nicknameDuplicatedAccountUpdateDto))
-//                .isInstanceOf(AccountNicknameDuplicatedException.class);
-//    }
-//
+
+    @Test
+    public void updatedWithDuplicatedNickname() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+        given(accountRepository.existsByIdNotAndNickname(CREATED_ID, DUPLICATED_NICKNAME)).willReturn(true);
+
+        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, nicknameDuplicatedAccountUpdateDto, null))
+                .isInstanceOf(AccountNicknameDuplicatedException.class);
+    }
+
 //    @Test
 //    public void updateWithNotValidPassword() {
 //        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
