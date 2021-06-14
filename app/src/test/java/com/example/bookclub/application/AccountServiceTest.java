@@ -370,15 +370,15 @@ class AccountServiceTest {
         assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
                 .isInstanceOf(AccountNewPasswordNotMatchedException.class);
     }
-//
-//    @Test
-//    public void updatePasswordWithNotValidPassword() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, passwordNotMatchedDto))
-//                .isInstanceOf(AccountPasswordBadRequestException.class);
-//    }
-//
+
+    @Test
+    public void updatePasswordWithNotValidPassword() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, passwordNotMatchedDto))
+                .isInstanceOf(AccountPasswordBadRequestException.class);
+    }
+
 //    @Test
 //    public void deleteAccount() {
 //        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpAccount));
