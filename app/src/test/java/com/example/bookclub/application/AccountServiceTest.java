@@ -349,18 +349,18 @@ class AccountServiceTest {
         assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, passwordNotValidAccountUpdateDto, null))
                 .isInstanceOf(AccountPasswordBadRequestException.class);
     }
-//
-//    @Test
-//    public void updatePasswordWithValidAttribute() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        AccountResultDto accountResultDto = accountService.updateUserPassword(CREATED_ID, accountUpdatePasswordDto);
-//
-//        assertThat(passwordEncoder.matches(
-//                accountUpdatePasswordDto.getNewPassword(),
-//                accountResultDto.getPassword())
-//        ).isTrue();
-//    }
+
+    @Test
+    public void updatePasswordWithValidAttribute() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        AccountResultDto accountResultDto = accountService.updateUserPassword(CREATED_ID, accountUpdatePasswordDto);
+
+        assertThat(passwordEncoder.matches(
+                accountUpdatePasswordDto.getNewPassword(),
+                accountResultDto.getPassword())
+        ).isTrue();
+    }
 //
 //    @Test
 //    public void updatePasswordWithNotMatchedNewPassword() {
