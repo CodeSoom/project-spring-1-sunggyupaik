@@ -6,7 +6,6 @@ import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
-import com.example.bookclub.errors.FileUploadBadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/users")
@@ -45,7 +43,7 @@ public class AccountApiController {
             return accountService.createUser(accountCreateDto, null);
         }
 
-        UploadFile accountFile = uploadFileService.makeUploadFile(uploadFile);
+        UploadFile accountFile = uploadFileService.upload(uploadFile);
         return accountService.createUser(accountCreateDto, accountFile);
     }
 
@@ -53,7 +51,12 @@ public class AccountApiController {
     public AccountResultDto update(@PathVariable Long id,
                                    @Valid AccountUpdateDto accountUpdateDto,
                                    @RequestPart(required = false) MultipartFile uploadFile) {
-        return accountService.updateUser(id, accountUpdateDto, uploadFile);
+        if (uploadFile == null) {
+            return accountService.updateUser(id, accountUpdateDto, null);
+        }
+
+        UploadFile accountFile = uploadFileService.upload(uploadFile);
+        return accountService.updateUser(id, accountUpdateDto, accountFile);
     }
 
     @DeleteMapping("/{id}")

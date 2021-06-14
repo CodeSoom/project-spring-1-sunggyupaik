@@ -19,7 +19,6 @@ import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
-import com.example.bookclub.errors.FileUploadBadRequestException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,10 +26,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -96,7 +93,7 @@ public class AccountService {
         return AccountResultDto.of(createdAccount);
     }
 
-    public AccountResultDto updateUser(Long id, AccountUpdateDto accountUpdateDto, MultipartFile uploadFile) {
+    public AccountResultDto updateUser(Long id, AccountUpdateDto accountUpdateDto, UploadFile uploadFile) {
         Account account = findUser(id);
 
         String password = accountUpdateDto.getPassword();
@@ -110,14 +107,11 @@ public class AccountService {
         }
         account.updateNickname(nickname);
 
-//        if (uploadFile != null) {
-//            try {
-//                UploadFile accountFile = uploadFileService.makeUploadFile(uploadFile);
-//                account.addUploadFile(accountFile);
-//            } catch (IOException e) {
-//                throw new FileUploadBadRequestException();
-//            }
-//        }
+        if(uploadFile != null) {
+            UploadFile accountImage = account.getUploadFile();
+            uploadFileService.deleteUploadFile(accountImage.getFileName());
+            account.addUploadFile(uploadFile);
+        }
 
         login(account);
 

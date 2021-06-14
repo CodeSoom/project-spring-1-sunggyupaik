@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,11 +47,17 @@ class AccountServiceTest {
     private static final String UPDATED_PASSWORD = "updatedPassword";
 
     private static final Long UPLOADFILE_ID = 3L;
-    private static final String UPLOADFILE_FILENAME = "createdfileName";
+    private static final String UPLOADFILE_FILENAME = "createdFileName";
     private static final String UPLOADFILE_FILENORIGINALNAME = "createdFileOriginalName";
     private static final String UPLOADFILE_FILEURL = "createdFileUrl";
 
+    private static final Long UPLOADFILE_UPDATE_ID = 4L;
+    private static final String UPLOADFILE_UPDATE_FILENAME = "updatedFileName";
+    private static final String UPLOADFILE_UPDATE_FILENORIGINALNAME = "updatedFileOriginalName";
+    private static final String UPLOADFILE_UPDATE_FILEURL = "updatedFileUrl";
+
     private static final Long NOT_EXISTED_ID = 100L;
+    private static final Long CREATED_IMAGE_ID = 5L;
     private static final String DUPLICATED_EMAIL = "existedEmail";
     private static final String DUPLICATED_NICKNAME = "existedNickName";
     private static final String CREATED_AUTHENTICATIONNUMBER = "existedAuthentication";
@@ -62,7 +67,9 @@ class AccountServiceTest {
     private Account notEncodedCreatedAccount;
     private Account notEncodedCreatedAccountWithUploadFile;
     private Account createdAccount;
+    private Account createdAccountWithUploadFile;
     private UploadFile uploadFile;
+    private UploadFile updateUploadFile;
     private PasswordEncoder passwordEncoder;
     private UploadFileService uploadFileService;
     private RoleRepository roleRepository;
@@ -118,6 +125,13 @@ class AccountServiceTest {
                 .fileUrl(UPLOADFILE_FILEURL)
                 .build();
 
+        updateUploadFile = UploadFile.builder()
+                .id(UPLOADFILE_UPDATE_ID)
+                .fileName(UPLOADFILE_FILENAME)
+                .fileOriginalName(UPLOADFILE_FILENORIGINALNAME)
+                .fileUrl(UPLOADFILE_FILEURL)
+                .build();
+
         notEncodedCreatedAccountWithUploadFile = Account.builder()
                 .id(CREATED_ID)
                 .name(CREATED_NAME)
@@ -133,6 +147,15 @@ class AccountServiceTest {
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(passwordEncoder.encode(CREATED_PASSWORD))
+                .build();
+
+        createdAccountWithUploadFile = Account.builder()
+                .id(CREATED_IMAGE_ID)
+                .name(CREATED_NAME)
+                .email(CREATED_EMAIL)
+                .nickname(CREATED_NICKNAME)
+                .password(passwordEncoder.encode(CREATED_PASSWORD))
+                .uploadFile(uploadFile)
                 .build();
 
         accountCreateDto = AccountCreateDto.builder()
@@ -293,15 +316,21 @@ class AccountServiceTest {
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
     }
 
-//    @Test
-//    public void updateWithValidAttribute() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        AccountResultDto accountResultDto = accountService.updateUser(CREATED_ID, accountUpdateDto);
-//
-//        assertThat(accountResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
-//        assertThat(passwordEncoder.matches(accountUpdateDto.getPassword(), accountResultDto.getPassword())).isTrue();
-//    }
+    @Test
+    public void updateWithValidAttribute() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
+
+        AccountResultDto accountResultDto = accountService.updateUser(CREATED_ID, accountUpdateDto, updateUploadFile);
+        UploadFile uploadFile = accountResultDto.getUploadFile();
+
+        assertThat(accountResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
+        assertThat(passwordEncoder.matches(accountUpdateDto.getPassword(), accountResultDto.getPassword())).isTrue();
+
+        assertThat(uploadFile.getId()).isEqualTo(UPLOADFILE_UPDATE_ID);
+        assertThat(uploadFile.getFileName()).isEqualTo(UPLOADFILE_UPDATE_FILENAME);
+        assertThat(uploadFile.getFileOriginalName()).isEqualTo(UPLOADFILE_UPDATE_FILENORIGINALNAME);
+        assertThat(uploadFile.getFileUrl()).isEqualTo(UPLOADFILE_UPDATE_FILEURL);
+    }
 //
 //    @Test
 //    public void updatedWithDuplicatedNickname() {
