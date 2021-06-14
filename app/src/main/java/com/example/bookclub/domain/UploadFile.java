@@ -30,14 +30,11 @@ public class UploadFile {
     private Account account;
 
     @Builder
-    public UploadFile(String fileName, String fileOriginalName, String fileUrl) {
+    public UploadFile(Long id, String fileName, String fileOriginalName, String fileUrl, Account account) {
+        this.id = id;
         this.fileName = fileName;
         this.fileOriginalName = fileOriginalName;
         this.fileUrl = fileUrl;
-    }
-
-    public void addAccount(Account savedAccount) {
-        this.account = savedAccount;
-        savedAccount.addUploadFile(this);
+        this.account = account;
     }
 }

@@ -1,15 +1,13 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.domain.UploadFileRepository;
+import com.example.bookclub.errors.FileUploadBadRequestException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.io.File;
 import java.io.IOException;
@@ -18,34 +16,30 @@ import java.io.IOException;
 @Transactional
 public class UploadFileService {
     private final UploadFileRepository uploadFileRepository;
-    private final AccountRepository accountRepository;
 
-    public UploadFileService(UploadFileRepository uploadFileRepository,
-                             AccountRepository accountRepository) {
+    public UploadFileService(UploadFileRepository uploadFileRepository) {
         this.uploadFileRepository = uploadFileRepository;
-        this.accountRepository = accountRepository;
-    }
-
-    public UploadFile saveUploadFile(HttpServletRequest request, MultipartFile file, Long id) throws IOException {
-        UploadFile uploadFile = makeUploadFile(request, file);
-        Account savedAccount = accountRepository.findById(id).get();
-        uploadFileRepository.save(uploadFile);
-        uploadFile.addAccount(savedAccount);
-
-        return uploadFile;
     }
     
-    public UploadFile makeUploadFile(HttpServletRequest request, MultipartFile uploadFile) throws IOException {
+    public UploadFile makeUploadFile(MultipartFile uploadFile) {
         String sourceFileName = uploadFile.getOriginalFilename();
         String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
-        String destinationFileName = RandomStringUtils.randomAlphanumeric(32) + "." + sourceFileNameExtension;
-        String realPath = request.getSession().getServletContext().getRealPath("/");
-        realPath = request.getSession().getServletContext().getRealPath("/")
-                .substring(0,realPath.length()-"webapp\\".length())+"resources\\static\\images\\";
+        String destinationFileName = RandomStringUtils.randomAlphanumeric(10) + "." + sourceFileNameExtension;
+//        String realPath = "C:\\Users\\melon\\OneDrive\\바탕 화면\\과제 코드숨\\bookclub\\app\\src\\main\\resources\\static\\images\\";
+//        String realPath = new File("").getAbsolutePath() + "\\app\\src\\main\\resources\\static\\images\\";
+        String realPath = new File("").getAbsolutePath() + "\\app\\src\\main\\resources\\";
+//        String realPath = "/resources/";
+//        String realPath = request.getSession().getServletContext().getRealPath("/");
+//        realPath = request.getSession().getServletContext().getRealPath("/")
+//                .substring(0,realPath.length()-"webapp\\".length())+"\\resources\\static\\images\\";
         File destinationFile = new File(realPath + destinationFileName);
-
         destinationFile.getParentFile().mkdirs();
-        uploadFile.transferTo(destinationFile);
+
+        try {
+            uploadFile.transferTo(destinationFile);
+        } catch (IOException e) {
+            throw new FileUploadBadRequestException();
+        }
 
         return UploadFile.builder()
                 .fileName(destinationFileName)

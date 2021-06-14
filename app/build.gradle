@@ -24,13 +24,17 @@ repositories {
 
 dependencies {
 	// Use JUnit Jupiter API for testing.
-	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
 
 	// AssertJ
 	testImplementation 'org.assertj:assertj-core:3.18.1'
 
 	// Use JUnit Jupiter Engine for testing.
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+//	testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.7.2")
+//	testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.2")
+//	testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.7.2")
 
 	// This dependency is used by the application.
 	implementation 'com.google.guava:guava:29.0-jre'
@@ -77,7 +81,7 @@ dependencies {
 
 	// Spring Boot Test
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+		//exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
 	// Spring Email

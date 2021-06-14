@@ -43,7 +43,7 @@ public class AuthenticationService {
     }
 
     public ParseResultDto parseToken(String token) {
-        if(token == null || token.isBlank()) {
+        if (token == null || token.isBlank()) {
             throw new InvalidTokenException(token);
         }
 

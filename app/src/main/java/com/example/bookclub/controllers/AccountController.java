@@ -14,43 +14,38 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class AccountController {
     @GetMapping("/save")
     public String usersSave(@CurrentAccount Account account, Model model) {
-        if (account != null) {
+        if (account != null)
             model.addAttribute("account", account);
-        }
+
         return "users/users-save";
     }
 
     @GetMapping("/update/{id}")
     public String usersUpdate(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
-        if (account == null || !account.getId().equals(id)) {
+        if (account == null || !account.getId().equals(id))
             throw new AccessDeniedException("권한이 없습니다");
-        } else {
-            checkTopMenu(account, model);
-        }
 
+        checkTopMenu(account, model);
         return "users/users-update";
     }
 
     @GetMapping("/update/password/{id}")
     public String usersPasswordUpdate(@CurrentAccount Account account,
                                       @PathVariable Long id, Model model) {
-        if (account == null || !account.getId().equals(id)) {
+        if (account == null || !account.getId().equals(id))
             throw new AccessDeniedException("권한이 없습니다");
-        } else {
-            checkTopMenu(account, model);
-        }
 
+        checkTopMenu(account, model);
         return "users/users-update-password";
     }
 
-    private void checkTopMenu(@CurrentAccount Account account, Model model) {
+    private void checkTopMenu(Account account, Model model) {
         model.addAttribute("account", account);
-        if (account.isMangerOf(account.getStudy())) {
+        if (account.isMangerOf(account.getStudy()))
             model.addAttribute("studyManager", account.getStudy());
-        }
-        if (account.isApplierOf(account.getStudy())) {
+
+        if (account.isApplierOf(account.getStudy()))
             model.addAttribute("studyApply", account.getStudy());
-        }
     }
 }

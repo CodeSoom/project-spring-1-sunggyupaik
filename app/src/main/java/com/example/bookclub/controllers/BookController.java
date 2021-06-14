@@ -26,7 +26,7 @@ public class BookController {
     @GetMapping("/bestseller")
     public String booksBestSellerLists(@CurrentAccount Account account, Model model)
             throws IOException, ParseException {
-        if(account != null) {
+        if (account != null) {
             checkTopMenu(account, model);
         }
 
@@ -39,7 +39,7 @@ public class BookController {
     @GetMapping("/recommend")
     public String booksRecommendLists(@CurrentAccount Account account, Model model)
             throws IOException, ParseException {
-        if(account != null) {
+        if (account != null) {
             checkTopMenu(account, model);
         }
 
@@ -52,7 +52,7 @@ public class BookController {
     @GetMapping("/new")
     public String booksNewLists(@CurrentAccount Account account, Model model)
             throws IOException, ParseException {
-        if(account != null) {
+        if (account != null) {
             checkTopMenu(account, model);
         }
 
@@ -64,10 +64,9 @@ public class BookController {
 
     @GetMapping("/search")
     public String booksSearchLists(@CurrentAccount Account account,
-                                   Model model,
-                                   @RequestParam String keyword)
+                                   Model model, @RequestParam String keyword)
             throws IOException, ParseException {
-        if(account != null) {
+        if (account != null) {
             checkTopMenu(account, model);
         }
 
@@ -77,11 +76,12 @@ public class BookController {
         return "books/books-lists";
     }
 
-    private void checkTopMenu(@CurrentAccount Account account, Model model) {
+    private void checkTopMenu(Account account, Model model) {
         model.addAttribute("account", account);
         if (account.isMangerOf(account.getStudy())) {
             model.addAttribute("studyManager", account.getStudy());
         }
+
         if (account.isApplierOf(account.getStudy())) {
             model.addAttribute("studyApply", account.getStudy());
         }

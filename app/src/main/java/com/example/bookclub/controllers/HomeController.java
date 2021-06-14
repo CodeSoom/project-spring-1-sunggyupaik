@@ -21,7 +21,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
-        if(account != null) {
+        if (account != null) {
             checkTopMenu(account, model);
         }
 
@@ -40,7 +40,7 @@ public class HomeController {
         return "index";
     }
 
-    private void checkTopMenu(@CurrentAccount Account account, Model model) {
+    private void checkTopMenu(Account account, Model model) {
         model.addAttribute("account", account);
         if (account.isMangerOf(account.getStudy())) {
             model.addAttribute("studyManager", account.getStudy());

@@ -37,13 +37,12 @@ public class AccountAuthenticationService implements UserDetailsService {
     }
 
     public void login(SessionCreateDto sessionCreateDto) {
-        Account account = authenticateUser(sessionCreateDto);
+        Account account = authenticateUser(sessionCreateDto); // LAZY 강제 초기화를 위한 연관관계 내부 명시적 조인?
+        //account.getUploadFile().getFileUrl(); // LAZY 강제 초기화를 위한 연관관계 조회
         List<GrantedAuthority> authorities = getAllAuthorities(sessionCreateDto.getEmail());
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                new UserAccount(account, authorities),
-                account.getPassword(),
-                authorities);
+                new UserAccount(account, authorities), account.getPassword(), authorities);
         SecurityContextHolder.getContext().setAuthentication(token);
     }
 

@@ -12,7 +12,7 @@ public interface StudyRepository {
 
     List<Study> findByStudyState(StudyState studyState);
 
-    List<Study> findByKeyword(String keyword);
+    List<Study> findByBookNameContaining(String keyword);
 
     Study save(Study study);
 

@@ -550,7 +550,7 @@ public class StudyServiceTest {
 
     @Test
     void listsStudiesWithKeyword() {
-        given(studyRepository.findByKeyword(PYTHON_KEYWORD)).willReturn(listPythonKeywordStudies);
+        given(studyRepository.findByBookNameContaining(PYTHON_KEYWORD)).willReturn(listPythonKeywordStudies);
 
         List<Study> list = studyService.getStudiesBySearch(PYTHON_KEYWORD);
 

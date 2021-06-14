@@ -9,8 +9,8 @@ var main = {
             _this.sendMessage();
         });
 
-        $('#btn-save').on('click', function () {
-            _this.save();
+        $('#btn-account-save').on('click', function () {
+            _this.saveUser();
         });
 
         $('#btn-account-update').on('click', function () {
@@ -21,7 +21,7 @@ var main = {
             _this.updateUserPassword();
         });
 
-        $('#btn-user-delete').on('click', function () {
+        $('#btn-account-delete').on('click', function () {
             _this.deleteUser();
         });
 
@@ -73,9 +73,9 @@ var main = {
             alert("신청이 완료되었습니다.");
             location.href = '/studys/open';
         }).fail(function (request) {
-            if(request.responseText.match("Study already existed")) {
+            if (request.responseText.match("Study already existed")) {
                 alert("이미 스터디에 참여하고 있어서 신청이 불가능합니다");
-            } else if(request.responseText.match("Study size is full")) {
+            } else if (request.responseText.match("Study size is full")) {
                 alert("스터디 모집인원이 꽉 찼습니다");
             } else {
                 alert(request.responseText);
@@ -124,7 +124,7 @@ var main = {
         });
     },
 
-    save : function () {
+    saveUser : function () {
         var formData = new FormData();
         var uploadFile = document.getElementById("uploadFile").files[0];
         var name = $('#name').val();
@@ -217,6 +217,10 @@ var main = {
 
     deleteUser : function () {
         var id = $('#id').val();
+        var result = confirm("정말로 탈퇴하시겠습니까?");
+        if(!result) {
+            return;
+        }
 
         $.ajax({
             type: 'DELETE',
@@ -224,7 +228,7 @@ var main = {
             dataType: 'json',
             contentType:'application/json; charset=utf-8',
         }).done(function() {
-            alert('사용자 삭제가 완료되었습니다.');
+            alert('사용자 탈퇴가 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
             alert(request.responseText);

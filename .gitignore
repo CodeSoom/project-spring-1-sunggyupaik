@@ -39,3 +39,5 @@ out/
 ### Binary ###
 app/out/
 *.yml
+
+images/

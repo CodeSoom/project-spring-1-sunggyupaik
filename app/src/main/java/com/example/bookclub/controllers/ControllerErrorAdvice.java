@@ -10,6 +10,7 @@ import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.errors.FileUploadBadRequestException;
 import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
@@ -136,5 +137,11 @@ public class ControllerErrorAdvice {
                 .getDefaultMessage();
 
         return new ErrorResponse(field + ": " + message);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(FileUploadBadRequestException.class)
+    public ErrorResponse handleFileUploadBadRequest(FileUploadBadRequestException e) {
+        return new ErrorResponse(e.getMessage());
     }
 }

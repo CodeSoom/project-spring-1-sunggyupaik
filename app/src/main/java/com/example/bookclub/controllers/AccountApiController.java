@@ -2,10 +2,11 @@ package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.UploadFileService;
-import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
+import com.example.bookclub.errors.FileUploadBadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 
@@ -27,40 +27,33 @@ public class AccountApiController {
     private final AccountService accountService;
     private final UploadFileService uploadFileService;
 
-    public AccountApiController(AccountService accountService,
-                                UploadFileService uploadFileService) {
+    public AccountApiController(AccountService accountService, UploadFileService uploadFileService) {
         this.accountService = accountService;
         this.uploadFileService = uploadFileService;
     }
 
     @GetMapping("/{id}")
-    public AccountResultDto detail(@PathVariable Long id) {
-        Account account = accountService.getUser(id);
-        return AccountResultDto.of(account);
+    public AccountResultDto get(@PathVariable Long id) {
+        return accountService.getUser(id);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResultDto create(HttpServletRequest request,
-                                   @RequestPart(required = false) MultipartFile uploadFile,
-                                   AccountCreateDto accountCreateDto) throws IOException {
-        AccountResultDto account = accountService.createUser(accountCreateDto);
-        if (uploadFile != null) {
-            uploadFileService.saveUploadFile(request, uploadFile, account.getId());
+    public AccountResultDto create(@RequestPart(required = false) MultipartFile uploadFile,
+                                   AccountCreateDto accountCreateDto) {
+        if (uploadFile == null) {
+            return accountService.createUser(accountCreateDto, null);
         }
-        return account;
+
+        UploadFile accountFile = uploadFileService.makeUploadFile(uploadFile);
+        return accountService.createUser(accountCreateDto, accountFile);
     }
 
     @PostMapping("/{id}")
-    public AccountResultDto update(HttpServletRequest request,
-                                   @RequestPart(required = false) MultipartFile uploadFile,
-                                   @PathVariable Long id,
-                                   @Valid AccountUpdateDto accountUpdateDto) throws IOException {
-        AccountResultDto account = accountService.updateUser(id, accountUpdateDto);
-        if (uploadFile != null) {
-            uploadFileService.saveUploadFile(request, uploadFile, account.getId());
-        }
-        return account;
+    public AccountResultDto update(@PathVariable Long id,
+                                   @Valid AccountUpdateDto accountUpdateDto,
+                                   @RequestPart(required = false) MultipartFile uploadFile) {
+        return accountService.updateUser(id, accountUpdateDto, uploadFile);
     }
 
     @DeleteMapping("/{id}")
