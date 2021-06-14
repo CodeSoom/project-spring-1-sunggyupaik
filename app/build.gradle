@@ -11,15 +11,19 @@ group = 'com.example.bookclub'
 sourceCompatibility = '11'
 
 configurations {
-	developmentOnly
-	runtimeClasspath {
-		extendsFrom developmentOnly
+//	developmentOnly
+//	runtimeClasspath {
+//		extendsFrom developmentOnly
+//	}
+	compileOnly {
+		extendsFrom annotationProcessor
 	}
 }
 
 repositories {
 	// Use JCenter for resolving dependencies.
-	jcenter()
+//	jcenter()
+	mavenCentral()
 }
 
 dependencies {
@@ -81,7 +85,7 @@ dependencies {
 
 	// Spring Boot Test
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		//exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
 
 	// Spring Email
@@ -104,6 +108,9 @@ dependencies {
 
 	//Jsoup
 	implementation 'org.jsoup:jsoup:1.13.1'
+
+	//Spring Cloud for S3 Upload
+	implementation group: 'org.springframework.cloud', name: 'spring-cloud-aws-context', version: '2.2.1.RELEASE'
 }
 
 application {
