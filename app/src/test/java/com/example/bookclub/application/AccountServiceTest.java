@@ -11,6 +11,7 @@ import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
@@ -361,14 +362,14 @@ class AccountServiceTest {
                 accountResultDto.getPassword())
         ).isTrue();
     }
-//
-//    @Test
-//    public void updatePasswordWithNotMatchedNewPassword() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
-//                .isInstanceOf(AccountNewPasswordNotMatchedException.class);
-//    }
+
+    @Test
+    public void updatePasswordWithNotMatchedNewPassword() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
+                .isInstanceOf(AccountNewPasswordNotMatchedException.class);
+    }
 //
 //    @Test
 //    public void updatePasswordWithNotValidPassword() {
