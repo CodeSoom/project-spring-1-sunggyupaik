@@ -69,6 +69,7 @@ public class Account {
 
     public void delete() {
         this.deleted = true;
+        this.uploadFile = null;
     }
 
     public boolean isPasswordSameWith(String password, PasswordEncoder passwordEncoder) {
