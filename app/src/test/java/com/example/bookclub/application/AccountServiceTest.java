@@ -379,16 +379,17 @@ class AccountServiceTest {
                 .isInstanceOf(AccountPasswordBadRequestException.class);
     }
 
-//    @Test
-//    public void deleteAccount() {
-//        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpAccount));
-//
-//        AccountResultDto accountResultDto = accountService.deleteUser(SETUP_ID);
-//
-//        assertThat(accountResultDto.getId()).isEqualTo(SETUP_ID);
-//        assertThat(accountResultDto.isDeleted()).isTrue();
-//    }
-//
+    @Test
+    public void deleteAccount() {
+        given(accountRepository.findById(CREATED_IMAGE_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
+
+        AccountResultDto accountResultDto = accountService.deleteUser(CREATED_IMAGE_ID);
+
+        assertThat(accountResultDto.getId()).isEqualTo(CREATED_IMAGE_ID);
+        assertThat(accountResultDto.isDeleted()).isTrue();
+        assertThat(accountResultDto.getUploadFile()).isNull();
+    }
+
 //    @Test
 //    public void deleteAccountWithNotExistedId() {
 //        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
