@@ -131,6 +131,10 @@ public class AccountService {
     public AccountResultDto deleteUser(Long id) {
         Account account = findUser(id);
 
+        UploadFile uploadFile = account.getUploadFile();
+        if (uploadFile != null) {
+            uploadFileService.deleteUploadFile(uploadFile.getFileName());
+        }
         account.delete();
 
         return AccountResultDto.of(account);

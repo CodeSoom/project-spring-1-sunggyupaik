@@ -11,8 +11,10 @@ import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
+import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -331,67 +333,68 @@ class AccountServiceTest {
         assertThat(uploadFile.getFileOriginalName()).isEqualTo(UPLOADFILE_UPDATE_FILENORIGINALNAME);
         assertThat(uploadFile.getFileUrl()).isEqualTo(UPLOADFILE_UPDATE_FILEURL);
     }
-//
-//    @Test
-//    public void updatedWithDuplicatedNickname() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//        given(accountRepository.existsByIdNotAndNickname(CREATED_ID, DUPLICATED_NICKNAME)).willReturn(true);
-//
-//        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, nicknameDuplicatedAccountUpdateDto))
-//                .isInstanceOf(AccountNicknameDuplicatedException.class);
-//    }
-//
-//    @Test
-//    public void updateWithNotValidPassword() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, passwordNotValidAccountUpdateDto))
-//                .isInstanceOf(AccountPasswordBadRequestException.class);
-//    }
-//
-//    @Test
-//    public void updatePasswordWithValidAttribute() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        AccountResultDto accountResultDto = accountService.updateUserPassword(CREATED_ID, accountUpdatePasswordDto);
-//
-//        assertThat(passwordEncoder.matches(
-//                accountUpdatePasswordDto.getNewPassword(),
-//                accountResultDto.getPassword())
-//        ).isTrue();
-//    }
-//
-//    @Test
-//    public void updatePasswordWithNotMatchedNewPassword() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
-//                .isInstanceOf(AccountNewPasswordNotMatchedException.class);
-//    }
-//
-//    @Test
-//    public void updatePasswordWithNotValidPassword() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, passwordNotMatchedDto))
-//                .isInstanceOf(AccountPasswordBadRequestException.class);
-//    }
-//
-//    @Test
-//    public void deleteAccount() {
-//        given(accountRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpAccount));
-//
-//        AccountResultDto accountResultDto = accountService.deleteUser(SETUP_ID);
-//
-//        assertThat(accountResultDto.getId()).isEqualTo(SETUP_ID);
-//        assertThat(accountResultDto.isDeleted()).isTrue();
-//    }
-//
-//    @Test
-//    public void deleteAccountWithNotExistedId() {
-//        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
-//
-//        assertThatThrownBy(() -> accountService.deleteUser(NOT_EXISTED_ID))
-//                .isInstanceOf(AccountNotFoundException.class);
-//    }
+
+    @Test
+    public void updatedWithDuplicatedNickname() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+        given(accountRepository.existsByIdNotAndNickname(CREATED_ID, DUPLICATED_NICKNAME)).willReturn(true);
+
+        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, nicknameDuplicatedAccountUpdateDto, null))
+                .isInstanceOf(AccountNicknameDuplicatedException.class);
+    }
+
+    @Test
+    public void updateWithNotValidPassword() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, passwordNotValidAccountUpdateDto, null))
+                .isInstanceOf(AccountPasswordBadRequestException.class);
+    }
+
+    @Test
+    public void updatePasswordWithValidAttribute() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        AccountResultDto accountResultDto = accountService.updateUserPassword(CREATED_ID, accountUpdatePasswordDto);
+
+        assertThat(passwordEncoder.matches(
+                accountUpdatePasswordDto.getNewPassword(),
+                accountResultDto.getPassword())
+        ).isTrue();
+    }
+
+    @Test
+    public void updatePasswordWithNotMatchedNewPassword() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
+                .isInstanceOf(AccountNewPasswordNotMatchedException.class);
+    }
+
+    @Test
+    public void updatePasswordWithNotValidPassword() {
+        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
+
+        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, passwordNotMatchedDto))
+                .isInstanceOf(AccountPasswordBadRequestException.class);
+    }
+
+    @Test
+    public void deleteAccount() {
+        given(accountRepository.findById(CREATED_IMAGE_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
+
+        AccountResultDto accountResultDto = accountService.deleteUser(CREATED_IMAGE_ID);
+
+        assertThat(accountResultDto.getId()).isEqualTo(CREATED_IMAGE_ID);
+        assertThat(accountResultDto.isDeleted()).isTrue();
+        assertThat(accountResultDto.getUploadFile()).isNull();
+    }
+
+    @Test
+    public void deleteAccountWithNotExistedId() {
+        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountService.deleteUser(NOT_EXISTED_ID))
+                .isInstanceOf(AccountNotFoundException.class);
+    }
 }
