@@ -390,11 +390,11 @@ class AccountServiceTest {
         assertThat(accountResultDto.getUploadFile()).isNull();
     }
 
-//    @Test
-//    public void deleteAccountWithNotExistedId() {
-//        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
-//
-//        assertThatThrownBy(() -> accountService.deleteUser(NOT_EXISTED_ID))
-//                .isInstanceOf(AccountNotFoundException.class);
-//    }
+    @Test
+    public void deleteAccountWithNotExistedId() {
+        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountService.deleteUser(NOT_EXISTED_ID))
+                .isInstanceOf(AccountNotFoundException.class);
+    }
 }
