@@ -17,6 +17,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/login")
                 .loginProcessingUrl("/")
+                .defaultSuccessUrl("/", false)
                 .permitAll()
         .and()
                 .logout()
