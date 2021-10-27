@@ -33,6 +33,7 @@ public class EmailService {
         try {
             javaMailSender.send(message);
         } catch(MailException ex) {
+            System.out.println(ex.getMessage());
             throw new EmailBadRequestException(email);
         }
 
@@ -47,6 +48,7 @@ public class EmailService {
         message.addRecipients(Message.RecipientType.TO, to);
         message.setSubject("BookClub 인증번호");
         message.setText(code);
+        System.out.println("BookClub 인증번호=" + code);
 
         return message;
     }
