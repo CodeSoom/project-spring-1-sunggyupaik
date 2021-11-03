@@ -1,15 +1,8 @@
 package com.example.bookclub.filters;
 
 import com.example.bookclub.application.AuthenticationService;
-import com.example.bookclub.dto.ParseResultDto;
 import com.example.bookclub.security.AccountAuthenticationService;
-import io.jsonwebtoken.Claims;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 import javax.servlet.FilterChain;
@@ -35,20 +28,20 @@ public class JwtAuthenticationFilter extends BasicAuthenticationFilter {
                                     HttpServletResponse response,
                                     FilterChain chain)
             throws IOException, ServletException {
-        String authorization = request.getHeader("Authorization");
-
-        if (authorization != null) {
-            String accessToken = authorization.substring("Bearer ".length());
-            ParseResultDto parseResultDto = authenticationService.parseToken(accessToken);
-            Claims claims = parseResultDto.getClaims();
-            String email = claims.getSubject();
-
-            UserDetails userDetails = accountAuthenticationService.loadUserByUsername(email);
-            Authentication authentication = new UsernamePasswordAuthenticationToken(
-                    userDetails, userDetails.getPassword(), userDetails.getAuthorities());
-            SecurityContext context = SecurityContextHolder.getContext();
-            context.setAuthentication(authentication);
-        }
+//        String authorization = request.getHeader("Authorization");
+//
+//        if (authorization != null) {
+//            String accessToken = authorization.substring("Bearer ".length());
+//            ParseResultDto parseResultDto = authenticationService.parseToken(accessToken);
+//            Claims claims = parseResultDto.getClaims();
+//            String email = claims.getSubject();
+//
+//            UserDetails userDetails = accountAuthenticationService.loadUserByUsername(email);
+//            Authentication authentication = new UsernamePasswordAuthenticationToken(
+//                    userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+//            SecurityContext context = SecurityContextHolder.getContext();
+//            context.setAuthentication(authentication);
+//        }
 
         chain.doFilter(request, response);
     }

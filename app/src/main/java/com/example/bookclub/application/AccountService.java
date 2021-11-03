@@ -4,32 +4,22 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
-import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
-import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
-import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
-import com.example.bookclub.security.UserAccount;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -113,7 +103,7 @@ public class AccountService {
             account.addUploadFile(uploadFile);
         }
 
-        login(account);
+//        login(account);
 
         return AccountResultDto.of(account);
     }
@@ -167,36 +157,36 @@ public class AccountService {
         return AccountResultDto.of(account);
     }
 
-    public void signup(SessionCreateDto sessionCreateDto) {
-        Account account = authenticateUser(sessionCreateDto); // LAZY 강제 초기화를 위한 연관관계 내부 명시적 조인?
-        List<GrantedAuthority> authorities = getAllAuthorities(sessionCreateDto.getEmail());
+//    public void signup(SessionCreateDto sessionCreateDto) {
+//        Account account = authenticateUser(sessionCreateDto); // LAZY 강제 초기화를 위한 연관관계 내부 명시적 조인?
+//        List<GrantedAuthority> authorities = getAllAuthorities(sessionCreateDto.getEmail());
+//
+//        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+//                new UserAccount(account, authorities), account.getPassword(), authorities);
+//        SecurityContextHolder.getContext().setAuthentication(token);
+//    }
 
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                new UserAccount(account, authorities), account.getPassword(), authorities);
-        SecurityContextHolder.getContext().setAuthentication(token);
-    }
+//    public List<GrantedAuthority> getAllAuthorities(String email) {
+//        List<Role> roles = roleRepository.findAllByEmail(email);
+//        return roles.stream()
+//                .map(role -> new SimpleGrantedAuthority(role.getName()))
+//                .collect(Collectors.toList());
+//    }
 
-    public List<GrantedAuthority> getAllAuthorities(String email) {
-        List<Role> roles = roleRepository.findAllByEmail(email);
-        return roles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
-    }
+//    public Account authenticateUser(SessionCreateDto sessionCreateDto) {
+//        String email = sessionCreateDto.getEmail();
+//        String password = sessionCreateDto.getPassword();
+//
+//        return accountRepository.findByEmail(email)
+//                .filter(u -> u.authenticate(password, passwordEncoder))
+//                .orElseThrow(AuthenticationBadRequestException::new);
+//    }
 
-    public Account authenticateUser(SessionCreateDto sessionCreateDto) {
-        String email = sessionCreateDto.getEmail();
-        String password = sessionCreateDto.getPassword();
-
-        return accountRepository.findByEmail(email)
-                .filter(u -> u.authenticate(password, passwordEncoder))
-                .orElseThrow(AuthenticationBadRequestException::new);
-    }
-
-    public void login(Account account) {
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                new UserAccount(account, authorities), account.getPassword(), authorities);
-        SecurityContextHolder.getContext().setAuthentication(token);
-    }
+//    public void login(Account account) {
+//        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
+//
+//        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+//                new UserAccount(account, authorities), account.getPassword(), authorities);
+//        SecurityContextHolder.getContext().setAuthentication(token);
+//    }
 }
