@@ -4,29 +4,40 @@ import com.example.bookclub.security.AccountAuthenticationService;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.SessionManagementConfigurer;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
+import javax.sql.DataSource;
 import java.time.LocalDateTime;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final AccountAuthenticationService accountAuthenticationService;
+    private final DataSource dataSource;
 
-    public SecurityJavaConfig(AccountAuthenticationService accountAuthenticationService) {
+    public SecurityJavaConfig(AccountAuthenticationService accountAuthenticationService,
+                              DataSource dataSource) {
         this.accountAuthenticationService = accountAuthenticationService;
+        this.dataSource = dataSource;
     }
 
     @Bean
-    public static ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
+    public ServletListenerRegistrationBean<HttpSessionEventPublisher> httpSessionEventPublisher() {
         return new ServletListenerRegistrationBean<>(new HttpSessionEventPublisher() {
             @Override
             public void sessionCreated(HttpSessionEvent event) {
@@ -52,6 +63,36 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(accountAuthenticationService);
     }
 
+    @Bean
+    PersistentTokenRepository tokenRepository(){
+        JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
+        repository.setDataSource(dataSource);
+        try{
+            repository.removeUserTokens("junk");
+        } catch (Exception ex){
+            repository.setCreateTableOnStartup(true);
+        }
+        return repository;
+    }
+
+    @Bean
+    PersistentTokenBasedRememberMeServices rememberMeServices(){
+        PersistentTokenBasedRememberMeServices services = new PersistentTokenBasedRememberMeServices(
+                "bookclub-remember-me",
+                accountAuthenticationService,
+                tokenRepository()) {
+            @Override
+            protected Authentication createSuccessfulAuthentication(HttpServletRequest request, UserDetails user) {
+                return new UsernamePasswordAuthenticationToken(
+                        user.getUsername(), user.getPassword(), user.getAuthorities()
+                );
+            }
+        };
+
+        services.setTokenValiditySeconds(60 * 60 * 24 * 31);
+        return services;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -67,6 +108,9 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 )
                 .logout(logout ->
                         logout.logoutSuccessUrl("/")
+                )
+                .rememberMe(r ->
+                        r.rememberMeServices(rememberMeServices())
                 )
                 .sessionManagement(s->
                         s.sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
