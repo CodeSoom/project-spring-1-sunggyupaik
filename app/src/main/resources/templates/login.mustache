@@ -3,13 +3,13 @@
 
 <div class="login">
     <form method="POST" action="/loginprocess">
-        <label for="username"><span>Email</span></label>
-        <input type="text"
+        <label for="username"><span>이메일</span></label>
+        <input type="email"
                id="username"
                name="username"
                placeholder="이메일을 입력하세요">
 
-        <label for="password"><span>Password</span></label>
+        <label for="password"><span>비밀번호</span></label>
         <input type="password"
                id="password"
                name="password"
@@ -20,7 +20,12 @@
                 <input type="checkbox" name="remember-me"> 로그인 기억하기
             </label>
         </div>
-        <button id="btn-login2" type="submit">Log in</button>
+        <button type="submit">로그인</button>
+        {{#loginError}}
+            <div class="error-message">
+                <span> 아이디나 패스워드가 올바르지 않습니다. </span>
+            </div>
+        {{/loginError}}
     </form>
 </div>
 {{>layout/footer}}
