@@ -3,7 +3,7 @@ package com.example.bookclub.controller;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CurrentAccount;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,36 +20,33 @@ public class AccountController {
     }
 
     @GetMapping("/save")
-    public String usersSave(@CurrentAccount Account account, Model model) {
-        if (account != null)
-            model.addAttribute("account", account);
-
+    public String usersSave(@CurrentAccount Account account) {
+        if(account != null) {
+            return "redirect:/";
+        }
         return "users/users-save";
     }
 
+    @PreAuthorize("#account.id == #id")
     @GetMapping("/update/{id}")
     public String usersUpdate(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
-        if (account == null || !account.getId().equals(id))
-            throw new AccessDeniedException("권한이 없습니다");
-
-        account = accountAuthenticationService.getAccount(account.getEmail());
+        account = accountAuthenticationService.getAccountByEmail(account.getEmail());
+        model.addAttribute("account", account);
         checkTopMenu(account, model);
         return "users/users-update";
     }
 
+    @PreAuthorize("#account.id == #id")
     @GetMapping("/update/password/{id}")
     public String usersPasswordUpdate(@CurrentAccount Account account,
                                       @PathVariable Long id, Model model) {
-        if (account == null || !account.getId().equals(id))
-            throw new AccessDeniedException("권한이 없습니다");
-
+        model.addAttribute("account", account);
         checkTopMenu(account, model);
         return "users/users-update-password";
     }
 
     private void checkTopMenu(Account account, Model model) {
-        model.addAttribute("account", account);
         if (account.isMangerOf(account.getStudy()))
             model.addAttribute("studyManager", account.getStudy());
 

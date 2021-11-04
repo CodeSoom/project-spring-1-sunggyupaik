@@ -53,7 +53,7 @@ public class AccountAuthenticationService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Account account = getAccount(email);
+        Account account = getAccountByEmail(email);
         List<GrantedAuthority> authorities = getAllAuthorities(email);
         return UserAccount.builder()
                 .account(account)
@@ -61,7 +61,7 @@ public class AccountAuthenticationService implements UserDetailsService {
                 .build();
     }
 
-    public Account getAccount(String email) {
+    public Account getAccountByEmail(String email) {
         return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountEmailNotFoundException(email));
     }
