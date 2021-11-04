@@ -1,6 +1,7 @@
 package com.example.bookclub.config;
 
 import com.example.bookclub.security.AccountAuthenticationService;
+import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
@@ -31,13 +32,16 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final AccountAuthenticationService accountAuthenticationService;
     private final DataSource dataSource;
     private final CustomEntryPoint customEntryPoint;
+    private final CustomDeniedHandler customDeniedHandler;
 
     public SecurityJavaConfig(AccountAuthenticationService accountAuthenticationService,
                               DataSource dataSource,
-                              CustomEntryPoint customEntryPoint) {
+                              CustomEntryPoint customEntryPoint,
+                              CustomDeniedHandler customDeniedHandler) {
         this.accountAuthenticationService = accountAuthenticationService;
         this.dataSource = dataSource;
         this.customEntryPoint = customEntryPoint;
+        this.customDeniedHandler = customDeniedHandler;
     }
 
     @Bean
@@ -118,6 +122,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .exceptionHandling(error ->
                         error
                                 .authenticationEntryPoint(customEntryPoint)
+                                .accessDeniedHandler(customDeniedHandler)
                 )
                 .rememberMe(r ->
                         r

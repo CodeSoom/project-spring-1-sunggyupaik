@@ -22,4 +22,9 @@ public class LoginController {
         model.addAttribute("loginRequired", true);
         return "login";
     }
+
+    @GetMapping("/access-Denied")
+    public String accessDenied() {
+        return "exception/access-Denied";
+    }
 }
