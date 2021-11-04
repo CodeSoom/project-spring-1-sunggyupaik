@@ -51,7 +51,6 @@ public class BookController {
             throws IOException, ParseException {
         checkTopMenu(account, model);
 
-
         JSONArray newBooks = bookService.getBookLists(BookType.NEW, "");
         model.addAttribute("book", newBooks);
         model.addAttribute("bookType", BookType.getTitleFrom(BookType.NEW));

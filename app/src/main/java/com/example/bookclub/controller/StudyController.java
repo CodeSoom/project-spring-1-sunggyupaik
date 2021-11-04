@@ -31,9 +31,7 @@ public class StudyController {
     @GetMapping("/{id}")
     public String studyDetail(@CurrentAccount Account account,
                               @PathVariable Long id, Model model) {
-        if (account != null) {
-            checkTopMenu(account, model);
-        }
+        checkTopMenu(account, model);
 
         Study study = studyService.getStudy(id);
         model.addAttribute("study", study);
@@ -62,8 +60,6 @@ public class StudyController {
                             @RequestParam String bookName,
                             @RequestParam String bookImage,
                             Model model) {
-        if (account == null)
-            throw new AccessDeniedException("권한이 없습니다");
 
         checkTopMenu(account, model);
         model.addAttribute("bookName", bookName);
@@ -80,10 +76,6 @@ public class StudyController {
         Study study = studyService.getStudy(id);
         if (study.isAlreadyStarted()) {
             throw new StudyAlreadyStartedException();
-        }
-        
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
         }
 
         checkTopMenu(account, model);
@@ -103,9 +95,7 @@ public class StudyController {
                                 @RequestParam(required = false) String title,
                                 @RequestParam(required = false) String keyword,
                                 Model model) {
-        if (account != null) {
-            checkTopMenu(account, model);
-        }
+        checkTopMenu(account, model);
 
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
 
@@ -132,9 +122,7 @@ public class StudyController {
     public String studyCloseList(@CurrentAccount Account account,
                                  @RequestParam(required = false) String keyword,
                                  Model model) {
-        if (account != null) {
-            checkTopMenu(account, model);
-        }
+        checkTopMenu(account, model);
 
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
         if (keyword != null) {
@@ -153,9 +141,8 @@ public class StudyController {
     public String studyEndList(@CurrentAccount Account account,
                                @RequestParam(required = false) String keyword,
                                Model model) {
-        if (account != null) {
-            checkTopMenu(account, model);
-        }
+        checkTopMenu(account, model);
+
 
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
         if (keyword != null) {
@@ -174,10 +161,6 @@ public class StudyController {
     public String studyApplyUserList(@CurrentAccount Account account,
                                      @PathVariable Long id,
                                      Model model) {
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
-
         checkTopMenu(account, model);
         model.addAttribute("study", account.getStudy());
         List<Account> accounts = studyService.getStudy(id).getAccounts();
