@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
+import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
@@ -78,6 +79,11 @@ public class AccountService {
 
         Account createdAccount = accountRepository.save(account);
         createdAccount.updatePassword(createdAccount.getPassword(), passwordEncoder);
+        Role role = Role.builder()
+                        .email(createdAccount.getEmail())
+                        .name("USER")
+                        .build();
+        roleRepository.save(role);
         deleteEmailAuthentication(emailAuthentication.getEmail());
 
         return AccountResultDto.of(createdAccount);

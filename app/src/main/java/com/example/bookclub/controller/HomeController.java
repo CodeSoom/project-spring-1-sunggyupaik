@@ -1,10 +1,11 @@
-package com.example.bookclub.controllers;
+package com.example.bookclub.controller;
 
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CurrentAccount;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +26,12 @@ public class HomeController {
         this.studyService = studyService;
         this.sessionRegistry = sessionRegistry;
         this.accountAuthenticationService = accountAuthenticationService;
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
+    @GetMapping("/user-page")
+    public String hello() {
+        return "/login";
     }
 
     @GetMapping("/")

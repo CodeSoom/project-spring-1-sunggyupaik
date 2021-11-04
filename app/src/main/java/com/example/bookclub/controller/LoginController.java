@@ -1,4 +1,4 @@
-package com.example.bookclub.controllers;
+package com.example.bookclub.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,5 +15,16 @@ public class LoginController {
     public String loginError(Model model){
         model.addAttribute("loginError", true);
         return "login";
+    }
+
+    @GetMapping("/login-required")
+    public String loginRequired(Model model){
+        model.addAttribute("loginRequired", true);
+        return "login";
+    }
+
+    @GetMapping("/access-denied")
+    public String accessDenied() {
+        return "exception/access-Denied";
     }
 }

@@ -1,6 +1,8 @@
 package com.example.bookclub.config;
 
 import com.example.bookclub.security.AccountAuthenticationService;
+import com.example.bookclub.security.CustomDeniedHandler;
+import com.example.bookclub.security.CustomEntryPoint;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -29,11 +31,17 @@ import java.time.LocalDateTime;
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final AccountAuthenticationService accountAuthenticationService;
     private final DataSource dataSource;
+    private final CustomEntryPoint customEntryPoint;
+    private final CustomDeniedHandler customDeniedHandler;
 
     public SecurityJavaConfig(AccountAuthenticationService accountAuthenticationService,
-                              DataSource dataSource) {
+                              DataSource dataSource,
+                              CustomEntryPoint customEntryPoint,
+                              CustomDeniedHandler customDeniedHandler) {
         this.accountAuthenticationService = accountAuthenticationService;
         this.dataSource = dataSource;
+        this.customEntryPoint = customEntryPoint;
+        this.customDeniedHandler = customDeniedHandler;
     }
 
     @Bean
@@ -96,34 +104,52 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .anyRequest().permitAll()
-        .and()
+                .authorizeRequests(request ->
+                        request
+                                .antMatchers("/", "/login", "/login-error", "/login-required").permitAll()
+                                .antMatchers("/access-denied").permitAll()
+                                .anyRequest()
+                                .authenticated()
+                )
                 .formLogin(login ->
-                        login.loginPage("/login")
-                        .loginProcessingUrl("/loginprocess")
-                        .permitAll()
-                        .defaultSuccessUrl("/", false)
-                        .failureUrl("/login-error")
+                        login
+                                .loginPage("/login")
+                                .loginProcessingUrl("/loginprocess")
+                                .permitAll()
+                                .defaultSuccessUrl("/", false)
+                                .failureUrl("/login-error")
                 )
                 .logout(logout ->
-                        logout.logoutSuccessUrl("/")
+                        logout
+                                .logoutSuccessUrl("/")
+                )
+                .exceptionHandling(error ->
+                        error
+                                .authenticationEntryPoint(customEntryPoint)
+                                .accessDeniedHandler(customDeniedHandler)
                 )
                 .rememberMe(r ->
-                        r.rememberMeServices(rememberMeServices())
+                        r
+                                .rememberMeServices(rememberMeServices())
                 )
                 .sessionManagement(s->
-                        s.sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(true)
-                        .expiredUrl("/")
-                        .sessionRegistry(sessionRegistry())
+                        s
+                                .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
+                                .maximumSessions(1)
+                                .maxSessionsPreventsLogin(true)
+                                .expiredUrl("/")
+                                .sessionRegistry(sessionRegistry())
                 );
 
         http
-                .csrf().disable()
+                .cors()
+                .and()
+                .csrf()
+                .disable()
+
                 .headers()
-                .frameOptions().sameOrigin();
+                .frameOptions()
+                .sameOrigin();
     }
 
     @Override

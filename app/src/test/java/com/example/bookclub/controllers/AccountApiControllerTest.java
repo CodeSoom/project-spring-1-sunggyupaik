@@ -1,6 +1,7 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.AccountService;
+import com.example.bookclub.controller.AccountApiController;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountUpdateDto;
