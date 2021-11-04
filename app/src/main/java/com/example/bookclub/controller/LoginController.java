@@ -23,7 +23,7 @@ public class LoginController {
         return "login";
     }
 
-    @GetMapping("/access-Denied")
+    @GetMapping("/access-denied")
     public String accessDenied() {
         return "exception/access-Denied";
     }
