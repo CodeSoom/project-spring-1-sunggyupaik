@@ -3,6 +3,7 @@ package com.example.bookclub.config;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -33,6 +34,8 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final DataSource dataSource;
     private final CustomEntryPoint customEntryPoint;
     private final CustomDeniedHandler customDeniedHandler;
+    @Value("${rememberme.session.timeout}")
+    private int rememberMeSessionTimeout;
 
     public SecurityJavaConfig(AccountAuthenticationService accountAuthenticationService,
                               DataSource dataSource,
@@ -97,7 +100,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
             }
         };
 
-        services.setTokenValiditySeconds(60 * 60 * 24 * 31);
+        services.setTokenValiditySeconds(rememberMeSessionTimeout);
         return services;
     }
 
