@@ -1,4 +1,4 @@
-package com.example.bookclub.controllers;
+package com.example.bookclub.controller;
 
 import com.example.bookclub.dto.ErrorResponse;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;

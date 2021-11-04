@@ -1,4 +1,4 @@
-package com.example.bookclub.controllers;
+package com.example.bookclub.controller;
 
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;

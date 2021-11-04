@@ -1,5 +1,6 @@
 package com.example.bookclub.controllers;
 
+import com.example.bookclub.controller.EmailApiController;
 import com.example.bookclub.dto.EmailRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

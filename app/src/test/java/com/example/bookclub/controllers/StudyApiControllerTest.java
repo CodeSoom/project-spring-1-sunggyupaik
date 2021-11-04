@@ -1,6 +1,7 @@
 package com.example.bookclub.controllers;
 
 import com.example.bookclub.application.StudyService;
+import com.example.bookclub.controller.StudyApiController;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
