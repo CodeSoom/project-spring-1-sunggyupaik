@@ -16,4 +16,10 @@ public class LoginController {
         model.addAttribute("loginError", true);
         return "login";
     }
+
+    @GetMapping("/login-required")
+    public String loginRequired(Model model){
+        model.addAttribute("loginRequired", true);
+        return "login";
+    }
 }

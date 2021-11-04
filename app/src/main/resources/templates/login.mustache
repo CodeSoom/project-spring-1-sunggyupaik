@@ -26,6 +26,11 @@
                 <span> 아이디나 패스워드가 올바르지 않습니다. </span>
             </div>
         {{/loginError}}
+        {{#loginRequired}}
+            <div class="error-message">
+                <span> 로그인이 필요합니다. </span>
+            </div>
+        {{/loginRequired}}
     </form>
 </div>
 {{>layout/footer}}

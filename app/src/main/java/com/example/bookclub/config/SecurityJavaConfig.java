@@ -1,6 +1,7 @@
 package com.example.bookclub.config;
 
 import com.example.bookclub.security.AccountAuthenticationService;
+import com.example.bookclub.security.CustomEntryPoint;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -29,11 +30,14 @@ import java.time.LocalDateTime;
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final AccountAuthenticationService accountAuthenticationService;
     private final DataSource dataSource;
+    private final CustomEntryPoint customEntryPoint;
 
     public SecurityJavaConfig(AccountAuthenticationService accountAuthenticationService,
-                              DataSource dataSource) {
+                              DataSource dataSource,
+                              CustomEntryPoint customEntryPoint) {
         this.accountAuthenticationService = accountAuthenticationService;
         this.dataSource = dataSource;
+        this.customEntryPoint = customEntryPoint;
     }
 
     @Bean
@@ -100,30 +104,43 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().permitAll()
         .and()
                 .formLogin(login ->
-                        login.loginPage("/login")
-                        .loginProcessingUrl("/loginprocess")
-                        .permitAll()
-                        .defaultSuccessUrl("/", false)
-                        .failureUrl("/login-error")
+                        login
+                                .loginPage("/login")
+                                .loginProcessingUrl("/loginprocess")
+                                .permitAll()
+                                .defaultSuccessUrl("/", false)
+                                .failureUrl("/login-error")
                 )
                 .logout(logout ->
-                        logout.logoutSuccessUrl("/")
+                        logout
+                                .logoutSuccessUrl("/")
+                )
+                .exceptionHandling(error ->
+                        error
+                                .authenticationEntryPoint(customEntryPoint)
                 )
                 .rememberMe(r ->
-                        r.rememberMeServices(rememberMeServices())
+                        r
+                                .rememberMeServices(rememberMeServices())
                 )
                 .sessionManagement(s->
-                        s.sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
-                        .maximumSessions(1)
-                        .maxSessionsPreventsLogin(true)
-                        .expiredUrl("/")
-                        .sessionRegistry(sessionRegistry())
+                        s
+                                .sessionFixation(SessionManagementConfigurer.SessionFixationConfigurer::changeSessionId)
+                                .maximumSessions(1)
+                                .maxSessionsPreventsLogin(true)
+                                .expiredUrl("/")
+                                .sessionRegistry(sessionRegistry())
                 );
 
         http
-                .csrf().disable()
+                .cors()
+                .and()
+                .csrf()
+                .disable()
+
                 .headers()
-                .frameOptions().sameOrigin();
+                .frameOptions()
+                .sameOrigin();
     }
 
     @Override
