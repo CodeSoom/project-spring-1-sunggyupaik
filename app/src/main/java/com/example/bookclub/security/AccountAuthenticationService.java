@@ -4,13 +4,9 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
-import com.example.bookclub.dto.SessionCreateDto;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
-import com.example.bookclub.errors.AuthenticationBadRequestException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -36,30 +32,33 @@ public class AccountAuthenticationService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void login(SessionCreateDto sessionCreateDto) {
-        Account account = authenticateUser(sessionCreateDto); // LAZY 강제 초기화를 위한 연관관계 내부 명시적 조인?
-        //account.getUploadFile().getFileUrl(); // LAZY 강제 초기화를 위한 연관관계 조회
-        List<GrantedAuthority> authorities = getAllAuthorities(sessionCreateDto.getEmail());
+//    public void login(SessionCreateDto sessionCreateDto) {
+//        Account account = authenticateUser(sessionCreateDto); // LAZY 강제 초기화를 위한 연관관계 내부 명시적 조인?
+//        //account.getUploadFile().getFileUrl(); // LAZY 강제 초기화를 위한 연관관계 조회
+//        List<GrantedAuthority> authorities = getAllAuthorities(sessionCreateDto.getEmail());
+//
+//        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
+//                new UserAccount(account, authorities), account.getPassword(), authorities);
+//        SecurityContextHolder.getContext().setAuthentication(token);
+//    }
 
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                new UserAccount(account, authorities), account.getPassword(), authorities);
-        SecurityContextHolder.getContext().setAuthentication(token);
-    }
-
-    public Account authenticateUser(SessionCreateDto sessionCreateDto) {
-        String email = sessionCreateDto.getEmail();
-        String password = sessionCreateDto.getPassword();
-
-        return accountRepository.findByEmail(email)
-                .filter(account -> account.authenticate(password, passwordEncoder))
-                .orElseThrow(AuthenticationBadRequestException::new);
-    }
+//    public Account authenticateUser(SessionCreateDto sessionCreateDto) {
+//        String email = sessionCreateDto.getEmail();
+//        String password = sessionCreateDto.getPassword();
+//
+//        return accountRepository.findByEmail(email)
+//                .filter(account -> account.authenticate(password, passwordEncoder))
+//                .orElseThrow(AuthenticationBadRequestException::new);
+//    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account account = getAccount(email);
         List<GrantedAuthority> authorities = getAllAuthorities(email);
-        return new UserAccount(account, authorities);
+        return UserAccount.builder()
+                .account(account)
+                .authorities(authorities)
+                .build();
     }
 
     public Account getAccount(String email) {

@@ -84,24 +84,24 @@ var main = {
         });
     },
 
-    login : function() {
-        var data = {
-            email: $('#email').val(),
-            password: $('#password').val()
-        }
-        $.ajax({
-            type: 'POST',
-            url: '/login/signup',
-            dataType: 'json',
-            contentType:'application/json;',
-            data: JSON.stringify(data)
-        }).done(function(data) {
-            alert("로그인이 완료되었습니다.");
-            location.href = '/';
-        }).fail(function (request) {
-            alert("아이디 혹은 비밀번호를 확인하세요.");
-        });
-    },
+    // login : function() {
+    //     var data = {
+    //         email: $('#email').val(),
+    //         password: $('#password').val()
+    //     }
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: '/login/signup',
+    //         dataType: 'json',
+    //         contentType:'application/json;',
+    //         data: JSON.stringify(data)
+    //     }).done(function(data) {
+    //         alert("로그인이 완료되었습니다.");
+    //         location.href = '/';
+    //     }).fail(function (request) {
+    //         alert("아이디 혹은 비밀번호를 확인하세요.");
+    //     });
+    // },
 
     sendMessage : function() {
         var data = {

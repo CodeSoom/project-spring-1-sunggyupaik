@@ -14,12 +14,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import java.util.Objects;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = {"study", "uploadFile"})
 @Builder
+@ToString
 public class Account {
     @Id
     @GeneratedValue
@@ -38,13 +39,20 @@ public class Account {
     private String password = "";
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ToString.Exclude
     private UploadFile uploadFile;
 
     @Builder.Default
     private boolean deleted = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
     private Study study;
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 
     @Builder
     public Account(Long id, String name, String email, String nickname,

@@ -14,8 +14,7 @@ public class UploadPathConfig implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler(resourcesUriPath + "/**")
-        registry.addResourceHandler("static/images/**")
-                .addResourceLocations("file:" + resourceLocation);
+        registry.addResourceHandler(resourcesUriPath + "/**")
+                .addResourceLocations("file://" + resourceLocation);
     }
 }
