@@ -12,6 +12,7 @@ import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
@@ -47,6 +48,11 @@ public class AccountService {
     public Account findUser(Long id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(id));
+    }
+
+    public Account findUserByEmail(String email) {
+        return accountRepository.findByEmail(email)
+                .orElseThrow(() -> new AccountEmailNotFoundException(email));
     }
 
     public AccountResultDto getUser(Long id) {

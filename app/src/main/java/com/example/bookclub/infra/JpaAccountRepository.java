@@ -13,7 +13,7 @@ public interface JpaAccountRepository
         extends AccountRepository, CrudRepository<Account, Long> {
     Optional<Account> findById(Long id);
 
-    @Query("SELECT a FROM Account a LEFT JOIN a.uploadFile WHERE a.email = :email")
+    @Query("SELECT a FROM Account a LEFT JOIN a.study s LEFT JOIN a.uploadFile  WHERE a.email = :email")
     Optional<Account> findByEmail(@Param("email") String email);
 
     Account save(Account account);

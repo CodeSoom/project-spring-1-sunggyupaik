@@ -4,13 +4,14 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface JapStudyRepository
         extends StudyRepository, CrudRepository<Study, Long> {
-    Optional<Study> findById(Long id);
+    Optional<Study> findById(@Param("id") Long id);
 
     Optional<Study> findByEmail(String email);
 

@@ -25,8 +25,10 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
-        account = accountAuthenticationService.getAccountByEmail(account.getEmail());
-        checkTopMenu(account, model);
+        if(account != null) {
+            account = accountAuthenticationService.getAccountByEmail(account.getEmail());
+            checkTopMenu(account, model);
+        }
 
         long allAccountsCount = accountService.countAllAccounts();
         model.addAttribute("allAccountsCount", allAccountsCount);

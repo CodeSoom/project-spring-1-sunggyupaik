@@ -144,13 +144,13 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .cors()
-                .and()
+                .disable()
                 .csrf()
                 .disable()
 
                 .headers()
                 .frameOptions()
-                .sameOrigin();
+                .disable();
     }
 
     @Override

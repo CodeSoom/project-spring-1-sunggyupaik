@@ -8,7 +8,6 @@ import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -75,9 +74,6 @@ public class StudyApiController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public Long cancel(@CurrentAccount Account account,
                        @PathVariable Long id) {
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
         return studyService.cancelStudy(account, id);
     }
 }

@@ -20,7 +20,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(exclude = "accounts")
 @Builder
 public class Study {
     @Id
@@ -64,6 +63,7 @@ public class Study {
 
     @OneToMany(mappedBy = "study")
     @Builder.Default
+    @ToString.Exclude
     List<Account> accounts = new ArrayList<>();
 
     @Builder

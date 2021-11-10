@@ -1,5 +1,6 @@
 package com.example.bookclub.controller;
 
+import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Day;
@@ -8,7 +9,9 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
 import com.example.bookclub.security.CurrentAccount;
+import com.example.bookclub.security.UserAccount;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +26,12 @@ import java.util.stream.Collectors;
 @RequestMapping("/studys")
 public class StudyController {
     private final StudyService studyService;
+    private final AccountService accountService;
 
-    public StudyController(StudyService studyService) {
+    public StudyController(StudyService studyService,
+                           AccountService accountService) {
         this.studyService = studyService;
+        this.accountService = accountService;
     }
 
     @GetMapping("/{id}")
@@ -38,9 +44,6 @@ public class StudyController {
         model.addAttribute("day", Day.getTitleFrom(study.getDay()));
         model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
         model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
-        if (account == null) {
-            return "studys/studys-detail";
-        }
 
         if (study.isAlreadyStarted() || study.isNotOpened()) {
             return "studys/studys-detail";
@@ -57,10 +60,9 @@ public class StudyController {
 
     @GetMapping("/save")
     public String studySave(@CurrentAccount Account account,
-                            @RequestParam String bookName,
-                            @RequestParam String bookImage,
+                            @RequestParam(defaultValue = "") String bookName,
+                            @RequestParam(defaultValue = "") String bookImage,
                             Model model) {
-
         checkTopMenu(account, model);
         model.addAttribute("bookName", bookName);
         model.addAttribute("bookImage", bookImage);
@@ -71,15 +73,15 @@ public class StudyController {
     }
 
     @GetMapping("/update/{id}")
-    public String studyUpdate(@CurrentAccount Account account,
+    public String studyUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {
         Study study = studyService.getStudy(id);
         if (study.isAlreadyStarted()) {
             throw new StudyAlreadyStartedException();
         }
 
-        checkTopMenu(account, model);
-        if (!study.isManagedBy(account)) {
+        checkTopMenu(userAccount.getAccount(), model);
+        if (!study.isManagedBy(userAccount.getAccount())) {
             throw new AccessDeniedException("권한이 없습니다");
         }
 
@@ -143,7 +145,6 @@ public class StudyController {
                                Model model) {
         checkTopMenu(account, model);
 
-
         List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
         if (keyword != null) {
             lists = studyService.getStudiesBySearch(keyword).stream()
@@ -169,6 +170,7 @@ public class StudyController {
     }
 
     private void checkTopMenu(Account account, Model model) {
+        account = accountService.findUserByEmail(account.getEmail());
         model.addAttribute("account", account);
         if (account.isMangerOf(account.getStudy())) {
             model.addAttribute("studyManager", account.getStudy());

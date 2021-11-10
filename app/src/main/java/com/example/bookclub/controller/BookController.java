@@ -1,5 +1,6 @@
 package com.example.bookclub.controller;
 
+import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.BookService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.BookType;
@@ -18,9 +19,12 @@ import java.io.IOException;
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
+    private final AccountService accountService;
 
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService,
+                          AccountService accountService) {
         this.bookService = bookService;
+        this.accountService = accountService;
     }
 
     @GetMapping("/bestseller")
@@ -70,6 +74,7 @@ public class BookController {
     }
 
     private void checkTopMenu(Account account, Model model) {
+        account = accountService.findUserByEmail(account.getEmail());
         model.addAttribute("account", account);
         if (account.isMangerOf(account.getStudy())) {
             model.addAttribute("studyManager", account.getStudy());
