@@ -1,4 +1,4 @@
-package com.example.bookclub.controller;
+package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.dto.EmailRequestDto;
