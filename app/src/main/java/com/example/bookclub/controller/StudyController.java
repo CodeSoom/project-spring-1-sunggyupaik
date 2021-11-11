@@ -9,7 +9,7 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
-import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -71,16 +71,13 @@ public class StudyController {
         return "studys/studys-save";
     }
 
-    @PostAuthorize("#userAccount.account.study.email == #userAccount.account.email")
+    @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
     @GetMapping("/update/{id}")
     public String studyUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {
         Study study = studyService.getStudy(id);
 
         checkTopMenu(userAccount.getAccount(), model);
-//        if (!study.isManagedBy(userAccount.getAccount())) {
-//            throw new AccessDeniedException("권한이 없습니다");
-//        }
 
         model.addAttribute("study", study);
         model.addAttribute("day", Day.getAllDaysSelectedWith(study.getDay()));
