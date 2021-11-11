@@ -7,10 +7,9 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
-import com.example.bookclub.errors.StudyAlreadyStartedException;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -72,23 +71,21 @@ public class StudyController {
         return "studys/studys-save";
     }
 
+    @PostAuthorize("#userAccount.account.study.email == #userAccount.account.email")
     @GetMapping("/update/{id}")
     public String studyUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {
         Study study = studyService.getStudy(id);
-        if (study.isAlreadyStarted()) {
-            throw new StudyAlreadyStartedException();
-        }
 
         checkTopMenu(userAccount.getAccount(), model);
-        if (!study.isManagedBy(userAccount.getAccount())) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
+//        if (!study.isManagedBy(userAccount.getAccount())) {
+//            throw new AccessDeniedException("권한이 없습니다");
+//        }
 
         model.addAttribute("study", study);
-        model.addAttribute("day", Day.getAllDays());
-        model.addAttribute("studyState", StudyState.getAllStudyStates());
-        model.addAttribute("zone", Zone.getAllZones());
+        model.addAttribute("day", Day.getAllDaysSelectedWith(study.getDay()));
+        model.addAttribute("studyState", StudyState.getAllStudyStatesSelectedWith(study.getStudyState()));
+        model.addAttribute("zone", Zone.getAllZonesSelectedWith(study.getZone()));
         return "studys/studys-update";
     }
 

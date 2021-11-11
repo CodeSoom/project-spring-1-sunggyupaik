@@ -50,7 +50,9 @@
                 <label for="day"> 요일
                     <select id="day">
                         {{#day}}
-                            <option value="{{code}}">{{title}}</option>
+                            <option value="{{code}}" {{#selected}}selected{{/selected}}>
+                                {{title}}
+                            </option>
                         {{/day}}
                     </select>
                 </label>
@@ -70,7 +72,9 @@
                 <label for="studyState"> 스터디 상태
                     <select id="studyState">
                         {{#studyState}}
-                            <option value="{{code}}">{{title}}</option>
+                            <option value="{{code}}" {{#selected}}selected{{/selected}}>
+                                {{title}}
+                            </option>
                         {{/studyState}}
                     </select>
                 </label>
@@ -80,7 +84,9 @@
                 <label for="zone"> 지역
                     <select id="zone">
                         {{#zone}}
-                            <option value="{{code}}">{{title}}</option>
+                            <option value="{{code}}" {{#selected}}selected{{/selected}}>
+                                {{title}}
+                            </option>
                         {{/zone}}
                     </select>
                 </label>
