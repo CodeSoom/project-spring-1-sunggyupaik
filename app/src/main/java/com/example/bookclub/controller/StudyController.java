@@ -88,30 +88,11 @@ public class StudyController {
 
     @GetMapping("/open")
     public String studyOpenList(@CurrentAccount Account account,
-                                @RequestParam(required = false) String title,
                                 @RequestParam(required = false) String keyword,
                                 Model model) {
         checkTopMenu(account, model);
 
-        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
-
-        if (title != null) {
-            lists = lists.stream()
-                    .filter(s -> s.getBookName().equals(title))
-                    .collect(Collectors.toList());
-            model.addAttribute("keyword", title);
-        }
-
-        if (keyword != null) {
-            lists = studyService.getStudiesBySearch(keyword).stream()
-                    .filter(s -> s.getStudyState().equals(StudyState.OPEN))
-                    .collect(Collectors.toList());
-        }
-
-        model.addAttribute("studys", lists);
-        model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.OPEN));
-        model.addAttribute("studyStatusCode", "open");
-        return "studys/studys-list";
+        return getStudyList(model, keyword, StudyState.OPEN);
     }
 
     @GetMapping("/close")
@@ -120,17 +101,7 @@ public class StudyController {
                                  Model model) {
         checkTopMenu(account, model);
 
-        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
-        if (keyword != null) {
-            lists = studyService.getStudiesBySearch(keyword).stream()
-                    .filter(s -> s.getStudyState().equals(StudyState.CLOSE))
-                    .collect(Collectors.toList());
-        }
-
-        model.addAttribute("studys", lists);
-        model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.CLOSE));
-        model.addAttribute("studyStatusCode", "close");
-        return "studys/studys-list";
+        return getStudyList(model, keyword, StudyState.CLOSE);
     }
 
     @GetMapping("/end")
@@ -139,17 +110,7 @@ public class StudyController {
                                Model model) {
         checkTopMenu(account, model);
 
-        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
-        if (keyword != null) {
-            lists = studyService.getStudiesBySearch(keyword).stream()
-                    .filter(s -> s.getStudyState().equals(StudyState.END))
-                    .collect(Collectors.toList());
-        }
-
-        model.addAttribute("studys", lists);
-        model.addAttribute("studyState", StudyState.getTitleFrom(StudyState.END));
-        model.addAttribute("studyStatusCode", "end");
-        return "studys/studys-list";
+        return getStudyList(model, keyword, StudyState.END);
     }
 
     @GetMapping("/{id}/users")
@@ -173,5 +134,20 @@ public class StudyController {
         if (account.isApplierOf(account.getStudy())) {
             model.addAttribute("studyApply", account.getStudy());
         }
+    }
+
+    private String getStudyList(Model model, String keyword, StudyState studyState) {
+        List<Study> lists = studyService.getStudiesByStudyState(studyState);
+        if (keyword != null) {
+            lists = studyService.getStudiesBySearch(keyword).stream()
+                    .filter(s -> s.getStudyState().equals(studyState))
+                    .collect(Collectors.toList());
+        }
+
+        model.addAttribute("studys", lists);
+        model.addAttribute("studyState", StudyState.getTitleFrom(studyState));
+        model.addAttribute("studyStateCode", studyState.toString().toLowerCase());
+
+        return "studys/studys-list";
     }
 }
