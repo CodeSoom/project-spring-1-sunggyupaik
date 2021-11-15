@@ -5,8 +5,6 @@ import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CurrentAccount;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,29 +13,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class HomeController {
     private final AccountService accountService;
     private final StudyService studyService;
-    private final SessionRegistry sessionRegistry;
     private final AccountAuthenticationService accountAuthenticationService;
 
     public HomeController(AccountService accountService,
                           StudyService studyService,
-                          SessionRegistry sessionRegistry,
                           AccountAuthenticationService accountAuthenticationService) {
         this.accountService = accountService;
         this.studyService = studyService;
-        this.sessionRegistry = sessionRegistry;
         this.accountAuthenticationService = accountAuthenticationService;
-    }
-
-    @PreAuthorize("hasAnyAuthority('ROLE_USER')")
-    @GetMapping("/user-page")
-    public String hello() {
-        return "/login";
     }
 
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
-        if (account != null) {
-            account = accountAuthenticationService.getAccount(account.getEmail());
+        if(account != null) {
+            account = accountAuthenticationService.getAccountByEmail(account.getEmail());
             checkTopMenu(account, model);
         }
 

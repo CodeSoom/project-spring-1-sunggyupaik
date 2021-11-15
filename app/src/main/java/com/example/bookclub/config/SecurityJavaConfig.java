@@ -108,6 +108,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                         request
                                 .antMatchers("/", "/login", "/login-error", "/login-required").permitAll()
                                 .antMatchers("/access-denied").permitAll()
+                                .antMatchers("/users/save").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -143,13 +144,13 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .cors()
-                .and()
+                .disable()
                 .csrf()
                 .disable()
 
                 .headers()
                 .frameOptions()
-                .sameOrigin();
+                .disable();
     }
 
     @Override

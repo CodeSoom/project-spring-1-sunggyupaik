@@ -21,35 +21,7 @@ public class BookService {
     @Value("${interpark.apikey}")
     private String apikey;
 
-    public URL getBooksUrl(BookType bookType, String keyword)
-            throws MalformedURLException {
-        String address = "";
-        if (!keyword.equals("")) {
-            keyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
-        }
-
-        switch (bookType) {
-            case BESTSELLER:
-                address = "http://book.interpark.com/api/bestSeller.api?key=" +
-                    apikey + "&categoryId=122&output=json";
-                break;
-            case RECOMMEND:
-                address = "http://book.interpark.com/api/recommend.api?key=" +
-                    apikey + "&categoryId=122&output=json";
-                break;
-            case NEW:
-                address = "http://book.interpark.com/api/newBook.api?key=" +
-                    apikey + "&categoryId=122&output=json";
-                break;
-            case SEARCH:
-                address = "http://book.interpark.com/api/search.api?key=" +
-                    apikey + "&query=" + keyword + "&output=json";
-                break;
-        }
-        return new URL(address);
-    }
-
-    public JSONArray getBookLists(BookType bookType, String keyword) throws IOException, ParseException {
+    public JSONArray getBookLists(BookType bookType, String keyword) {
         URL url = getBooksUrl(bookType, keyword);
         String stringValue;
         try (BufferedReader br = new BufferedReader(new InputStreamReader(url.openStream()))) {
@@ -65,6 +37,44 @@ public class BookService {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(stringValue);
 
             return (JSONArray) jsonObject.get("item");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+
+        return null;
+    }
+
+    public URL getBooksUrl(BookType bookType, String keyword) {
+        String address = "";
+
+        switch (bookType) {
+            case BESTSELLER:
+                address = "https://book.interpark.com/api/bestSeller.api?key=" +
+                        apikey + "&categoryId=122&output=json";
+                break;
+            case RECOMMEND:
+                address = "https://book.interpark.com/api/recommend.api?key=" +
+                        apikey + "&categoryId=122&output=json";
+                break;
+            case NEW:
+                address = "https://book.interpark.com/api/newBook.api?key=" +
+                        apikey + "&categoryId=122&output=json";
+                break;
+            case SEARCH:
+                keyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
+                address = "https://book.interpark.com/api/search.api?key=" +
+                        apikey + "&query=" + keyword + "&output=json";
+                break;
+        }
+
+        URL url = null;
+        try {
+            url = new URL(address);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 }

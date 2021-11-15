@@ -21,6 +21,17 @@ public enum StudyState implements EnumMapperType {
                 .collect(Collectors.toList());
     }
 
+    public static List<EnumMapperValue> getAllStudyStatesSelectedWith(StudyState studyState) {
+        return Arrays.stream(StudyState.values())
+                .map(enumMapperType -> {
+                    if(enumMapperType.getCode().equals(studyState.toString())) {
+                        return new EnumMapperValue(enumMapperType, true);
+                    }
+                    return new EnumMapperValue(enumMapperType);
+                })
+                .collect(Collectors.toList());
+    }
+
     @Override
     public String getCode() {
         return name();

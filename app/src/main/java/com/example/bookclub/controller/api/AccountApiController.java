@@ -1,4 +1,4 @@
-package com.example.bookclub.controller;
+package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.UploadFileService;

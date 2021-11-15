@@ -36,9 +36,7 @@ public class InterviewController {
     public String interviewLists(@CurrentAccount Account account,
                                  @RequestParam(defaultValue = "1") int targetPage,
                                  Model model) {
-        if (account != null) {
-            checkTopMenu(account, model);
-        }
+        checkTopMenu(account, model);
 
         List<Interview> lists = interviewService.getInterviews(
                 PageRequest.of(targetPage - 1, countList));

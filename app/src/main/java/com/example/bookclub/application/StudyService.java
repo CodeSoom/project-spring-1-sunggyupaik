@@ -1,6 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
@@ -13,13 +14,8 @@ import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
-import com.example.bookclub.security.UserAccount;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -34,18 +30,16 @@ import java.util.stream.Collectors;
 @Transactional
 public class StudyService {
     private final StudyRepository studyRepository;
+    private final AccountRepository accountRepository;
 
-    public StudyService(StudyRepository studyRepository) {
+    public StudyService(StudyRepository studyRepository,
+                        AccountRepository accountRepository) {
         this.studyRepository = studyRepository;
+        this.accountRepository = accountRepository;
     }
 
-    public StudyResultDto createStudy(Account account,
-                                      StudyCreateDto studyCreateDto)
+    public StudyResultDto createStudy(Account account, StudyCreateDto studyCreateDto)
             throws ParseException {
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
-
         if (account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
@@ -64,10 +58,11 @@ public class StudyService {
             throw new StartAndEndTimeNotValidException();
         }
 
+        Account loginAccount = accountRepository.findByEmail(account.getEmail()).get();
         Study study = studyCreateDto.toEntity();
+        study.addAdmin(loginAccount);
         Study createdStudy = studyRepository.save(study);
-        createdStudy.addAdmin(account);
-        login(account);
+//        login(account);
 
         return StudyResultDto.of(createdStudy);
     }
@@ -119,15 +114,10 @@ public class StudyService {
     }
 
     public StudyResultDto deleteStudy(Account account, Long id) {
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
-
         Study study = getStudy(id);
         if (!study.isManagedBy(account)) {
             throw new AccessDeniedException("권한이 없습니다");
         }
-
         study.deleteAccounts();
         studyRepository.delete(study);
 
@@ -149,7 +139,6 @@ public class StudyService {
         }
 
         study.addAccount(account);
-        login(account);
 
         return id;
     }
@@ -157,14 +146,13 @@ public class StudyService {
     public Long cancelStudy(Account account, Long id) {
         Study study = getStudy(id);
         study.cancelAccount(account);
-        login(account);
 
         return id;
     }
 
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
-                .orElseThrow(StudyNotFoundException::new);
+                .orElseThrow(() -> new StudyNotFoundException(id));
     }
 
     public List<Study> getStudies() {
@@ -219,15 +207,5 @@ public class StudyService {
                 study.changeCloseToEnd();
             }
         }
-    }
-
-    public void login(Account account) {
-        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
-
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-                new UserAccount(account, authorities),
-                account.getPassword(),
-                authorities);
-        SecurityContextHolder.getContext().setAuthentication(token);
     }
 }
