@@ -115,9 +115,6 @@ public class StudyService {
 
     public StudyResultDto deleteStudy(Account account, Long id) {
         Study study = getStudy(id);
-        if (!study.isManagedBy(account)) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
         study.deleteAccounts();
         studyRepository.delete(study);
 
@@ -125,10 +122,6 @@ public class StudyService {
     }
 
     public Long applyStudy(Account account, Long id) {
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
-
         if (account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
@@ -185,13 +178,13 @@ public class StudyService {
                 .filter(s -> s.getStudyState().equals(StudyState.OPEN))
                 .collect(Collectors.toList());
 
-        for (Study study : lists) {
+        lists.forEach(study -> {
             LocalDate studyEndDate = study.getStartDate();
             LocalDate nowDate = LocalDate.now();
             if (studyEndDate.isEqual(nowDate)) {
-               study.changeOpenToClose();
+                study.changeOpenToClose();
             }
-        }
+        });
     }
 
     @Scheduled(cron = "0 0 0 * * *")
@@ -200,12 +193,12 @@ public class StudyService {
                 .filter(s -> s.getStudyState().equals(StudyState.CLOSE))
                 .collect(Collectors.toList());
 
-        for (Study study : lists) {
+        lists.forEach(study -> {
             LocalDate studyEndDate = study.getEndDate();
             LocalDate nowDate = LocalDate.now();
             if (nowDate.isAfter(studyEndDate)) {
                 study.changeCloseToEnd();
             }
-        }
+        });
     }
 }
