@@ -115,8 +115,6 @@ public class AccountService {
             account.addUploadFile(uploadFile);
         }
 
-//        login(account);
-
         return AccountResultDto.of(account);
     }
 
@@ -168,37 +166,4 @@ public class AccountService {
 
         return AccountResultDto.of(account);
     }
-
-//    public void signup(SessionCreateDto sessionCreateDto) {
-//        Account account = authenticateUser(sessionCreateDto); // LAZY 강제 초기화를 위한 연관관계 내부 명시적 조인?
-//        List<GrantedAuthority> authorities = getAllAuthorities(sessionCreateDto.getEmail());
-//
-//        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-//                new UserAccount(account, authorities), account.getPassword(), authorities);
-//        SecurityContextHolder.getContext().setAuthentication(token);
-//    }
-
-//    public List<GrantedAuthority> getAllAuthorities(String email) {
-//        List<Role> roles = roleRepository.findAllByEmail(email);
-//        return roles.stream()
-//                .map(role -> new SimpleGrantedAuthority(role.getName()))
-//                .collect(Collectors.toList());
-//    }
-
-//    public Account authenticateUser(SessionCreateDto sessionCreateDto) {
-//        String email = sessionCreateDto.getEmail();
-//        String password = sessionCreateDto.getPassword();
-//
-//        return accountRepository.findByEmail(email)
-//                .filter(u -> u.authenticate(password, passwordEncoder))
-//                .orElseThrow(AuthenticationBadRequestException::new);
-//    }
-
-//    public void login(Account account) {
-//        List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("USER"));
-//
-//        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(
-//                new UserAccount(account, authorities), account.getPassword(), authorities);
-//        SecurityContextHolder.getContext().setAuthentication(token);
-//    }
 }
