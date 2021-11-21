@@ -15,7 +15,6 @@ import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -40,10 +39,6 @@ public class StudyService {
 
     public StudyResultDto createStudy(Account account, StudyCreateDto studyCreateDto)
             throws ParseException {
-        if (account.getStudy() != null) {
-            throw new StudyAlreadyExistedException();
-        }
-
         if (startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
@@ -62,7 +57,6 @@ public class StudyService {
         Study study = studyCreateDto.toEntity();
         study.addAdmin(loginAccount);
         Study createdStudy = studyRepository.save(study);
-//        login(account);
 
         return StudyResultDto.of(createdStudy);
     }
@@ -70,14 +64,7 @@ public class StudyService {
     public StudyResultDto updateStudy(Account account,
                                       Long id,
                                       StudyUpdateDto studyUpdateDto) throws ParseException {
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
-
         Study study = getStudy(id);
-        if (!study.isManagedBy(account)) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
 
         if (startDateIsTodayOrBefore(studyUpdateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();

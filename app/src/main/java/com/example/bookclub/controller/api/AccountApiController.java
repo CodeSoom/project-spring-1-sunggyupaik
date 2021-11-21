@@ -2,11 +2,14 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.UploadFileService;
+import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
+import com.example.bookclub.security.CurrentAccount;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -45,8 +48,10 @@ public class AccountApiController {
         return accountService.createUser(accountCreateDto, accountFile);
     }
 
+    @PreAuthorize("#account.id == #id")
     @PostMapping("/{id}")
-    public AccountResultDto update(@PathVariable Long id,
+    public AccountResultDto update(@CurrentAccount Account account,
+                                   @PathVariable Long id,
                                    @RequestPart(required = false) MultipartFile uploadFile,
                                    AccountUpdateDto accountUpdateDto) {
         if (uploadFile == null) {
@@ -57,9 +62,11 @@ public class AccountApiController {
         return accountService.updateUser(id, accountUpdateDto, accountFile);
     }
 
+    @PreAuthorize("#account.id == #id")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public AccountResultDto delete(@PathVariable Long id) {
+    public AccountResultDto delete(@CurrentAccount Account account,
+                                   @PathVariable Long id) {
         return accountService.deleteUser(id);
     }
 }

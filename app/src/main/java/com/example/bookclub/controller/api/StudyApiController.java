@@ -52,12 +52,13 @@ public class StudyApiController {
         return studyService.createStudy(account, studyCreateDto);
     }
 
+    @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
     @PatchMapping("/{id}")
-    public StudyResultDto update(@CurrentAccount Account account,
+    public StudyResultDto update(@AuthenticationPrincipal UserAccount userAccount,
                                  @PathVariable Long id,
                                  @RequestBody StudyUpdateDto studyUpdateDto
     ) throws ParseException {
-        return studyService.updateStudy(account, id, studyUpdateDto);
+        return studyService.updateStudy(userAccount.getAccount(), id, studyUpdateDto);
     }
 
     @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
