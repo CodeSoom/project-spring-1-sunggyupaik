@@ -8,6 +8,7 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StartAndEndDateNotValidException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
@@ -37,8 +38,7 @@ public class StudyService {
         this.accountRepository = accountRepository;
     }
 
-    public StudyResultDto createStudy(Account account, StudyCreateDto studyCreateDto)
-            throws ParseException {
+    public StudyResultDto createStudy(Account account, StudyCreateDto studyCreateDto) {
         if (startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
@@ -63,7 +63,7 @@ public class StudyService {
 
     public StudyResultDto updateStudy(Account account,
                                       Long id,
-                                      StudyUpdateDto studyUpdateDto) throws ParseException {
+                                      StudyUpdateDto studyUpdateDto) {
         Study study = getStudy(id);
 
         if (startDateIsTodayOrBefore(studyUpdateDto.getStartDate())) {
@@ -84,11 +84,15 @@ public class StudyService {
         return StudyResultDto.of(study);
     }
 
-    private boolean startTimeIsAfterEndTime(String startTime, String endTime) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        Date startTimeDate = sdf.parse(startTime);
-        Date endTimeDate = sdf.parse(endTime);
-        return startTimeDate.after(endTimeDate);
+    private boolean startTimeIsAfterEndTime(String startTime, String endTime) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            Date startTimeDate = sdf.parse(startTime);
+            Date endTimeDate = sdf.parse(endTime);
+            return startTimeDate.after(endTimeDate);
+        } catch(ParseException e) {
+            throw new ParseTimeException();
+        }
     }
 
     private boolean startDateIsAfterEndDate(LocalDate startDate, LocalDate endDate) {
