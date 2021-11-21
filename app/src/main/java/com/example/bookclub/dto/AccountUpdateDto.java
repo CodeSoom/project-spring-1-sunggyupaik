@@ -16,12 +16,15 @@ public class AccountUpdateDto {
     @Size(min=3, max=10)
     private String nickname;
 
+    private String savedFileName;
+
     @Builder.Default
     private String password = "";
 
     @Builder
-    public AccountUpdateDto(String nickname, String password) {
+    public AccountUpdateDto(String nickname, String savedFileName, String password) {
         this.nickname = nickname;
+        this.savedFileName = savedFileName;
         this.password = password;
     }
 }

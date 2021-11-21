@@ -17,6 +17,7 @@
                             <div class="imagePreview">
                                 {{#account.uploadFile}}
                                     <img class="imgPreview" src="https://dwhdcf0tf1pjg.cloudfront.net/{{account.uploadFile.fileName}}" alt="">
+                                    <input type="hidden" id="savedFileName" name="savedFileName" value="{{account.uploadFile.fileName}}" />
                                 {{/account.uploadFile}}
                             </div>
                             <label class="btn btn-primary upload">

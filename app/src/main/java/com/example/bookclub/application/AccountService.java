@@ -95,7 +95,8 @@ public class AccountService {
         return AccountResultDto.of(createdAccount);
     }
 
-    public AccountResultDto updateUser(Long id, AccountUpdateDto accountUpdateDto, UploadFile uploadFile) {
+    public AccountResultDto updateUser(Long id, AccountUpdateDto accountUpdateDto,
+                                       UploadFile uploadFile) {
         Account account = findUser(id);
 
         String password = accountUpdateDto.getPassword();
@@ -110,8 +111,7 @@ public class AccountService {
         account.updateNickname(nickname);
 
         if(uploadFile != null) {
-            UploadFile accountImage = account.getUploadFile();
-            uploadFileService.deleteUploadFile(accountImage.getFileName());
+            uploadFileService.deleteUploadFile(accountUpdateDto.getSavedFileName());
             account.addUploadFile(uploadFile);
         }
 

@@ -17,8 +17,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-
 @RestController
 @RequestMapping("/api/users")
 public class AccountApiController {
@@ -49,8 +47,8 @@ public class AccountApiController {
 
     @PostMapping("/{id}")
     public AccountResultDto update(@PathVariable Long id,
-                                   @Valid AccountUpdateDto accountUpdateDto,
-                                   @RequestPart(required = false) MultipartFile uploadFile) {
+                                   @RequestPart(required = false) MultipartFile uploadFile,
+                                   AccountUpdateDto accountUpdateDto) {
         if (uploadFile == null) {
             return accountService.updateUser(id, accountUpdateDto, null);
         }
