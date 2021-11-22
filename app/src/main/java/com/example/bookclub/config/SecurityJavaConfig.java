@@ -109,6 +109,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                                 .antMatchers("/", "/login", "/login-error", "/login-required").permitAll()
                                 .antMatchers("/access-denied").permitAll()
                                 .antMatchers("/users/save").permitAll()
+                                .antMatchers("/api/interviews").hasRole("ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 )

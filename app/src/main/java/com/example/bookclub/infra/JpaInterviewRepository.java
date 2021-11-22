@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface JpaInterviewRepository
         extends InterviewRepository, CrudRepository<Interview, Long> {
@@ -16,4 +17,6 @@ public interface JpaInterviewRepository
 
     @Query("SELECT i from Interview i ORDER BY i.date DESC")
     List<Interview> findAll();
+
+    Optional<Interview> findByTitle(String title);
 }

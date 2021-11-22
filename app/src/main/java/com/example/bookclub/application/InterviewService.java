@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -51,6 +52,9 @@ public class InterviewService {
                     String title = interviewElement.select(".title a").text().trim();
                     String date = interviewElement.select(".info").text().split("\\|")[0].trim();
                     String content = interviewElement.select(".detail").text().split("더보기")[0];
+
+                    Optional<Interview> savedInterview = interviewRepository.findByTitle(title);
+                    if(savedInterview.isPresent()) continue;
 
                     Interview interview = Interview.builder()
                             .interviewUrl(interviewUrl)
