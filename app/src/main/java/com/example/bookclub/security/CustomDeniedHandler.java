@@ -12,7 +12,10 @@ import java.io.IOException;
 @Component
 public class CustomDeniedHandler implements AccessDeniedHandler {
 	@Override
-	public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
+	public void handle(HttpServletRequest request,
+					   HttpServletResponse response,
+					   AccessDeniedException accessDeniedException)
+			throws IOException, ServletException {
 		request.getRequestDispatcher("/access-denied")
 				.forward(request, response);
 	}
