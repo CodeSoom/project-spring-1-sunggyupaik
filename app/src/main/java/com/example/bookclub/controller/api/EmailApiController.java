@@ -19,7 +19,7 @@ public class EmailApiController {
     }
 
     @PostMapping("/authentication")
-    public String sendAuthenticationNumber(@RequestBody EmailRequestDto emailRequestDto) throws MessagingException {
+    public String sendAuthenticationNumber(@RequestBody EmailRequestDto emailRequestDto) {
         return emailService.sendAuthenticationNumber(emailRequestDto);
     }
 }
