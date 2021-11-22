@@ -8,6 +8,7 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StartAndEndDateNotValidException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
@@ -15,7 +16,6 @@ import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -38,12 +38,7 @@ public class StudyService {
         this.accountRepository = accountRepository;
     }
 
-    public StudyResultDto createStudy(Account account, StudyCreateDto studyCreateDto)
-            throws ParseException {
-        if (account.getStudy() != null) {
-            throw new StudyAlreadyExistedException();
-        }
-
+    public StudyResultDto createStudy(Account account, StudyCreateDto studyCreateDto) {
         if (startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
@@ -62,22 +57,14 @@ public class StudyService {
         Study study = studyCreateDto.toEntity();
         study.addAdmin(loginAccount);
         Study createdStudy = studyRepository.save(study);
-//        login(account);
 
         return StudyResultDto.of(createdStudy);
     }
 
     public StudyResultDto updateStudy(Account account,
                                       Long id,
-                                      StudyUpdateDto studyUpdateDto) throws ParseException {
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
-
+                                      StudyUpdateDto studyUpdateDto) {
         Study study = getStudy(id);
-        if (!study.isManagedBy(account)) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
 
         if (startDateIsTodayOrBefore(studyUpdateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
@@ -97,11 +84,15 @@ public class StudyService {
         return StudyResultDto.of(study);
     }
 
-    private boolean startTimeIsAfterEndTime(String startTime, String endTime) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-        Date startTimeDate = sdf.parse(startTime);
-        Date endTimeDate = sdf.parse(endTime);
-        return startTimeDate.after(endTimeDate);
+    private boolean startTimeIsAfterEndTime(String startTime, String endTime) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+            Date startTimeDate = sdf.parse(startTime);
+            Date endTimeDate = sdf.parse(endTime);
+            return startTimeDate.after(endTimeDate);
+        } catch(ParseException e) {
+            throw new ParseTimeException();
+        }
     }
 
     private boolean startDateIsAfterEndDate(LocalDate startDate, LocalDate endDate) {
@@ -115,9 +106,6 @@ public class StudyService {
 
     public StudyResultDto deleteStudy(Account account, Long id) {
         Study study = getStudy(id);
-        if (!study.isManagedBy(account)) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
         study.deleteAccounts();
         studyRepository.delete(study);
 
@@ -125,10 +113,6 @@ public class StudyService {
     }
 
     public Long applyStudy(Account account, Long id) {
-        if (account == null) {
-            throw new AccessDeniedException("권한이 없습니다");
-        }
-
         if (account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
@@ -185,13 +169,13 @@ public class StudyService {
                 .filter(s -> s.getStudyState().equals(StudyState.OPEN))
                 .collect(Collectors.toList());
 
-        for (Study study : lists) {
+        lists.forEach(study -> {
             LocalDate studyEndDate = study.getStartDate();
             LocalDate nowDate = LocalDate.now();
             if (studyEndDate.isEqual(nowDate)) {
-               study.changeOpenToClose();
+                study.changeOpenToClose();
             }
-        }
+        });
     }
 
     @Scheduled(cron = "0 0 0 * * *")
@@ -200,12 +184,12 @@ public class StudyService {
                 .filter(s -> s.getStudyState().equals(StudyState.CLOSE))
                 .collect(Collectors.toList());
 
-        for (Study study : lists) {
+        lists.forEach(study -> {
             LocalDate studyEndDate = study.getEndDate();
             LocalDate nowDate = LocalDate.now();
             if (nowDate.isAfter(studyEndDate)) {
                 study.changeCloseToEnd();
             }
-        }
+        });
     }
 }

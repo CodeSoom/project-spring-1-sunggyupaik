@@ -1,10 +1,6 @@
-var main = {
-    init : function () {
-        var _this = this;
-        $('#btn-login').on('click', function () {
-            _this.login();
-        });
-
+const main = {
+    init: function () {
+        const _this = this;
         $('#btn-sendMessage').on('click', function () {
             _this.sendMessage();
         });
@@ -46,14 +42,14 @@ var main = {
         });
     },
 
-    cancelStudy : function() {
-        var id = $('#id').val()
+    cancelStudy: function () {
+        const id = $('#id').val();
         $.ajax({
             type: 'DELETE',
             url: '/api/study/apply/' + id,
             dataType: 'json',
-            contentType:'application/json;',
-        }).done(function(data) {
+            contentType: 'application/json;',
+        }).done(function (data) {
             alert("취소가 완료되었습니다.");
             location.href = '/studys/open';
         }).fail(function (request) {
@@ -62,14 +58,14 @@ var main = {
         });
     },
 
-    applyStudy : function() {
-        var id = $('#id').val()
+    applyStudy: function () {
+        const id = $('#id').val();
         $.ajax({
             type: 'POST',
             url: '/api/study/apply/' + id,
             dataType: 'json',
-            contentType:'application/json;',
-        }).done(function() {
+            contentType: 'application/json;',
+        }).done(function () {
             alert("신청이 완료되었습니다.");
             location.href = '/studys/open';
         }).fail(function (request) {
@@ -84,54 +80,35 @@ var main = {
         });
     },
 
-    // login : function() {
-    //     var data = {
-    //         email: $('#email').val(),
-    //         password: $('#password').val()
-    //     }
-    //     $.ajax({
-    //         type: 'POST',
-    //         url: '/login/signup',
-    //         dataType: 'json',
-    //         contentType:'application/json;',
-    //         data: JSON.stringify(data)
-    //     }).done(function(data) {
-    //         alert("로그인이 완료되었습니다.");
-    //         location.href = '/';
-    //     }).fail(function (request) {
-    //         alert("아이디 혹은 비밀번호를 확인하세요.");
-    //     });
-    // },
-
-    sendMessage : function() {
-        var data = {
+    sendMessage: function () {
+        const data = {
             email: $('#email').val()
-        }
-        $("#email").attr("readonly",true);
+        };
+        $("#email").attr("readonly", true);
         alert('메일 전송을 시작합니다.');
 
         $.ajax({
             type: 'POST',
             url: '/api/email/authentication',
             dataType: 'text',
-            contentType:'application/json;',
+            contentType: 'application/json;',
             data: JSON.stringify(data)
-        }).done(function() {
+        }).done(function () {
             alert("메일 전송이 완료되었습니다.");
         }).fail(function (request) {
-            $("#email").attr("readonly",false);
+            $("#email").attr("readonly", false);
             alert(request.responseText);
         });
     },
 
-    saveUser : function () {
-        var formData = new FormData();
-        var uploadFile = document.getElementById("uploadFile").files[0];
-        var name = $('#name').val();
-        var email = $('#email').val();
-        var nickname = $('#nickname').val();
-        var password = $('#password').val();
-        var authenticationNumber = $('#authenticationNumber').val();
+    saveUser: function () {
+        const formData = new FormData();
+        const uploadFile = document.getElementById("uploadFile").files[0];
+        const name = $('#name').val();
+        const email = $('#email').val();
+        const nickname = $('#nickname').val();
+        const password = $('#password').val();
+        const authenticationNumber = $('#authenticationNumber').val();
         formData.append("uploadFile", uploadFile);
         formData.append("name", name);
         formData.append("email", email);
@@ -147,7 +124,7 @@ var main = {
             processData: false,
             contentType: false,
             data: formData
-        }).done(function() {
+        }).done(function () {
             alert('회원가입이 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
@@ -155,13 +132,15 @@ var main = {
         });
     },
 
-    updateUser : function () {
-        var id = $('#id').val();
-        var formData = new FormData();
-        var uploadFile = document.getElementById("uploadFile").files[0];
-        var nickname = $('#nickname').val();
-        var password = $('#password').val();
+    updateUser: function () {
+        const id = $('#id').val();
+        const formData = new FormData();
+        const uploadFile = document.getElementById("uploadFile").files[0];
+        const savedFileName = $('#savedFileName').val();
+        const nickname = $('#nickname').val();
+        const password = $('#password').val();
         formData.append("uploadFile", uploadFile);
+        formData.append("savedFileName", savedFileName);
         formData.append("nickname", nickname);
         formData.append("password", password);
 
@@ -173,29 +152,17 @@ var main = {
             processData: false,
             contentType: false,
             data: formData
-        }).done(function() {
+        }).done(function () {
             alert('회원정보가 수정되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
-            if(request.responseText.match("in the past")) {
-                alert("시작날짜를 다시 확인해주세요");
-            } else if(request.responseText.match("StartDate and EndDate")) {
-                alert("시작날짜와 종료날짜를 다시 확인해주세요");
-            } else if(request.responseText.match("StartTime and EndTime")) {
-                alert("시작시간과 종료시간을 다시 확인해주세요");
-            }  else if(request.responseText.match("Password")) {
-                alert("비밀번호가 틀렸습니다.");
-            } else if(request.responseText.match("Nickname")) {
-                alert("닉네임이 중복되었습니다.");
-            } else {
-                alert(request.responseText);
-            }
+            alert(request.responseText);
         });
     },
 
-    updateUserPassword : function() {
-        var id = $('#id').val();
-        var data = {
+    updateUserPassword: function () {
+        const id = $('#id').val();
+        const data = {
             password: $('#password').val(),
             newPassword: $('#newPassword').val(),
             newPasswordConfirmed: $('#newPasswordConfirmed').val()
@@ -205,9 +172,9 @@ var main = {
             type: 'PATCH',
             url: 'api/users/password/' + id,
             dataType: 'json',
-            contentType:'application/json; charset=utf-8',
+            contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
-        }).done(function() {
+        }).done(function () {
             alert('비밀번호 수정이 완료되었습니다.');
             window.location.href = '/users/update/' + id;
         }).fail(function (request) {
@@ -215,10 +182,10 @@ var main = {
         });
     },
 
-    deleteUser : function () {
-        var id = $('#id').val();
-        var result = confirm("정말로 탈퇴하시겠습니까?");
-        if(!result) {
+    deleteUser: function () {
+        const id = $('#id').val();
+        const result = confirm("정말로 탈퇴하시겠습니까?");
+        if (!result) {
             return;
         }
 
@@ -226,8 +193,8 @@ var main = {
             type: 'DELETE',
             url: '/api/users/' + id,
             dataType: 'json',
-            contentType:'application/json; charset=utf-8',
-        }).done(function() {
+            contentType: 'application/json; charset=utf-8',
+        }).done(function () {
             alert('사용자 탈퇴가 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
@@ -235,8 +202,8 @@ var main = {
         });
     },
 
-    saveStudy : function () {
-        var data = {
+    saveStudy: function () {
+        const data = {
             name: $('#name').val(),
             bookName: $('#bookName').val(),
             bookImage: $('#bookImage').attr('src'),
@@ -256,17 +223,17 @@ var main = {
             type: 'POST',
             url: '/api/study',
             dataType: 'json',
-            contentType:'application/json; charset=utf-8',
+            contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
-        }).done(function() {
+        }).done(function () {
             alert('스터디 생성이 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
-            if(request.responseText.match("in the past")) {
+            if (request.responseText.match("in the past")) {
                 alert("시작날짜를 다시 확인해주세요");
-            } else if(request.responseText.match("StartDate and EndDate")) {
+            } else if (request.responseText.match("StartDate and EndDate")) {
                 alert("시작날짜와 종료날짜를 다시 확인해주세요");
-            } else if(request.responseText.match("StartTime and EndTime")) {
+            } else if (request.responseText.match("StartTime and EndTime")) {
                 alert("시작시간과 종료시간을 다시 확인해주세요");
             } else {
                 alert(request.responseText);
@@ -274,9 +241,9 @@ var main = {
         });
     },
 
-    updateStudy : function () {
-        var id = $('#id').val();
-        var data = {
+    updateStudy: function () {
+        const id = $('#id').val();
+        const data = {
             name: $('#name').val(),
             description: $('#description').val(),
             contact: $('#contact').val(),
@@ -294,17 +261,17 @@ var main = {
             type: 'PATCH',
             url: '/api/study/' + id,
             dataType: 'json',
-            contentType:'application/json; charset=utf-8',
+            contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)
-        }).done(function() {
+        }).done(function () {
             alert('스터디 수정이 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {
-            if(request.responseText.match("in the past")) {
+            if (request.responseText.match("in the past")) {
                 alert("시작날짜를 다시 확인해주세요");
-            } else if(request.responseText.match("StartDate and EndDate")) {
+            } else if (request.responseText.match("StartDate and EndDate")) {
                 alert("시작날짜와 종료날짜를 다시 확인해주세요");
-            } else if(request.responseText.match("StartTime and EndTime")) {
+            } else if (request.responseText.match("StartTime and EndTime")) {
                 alert("시작시간과 종료시간을 다시 확인해주세요");
             } else {
                 alert(request.responseText);
@@ -312,15 +279,15 @@ var main = {
         });
     },
 
-    deleteStudy : function () {
-        var id = $('#id').val();
+    deleteStudy: function () {
+        const id = $('#id').val();
 
         $.ajax({
             type: 'DELETE',
             url: '/api/study/' + id,
             dataType: 'json',
-            contentType:'application/json; charset=utf-8',
-        }).done(function() {
+            contentType: 'application/json; charset=utf-8',
+        }).done(function () {
             alert('스터디 삭제가 완료되었습니다.');
             window.location.href = '/';
         }).fail(function (request) {

@@ -12,6 +12,8 @@ import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.errors.FileUploadBadRequestException;
 import com.example.bookclub.errors.InvalidTokenException;
+import com.example.bookclub.errors.MessageCreateBadRequestException;
+import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
@@ -142,6 +144,18 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(FileUploadBadRequestException.class)
     public ErrorResponse handleFileUploadBadRequest(FileUploadBadRequestException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ParseTimeException.class)
+    public ErrorResponse handleParseTimeException(ParseTimeException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MessageCreateBadRequestException.class)
+    public ErrorResponse handleMessageCreateBadRequestException(MessageCreateBadRequestException e) {
         return new ErrorResponse(e.getMessage());
     }
 }

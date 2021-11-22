@@ -7,7 +7,10 @@ import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.security.CurrentAccount;
+import com.example.bookclub.security.UserAccount;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -18,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -44,24 +46,24 @@ public class StudyApiController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public StudyResultDto create(@CurrentAccount Account account,
-                                 @RequestBody StudyCreateDto studyCreateDto)
-            throws ParseException {
+                                 @RequestBody StudyCreateDto studyCreateDto) {
         return studyService.createStudy(account, studyCreateDto);
     }
 
+    @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
     @PatchMapping("/{id}")
-    public StudyResultDto update(@CurrentAccount Account account,
+    public StudyResultDto update(@AuthenticationPrincipal UserAccount userAccount,
                                  @PathVariable Long id,
-                                 @RequestBody StudyUpdateDto studyUpdateDto
-    ) throws ParseException {
-        return studyService.updateStudy(account, id, studyUpdateDto);
+                                 @RequestBody StudyUpdateDto studyUpdateDto) {
+        return studyService.updateStudy(userAccount.getAccount(), id, studyUpdateDto);
     }
 
+    @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public StudyResultDto delete(@CurrentAccount Account account,
+    public StudyResultDto delete(@AuthenticationPrincipal UserAccount userAccount,
                                  @PathVariable Long id) {
-        return studyService.deleteStudy(account, id);
+        return studyService.deleteStudy(userAccount.getAccount(), id);
     }
 
     @PostMapping("/apply/{id}")

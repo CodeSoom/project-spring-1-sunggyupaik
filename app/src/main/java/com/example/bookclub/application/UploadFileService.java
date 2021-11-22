@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
 
@@ -43,27 +42,6 @@ public class UploadFileService {
         }
 
         String realPath = s3Client.getUrl(bucket, destinationFileName).toString();
-
-        return UploadFile.builder()
-                .fileName(destinationFileName)
-                .fileOriginalName(sourceFileName)
-                .fileUrl(realPath)
-                .build();
-    }
-    
-    public UploadFile makeUploadFile(MultipartFile uploadFile) {
-        String sourceFileName = uploadFile.getOriginalFilename();
-        String sourceFileNameExtension = FilenameUtils.getExtension(sourceFileName).toLowerCase();
-        String destinationFileName = RandomStringUtils.randomAlphanumeric(10) + "." + sourceFileNameExtension;
-        String realPath = new File("").getAbsolutePath() + "\\app\\src\\main\\resources\\";
-        File destinationFile = new File(realPath + destinationFileName);
-        destinationFile.getParentFile().mkdirs();
-
-        try {
-            uploadFile.transferTo(destinationFile);
-        } catch (IOException e) {
-            throw new FileUploadBadRequestException();
-        }
 
         return UploadFile.builder()
                 .fileName(destinationFileName)

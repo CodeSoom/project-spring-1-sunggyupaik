@@ -4,6 +4,7 @@ import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.dto.EmailRequestDto;
 import com.example.bookclub.errors.EmailBadRequestException;
+import com.example.bookclub.errors.MessageCreateBadRequestException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -26,9 +27,10 @@ public class EmailService {
         this.code = createAuthenticationNumber();
     }
 
-    public String sendAuthenticationNumber(EmailRequestDto emailRequestDto) throws MessagingException {
+    public String sendAuthenticationNumber(EmailRequestDto emailRequestDto) {
         String email = emailRequestDto.getEmail();
-        MimeMessage message = createMessage(email);
+        MimeMessage message = null;
+        message = createMessage(email);
 
         try {
             javaMailSender.send(message);
@@ -42,13 +44,18 @@ public class EmailService {
         return email;
     }
 
-    private MimeMessage createMessage(String to) throws MessagingException {
+    private MimeMessage createMessage(String to) {
         MimeMessage  message = javaMailSender.createMimeMessage();
 
-        message.addRecipients(Message.RecipientType.TO, to);
-        message.setSubject("BookClub 인증번호");
-        message.setText(code);
-        System.out.println("BookClub 인증번호=" + code);
+        try {
+            message.addRecipients(Message.RecipientType.TO, to);
+            message.setSubject("BookClub 인증번호");
+            message.setText(code);
+            System.out.println("BookClub 인증번호=" + code);
+        } catch(MessagingException ex) {
+            System.out.println(ex.getMessage());
+            throw new MessageCreateBadRequestException();
+        }
 
         return message;
     }
