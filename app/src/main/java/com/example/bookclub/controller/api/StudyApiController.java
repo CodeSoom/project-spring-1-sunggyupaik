@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -47,8 +46,7 @@ public class StudyApiController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public StudyResultDto create(@CurrentAccount Account account,
-                                 @RequestBody StudyCreateDto studyCreateDto)
-            throws ParseException {
+                                 @RequestBody StudyCreateDto studyCreateDto) {
         return studyService.createStudy(account, studyCreateDto);
     }
 
@@ -56,8 +54,7 @@ public class StudyApiController {
     @PatchMapping("/{id}")
     public StudyResultDto update(@AuthenticationPrincipal UserAccount userAccount,
                                  @PathVariable Long id,
-                                 @RequestBody StudyUpdateDto studyUpdateDto
-    ) throws ParseException {
+                                 @RequestBody StudyUpdateDto studyUpdateDto) {
         return studyService.updateStudy(userAccount.getAccount(), id, studyUpdateDto);
     }
 
