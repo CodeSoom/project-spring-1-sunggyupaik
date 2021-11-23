@@ -64,6 +64,7 @@ public class InterviewService {
                             .date(LocalDate.parse(date, DateTimeFormatter.ISO_DATE))
                             .content(content)
                             .build();
+
                     interviewRepository.save(interview);
                     list.add(interview);
                 }

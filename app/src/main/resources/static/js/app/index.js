@@ -40,6 +40,10 @@ const main = {
         $('#btn-cancel-study').on('click', function () {
             _this.cancelStudy();
         });
+
+        $('#btn-save-interviews').on('click', function () {
+            _this.saveInterviews();
+        })
     },
 
     cancelStudy: function () {
@@ -290,6 +294,20 @@ const main = {
         }).done(function () {
             alert('스터디 삭제가 완료되었습니다.');
             window.location.href = '/';
+        }).fail(function (request) {
+            alert(request.responseText);
+        });
+    },
+
+    saveInterviews: function() {
+        $.ajax({
+            type: 'POST',
+            url: '/api/interviews',
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8'
+        }).done(function () {
+            alert('크롤링이 완료되었습니다.');
+            window.location.href = '/interviews';
         }).fail(function (request) {
             alert(request.responseText);
         });

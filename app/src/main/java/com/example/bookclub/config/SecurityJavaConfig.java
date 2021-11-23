@@ -109,7 +109,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                                 .antMatchers("/", "/login", "/login-error", "/login-required").permitAll()
                                 .antMatchers("/access-denied").permitAll()
                                 .antMatchers("/users/save").permitAll()
-                                .antMatchers("/api/interviews").hasRole("ADMIN")
+                                .antMatchers("/api/email/authentication").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -161,6 +161,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                         PathRequest.toStaticResources().atCommonLocations(),
                         PathRequest.toH2Console()
                 )
+                .antMatchers("/resources/images/**")
         ;
     }
 }
