@@ -304,7 +304,13 @@ const main = {
             type: 'POST',
             url: '/api/interviews',
             dataType: 'json',
-            contentType: 'application/json; charset=utf-8'
+            contentType: 'application/json; charset=utf-8',
+            beforeSend: function () {
+                funLoadingBarStart(); //로딩바 생성
+            },
+            complete: function () {
+                funLoadingBarEnd(); //로딩바 제거
+            }
         }).done(function () {
             alert('크롤링이 완료되었습니다.');
             window.location.href = '/interviews';
