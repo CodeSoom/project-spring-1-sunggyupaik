@@ -10,6 +10,7 @@ import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
@@ -30,9 +31,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -76,6 +79,8 @@ class StudyApiControllerTest {
     private static final String ACCOUNT_NICKNAME = "nickname";
     private static final String ACCOUNT_PASSWORD = "1234567890";
     private static final String ACCOUNT_PROFILEIMAGE = "image";
+
+    private static final Long NOT_EXIST_STUDY_ID = 999L;
 
     @Autowired
     private MockMvc mockMvc;
@@ -178,6 +183,20 @@ class StudyApiControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void detailWithNotExistedId() throws Exception {
+        given(studyService.getStudy(NOT_EXIST_STUDY_ID)).willThrow(new StudyNotFoundException(NOT_EXIST_STUDY_ID));
+
+        mockMvc.perform(
+                get("/api/study/{id}", NOT_EXIST_STUDY_ID)
+        )
+                .andDo(print())
+                .andExpect(content().string(containsString("Study not found")))
+                .andExpect(status().isNotFound());
+
+        verify(studyService).getStudy(NOT_EXIST_STUDY_ID);
     }
 
     @Test

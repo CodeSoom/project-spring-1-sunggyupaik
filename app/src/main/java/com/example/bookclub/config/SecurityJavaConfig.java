@@ -106,10 +106,11 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests(request ->
                         request
-                                .antMatchers("/", "/login", "/login-error", "/login-required").permitAll()
+                                .antMatchers("/", "/favicon.ico", "/login", "/login-error", "/login-required").permitAll()
                                 .antMatchers("/access-denied").permitAll()
                                 .antMatchers("/users/save").permitAll()
                                 .antMatchers("/api/email/authentication").permitAll()
+                                .antMatchers("/api/users").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
