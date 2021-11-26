@@ -11,6 +11,9 @@
                     <input type="hidden" class="totalPage" value="{{pageUtils.totalPage}}">
                     <input type="hidden" class="next" value="{{pageUtils.next}}">
                 </form>
+                {{#adminAuthority}}
+                <button type="button" class="btn btn-primary" id="btn-save-interviews">인터뷰 최신 크롤링 저장</button>
+                {{/adminAuthority}}
                 <div class="list_button_wrap">
                     <div class="list_paging">
                         <a class="btn_first" href="javascript:void(0)" onclick="go_targetPage('1')">

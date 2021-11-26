@@ -3,6 +3,7 @@ package com.example.bookclub.domain;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface InterviewRepository {
     Interview save(Interview interview);
@@ -10,4 +11,6 @@ public interface InterviewRepository {
     List<Interview> findAll(Pageable pageable);
 
     List<Interview> findAll();
+
+	Optional<Interview> findByTitle(String title);
 }

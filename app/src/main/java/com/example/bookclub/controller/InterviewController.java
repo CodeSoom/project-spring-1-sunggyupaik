@@ -3,10 +3,11 @@ package com.example.bookclub.controller;
 import com.example.bookclub.application.InterviewService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Interview;
-import com.example.bookclub.security.CurrentAccount;
+import com.example.bookclub.security.UserAccount;
 import com.example.bookclub.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,10 +34,10 @@ public class InterviewController {
     }
 
     @GetMapping
-    public String interviewLists(@CurrentAccount Account account,
+    public String interviewLists(@AuthenticationPrincipal UserAccount userAccount,
                                  @RequestParam(defaultValue = "1") int targetPage,
                                  Model model) {
-        checkTopMenu(account, model);
+        checkTopMenu(userAccount.getAccount(), model);
 
         List<Interview> lists = interviewService.getInterviews(
                 PageRequest.of(targetPage - 1, countList));
@@ -44,6 +45,12 @@ public class InterviewController {
         int allListsCount = interviewService.getInterviewsAll().size();
         PageUtil pageUtils = pageUtil.makePage(allListsCount, targetPage, countList, countPage);
         model.addAttribute("pageUtils", pageUtils);
+        userAccount.getAuthorities().forEach(auth -> {
+           if(auth.toString().equals("ADMIN")) {
+               model.addAttribute("adminAuthority", "true");
+           }
+        });
+
         return "interviews/interviews-list";
     }
 
