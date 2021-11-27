@@ -57,31 +57,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StudyApiController.class)
 class StudyApiControllerTest {
-    private static final Long EXISTED_ID = 1L;
-    private static final String SETUP_NAME = "setupStudyName";
-    private static final String SETUP_EMAIL = "setupStudyEmail";
-    private static final String SETUP_DESCRIPTION = "setupStudyDescription";
-    private static final String SETUP_CONTACT = "setupContact";
-    private static final int SETUP_SIZE = 5;
-    private static final LocalDate SETUP_STARTDATE = LocalDate.now().plusDays(1);
-    private static final LocalDate SETUP_ENDDATE = LocalDate.now().plusDays(7);
-    private static final Day SETUP_DAY = Day.MONDAY;
-    private static final String SETUP_STARTTIME = "13:00";
-    private static final String SETUP_ENDTIME = "15:30";
-    private static final StudyState SETUP_STUDYSTATE = StudyState.OPEN;
-    private static final Zone SETUP_ZONE = Zone.SEOUL;
+    private static final Long STUDY_SETUP_EXISTED_ID = 1L;
+    private static final String STUDY_SETUP_NAME = "setupStudyName";
+    private static final String STUDY_SETUP_EMAIL = "setupStudyEmail";
+    private static final String STUDY_SETUP_DESCRIPTION = "setupStudyDescription";
+    private static final String STUDY_SETUP_CONTACT = "setupContact";
+    private static final int STUDY_SETUP_SIZE = 5;
+    private static final LocalDate STUDY_SETUP_START_DATE = LocalDate.now().plusDays(1);
+    private static final LocalDate STUDY_SETUP_END_DATE = LocalDate.now().plusDays(7);
+    private static final Day STUDY_SETUP_DAY = Day.MONDAY;
+    private static final String STUDY_SETUP_START_TIME = "13:00";
+    private static final String STUDY_SETUP_END_TIME = "15:30";
+    private static final StudyState STUDY_SETUP_STUDY_STATE = StudyState.OPEN;
+    private static final Zone STUDY_SETUP_ZONE = Zone.SEOUL;
 
-    private static final String UPDATE_NAME = "updatedName";
-    private static final String UPDATE_DESCRIPTION = "updatedDescription";
-    private static final String UPDATE_CONTACT = "updatedContact";
-    private static final int UPDATE_SIZE = 10;
-    private static final LocalDate UPDATE_STARTDATE = LocalDate.now().plusDays(1);
-    private static final LocalDate UPDATE_ENDDATE = LocalDate.now().plusDays(5);
-    private static final Day UPDATE_DAY = Day.THURSDAY;
-    private static final String UPDATE_STARTTIME = "12:00";
-    private static final String UPDATE_ENDTIME = "14:30";
-    private static final StudyState UPDATE_STUDYSTATE = StudyState.CLOSE;
-    private static final Zone UPDATE_ZONE = Zone.BUSAN;
+    private static final String STUDY_UPDATE_NAME = "studyUpdatedName";
+    private static final String STUDY_UPDATE_DESCRIPTION = "studyUpdatedDescription";
+    private static final String STUDY_UPDATE_CONTACT = "studyUpdatedContact";
+    private static final int STUDY_UPDATE_SIZE = 10;
+    private static final LocalDate STUDY_UPDATE_START_DATE = LocalDate.now().plusDays(1);
+    private static final LocalDate STUDY_UPDATE_END_DATE = LocalDate.now().plusDays(5);
+    private static final Day STUDY_UPDATE_DAY = Day.THURSDAY;
+    private static final String STUDY_UPDATE_START_TIME = "12:00";
+    private static final String STUDY_UPDATE_END_TIME = "14:30";
+    private static final StudyState STUDY_UPDATE_STUDY_STATE = StudyState.CLOSE;
+    private static final Zone STUDY_UPDATE_ZONE = Zone.BUSAN;
 
     private static final Long ACCOUNT_ID = 2L;
     private static final String ACCOUNT_NAME = "accountName";
@@ -96,7 +96,7 @@ class StudyApiControllerTest {
     private static final String ACCOUNT_SECOND_PASSWORD = "accountSecondPassword";
 
     private static final Long NOT_EXIST_STUDY_ID = 999L;
-    private static final LocalDate CREATE_STARTDATE_PAST = LocalDate.now().minusDays(1);
+    private static final LocalDate CREATE_START_DATE_PAST = LocalDate.now().minusDays(1);
 
     @Autowired
     private MockMvc mockMvc;
@@ -171,36 +171,36 @@ class StudyApiControllerTest {
                 .build();
 
         setUpStudy = Study.builder()
-                .id(EXISTED_ID)
-                .name(SETUP_NAME)
+                .id(STUDY_SETUP_EXISTED_ID)
+                .name(STUDY_SETUP_NAME)
                 .email(ACCOUNT_SECOND_EMAIL)
-                .description(SETUP_DESCRIPTION)
-                .contact(SETUP_CONTACT)
-                .size(SETUP_SIZE)
-                .startDate(SETUP_STARTDATE)
-                .endDate(SETUP_ENDDATE)
-                .startTime(SETUP_STARTTIME)
-                .endTime(SETUP_ENDTIME)
-                .day(SETUP_DAY)
-                .studyState(SETUP_STUDYSTATE)
-                .zone(SETUP_ZONE)
+                .description(STUDY_SETUP_DESCRIPTION)
+                .contact(STUDY_SETUP_CONTACT)
+                .size(STUDY_SETUP_SIZE)
+                .startDate(STUDY_SETUP_START_DATE)
+                .endDate(STUDY_SETUP_END_DATE)
+                .startTime(STUDY_SETUP_START_TIME)
+                .endTime(STUDY_SETUP_END_TIME)
+                .day(STUDY_SETUP_DAY)
+                .studyState(STUDY_SETUP_STUDY_STATE)
+                .zone(STUDY_SETUP_ZONE)
                 .build();
 
         setUpStudy.addAdmin(accountWithStudy);
 
         updatedStudy = Study.builder()
-                .id(EXISTED_ID)
-                .name(UPDATE_NAME)
-                .description(UPDATE_DESCRIPTION)
-                .contact(UPDATE_CONTACT)
-                .size(UPDATE_SIZE)
-                .startDate(UPDATE_STARTDATE)
-                .endDate(UPDATE_ENDDATE)
-                .startTime(UPDATE_STARTTIME)
-                .endTime(UPDATE_ENDTIME)
-                .day(UPDATE_DAY)
-                .studyState(UPDATE_STUDYSTATE)
-                .zone(UPDATE_ZONE)
+                .id(STUDY_SETUP_EXISTED_ID)
+                .name(STUDY_UPDATE_NAME)
+                .description(STUDY_UPDATE_DESCRIPTION)
+                .contact(STUDY_UPDATE_CONTACT)
+                .size(STUDY_UPDATE_SIZE)
+                .startDate(STUDY_UPDATE_START_DATE)
+                .endDate(STUDY_UPDATE_END_DATE)
+                .startTime(STUDY_UPDATE_START_TIME)
+                .endTime(STUDY_UPDATE_END_TIME)
+                .day(STUDY_UPDATE_DAY)
+                .studyState(STUDY_UPDATE_STUDY_STATE)
+                .zone(STUDY_UPDATE_ZONE)
                 .build();
 
         accountWithoutStudyToken = new UsernamePasswordAuthenticationToken(
@@ -214,32 +214,32 @@ class StudyApiControllerTest {
                 List.of(new SimpleGrantedAuthority("USER")));
 
         studyCreateDto = StudyCreateDto.builder()
-                .name(SETUP_NAME)
-                .email(SETUP_EMAIL)
-                .description(SETUP_DESCRIPTION)
-                .contact(SETUP_CONTACT)
-                .size(SETUP_SIZE)
-                .startDate(SETUP_STARTDATE)
-                .endDate(SETUP_ENDDATE)
-                .startTime(SETUP_STARTTIME)
-                .endTime(SETUP_ENDTIME)
-                .day(SETUP_DAY)
-                .zone(SETUP_ZONE)
+                .name(STUDY_SETUP_NAME)
+                .email(STUDY_SETUP_EMAIL)
+                .description(STUDY_SETUP_DESCRIPTION)
+                .contact(STUDY_SETUP_CONTACT)
+                .size(STUDY_SETUP_SIZE)
+                .startDate(STUDY_SETUP_START_DATE)
+                .endDate(STUDY_SETUP_END_DATE)
+                .startTime(STUDY_SETUP_START_TIME)
+                .endTime(STUDY_SETUP_END_TIME)
+                .day(STUDY_SETUP_DAY)
+                .zone(STUDY_SETUP_ZONE)
                 .build();
 
         startDateIsPastCreateDto = StudyCreateDto.builder()
-                .startDate(CREATE_STARTDATE_PAST)
-                .endDate(SETUP_ENDDATE)
+                .startDate(CREATE_START_DATE_PAST)
+                .endDate(STUDY_SETUP_END_DATE)
                 .build();
 
         startDateIsAfterEndDateCreateDto = StudyCreateDto.builder()
-                .startDate(SETUP_ENDDATE)
-                .endDate(SETUP_STARTDATE)
+                .startDate(STUDY_SETUP_END_DATE)
+                .endDate(STUDY_SETUP_START_DATE)
                 .build();
 
         startTimeIsAfterEndTimeCreateDto = StudyCreateDto.builder()
-                .startTime(SETUP_ENDTIME)
-                .endTime(SETUP_STARTTIME)
+                .startTime(STUDY_SETUP_END_TIME)
+                .endTime(STUDY_SETUP_START_TIME)
                 .build();
 
         studyResultDto = StudyResultDto.of(setUpStudy);
@@ -257,16 +257,16 @@ class StudyApiControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(content().string(StringContains.containsString("\"name\":\"" +  SETUP_NAME)))
-                .andExpect(content().string(StringContains.containsString("\"name\":\"" + UPDATE_NAME)));
+                .andExpect(content().string(StringContains.containsString("\"name\":\"" + STUDY_SETUP_NAME)))
+                .andExpect(content().string(StringContains.containsString("\"name\":\"" + STUDY_UPDATE_NAME)));
     }
 
     @Test
     void detailWithExistedId() throws Exception {
-        given(studyService.getStudy(EXISTED_ID)).willReturn(setUpStudy);
+        given(studyService.getStudy(STUDY_SETUP_EXISTED_ID)).willReturn(setUpStudy);
 
         mockMvc.perform(
-                get("/api/study/{id}", EXISTED_ID)
+                get("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isOk());
@@ -370,12 +370,12 @@ class StudyApiControllerTest {
 
     @Test
     void updateWithValidateAttribute() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.updateStudy(any(Account.class), eq(EXISTED_ID), any(StudyUpdateDto.class)))
+        SecurityContextHolder.getContext().setAuthentication(accountWithStudyToken);
+        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
                 .willReturn(updatedStudyResultDto);
 
         mockMvc.perform(
-                patch("/api/study/{id}", EXISTED_ID)
+                patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updatedStudy))
         )
@@ -389,11 +389,11 @@ class StudyApiControllerTest {
     @Test
     void deleteByExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.deleteStudy(any(Account.class), eq(EXISTED_ID)))
+        given(studyService.deleteStudy(any(Account.class), eq(STUDY_SETUP_EXISTED_ID)))
                 .willReturn(studyResultDto);
 
         mockMvc.perform(
-                delete("/api/study/{id}", EXISTED_ID)
+                delete("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isNoContent());
@@ -403,7 +403,7 @@ class StudyApiControllerTest {
     void applyStudyByExistedAccount() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         mockMvc.perform(
-                post("/api/study/apply/{id}", EXISTED_ID)
+                post("/api/study/apply/{id}", STUDY_SETUP_EXISTED_ID)
                 .contentType(MediaType.APPLICATION_JSON)
         )
                 .andDo(print())
@@ -413,7 +413,7 @@ class StudyApiControllerTest {
     @Test
     void cancelStudyByExistedAccount() throws Exception {
         mockMvc.perform(
-                delete("/api/study/apply/{id}", EXISTED_ID)
+                delete("/api/study/apply/{id}", STUDY_SETUP_EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isNoContent());

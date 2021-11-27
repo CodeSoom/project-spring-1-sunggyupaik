@@ -55,7 +55,7 @@ public class StudyApiController {
     public StudyResultDto update(@AuthenticationPrincipal UserAccount userAccount,
                                  @PathVariable Long id,
                                  @RequestBody StudyUpdateDto studyUpdateDto) {
-        return studyService.updateStudy(userAccount.getAccount(), id, studyUpdateDto);
+        return studyService.updateStudy(userAccount.getAccount().getEmail(), id, studyUpdateDto);
     }
 
     @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")

@@ -67,7 +67,7 @@ public class StudyService {
         return StudyResultDto.of(createdStudy);
     }
 
-    public StudyResultDto updateStudy(Account account,
+    public StudyResultDto updateStudy(String email,
                                       Long id,
                                       StudyUpdateDto studyUpdateDto) {
         Study study = getStudy(id);
