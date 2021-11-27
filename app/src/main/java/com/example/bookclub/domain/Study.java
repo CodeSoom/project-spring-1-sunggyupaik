@@ -21,6 +21,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
+@ToString
 public class Study {
     @Id
     @GeneratedValue

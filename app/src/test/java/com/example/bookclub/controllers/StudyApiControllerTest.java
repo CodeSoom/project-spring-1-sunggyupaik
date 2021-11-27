@@ -58,10 +58,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(StudyApiController.class)
 class StudyApiControllerTest {
     private static final Long EXISTED_ID = 1L;
-    private static final String SETUP_NAME = "name";
-    private static final String SETUP_EMAIL = "email";
-    private static final String SETUP_DESCRIPTION = "description";
-    private static final String SETUP_CONTACT = "contact";
+    private static final String SETUP_NAME = "setupStudyName";
+    private static final String SETUP_EMAIL = "setupStudyEmail";
+    private static final String SETUP_DESCRIPTION = "setupStudyDescription";
+    private static final String SETUP_CONTACT = "setupContact";
     private static final int SETUP_SIZE = 5;
     private static final LocalDate SETUP_STARTDATE = LocalDate.now().plusDays(1);
     private static final LocalDate SETUP_ENDDATE = LocalDate.now().plusDays(7);
@@ -173,7 +173,7 @@ class StudyApiControllerTest {
         setUpStudy = Study.builder()
                 .id(EXISTED_ID)
                 .name(SETUP_NAME)
-                .email(SETUP_EMAIL)
+                .email(ACCOUNT_SECOND_EMAIL)
                 .description(SETUP_DESCRIPTION)
                 .contact(SETUP_CONTACT)
                 .size(SETUP_SIZE)
@@ -289,7 +289,7 @@ class StudyApiControllerTest {
     @Test
     void createWithValidateAttribute() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), eq(studyCreateDto)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
                 .willReturn(studyResultDto);
 
         mockMvc.perform(
@@ -307,7 +307,7 @@ class StudyApiControllerTest {
     @Test
     void createWithStartDateIsTodayOrBeforeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), eq(startDateIsPastCreateDto)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
                 .willThrow(new StudyStartDateInThePastException());
 
         mockMvc.perform(
@@ -323,7 +323,7 @@ class StudyApiControllerTest {
     @Test
     void createWithStartDateIsAfterEndDateInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), eq(startDateIsAfterEndDateCreateDto)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
                 .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
@@ -339,7 +339,7 @@ class StudyApiControllerTest {
     @Test
     void createWithStartTimeIsAfterTimeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), eq(startTimeIsAfterEndTimeCreateDto)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
                 .willThrow(new StudyStartAndEndTimeNotValidException());
 
         mockMvc.perform(
@@ -355,7 +355,7 @@ class StudyApiControllerTest {
     @Test
     void createWithAccountAlreadyInStudyOpenOrClose() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_SECOND_EMAIL), eq(studyCreateDto)))
+        given(studyService.createStudy(eq(ACCOUNT_SECOND_EMAIL), any(StudyCreateDto.class)))
                 .willThrow(new StudyAlreadyInOpenOrClose());
 
         mockMvc.perform(

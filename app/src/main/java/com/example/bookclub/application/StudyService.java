@@ -8,11 +8,12 @@ import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.ParseTimeException;
-import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
-import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
+import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
+import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,13 @@ public class StudyService {
     }
 
     public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
+        Account loginAccount = accountService.findUserByEmail(email);
+        StudyState accountStudyState = loginAccount.getStudy().getStudyState();
+        if(accountStudyState != null && (accountStudyState.equals(StudyState.OPEN)
+                || accountStudyState.equals(StudyState.CLOSE))) {
+            throw new StudyAlreadyInOpenOrClose();
+        }
+
         if (startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
@@ -52,7 +60,6 @@ public class StudyService {
             throw new StudyStartAndEndTimeNotValidException();
         }
 
-        Account loginAccount = accountService.findUserByEmail(email);
         Study study = studyCreateDto.toEntity();
         study.addAdmin(loginAccount);
         Study createdStudy = studyRepository.save(study);
