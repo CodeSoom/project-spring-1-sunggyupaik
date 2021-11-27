@@ -11,6 +11,7 @@ import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
@@ -88,6 +89,12 @@ class StudyApiControllerTest {
     private static final String ACCOUNT_NICKNAME = "accountNickname";
     private static final String ACCOUNT_PASSWORD = "accountPassword";
 
+    private static final Long ACCOUNT_SECOND_ID = 3L;
+    private static final String ACCOUNT_SECOND_NAME = "accountSecondName";
+    private static final String ACCOUNT_SECOND_EMAIL = "accountSecondEmail";
+    private static final String ACCOUNT_SECOND_NICKNAME = "accountSecondNickname";
+    private static final String ACCOUNT_SECOND_PASSWORD = "accountSecondPassword";
+
     private static final Long NOT_EXIST_STUDY_ID = 999L;
     private static final LocalDate CREATE_STARTDATE_PAST = LocalDate.now().minusDays(1);
 
@@ -121,15 +128,19 @@ class StudyApiControllerTest {
     @MockBean
     private PersistentTokenRepository tokenRepository;
 
-    private Account account;
-    private UsernamePasswordAuthenticationToken accountToken;
+    private Account accountWithoutStudy;
+    private Account accountWithStudy;
+    private UsernamePasswordAuthenticationToken accountWithoutStudyToken;
+    private UsernamePasswordAuthenticationToken accountWithStudyToken;
     private Study setUpStudy;
     private Study updatedStudy;
     private Study dateNotValidStudy;
 
+    private StudyCreateDto studyCreateDto;
     private StudyCreateDto startDateIsPastCreateDto;
     private StudyCreateDto startDateIsAfterEndDateCreateDto;
     private StudyCreateDto startTimeIsAfterEndTimeCreateDto;
+    private StudyCreateDto studyAlreadyInOpenOrCloseCreateDto;
 
     private StudyResultDto studyResultDto;
     private StudyResultDto updatedStudyResultDto;
@@ -143,7 +154,7 @@ class StudyApiControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        account = Account.builder()
+        accountWithoutStudy = Account.builder()
                 .id(ACCOUNT_ID)
                 .name(ACCOUNT_NAME)
                 .email(ACCOUNT_EMAIL)
@@ -151,10 +162,13 @@ class StudyApiControllerTest {
                 .password(ACCOUNT_PASSWORD)
                 .build();
 
-        accountToken = new UsernamePasswordAuthenticationToken(
-                new UserAccount(account, List.of(new SimpleGrantedAuthority("USER"))),
-                account.getPassword(),
-                List.of(new SimpleGrantedAuthority("USER")));
+        accountWithStudy = Account.builder()
+                .id(ACCOUNT_SECOND_ID)
+                .name(ACCOUNT_SECOND_NAME)
+                .email(ACCOUNT_SECOND_EMAIL)
+                .nickname(ACCOUNT_SECOND_NICKNAME)
+                .password(ACCOUNT_SECOND_PASSWORD)
+                .build();
 
         setUpStudy = Study.builder()
                 .id(EXISTED_ID)
@@ -172,6 +186,8 @@ class StudyApiControllerTest {
                 .zone(SETUP_ZONE)
                 .build();
 
+        setUpStudy.addAdmin(accountWithStudy);
+
         updatedStudy = Study.builder()
                 .id(EXISTED_ID)
                 .name(UPDATE_NAME)
@@ -185,6 +201,30 @@ class StudyApiControllerTest {
                 .day(UPDATE_DAY)
                 .studyState(UPDATE_STUDYSTATE)
                 .zone(UPDATE_ZONE)
+                .build();
+
+        accountWithoutStudyToken = new UsernamePasswordAuthenticationToken(
+                new UserAccount(accountWithoutStudy, List.of(new SimpleGrantedAuthority("USER"))),
+                accountWithoutStudy.getPassword(),
+                List.of(new SimpleGrantedAuthority("USER")));
+
+        accountWithStudyToken = new UsernamePasswordAuthenticationToken(
+                new UserAccount(accountWithStudy, List.of(new SimpleGrantedAuthority("USER"))),
+                accountWithStudy.getPassword(),
+                List.of(new SimpleGrantedAuthority("USER")));
+
+        studyCreateDto = StudyCreateDto.builder()
+                .name(SETUP_NAME)
+                .email(SETUP_EMAIL)
+                .description(SETUP_DESCRIPTION)
+                .contact(SETUP_CONTACT)
+                .size(SETUP_SIZE)
+                .startDate(SETUP_STARTDATE)
+                .endDate(SETUP_ENDDATE)
+                .startTime(SETUP_STARTTIME)
+                .endTime(SETUP_ENDTIME)
+                .day(SETUP_DAY)
+                .zone(SETUP_ZONE)
                 .build();
 
         startDateIsPastCreateDto = StudyCreateDto.builder()
@@ -248,14 +288,14 @@ class StudyApiControllerTest {
 
     @Test
     void createWithValidateAttribute() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), eq(studyCreateDto)))
                 .willReturn(studyResultDto);
 
         mockMvc.perform(
                 post("/api/study")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(setUpStudy))
+                    .content(objectMapper.writeValueAsString(studyCreateDto))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
@@ -266,8 +306,8 @@ class StudyApiControllerTest {
 
     @Test
     void createWithStartDateIsTodayOrBeforeInvalid() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), eq(startDateIsPastCreateDto)))
                 .willThrow(new StudyStartDateInThePastException());
 
         mockMvc.perform(
@@ -282,8 +322,8 @@ class StudyApiControllerTest {
 
     @Test
     void createWithStartDateIsAfterEndDateInvalid() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), eq(startDateIsAfterEndDateCreateDto)))
                 .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
@@ -298,8 +338,8 @@ class StudyApiControllerTest {
 
     @Test
     void createWithStartTimeIsAfterTimeInvalid() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), eq(startTimeIsAfterEndTimeCreateDto)))
                 .willThrow(new StudyStartAndEndTimeNotValidException());
 
         mockMvc.perform(
@@ -313,8 +353,24 @@ class StudyApiControllerTest {
     }
 
     @Test
+    void createWithAccountAlreadyInStudyOpenOrClose() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithStudyToken);
+        given(studyService.createStudy(eq(ACCOUNT_SECOND_EMAIL), eq(studyCreateDto)))
+                .willThrow(new StudyAlreadyInOpenOrClose());
+
+        mockMvc.perform(
+                        post("/api/study")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(studyCreateDto))
+                )
+                .andDo(print())
+                .andExpect(content().string(containsString("account already has study in open or close")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void updateWithValidateAttribute() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountToken);
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.updateStudy(any(Account.class), eq(EXISTED_ID), any(StudyUpdateDto.class)))
                 .willReturn(updatedStudyResultDto);
 
@@ -332,7 +388,7 @@ class StudyApiControllerTest {
 
     @Test
     void deleteByExistedId() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountToken);
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.deleteStudy(any(Account.class), eq(EXISTED_ID)))
                 .willReturn(studyResultDto);
 
@@ -345,7 +401,7 @@ class StudyApiControllerTest {
 
     @Test
     void applyStudyByExistedAccount() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountToken);
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         mockMvc.perform(
                 post("/api/study/apply/{id}", EXISTED_ID)
                 .contentType(MediaType.APPLICATION_JSON)
