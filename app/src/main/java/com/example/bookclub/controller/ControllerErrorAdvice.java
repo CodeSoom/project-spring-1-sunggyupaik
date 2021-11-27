@@ -14,7 +14,7 @@ import com.example.bookclub.errors.FileUploadBadRequestException;
 import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.MessageCreateBadRequestException;
 import com.example.bookclub.errors.ParseTimeException;
-import com.example.bookclub.errors.StartAndEndTimeNotValidException;
+import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
 import com.example.bookclub.errors.StudyNotFoundException;
@@ -74,8 +74,8 @@ public class ControllerErrorAdvice {
     }
   
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(StartAndEndTimeNotValidException.class)
-    public ErrorResponse handleStartAndEndTimeNotValid(StartAndEndTimeNotValidException e) {
+    @ExceptionHandler(StudyStartAndEndTimeNotValidException.class)
+    public ErrorResponse handleStudyStartAndEndTimeNotValid(StudyStartAndEndTimeNotValidException e) {
         return new ErrorResponse(e.getMessage());
     }
 

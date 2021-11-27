@@ -13,6 +13,7 @@ import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
+import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
@@ -128,6 +129,7 @@ class StudyApiControllerTest {
 
     private StudyCreateDto startDateIsPastCreateDto;
     private StudyCreateDto startDateIsAfterEndDateCreateDto;
+    private StudyCreateDto startTimeIsAfterEndTimeCreateDto;
 
     private StudyResultDto studyResultDto;
     private StudyResultDto updatedStudyResultDto;
@@ -193,6 +195,11 @@ class StudyApiControllerTest {
         startDateIsAfterEndDateCreateDto = StudyCreateDto.builder()
                 .startDate(SETUP_ENDDATE)
                 .endDate(SETUP_STARTDATE)
+                .build();
+
+        startTimeIsAfterEndTimeCreateDto = StudyCreateDto.builder()
+                .startTime(SETUP_ENDTIME)
+                .endTime(SETUP_STARTTIME)
                 .build();
 
         studyResultDto = StudyResultDto.of(setUpStudy);
@@ -287,6 +294,22 @@ class StudyApiControllerTest {
                     .andDo(print())
                     .andExpect(content().string(containsString("Study StartDate and EndDate not valid")))
                     .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createWithStartTimeIsAfterTimeInvalid() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountToken);
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+                .willThrow(new StudyStartAndEndTimeNotValidException());
+
+        mockMvc.perform(
+                        post("/api/study")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(startTimeIsAfterEndTimeCreateDto))
+                )
+                .andDo(print())
+                .andExpect(content().string(containsString("Study StartTime and EndTime not valid")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test

@@ -9,7 +9,7 @@ import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
-import com.example.bookclub.errors.StartAndEndTimeNotValidException;
+import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
@@ -49,7 +49,7 @@ public class StudyService {
 
         if (startTimeIsAfterEndTime(studyCreateDto.getStartTime(),
                 studyCreateDto.getEndTime())) {
-            throw new StartAndEndTimeNotValidException();
+            throw new StudyStartAndEndTimeNotValidException();
         }
 
         Account loginAccount = accountService.findUserByEmail(email);
@@ -76,7 +76,7 @@ public class StudyService {
 
         if (startTimeIsAfterEndTime(studyUpdateDto.getStartTime(),
                 studyUpdateDto.getEndTime())) {
-            throw new StartAndEndTimeNotValidException();
+            throw new StudyStartAndEndTimeNotValidException();
         }
 
         study.updateWith(studyUpdateDto);
