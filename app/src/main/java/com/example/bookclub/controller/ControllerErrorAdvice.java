@@ -19,6 +19,7 @@ import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
+import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,6 +34,12 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyStartDateInThePastException.class)
     public ErrorResponse handleStudyStartDateInThePast(StudyStartDateInThePastException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StudyStartAndEndDateNotValidException.class)
+    public ErrorResponse handleStudyStartAndEndDateNotValidException(StudyStartAndEndDateNotValidException e) {
         return new ErrorResponse(e.getMessage());
     }
 

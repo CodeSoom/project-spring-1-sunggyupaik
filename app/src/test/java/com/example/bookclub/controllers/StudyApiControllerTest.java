@@ -12,6 +12,7 @@ import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
@@ -60,7 +61,7 @@ class StudyApiControllerTest {
     private static final String SETUP_DESCRIPTION = "description";
     private static final String SETUP_CONTACT = "contact";
     private static final int SETUP_SIZE = 5;
-    private static final LocalDate SETUP_STARTDATE = LocalDate.now();
+    private static final LocalDate SETUP_STARTDATE = LocalDate.now().plusDays(1);
     private static final LocalDate SETUP_ENDDATE = LocalDate.now().plusDays(7);
     private static final Day SETUP_DAY = Day.MONDAY;
     private static final String SETUP_STARTTIME = "13:00";
@@ -87,6 +88,7 @@ class StudyApiControllerTest {
     private static final String ACCOUNT_PASSWORD = "accountPassword";
 
     private static final Long NOT_EXIST_STUDY_ID = 999L;
+    private static final LocalDate CREATE_STARTDATE_PAST = LocalDate.now().minusDays(1);
 
     @Autowired
     private MockMvc mockMvc;
@@ -119,12 +121,13 @@ class StudyApiControllerTest {
     private PersistentTokenRepository tokenRepository;
 
     private Account account;
-    private UsernamePasswordAuthenticationToken token;
+    private UsernamePasswordAuthenticationToken accountToken;
     private Study setUpStudy;
     private Study updatedStudy;
     private Study dateNotValidStudy;
 
     private StudyCreateDto startDateIsPastCreateDto;
+    private StudyCreateDto startDateIsAfterEndDateCreateDto;
 
     private StudyResultDto studyResultDto;
     private StudyResultDto updatedStudyResultDto;
@@ -146,7 +149,7 @@ class StudyApiControllerTest {
                 .password(ACCOUNT_PASSWORD)
                 .build();
 
-        token = new UsernamePasswordAuthenticationToken(
+        accountToken = new UsernamePasswordAuthenticationToken(
                 new UserAccount(account, List.of(new SimpleGrantedAuthority("USER"))),
                 account.getPassword(),
                 List.of(new SimpleGrantedAuthority("USER")));
@@ -183,9 +186,14 @@ class StudyApiControllerTest {
                 .build();
 
         startDateIsPastCreateDto = StudyCreateDto.builder()
-                        .startDate(SETUP_ENDDATE)
-                        .endDate(SETUP_STARTDATE)
-                        .build();
+                .startDate(CREATE_STARTDATE_PAST)
+                .endDate(SETUP_ENDDATE)
+                .build();
+
+        startDateIsAfterEndDateCreateDto = StudyCreateDto.builder()
+                .startDate(SETUP_ENDDATE)
+                .endDate(SETUP_STARTDATE)
+                .build();
 
         studyResultDto = StudyResultDto.of(setUpStudy);
         updatedStudyResultDto = StudyResultDto.of(updatedStudy);
@@ -233,7 +241,7 @@ class StudyApiControllerTest {
 
     @Test
     void createWithValidateAttribute() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(accountToken);
         given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
                 .willReturn(studyResultDto);
 
@@ -251,25 +259,39 @@ class StudyApiControllerTest {
 
     @Test
     void createWithStartDateIsTodayOrBeforeInvalid() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(accountToken);
         given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
                 .willThrow(new StudyStartDateInThePastException());
-
-        given(accountService.findUserByEmail(ACCOUNT_EMAIL)).willReturn(account);
 
         mockMvc.perform(
             post("/api/study")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(startDateIsPastCreateDto))
-        )
+            )
                 .andDo(print())
                 .andExpect(content().string(containsString("Study startDate in the past")))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
+    void createWithStartDateIsAfterEndDateInvalid() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountToken);
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+                .willThrow(new StudyStartAndEndDateNotValidException());
+
+        mockMvc.perform(
+                post("/api/study")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(startDateIsAfterEndDateCreateDto))
+                )
+                    .andDo(print())
+                    .andExpect(content().string(containsString("Study StartDate and EndDate not valid")))
+                    .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void updateWithValidateAttribute() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(accountToken);
         given(studyService.updateStudy(any(Account.class), eq(EXISTED_ID), any(StudyUpdateDto.class)))
                 .willReturn(updatedStudyResultDto);
 
@@ -287,7 +309,7 @@ class StudyApiControllerTest {
 
     @Test
     void deleteByExistedId() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(accountToken);
         given(studyService.deleteStudy(any(Account.class), eq(EXISTED_ID)))
                 .willReturn(studyResultDto);
 
@@ -300,7 +322,7 @@ class StudyApiControllerTest {
 
     @Test
     void applyStudyByExistedAccount() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(accountToken);
         mockMvc.perform(
                 post("/api/study/apply/{id}", EXISTED_ID)
                 .contentType(MediaType.APPLICATION_JSON)
