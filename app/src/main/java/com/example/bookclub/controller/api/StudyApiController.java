@@ -47,7 +47,7 @@ public class StudyApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public StudyResultDto create(@CurrentAccount Account account,
                                  @RequestBody StudyCreateDto studyCreateDto) {
-        return studyService.createStudy(account, studyCreateDto);
+        return studyService.createStudy(account.getEmail(), studyCreateDto);
     }
 
     @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")

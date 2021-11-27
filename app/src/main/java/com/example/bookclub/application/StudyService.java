@@ -1,7 +1,6 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
@@ -30,15 +29,15 @@ import java.util.stream.Collectors;
 @Transactional
 public class StudyService {
     private final StudyRepository studyRepository;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
     public StudyService(StudyRepository studyRepository,
-                        AccountRepository accountRepository) {
+                        AccountService accountService) {
         this.studyRepository = studyRepository;
-        this.accountRepository = accountRepository;
+        this.accountService = accountService;
     }
 
-    public StudyResultDto createStudy(Account account, StudyCreateDto studyCreateDto) {
+    public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
         if (startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
@@ -53,7 +52,7 @@ public class StudyService {
             throw new StartAndEndTimeNotValidException();
         }
 
-        Account loginAccount = accountRepository.findByEmail(account.getEmail()).get();
+        Account loginAccount = accountService.findUserByEmail(email);
         Study study = studyCreateDto.toEntity();
         study.addAdmin(loginAccount);
         Study createdStudy = studyRepository.save(study);

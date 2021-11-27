@@ -1,5 +1,6 @@
 package com.example.bookclub.controllers;
 
+import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.controller.api.StudyApiController;
 import com.example.bookclub.domain.Account;
@@ -11,6 +12,10 @@ import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudyStartDateInThePastException;
+import com.example.bookclub.security.AccountAuthenticationService;
+import com.example.bookclub.security.CustomDeniedHandler;
+import com.example.bookclub.security.CustomEntryPoint;
 import com.example.bookclub.security.UserAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
@@ -23,11 +28,13 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
+import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -73,12 +80,11 @@ class StudyApiControllerTest {
     private static final StudyState UPDATE_STUDYSTATE = StudyState.CLOSE;
     private static final Zone UPDATE_ZONE = Zone.BUSAN;
 
-    private static final Long ACCOUNT_ID = 1L;
-    private static final String ACCOUNT_NAME = "name";
+    private static final Long ACCOUNT_ID = 2L;
+    private static final String ACCOUNT_NAME = "accountName";
     private static final String ACCOUNT_EMAIL = "email";
-    private static final String ACCOUNT_NICKNAME = "nickname";
-    private static final String ACCOUNT_PASSWORD = "1234567890";
-    private static final String ACCOUNT_PROFILEIMAGE = "image";
+    private static final String ACCOUNT_NICKNAME = "accountNickname";
+    private static final String ACCOUNT_PASSWORD = "accountPassword";
 
     private static final Long NOT_EXIST_STUDY_ID = 999L;
 
@@ -91,13 +97,34 @@ class StudyApiControllerTest {
     @MockBean
     private StudyService studyService;
 
+    @MockBean
+    private AccountService accountService;
+
+    @MockBean
+    private AccountAuthenticationService accountAuthenticationService;
+
+    @MockBean
+    private DataSource dataSource;
+
     @Autowired
     private ObjectMapper objectMapper;
+
+    @MockBean
+    private CustomEntryPoint customEntryPoint;
+
+    @MockBean
+    private CustomDeniedHandler customDeniedHandler;
+
+    @MockBean
+    private PersistentTokenRepository tokenRepository;
 
     private Account account;
     private UsernamePasswordAuthenticationToken token;
     private Study setUpStudy;
     private Study updatedStudy;
+    private Study dateNotValidStudy;
+
+    private StudyCreateDto startDateIsPastCreateDto;
 
     private StudyResultDto studyResultDto;
     private StudyResultDto updatedStudyResultDto;
@@ -155,6 +182,11 @@ class StudyApiControllerTest {
                 .zone(UPDATE_ZONE)
                 .build();
 
+        startDateIsPastCreateDto = StudyCreateDto.builder()
+                        .startDate(SETUP_ENDDATE)
+                        .endDate(SETUP_STARTDATE)
+                        .build();
+
         studyResultDto = StudyResultDto.of(setUpStudy);
         updatedStudyResultDto = StudyResultDto.of(updatedStudy);
 
@@ -202,19 +234,37 @@ class StudyApiControllerTest {
     @Test
     void createWithValidateAttribute() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(token);
-        given(studyService.createStudy(any(Account.class), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
                 .willReturn(studyResultDto);
 
         mockMvc.perform(
                 post("/api/study")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(setUpStudy))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(setUpStudy))
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("id").value(studyResultDto.getId()))
                 .andExpect(jsonPath("name").value(studyResultDto.getName()))
                 .andExpect(jsonPath("description").value(studyResultDto.getDescription()));
+    }
+
+    @Test
+    void createWithStartDateIsTodayOrBeforeInvalid() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(token);
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+                .willThrow(new StudyStartDateInThePastException());
+
+        given(accountService.findUserByEmail(ACCOUNT_EMAIL)).willReturn(account);
+
+        mockMvc.perform(
+            post("/api/study")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(startDateIsPastCreateDto))
+        )
+                .andDo(print())
+                .andExpect(content().string(containsString("Study startDate in the past")))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
