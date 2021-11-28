@@ -6,6 +6,7 @@ import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
+import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailBadRequestException;
@@ -83,6 +84,12 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyAlreadyInOpenOrClose.class)
     public ErrorResponse handleStudyAlreadyInOpenOrClose(StudyAlreadyInOpenOrClose e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccountNotManagerOfStudyException.class)
+    public ErrorResponse handleAccountNotManagerException(AccountNotManagerOfStudyException e) {
         return new ErrorResponse(e.getMessage());
     }
 

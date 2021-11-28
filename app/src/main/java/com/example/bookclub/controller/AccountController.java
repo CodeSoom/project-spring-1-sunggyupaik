@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/users")
 public class AccountController {
     private final AccountAuthenticationService accountAuthenticationService;
-
     public AccountController(AccountAuthenticationService accountAuthenticationService) {
         this.accountAuthenticationService = accountAuthenticationService;
     }

@@ -7,6 +7,7 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
@@ -16,7 +17,6 @@ import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -70,9 +70,9 @@ public class StudyService {
 
     public StudyResultDto updateStudy(String email, Long id, StudyUpdateDto studyUpdateDto) {
         Account loginAccount = accountService.findUserByEmail(email);
-        Study accountStudy = loginAccount.getStudy();
-        if(accountStudy != null && accountStudy.getEmail().equals(loginAccount.getEmail())) {
-            throw new AccessDeniedException("not study manager");
+        Study accountStudy = getStudy(id);
+        if(!accountStudy.getEmail().equals(loginAccount.getEmail())) {
+            throw new AccountNotManagerOfStudyException("Not Manager Of Study");
         }
 
         Study study = getStudy(id);

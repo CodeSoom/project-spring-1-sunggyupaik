@@ -11,6 +11,7 @@ import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
@@ -20,13 +21,11 @@ import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import com.example.bookclub.security.UserAccount;
-import com.example.bookclub.security.util.StudyManagerCheck;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -130,10 +129,6 @@ class StudyApiControllerTest {
     @MockBean
     private PersistentTokenRepository tokenRepository;
 
-    @MockBean
-    @Qualifier("StudyManagerCheck")
-    private StudyManagerCheck studyManagerCheck;
-
     private Account accountWithoutStudy;
     private Account accountWithSetupStudy;
     private UsernamePasswordAuthenticationToken accountWithoutStudyToken;
@@ -147,6 +142,8 @@ class StudyApiControllerTest {
     private StudyCreateDto startDateIsAfterEndDateCreateDto;
     private StudyCreateDto startTimeIsAfterEndTimeCreateDto;
     private StudyCreateDto studyAlreadyInOpenOrCloseCreateDto;
+
+    private StudyUpdateDto studyUpdateDto;
 
     private StudyResultDto studyResultDto;
     private StudyResultDto updatedStudyResultDto;
@@ -246,6 +243,19 @@ class StudyApiControllerTest {
         startTimeIsAfterEndTimeCreateDto = StudyCreateDto.builder()
                 .startTime(STUDY_SETUP_END_TIME)
                 .endTime(STUDY_SETUP_START_TIME)
+                .build();
+
+        studyUpdateDto = StudyUpdateDto.builder()
+                .name(STUDY_UPDATE_NAME)
+                .description(STUDY_UPDATE_DESCRIPTION)
+                .contact(STUDY_UPDATE_CONTACT)
+                .size(STUDY_UPDATE_SIZE)
+                .startDate(STUDY_UPDATE_START_DATE)
+                .endDate(STUDY_UPDATE_END_DATE)
+                .startTime(STUDY_UPDATE_START_TIME)
+                .endTime(STUDY_UPDATE_END_TIME)
+                .day(STUDY_UPDATE_DAY)
+                .zone(STUDY_UPDATE_ZONE)
                 .build();
 
         studyResultDto = StudyResultDto.of(setUpStudy);
@@ -377,20 +387,35 @@ class StudyApiControllerTest {
     @Test
     void updateWithValidateAttribute() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyManagerCheck.isManagerOfStudy(any(Account.class))).willReturn(true);
         given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
                 .willReturn(updatedStudyResultDto);
 
         mockMvc.perform(
                 patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(updatedStudy))
+                .content(objectMapper.writeValueAsString(studyUpdateDto))
         )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name").value(updatedStudyResultDto.getName()))
                 .andExpect(jsonPath("description").value(updatedStudyResultDto.getDescription()))
                 .andExpect(jsonPath("contact").value(updatedStudyResultDto.getContact()));
+    }
+
+    @Test
+    void updateWithNotManager() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.updateStudy(eq(ACCOUNT_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+                .willThrow(AccountNotManagerOfStudyException.class);
+
+        mockMvc.perform(
+                        patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(studyUpdateDto))
+                )
+                .andDo(print())
+                //.andExpect(content().string(containsString("Not Manager Of Study")))
+                .andExpect(status().isForbidden());
     }
 
     @Test
