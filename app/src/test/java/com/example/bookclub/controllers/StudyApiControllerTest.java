@@ -507,6 +507,19 @@ class StudyApiControllerTest {
     }
 
     @Test
+    void deleteByNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyService.deleteStudy(eq(ACCOUNT_SECOND_EMAIL), eq(NOT_EXIST_STUDY_ID)))
+                .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/{id}", NOT_EXIST_STUDY_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void applyStudyByExistedAccount() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         mockMvc.perform(
