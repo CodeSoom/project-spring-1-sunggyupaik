@@ -480,7 +480,7 @@ class StudyApiControllerTest {
 
     @Test
     void deleteByExistedId() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyService.deleteStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID)))
                 .willReturn(studyResultDto);
 
@@ -488,6 +488,8 @@ class StudyApiControllerTest {
                 delete("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
         )
                 .andDo(print())
+                .andExpect(jsonPath("name").value(setUpStudy.getName()))
+                .andExpect(jsonPath("description").value(setUpStudy.getDescription()))
                 .andExpect(status().isNoContent());
     }
 
