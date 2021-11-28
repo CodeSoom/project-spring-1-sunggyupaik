@@ -113,8 +113,13 @@ public class StudyService {
         return startDate.isBefore(today) || startDate.isEqual(today);
     }
 
-    public StudyResultDto deleteStudy(Account account, Long id) {
+    public StudyResultDto deleteStudy(String email, Long id) {
         Study study = getStudy(id);
+        Account loginAccount = accountService.findUserByEmail(email);
+        if(!study.getEmail().equals(loginAccount.getEmail())) {
+            throw new AccountNotManagerOfStudyException();
+        }
+
         study.deleteAccounts();
         studyRepository.delete(study);
 

@@ -58,12 +58,12 @@ public class StudyApiController {
         return studyService.updateStudy(userAccount.getAccount().getEmail(), id, studyUpdateDto);
     }
 
-    @PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
+    //@PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public StudyResultDto delete(@AuthenticationPrincipal UserAccount userAccount,
                                  @PathVariable Long id) {
-        return studyService.deleteStudy(userAccount.getAccount(), id);
+        return studyService.deleteStudy(userAccount.getAccount().getEmail(), id);
     }
 
     @PostMapping("/apply/{id}")

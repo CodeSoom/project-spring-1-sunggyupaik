@@ -481,7 +481,7 @@ class StudyApiControllerTest {
     @Test
     void deleteByExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.deleteStudy(any(Account.class), eq(STUDY_SETUP_EXISTED_ID)))
+        given(studyService.deleteStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID)))
                 .willReturn(studyResultDto);
 
         mockMvc.perform(
