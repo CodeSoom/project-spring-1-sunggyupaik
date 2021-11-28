@@ -79,14 +79,14 @@ public class StudyService {
             throw new StudyStartDateInThePastException();
         }
 
-        if (startTimeIsAfterEndTime(studyUpdateDto.getStartTime(),
-                studyUpdateDto.getEndTime())) {
-            throw new StudyStartAndEndTimeNotValidException();
-        }
-
         if (startDateIsAfterEndDate(studyUpdateDto.getStartDate(),
                 studyUpdateDto.getEndDate())) {
             throw new StudyStartAndEndDateNotValidException();
+        }
+
+        if (startTimeIsAfterEndTime(studyUpdateDto.getStartTime(),
+                studyUpdateDto.getEndTime())) {
+            throw new StudyStartAndEndTimeNotValidException();
         }
 
         study.updateWith(studyUpdateDto);

@@ -447,6 +447,22 @@ class StudyApiControllerTest {
     }
 
     @Test
+    void updateWithStartDateIsAfterEndDateInvalid() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+                .willThrow(StudyStartAndEndDateNotValidException.class);
+
+        mockMvc.perform(
+                        patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(studyStartDateIsPastUpdateDto))
+                )
+                .andDo(print())
+//                .andExpect(content().string(containsString("Study StartDate and EndDate not valid")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void updateWithStartTimeIsAfterEndTimeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
@@ -459,21 +475,6 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 //.andExpect(content().string(containsString("Study StartDate and EndDate not valid")))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    void updateWithStartDateIsAfterEndDateInvalid() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
-                .willThrow(StudyStartDateInThePastException.class);
-
-        mockMvc.perform(
-                        patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(objectMapper.writeValueAsString(studyStartDateIsPastUpdateDto))
-                )
-                .andDo(print())
                 .andExpect(status().isBadRequest());
     }
 
