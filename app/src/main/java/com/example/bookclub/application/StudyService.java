@@ -69,26 +69,24 @@ public class StudyService {
     }
 
     public StudyResultDto updateStudy(String email, Long id, StudyUpdateDto studyUpdateDto) {
-        Account loginAccount = accountService.findUserByEmail(email);
-        Study accountStudy = getStudy(id);
-        if(!accountStudy.getEmail().equals(loginAccount.getEmail())) {
-            throw new AccountNotManagerOfStudyException("Not Manager Of Study");
-        }
-
         Study study = getStudy(id);
+        Account loginAccount = accountService.findUserByEmail(email);
+        if(!study.getEmail().equals(loginAccount.getEmail())) {
+            throw new AccountNotManagerOfStudyException();
+        }
 
         if (startDateIsTodayOrBefore(studyUpdateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
 
-        if (startDateIsAfterEndDate(studyUpdateDto.getStartDate(),
-                studyUpdateDto.getEndDate())) {
-            throw new StudyStartAndEndDateNotValidException();
-        }
-
         if (startTimeIsAfterEndTime(studyUpdateDto.getStartTime(),
                 studyUpdateDto.getEndTime())) {
             throw new StudyStartAndEndTimeNotValidException();
+        }
+
+        if (startDateIsAfterEndDate(studyUpdateDto.getStartDate(),
+                studyUpdateDto.getEndDate())) {
+            throw new StudyStartAndEndDateNotValidException();
         }
 
         study.updateWith(studyUpdateDto);

@@ -93,7 +93,7 @@ class StudyApiControllerTest {
     private static final Day STUDY_UPDATE_DAY = Day.THURSDAY;
     private static final String STUDY_UPDATE_START_TIME = "12:00";
     private static final String STUDY_UPDATE_END_TIME = "14:30";
-    private static final StudyState STUDY_UPDATE_STUDY_STATE = StudyState.CLOSE;
+    private static final StudyState STUDY_UPDATE_STUDY_STATE = StudyState.OPEN;
     private static final Zone STUDY_UPDATE_ZONE = Zone.BUSAN;
 
     private static final Long NOT_EXIST_STUDY_ID = 999L;
@@ -145,6 +145,7 @@ class StudyApiControllerTest {
 
     private StudyUpdateDto studyUpdateDto;
     private StudyUpdateDto studyStartDateIsPastUpdateDto;
+    private StudyUpdateDto studyStartDateIsAfterEndDateUpdateDto;
 
     private StudyResultDto studyResultDto;
     private StudyResultDto updatedStudyResultDto;
@@ -262,6 +263,11 @@ class StudyApiControllerTest {
         studyStartDateIsPastUpdateDto = StudyUpdateDto.builder()
                 .startDate(CREATE_START_DATE_PAST)
                 .endDate(STUDY_SETUP_END_DATE)
+                .build();
+
+        studyStartDateIsAfterEndDateUpdateDto = StudyUpdateDto.builder()
+                .startDate(STUDY_SETUP_END_DATE)
+                .endDate(STUDY_SETUP_START_DATE)
                 .build();
 
         studyResultDto = StudyResultDto.of(setUpStudy);
@@ -420,12 +426,44 @@ class StudyApiControllerTest {
                                 .content(objectMapper.writeValueAsString(studyUpdateDto))
                 )
                 .andDo(print())
-                //.andExpect(content().string(containsString("Not Manager Of Study")))
+//                .andExpect(content().string(containsString("Not Manager Of Study")))
                 .andExpect(status().isForbidden());
     }
 
     @Test
     void updateWithStartDateInPastInvalid() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+                .willThrow(StudyStartDateInThePastException.class);
+
+        mockMvc.perform(
+                        patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(studyStartDateIsPastUpdateDto))
+                )
+                .andDo(print())
+                //.andExpect(content().string(containsString("Study startDate in the past")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateWithStartTimeIsAfterEndTimeInvalid() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+                .willThrow(StudyStartAndEndDateNotValidException.class);
+
+        mockMvc.perform(
+                        patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(studyStartDateIsPastUpdateDto))
+                )
+                .andDo(print())
+                //.andExpect(content().string(containsString("Study StartDate and EndDate not valid")))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void updateWithStartDateIsAfterEndDateInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
                 .willThrow(StudyStartDateInThePastException.class);
