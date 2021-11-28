@@ -50,7 +50,7 @@ public class StudyApiController {
         return studyService.createStudy(account.getEmail(), studyCreateDto);
     }
 
-    @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
+    //@PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @PatchMapping("/{id}")
     public StudyResultDto update(@AuthenticationPrincipal UserAccount userAccount,
                                  @PathVariable Long id,
@@ -58,7 +58,7 @@ public class StudyApiController {
         return studyService.updateStudy(userAccount.getAccount().getEmail(), id, studyUpdateDto);
     }
 
-    @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
+    @PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public StudyResultDto delete(@AuthenticationPrincipal UserAccount userAccount,

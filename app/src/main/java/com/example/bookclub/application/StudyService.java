@@ -16,6 +16,7 @@ import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -67,9 +68,13 @@ public class StudyService {
         return StudyResultDto.of(createdStudy);
     }
 
-    public StudyResultDto updateStudy(String email,
-                                      Long id,
-                                      StudyUpdateDto studyUpdateDto) {
+    public StudyResultDto updateStudy(String email, Long id, StudyUpdateDto studyUpdateDto) {
+        Account loginAccount = accountService.findUserByEmail(email);
+        Study accountStudy = loginAccount.getStudy();
+        if(accountStudy != null && accountStudy.getEmail().equals(loginAccount.getEmail())) {
+            throw new AccessDeniedException("not study manager");
+        }
+
         Study study = getStudy(id);
 
         if (startDateIsTodayOrBefore(studyUpdateDto.getStartDate())) {

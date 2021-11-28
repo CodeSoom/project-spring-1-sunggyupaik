@@ -20,11 +20,13 @@ import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import com.example.bookclub.security.UserAccount;
+import com.example.bookclub.security.util.StudyManagerCheck;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -57,9 +59,21 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(StudyApiController.class)
 class StudyApiControllerTest {
+    private static final Long ACCOUNT_ID = 2L;
+    private static final String ACCOUNT_NAME = "accountName";
+    private static final String ACCOUNT_EMAIL = "email";
+    private static final String ACCOUNT_NICKNAME = "accountNickname";
+    private static final String ACCOUNT_PASSWORD = "accountPassword";
+
+    private static final Long ACCOUNT_SECOND_ID = 3L;
+    private static final String ACCOUNT_SECOND_NAME = "accountSecondName";
+    private static final String ACCOUNT_SECOND_EMAIL = "accountSecondEmail";
+    private static final String ACCOUNT_SECOND_NICKNAME = "accountSecondNickname";
+    private static final String ACCOUNT_SECOND_PASSWORD = "accountSecondPassword";
+
     private static final Long STUDY_SETUP_EXISTED_ID = 1L;
     private static final String STUDY_SETUP_NAME = "setupStudyName";
-    private static final String STUDY_SETUP_EMAIL = "setupStudyEmail";
+    private static final String STUDY_SETUP_EMAIL = ACCOUNT_SECOND_EMAIL;
     private static final String STUDY_SETUP_DESCRIPTION = "setupStudyDescription";
     private static final String STUDY_SETUP_CONTACT = "setupContact";
     private static final int STUDY_SETUP_SIZE = 5;
@@ -82,18 +96,6 @@ class StudyApiControllerTest {
     private static final String STUDY_UPDATE_END_TIME = "14:30";
     private static final StudyState STUDY_UPDATE_STUDY_STATE = StudyState.CLOSE;
     private static final Zone STUDY_UPDATE_ZONE = Zone.BUSAN;
-
-    private static final Long ACCOUNT_ID = 2L;
-    private static final String ACCOUNT_NAME = "accountName";
-    private static final String ACCOUNT_EMAIL = "email";
-    private static final String ACCOUNT_NICKNAME = "accountNickname";
-    private static final String ACCOUNT_PASSWORD = "accountPassword";
-
-    private static final Long ACCOUNT_SECOND_ID = 3L;
-    private static final String ACCOUNT_SECOND_NAME = "accountSecondName";
-    private static final String ACCOUNT_SECOND_EMAIL = "accountSecondEmail";
-    private static final String ACCOUNT_SECOND_NICKNAME = "accountSecondNickname";
-    private static final String ACCOUNT_SECOND_PASSWORD = "accountSecondPassword";
 
     private static final Long NOT_EXIST_STUDY_ID = 999L;
     private static final LocalDate CREATE_START_DATE_PAST = LocalDate.now().minusDays(1);
@@ -128,10 +130,14 @@ class StudyApiControllerTest {
     @MockBean
     private PersistentTokenRepository tokenRepository;
 
+    @MockBean
+    @Qualifier("StudyManagerCheck")
+    private StudyManagerCheck studyManagerCheck;
+
     private Account accountWithoutStudy;
-    private Account accountWithStudy;
+    private Account accountWithSetupStudy;
     private UsernamePasswordAuthenticationToken accountWithoutStudyToken;
-    private UsernamePasswordAuthenticationToken accountWithStudyToken;
+    private UsernamePasswordAuthenticationToken accountWithSetupStudyToken;
     private Study setUpStudy;
     private Study updatedStudy;
     private Study dateNotValidStudy;
@@ -162,7 +168,7 @@ class StudyApiControllerTest {
                 .password(ACCOUNT_PASSWORD)
                 .build();
 
-        accountWithStudy = Account.builder()
+        accountWithSetupStudy = Account.builder()
                 .id(ACCOUNT_SECOND_ID)
                 .name(ACCOUNT_SECOND_NAME)
                 .email(ACCOUNT_SECOND_EMAIL)
@@ -186,7 +192,7 @@ class StudyApiControllerTest {
                 .zone(STUDY_SETUP_ZONE)
                 .build();
 
-        setUpStudy.addAdmin(accountWithStudy);
+        setUpStudy.addAdmin(accountWithSetupStudy);
 
         updatedStudy = Study.builder()
                 .id(STUDY_SETUP_EXISTED_ID)
@@ -208,9 +214,9 @@ class StudyApiControllerTest {
                 accountWithoutStudy.getPassword(),
                 List.of(new SimpleGrantedAuthority("USER")));
 
-        accountWithStudyToken = new UsernamePasswordAuthenticationToken(
-                new UserAccount(accountWithStudy, List.of(new SimpleGrantedAuthority("USER"))),
-                accountWithStudy.getPassword(),
+        accountWithSetupStudyToken = new UsernamePasswordAuthenticationToken(
+                new UserAccount(accountWithSetupStudy, List.of(new SimpleGrantedAuthority("USER"))),
+                accountWithSetupStudy.getPassword(),
                 List.of(new SimpleGrantedAuthority("USER")));
 
         studyCreateDto = StudyCreateDto.builder()
@@ -354,7 +360,7 @@ class StudyApiControllerTest {
 
     @Test
     void createWithAccountAlreadyInStudyOpenOrClose() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountWithStudyToken);
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyService.createStudy(eq(ACCOUNT_SECOND_EMAIL), any(StudyCreateDto.class)))
                 .willThrow(new StudyAlreadyInOpenOrClose());
 
@@ -370,7 +376,8 @@ class StudyApiControllerTest {
 
     @Test
     void updateWithValidateAttribute() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountWithStudyToken);
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyManagerCheck.isManagerOfStudy(any(Account.class))).willReturn(true);
         given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
                 .willReturn(updatedStudyResultDto);
 
