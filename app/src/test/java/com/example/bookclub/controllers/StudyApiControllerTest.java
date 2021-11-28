@@ -492,6 +492,21 @@ class StudyApiControllerTest {
     }
 
     @Test
+    void deleteWithNotManager() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.deleteStudy(eq(ACCOUNT_EMAIL), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(AccountNotManagerOfStudyException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+//                .andExpect(content().string(containsString("Not Manager Of Study")))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
     void applyStudyByExistedAccount() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         mockMvc.perform(
