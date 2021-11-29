@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -27,6 +28,7 @@ import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -86,7 +88,9 @@ class InterviewApiControllerTest {
 	private Interview secondInterview;
 
 	private Account adminAccount;
+	private Account userAccount;
 	private UsernamePasswordAuthenticationToken adminAccountToken;
+	private UsernamePasswordAuthenticationToken userAccountToken;
 
 	@BeforeEach
 	void setUp() {
@@ -123,10 +127,23 @@ class InterviewApiControllerTest {
 				.password(ACCOUNT_PASSWORD)
 				.build();
 
+		userAccount = Account.builder()
+				.id(ACCOUNT_ID)
+				.name(ACCOUNT_NAME)
+				.email(ACCOUNT_EMAIL)
+				.nickname(ACCOUNT_NICKNAME)
+				.password(ACCOUNT_PASSWORD)
+				.build();
+
 		adminAccountToken = new UsernamePasswordAuthenticationToken(
 				new UserAccount(adminAccount, List.of(new SimpleGrantedAuthority("ADMIN"))),
 				adminAccount.getPassword(),
 				List.of(new SimpleGrantedAuthority("ADMIN")));
+
+		userAccountToken = new UsernamePasswordAuthenticationToken(
+				new UserAccount(userAccount, List.of(new SimpleGrantedAuthority("USER"))),
+				userAccount.getPassword(),
+				List.of(new SimpleGrantedAuthority("USER")));
 
 		interviewList = List.of(firstInterview, secondInterview);
 	}
@@ -144,5 +161,20 @@ class InterviewApiControllerTest {
 				.andExpect(status().isCreated())
 				.andExpect(content().string(StringContains.containsString("\"imgUrl\":\"" + FIRST_IMG_URL)))
 				.andExpect(content().string(StringContains.containsString("\"imgUrl\":\"" + SECOND_IMG_URL)));
+	}
+
+	@Test
+	void createCrawlAllInterviewsWithUserAuthority() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(userAccountToken);
+		given(interviewService.crawlAllInterviews()).willThrow(AccessDeniedException.class);
+
+		assertThatThrownBy(
+						() -> mockMvc.perform(
+									post("/api/interviews")
+								)
+								.andDo(print())
+								.andExpect(status().isCreated())
+				)
+				.hasCause(new AccessDeniedException("Access is denied"));
 	}
 }
