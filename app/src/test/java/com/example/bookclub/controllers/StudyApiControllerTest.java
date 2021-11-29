@@ -12,6 +12,7 @@ import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
+import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
@@ -547,6 +548,20 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyStudyWithAlreadyHasStudy() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyAlreadyExistedException.class);
+
+        mockMvc.perform(
+                        post("/api/study/apply/{id}", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
