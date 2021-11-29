@@ -606,6 +606,20 @@ class StudyApiControllerTest {
     }
 
     @Test
+    void cancelStudyByNotExistedStudy() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.cancelStudy(any(UserAccount.class), eq(NOT_EXIST_STUDY_ID)))
+                .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        post("/api/study/cancel/{id}", NOT_EXIST_STUDY_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void cancelStudyByNotAppliedStudy() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
