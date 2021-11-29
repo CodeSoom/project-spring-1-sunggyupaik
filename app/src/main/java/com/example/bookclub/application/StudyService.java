@@ -16,6 +16,7 @@ import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
+import com.example.bookclub.security.UserAccount;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -126,12 +127,14 @@ public class StudyService {
         return StudyResultDto.of(study);
     }
 
-    public Long applyStudy(Account account, Long id) {
+    public Long applyStudy(UserAccount userAccount, Long id) {
+        Study study = getStudy(id);
+        Account account = userAccount.getAccount();
+
         if (account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
 
-        Study study = getStudy(id);
         if (study.isSizeFull()){
             throw new StudySizeFullException();
         }

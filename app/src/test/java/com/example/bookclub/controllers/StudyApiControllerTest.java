@@ -524,6 +524,9 @@ class StudyApiControllerTest {
     @Test
     void applyStudyByExistedAccount() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willReturn(STUDY_SETUP_EXISTED_ID);
+
         mockMvc.perform(
                 post("/api/study/apply/{id}", STUDY_SETUP_EXISTED_ID)
                 .contentType(MediaType.APPLICATION_JSON)

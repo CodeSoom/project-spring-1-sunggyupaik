@@ -9,7 +9,6 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,9 +66,9 @@ public class StudyApiController {
     }
 
     @PostMapping("/apply/{id}")
-    public Long apply(@CurrentAccount Account account,
+    public Long apply(@AuthenticationPrincipal UserAccount userAccount,
                       @PathVariable Long id) {
-        return studyService.applyStudy(account, id);
+        return studyService.applyStudy(userAccount, id);
     }
 
     @DeleteMapping("/apply/{id}")
