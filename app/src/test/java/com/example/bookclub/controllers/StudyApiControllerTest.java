@@ -14,6 +14,7 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
@@ -598,9 +599,22 @@ class StudyApiControllerTest {
                 .willReturn(STUDY_SETUP_EXISTED_ID);
 
         mockMvc.perform(
-                delete("/api/study/apply/{id}", STUDY_SETUP_EXISTED_ID)
+                post("/api/study/cancel/{id}", STUDY_SETUP_EXISTED_ID)
         )
                 .andDo(print())
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void cancelStudyByNotAppliedStudy() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyNotAppliedBefore.class);
+
+        mockMvc.perform(
+                        post("/api/study/cancel/{id}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }

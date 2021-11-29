@@ -18,6 +18,7 @@ import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
+import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
@@ -177,6 +178,12 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MessageCreateBadRequestException.class)
     public ErrorResponse handleMessageCreateBadRequestException(MessageCreateBadRequestException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StudyNotAppliedBefore.class)
+    public ErrorResponse handleStudyNotAppliedBeforeException(StudyNotAppliedBefore e) {
         return new ErrorResponse(e.getMessage());
     }
 }

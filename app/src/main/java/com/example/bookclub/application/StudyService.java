@@ -11,6 +11,7 @@ import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
@@ -135,7 +136,7 @@ public class StudyService {
             throw new StudyAlreadyExistedException();
         }
 
-        if (study.isSizeFull()){
+        if (study.isSizeFull()) {
             throw new StudySizeFullException();
         }
 
@@ -147,6 +148,13 @@ public class StudyService {
     public Long cancelStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
+
+        if(account.getEmail() == null ||
+            (!study.getEmail().equals(account.getStudy().getEmail())
+            && !account.getStudy().getId().equals(id))
+        ) {
+            throw new StudyNotAppliedBefore();
+        }
 
         study.cancelAccount(account);
 
