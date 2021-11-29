@@ -592,6 +592,11 @@ class StudyApiControllerTest {
 
     @Test
     void cancelStudyByExistedAccount() throws Exception {
+        setUpStudy.addAccount(accountWithoutStudy);
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willReturn(STUDY_SETUP_EXISTED_ID);
+
         mockMvc.perform(
                 delete("/api/study/apply/{id}", STUDY_SETUP_EXISTED_ID)
         )

@@ -144,8 +144,10 @@ public class StudyService {
         return id;
     }
 
-    public Long cancelStudy(Account account, Long id) {
+    public Long cancelStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
+        Account account = userAccount.getAccount();
+
         study.cancelAccount(account);
 
         return id;

@@ -73,8 +73,8 @@ public class StudyApiController {
 
     @DeleteMapping("/apply/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Long cancel(@CurrentAccount Account account,
+    public Long cancel(@AuthenticationPrincipal UserAccount userAccount,
                        @PathVariable Long id) {
-        return studyService.cancelStudy(account, id);
+        return studyService.cancelStudy(userAccount, id);
     }
 }
