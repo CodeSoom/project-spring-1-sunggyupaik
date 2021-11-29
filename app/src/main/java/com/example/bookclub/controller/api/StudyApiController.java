@@ -9,7 +9,6 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,35 +46,34 @@ public class StudyApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public StudyResultDto create(@CurrentAccount Account account,
                                  @RequestBody StudyCreateDto studyCreateDto) {
-        return studyService.createStudy(account, studyCreateDto);
+        return studyService.createStudy(account.getEmail(), studyCreateDto);
     }
 
-    @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
+    //@PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @PatchMapping("/{id}")
     public StudyResultDto update(@AuthenticationPrincipal UserAccount userAccount,
                                  @PathVariable Long id,
                                  @RequestBody StudyUpdateDto studyUpdateDto) {
-        return studyService.updateStudy(userAccount.getAccount(), id, studyUpdateDto);
+        return studyService.updateStudy(userAccount.getAccount().getEmail(), id, studyUpdateDto);
     }
 
-    @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
+    //@PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public StudyResultDto delete(@AuthenticationPrincipal UserAccount userAccount,
                                  @PathVariable Long id) {
-        return studyService.deleteStudy(userAccount.getAccount(), id);
+        return studyService.deleteStudy(userAccount.getAccount().getEmail(), id);
     }
 
     @PostMapping("/apply/{id}")
-    public Long apply(@CurrentAccount Account account,
+    public Long apply(@AuthenticationPrincipal UserAccount userAccount,
                       @PathVariable Long id) {
-        return studyService.applyStudy(account, id);
+        return studyService.applyStudy(userAccount, id);
     }
 
-    @DeleteMapping("/apply/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Long cancel(@CurrentAccount Account account,
+    @PostMapping("/cancel/{id}")
+    public Long cancel(@AuthenticationPrincipal UserAccount userAccount,
                        @PathVariable Long id) {
-        return studyService.cancelStudy(account, id);
+        return studyService.cancelStudy(userAccount, id);
     }
 }

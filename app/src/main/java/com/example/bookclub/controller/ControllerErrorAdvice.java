@@ -6,6 +6,7 @@ import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
+import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.AuthenticationBadRequestException;
 import com.example.bookclub.errors.EmailBadRequestException;
@@ -14,11 +15,14 @@ import com.example.bookclub.errors.FileUploadBadRequestException;
 import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.MessageCreateBadRequestException;
 import com.example.bookclub.errors.ParseTimeException;
-import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
+import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
+import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
+import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -33,6 +37,12 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyStartDateInThePastException.class)
     public ErrorResponse handleStudyStartDateInThePast(StudyStartDateInThePastException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StudyStartAndEndDateNotValidException.class)
+    public ErrorResponse handleStudyStartAndEndDateNotValidException(StudyStartAndEndDateNotValidException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -67,8 +77,20 @@ public class ControllerErrorAdvice {
     }
   
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(StartAndEndTimeNotValidException.class)
-    public ErrorResponse handleStartAndEndTimeNotValid(StartAndEndTimeNotValidException e) {
+    @ExceptionHandler(StudyStartAndEndTimeNotValidException.class)
+    public ErrorResponse handleStudyStartAndEndTimeNotValid(StudyStartAndEndTimeNotValidException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StudyAlreadyInOpenOrClose.class)
+    public ErrorResponse handleStudyAlreadyInOpenOrClose(StudyAlreadyInOpenOrClose e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(AccountNotManagerOfStudyException.class)
+    public ErrorResponse handleAccountNotManagerException(AccountNotManagerOfStudyException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -156,6 +178,12 @@ public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MessageCreateBadRequestException.class)
     public ErrorResponse handleMessageCreateBadRequestException(MessageCreateBadRequestException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(StudyNotAppliedBefore.class)
+    public ErrorResponse handleStudyNotAppliedBeforeException(StudyNotAppliedBefore e) {
         return new ErrorResponse(e.getMessage());
     }
 }

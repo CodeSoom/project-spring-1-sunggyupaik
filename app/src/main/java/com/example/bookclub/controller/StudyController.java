@@ -71,7 +71,7 @@ public class StudyController {
         return "studys/studys-save";
     }
 
-    @PreAuthorize("@studyManagerCheck.check(#userAccount.account)")
+    @PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @GetMapping("/update/{id}")
     public String studyUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {

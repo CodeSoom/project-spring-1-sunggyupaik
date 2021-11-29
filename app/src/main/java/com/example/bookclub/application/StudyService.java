@@ -1,20 +1,23 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.ParseTimeException;
-import com.example.bookclub.errors.StartAndEndDateNotValidException;
-import com.example.bookclub.errors.StartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
+import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
+import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
+import com.example.bookclub.security.UserAccount;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -30,30 +33,36 @@ import java.util.stream.Collectors;
 @Transactional
 public class StudyService {
     private final StudyRepository studyRepository;
-    private final AccountRepository accountRepository;
+    private final AccountService accountService;
 
     public StudyService(StudyRepository studyRepository,
-                        AccountRepository accountRepository) {
+                        AccountService accountService) {
         this.studyRepository = studyRepository;
-        this.accountRepository = accountRepository;
+        this.accountService = accountService;
     }
 
-    public StudyResultDto createStudy(Account account, StudyCreateDto studyCreateDto) {
+    public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
+        Account loginAccount = accountService.findUserByEmail(email);
+        StudyState accountStudyState = loginAccount.getStudy().getStudyState();
+        if(accountStudyState != null && (accountStudyState.equals(StudyState.OPEN)
+                || accountStudyState.equals(StudyState.CLOSE))) {
+            throw new StudyAlreadyInOpenOrClose();
+        }
+
         if (startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
         }
 
         if (startDateIsAfterEndDate(studyCreateDto.getStartDate(),
                 studyCreateDto.getEndDate())) {
-            throw new StartAndEndDateNotValidException();
+            throw new StudyStartAndEndDateNotValidException();
         }
 
         if (startTimeIsAfterEndTime(studyCreateDto.getStartTime(),
                 studyCreateDto.getEndTime())) {
-            throw new StartAndEndTimeNotValidException();
+            throw new StudyStartAndEndTimeNotValidException();
         }
 
-        Account loginAccount = accountRepository.findByEmail(account.getEmail()).get();
         Study study = studyCreateDto.toEntity();
         study.addAdmin(loginAccount);
         Study createdStudy = studyRepository.save(study);
@@ -61,10 +70,12 @@ public class StudyService {
         return StudyResultDto.of(createdStudy);
     }
 
-    public StudyResultDto updateStudy(Account account,
-                                      Long id,
-                                      StudyUpdateDto studyUpdateDto) {
+    public StudyResultDto updateStudy(String email, Long id, StudyUpdateDto studyUpdateDto) {
         Study study = getStudy(id);
+        Account loginAccount = accountService.findUserByEmail(email);
+        if(!study.getEmail().equals(loginAccount.getEmail())) {
+            throw new AccountNotManagerOfStudyException();
+        }
 
         if (startDateIsTodayOrBefore(studyUpdateDto.getStartDate())) {
             throw new StudyStartDateInThePastException();
@@ -72,12 +83,12 @@ public class StudyService {
 
         if (startDateIsAfterEndDate(studyUpdateDto.getStartDate(),
                 studyUpdateDto.getEndDate())) {
-            throw new StartAndEndDateNotValidException();
+            throw new StudyStartAndEndDateNotValidException();
         }
 
         if (startTimeIsAfterEndTime(studyUpdateDto.getStartTime(),
                 studyUpdateDto.getEndTime())) {
-            throw new StartAndEndTimeNotValidException();
+            throw new StudyStartAndEndTimeNotValidException();
         }
 
         study.updateWith(studyUpdateDto);
@@ -104,21 +115,28 @@ public class StudyService {
         return startDate.isBefore(today) || startDate.isEqual(today);
     }
 
-    public StudyResultDto deleteStudy(Account account, Long id) {
+    public StudyResultDto deleteStudy(String email, Long id) {
         Study study = getStudy(id);
+        Account loginAccount = accountService.findUserByEmail(email);
+        if(!study.getEmail().equals(loginAccount.getEmail())) {
+            throw new AccountNotManagerOfStudyException();
+        }
+
         study.deleteAccounts();
         studyRepository.delete(study);
 
         return StudyResultDto.of(study);
     }
 
-    public Long applyStudy(Account account, Long id) {
+    public Long applyStudy(UserAccount userAccount, Long id) {
+        Study study = getStudy(id);
+        Account account = userAccount.getAccount();
+
         if (account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
 
-        Study study = getStudy(id);
-        if (study.isSizeFull()){
+        if (study.isSizeFull()) {
             throw new StudySizeFullException();
         }
 
@@ -127,8 +145,17 @@ public class StudyService {
         return id;
     }
 
-    public Long cancelStudy(Account account, Long id) {
+    public Long cancelStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
+        Account account = userAccount.getAccount();
+
+        if(account.getEmail() == null ||
+            (!study.getEmail().equals(account.getStudy().getEmail())
+            && !account.getStudy().getId().equals(id))
+        ) {
+            throw new StudyNotAppliedBefore();
+        }
+
         study.cancelAccount(account);
 
         return id;

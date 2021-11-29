@@ -17,20 +17,19 @@ import javax.mail.internet.MimeMessage;
 public class EmailService {
     private final JavaMailSender javaMailSender;
     private final EmailAuthenticationRepository emailAuthenticationRepository;
-    private final String code;
 
     public EmailService(JavaMailSender javaMailSender,
                         EmailAuthenticationRepository emailAuthenticationRepository
     ) {
         this.javaMailSender = javaMailSender;
         this.emailAuthenticationRepository = emailAuthenticationRepository;
-        this.code = createAuthenticationNumber();
     }
 
     public String sendAuthenticationNumber(EmailRequestDto emailRequestDto) {
+        String authenticationNumber = createAuthenticationNumber();
         String email = emailRequestDto.getEmail();
         MimeMessage message = null;
-        message = createMessage(email);
+        message = createMessage(email, authenticationNumber);
 
         try {
             javaMailSender.send(message);
@@ -39,19 +38,19 @@ public class EmailService {
             throw new EmailBadRequestException(email);
         }
 
-        emailAuthenticationRepository.save(new EmailAuthentication(email, code));
+        emailAuthenticationRepository.save(new EmailAuthentication(email, authenticationNumber));
 
         return email;
     }
 
-    private MimeMessage createMessage(String to) {
+    private MimeMessage createMessage(String to, String authenticationNumber) {
         MimeMessage  message = javaMailSender.createMimeMessage();
 
         try {
             message.addRecipients(Message.RecipientType.TO, to);
             message.setSubject("BookClub 인증번호");
-            message.setText(code);
-            System.out.println("BookClub 인증번호=" + code);
+            message.setText(authenticationNumber);
+            System.out.println("BookClub 인증번호=" + authenticationNumber);
         } catch(MessagingException ex) {
             System.out.println(ex.getMessage());
             throw new MessageCreateBadRequestException();

@@ -32,7 +32,6 @@ public class AccountAuthenticationService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account account = getAccountByEmail(email);
         List<GrantedAuthority> authorities = getAllAuthorities(email);
-        System.out.println(authorities+"=authorities");
         return UserAccount.builder()
                 .account(account)
                 .authorities(authorities)
