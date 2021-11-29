@@ -15,6 +15,7 @@ import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
@@ -97,6 +98,10 @@ class StudyApiControllerTest {
     private static final StudyState STUDY_UPDATE_STUDY_STATE = StudyState.OPEN;
     private static final Zone STUDY_UPDATE_ZONE = Zone.BUSAN;
 
+    private static final Long STUDY_FULL_SIZE_ID = 4L;
+    private static final int STUDY_FULL_SIZE = 10;
+    private static final int STUDY_FULL_SIZE_APPLY_COUNT = 10;
+
     private static final Long NOT_EXIST_STUDY_ID = 999L;
     private static final LocalDate CREATE_START_DATE_PAST = LocalDate.now().minusDays(1);
 
@@ -137,6 +142,7 @@ class StudyApiControllerTest {
     private Study setUpStudy;
     private Study updatedStudy;
     private Study dateNotValidStudy;
+    private Study fullSizeStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyCreateDto studyStartDateIsPastCreateDto;
@@ -207,6 +213,12 @@ class StudyApiControllerTest {
                 .day(STUDY_UPDATE_DAY)
                 .studyState(STUDY_UPDATE_STUDY_STATE)
                 .zone(STUDY_UPDATE_ZONE)
+                .build();
+
+        fullSizeStudy = Study.builder()
+                .id(STUDY_FULL_SIZE_ID)
+                .size(STUDY_FULL_SIZE)
+                .applyCount(STUDY_FULL_SIZE_APPLY_COUNT)
                 .build();
 
         accountWithoutStudyToken = new UsernamePasswordAuthenticationToken(
@@ -558,6 +570,20 @@ class StudyApiControllerTest {
 
         mockMvc.perform(
                         post("/api/study/apply/{id}", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void applyStudyWithFullSize() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_FULL_SIZE_ID)))
+                .willThrow(StudySizeFullException.class);
+
+        mockMvc.perform(
+                        post("/api/study/apply/{id}", STUDY_FULL_SIZE_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
