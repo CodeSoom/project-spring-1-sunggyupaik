@@ -2,6 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.dto.EmailRequestDto;
+import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
@@ -20,6 +21,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.sql.DataSource;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,7 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(EmailApiController.class)
 class EmailApiControllerTest {
-    private static final String VALID_EMAIL = "abcd@naver.com";
+    private static final String VALID_EMAIL = "validEmail";
+    private static final String INVALID_EMAIL = "invalidEmail";
 
     @Autowired
     MockMvc mockMvc;
@@ -58,6 +61,7 @@ class EmailApiControllerTest {
     private EmailService emailService;
 
     EmailRequestDto emailRequestDto;
+    EmailRequestDto emailBadRequestDto;
 
     @BeforeEach
     void setup() {
@@ -69,6 +73,10 @@ class EmailApiControllerTest {
         emailRequestDto = EmailRequestDto.builder()
                 .email(VALID_EMAIL)
                 .build();
+
+        emailBadRequestDto = EmailRequestDto.builder()
+                .email(INVALID_EMAIL)
+                .build();
     }
 
     @Test
@@ -77,10 +85,25 @@ class EmailApiControllerTest {
 
         mockMvc.perform(
                 post("/api/email/authentication")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(emailRequestDto))
-        )
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(emailRequestDto))
+                )
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void sendAuthenticationNumberWithInValidEmail() throws Exception {
+        given(emailService.sendAuthenticationNumber(any(EmailRequestDto.class)))
+                .willThrow(EmailBadRequestException.class);
+
+        mockMvc.perform(
+                        post("/api/email/authentication")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(emailBadRequestDto))
+                )
+                .andDo(print())
+//                .andExpect(content().string(containsString("Email bad request")))
+                .andExpect(status().isBadRequest());
     }
 }
