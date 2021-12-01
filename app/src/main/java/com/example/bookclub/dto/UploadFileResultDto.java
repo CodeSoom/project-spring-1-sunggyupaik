@@ -1,5 +1,6 @@
 package com.example.bookclub.dto;
 
+import com.example.bookclub.domain.UploadFile;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,5 +23,14 @@ public class UploadFileResultDto {
 		this.fileName = fileName;
 		this.fileOriginalName = fileOriginalName;
 		this.fileUrl = fileUrl;
+	}
+
+	public static UploadFileResultDto of(UploadFile uploadFile) {
+		return UploadFileResultDto.builder()
+				.id(uploadFile.getId())
+				.fileName(uploadFile.getFileName())
+				.fileOriginalName(uploadFile.getFileOriginalName())
+				.fileUrl(uploadFile.getFileUrl())
+				.build();
 	}
 }

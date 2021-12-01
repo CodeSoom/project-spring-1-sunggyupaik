@@ -3,10 +3,13 @@ package com.example.bookclub.controller.api;
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.UploadFileService;
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
+import com.example.bookclub.dto.AccountWithUploadFileCreateDto;
 import com.example.bookclub.dto.UploadFileCreateDto;
+import com.example.bookclub.dto.UploadFileResultDto;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
@@ -18,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,9 +36,11 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -46,11 +52,14 @@ class AccountApiControllerTest {
     private static final String ACCOUNT_EMAIL = "accountEmail";
     private static final String ACCOUNT_NICKNAME = "accountNickname";
     private static final String ACCOUNT_PASSWORD = "accountPassword";
+	private static final String ACCOUNT_AUTHENTICATION_NUMBER = "accountAuthenticationNumber";
 
     private static final Long CREATED_ACCOUNT_ID = 2L;
     private static final String CREATED_NAME = "creatName";
     private static final String CREATED_EMAIL = "createEmail";
     private static final String CREATED_NICKNAME = "createNickname";
+	private static final String CREATED_AUTHENTICATION_NUMBER = "createdAuthenticationNumber";
+
     private static final String CREATED_PASSWORD = "0987654321";
 
     private static final String UPDATED_NICKNAME = "qwer";
@@ -62,6 +71,7 @@ class AccountApiControllerTest {
     private static final String CREATED_FILE_NAME = "createdFileName.jpg";
     private static final String CREATED_FILE_ORIGINAL_NAME = "createdOriginalName.jpg";
     private static final String CREATED_FILE_URL = "createdFileUrl";
+	private static final String IMAGE_CONTENT_TYPE = "image/jpeg";
 
 	private static final Long DELETED_ACCOUNT_ID = 4L;
 
@@ -79,7 +89,12 @@ class AccountApiControllerTest {
 	private AccountResultDto accountResultDto;
 	private AccountResultDto deletedAccountResultDto;
 
+	private UploadFile uploadFile;
+
     private UploadFileCreateDto uploadFileCreateDto;
+
+	private MockMultipartFile mockMultipartFile;
+	private AccountWithUploadFileCreateDto accountWithUploadFileCreateDto;
 
 	@Autowired
 	MockMvc mockMvc;
@@ -157,6 +172,7 @@ class AccountApiControllerTest {
                 .email(CREATED_EMAIL)
                 .nickname(CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
+				.authenticationNumber(CREATED_AUTHENTICATION_NUMBER)
                 .build();
 
         accountUpdateDto = AccountUpdateDto.builder()
@@ -164,9 +180,17 @@ class AccountApiControllerTest {
                 .build();
 
 		accountResultDto = AccountResultDto.of(accountWithoutUploadFile);
+
 		deletedAccountResultDto = AccountResultDto.builder()
 				.id(DELETED_ACCOUNT_ID)
 				.deleted(true)
+				.build();
+
+		uploadFile = UploadFile.builder()
+				.id(CREATED_FILE_ID)
+				.fileName(CREATED_FILE_NAME)
+				.fileOriginalName(CREATED_FILE_ORIGINAL_NAME)
+				.fileUrl(CREATED_FILE_URL)
 				.build();
 
         uploadFileCreateDto = UploadFileCreateDto.builder()
@@ -174,6 +198,15 @@ class AccountApiControllerTest {
                 .fileOriginalName(CREATED_FILE_ORIGINAL_NAME)
                 .fileUrl(CREATED_FILE_URL)
                 .build();
+
+		mockMultipartFile = new MockMultipartFile(
+				"imageFile", CREATED_FILE_ORIGINAL_NAME, IMAGE_CONTENT_TYPE, "test data".getBytes()
+		);
+
+		accountWithUploadFileCreateDto = AccountWithUploadFileCreateDto.builder()
+				.accountCreateDto(accountCreateDto)
+				.multipartFile(mockMultipartFile)
+				.build();
     }
 
     @Test
@@ -228,13 +261,49 @@ class AccountApiControllerTest {
 				.hasCause(new AccessDeniedException("Access is denied"));
 	}
 
+	@Test
+	void createWithValidAttribute() throws Exception {
+		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+				.will(invocation -> {
+					AccountCreateDto accountCreateDto = invocation.getArgument(0);
+					UploadFile uploadFile = invocation.getArgument(1);
+					uploadFile = UploadFile.builder()
+							.id(CREATED_FILE_ID)
+							.fileName(CREATED_FILE_NAME)
+							.fileOriginalName(CREATED_FILE_ORIGINAL_NAME)
+							.fileUrl(CREATED_FILE_URL)
+							.build();
+
+					return AccountResultDto.builder()
+							.id(CREATED_ACCOUNT_ID)
+							.name(accountCreateDto.getName())
+							.email(accountCreateDto.getEmail())
+							.nickname(accountCreateDto.getNickname())
+							.password(accountCreateDto.getPassword())
+							.uploadFileResultDto(UploadFileResultDto.of(uploadFile))
+							.build();
+				});
+
+		mockMvc.perform(
+				multipart("/api/users")
+						.file(mockMultipartFile)
+						.param("name", ACCOUNT_NAME)
+						.param("email", ACCOUNT_EMAIL)
+						.param("nickname", ACCOUNT_NICKNAME)
+						.param("password", ACCOUNT_PASSWORD)
+						.param("authenticationNumber", ACCOUNT_AUTHENTICATION_NUMBER)
+		)
+				.andDo(print())
+				.andExpect(status().isCreated());
+	}
+
 //    @Test
-//    void createWithAllValidAttributes() throws JsonProcessingException {
-//        given(accountService.createUser(any(AccountCreateDto.class), any(UploadFileCreateDto.class)))
+//    void createWithAccountAttribute() throws JsonProcessingException {
+//        given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
 //                .will(invocation -> {
 //                    AccountCreateDto accountCreateDto = invocation.getArgument(0);
-//                    UploadFileCreateDto uploadFileCreateDto = invocation.getArgument(1);
-//                    UploadFileResultDto uploadFileResultDto = UploadFileResultDto.builder()
+//                    UploadFile uploadFile = invocation.getArgument(1);
+//                    uploadFile = UploadFile.builder()
 //                            .id(CREATED_FILE_ID)
 //                            .fileName(CREATED_FILE_NAME)
 //                            .fileOriginalName(CREATED_FILE_ORIGINAL_NAME)
@@ -247,14 +316,14 @@ class AccountApiControllerTest {
 //                            .email(accountCreateDto.getEmail())
 //                            .nickname(accountCreateDto.getNickname())
 //                            .password(accountCreateDto.getPassword())
-//                            .uploadFileResultDto(uploadFileResultDto)
+//                            .uploadFileResultDto(UploadFileResultDto.of(uploadFile))
 //                            .build();
 //                });
 //
 //        mockMvc.perform(
 //                        post("/api/users")
 //                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(objectMapper.writeValueAsString(accountCreateDto, uploadFileCreateDto))
+//                                .content(objectMapper.writeValueAsString(accountCreateDto, uploadFile))
 //                )
 //                .andDo(print())
 //                .andExpect(status().isCreated())
