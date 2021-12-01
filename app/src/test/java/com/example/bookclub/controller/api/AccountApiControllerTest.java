@@ -11,6 +11,7 @@ import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
+import com.example.bookclub.security.UserAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -25,8 +28,10 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -34,7 +39,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(AccountApiController.class)
 class AccountApiControllerTest {
-    private static final Long EXISTED_ID = 1L;
+    private static final Long ACCOUNT_EXISTED_ID = 1L;
     private static final String ACCOUNT_NAME = "accountName";
     private static final String ACCOUNT_EMAIL = "accountEmail";
     private static final String ACCOUNT_NICKNAME = "accountNickname";
@@ -56,16 +61,21 @@ class AccountApiControllerTest {
     private static final String CREATED_FILE_ORIGINAL_NAME = "createdOriginalName.jpg";
     private static final String CREATED_FILE_URL = "createdFileUrl";
 
+	private static final Long DELETED_ACCOUNT_ID = 4L;
+
 	private static final Long NOT_EXISTED_ID = 2L;
 
-	private UsernamePasswordAuthenticationToken accountWithoutUploadFileToken;
-
-    private Account setUpAccount;
+    private Account accountWithoutUploadFile;
     private Account createdAccount;
+	private Account deletedAccount;
+
+	private UsernamePasswordAuthenticationToken accountWithoutUploadFileToken;
+	private UsernamePasswordAuthenticationToken deletedAccountToken;
 
     private AccountCreateDto accountCreateDto;
     private AccountUpdateDto accountUpdateDto;
 	private AccountResultDto accountResultDto;
+	private AccountResultDto deletedAccountResultDto;
 
     private UploadFileCreateDto uploadFileCreateDto;
 
@@ -106,8 +116,8 @@ class AccountApiControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        setUpAccount = Account.builder()
-                .id(EXISTED_ID)
+        accountWithoutUploadFile = Account.builder()
+                .id(ACCOUNT_EXISTED_ID)
                 .name(ACCOUNT_NAME)
                 .email(ACCOUNT_EMAIL)
                 .nickname(ACCOUNT_NICKNAME)
@@ -121,6 +131,21 @@ class AccountApiControllerTest {
                 .password(CREATED_PASSWORD)
                 .build();
 
+		deletedAccount = Account.builder()
+				.id(DELETED_ACCOUNT_ID)
+				.deleted(true)
+				.build();
+
+		accountWithoutUploadFileToken = new UsernamePasswordAuthenticationToken(
+			new UserAccount(accountWithoutUploadFile, List.of(new SimpleGrantedAuthority("USER"))),
+			accountWithoutUploadFile.getPassword(),
+			List.of(new SimpleGrantedAuthority("USER")));
+
+		accountWithoutUploadFileToken = new UsernamePasswordAuthenticationToken(
+				new UserAccount(deletedAccount, List.of(new SimpleGrantedAuthority("USER"))),
+				deletedAccount.getPassword(),
+				List.of(new SimpleGrantedAuthority("USER")));
+
         accountCreateDto = AccountCreateDto.builder()
                 .name(CREATED_NAME)
                 .email(CREATED_EMAIL)
@@ -132,7 +157,8 @@ class AccountApiControllerTest {
                 .nickname(UPDATED_NICKNAME)
                 .build();
 
-		accountResultDto = AccountResultDto.of(setUpAccount);
+		accountResultDto = AccountResultDto.of(accountWithoutUploadFile);
+		deletedAccountResultDto = AccountResultDto.of(deletedAccount);
 
         uploadFileCreateDto = UploadFileCreateDto.builder()
                 .fileName(CREATED_FILE_NAME)
@@ -143,14 +169,14 @@ class AccountApiControllerTest {
 
     @Test
     void detailWithExistedId() throws Exception {
-        given(accountService.getUser(EXISTED_ID)).willReturn(accountResultDto);
+        given(accountService.getUser(ACCOUNT_EXISTED_ID)).willReturn(accountResultDto);
 
         mockMvc.perform(
-                        get("/api/users/{id}", EXISTED_ID)
+                        get("/api/users/{id}", ACCOUNT_EXISTED_ID)
                 )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("id").value(setUpAccount.getId()));
+                .andExpect(jsonPath("id").value(accountWithoutUploadFile.getId()));
     }
 
 	@Test
@@ -163,6 +189,20 @@ class AccountApiControllerTest {
 				.andDo(print())
 //				.andExpect(content().string(containsString("User not found")))
 				.andExpect(status().isNotFound());
+	}
+
+	@Test
+	void deleteWithExistedId() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
+		given(accountService.deleteUser(DELETED_ACCOUNT_ID)).willReturn(deletedAccountResultDto);
+
+		mockMvc.perform(
+				delete("/api/users/{id}", DELETED_ACCOUNT_ID)
+		)
+				.andDo(print())
+				.andExpect(jsonPath("id").value(DELETED_ACCOUNT_ID))
+				.andExpect(jsonPath("deleted").value(true))
+				.andExpect(status().isNoContent());
 	}
 
 //    @Test
