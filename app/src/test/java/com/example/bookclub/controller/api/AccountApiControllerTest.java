@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,6 +31,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import javax.sql.DataSource;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -63,7 +65,7 @@ class AccountApiControllerTest {
 
 	private static final Long DELETED_ACCOUNT_ID = 4L;
 
-	private static final Long NOT_EXISTED_ID = 2L;
+	private static final Long NOT_EXISTED_ID = 999L;
 
     private Account accountWithoutUploadFile;
     private Account createdAccount;
@@ -133,7 +135,11 @@ class AccountApiControllerTest {
 
 		deletedAccount = Account.builder()
 				.id(DELETED_ACCOUNT_ID)
-				.deleted(true)
+				.name(ACCOUNT_NAME)
+				.email(ACCOUNT_EMAIL)
+				.nickname(ACCOUNT_NICKNAME)
+				.password(ACCOUNT_PASSWORD)
+				.deleted(false)
 				.build();
 
 		accountWithoutUploadFileToken = new UsernamePasswordAuthenticationToken(
@@ -141,7 +147,7 @@ class AccountApiControllerTest {
 			accountWithoutUploadFile.getPassword(),
 			List.of(new SimpleGrantedAuthority("USER")));
 
-		accountWithoutUploadFileToken = new UsernamePasswordAuthenticationToken(
+		deletedAccountToken = new UsernamePasswordAuthenticationToken(
 				new UserAccount(deletedAccount, List.of(new SimpleGrantedAuthority("USER"))),
 				deletedAccount.getPassword(),
 				List.of(new SimpleGrantedAuthority("USER")));
@@ -158,7 +164,10 @@ class AccountApiControllerTest {
                 .build();
 
 		accountResultDto = AccountResultDto.of(accountWithoutUploadFile);
-		deletedAccountResultDto = AccountResultDto.of(deletedAccount);
+		deletedAccountResultDto = AccountResultDto.builder()
+				.id(DELETED_ACCOUNT_ID)
+				.deleted(true)
+				.build();
 
         uploadFileCreateDto = UploadFileCreateDto.builder()
                 .fileName(CREATED_FILE_NAME)
@@ -193,7 +202,7 @@ class AccountApiControllerTest {
 
 	@Test
 	void deleteWithExistedId() throws Exception {
-		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
+		SecurityContextHolder.getContext().setAuthentication(deletedAccountToken);
 		given(accountService.deleteUser(DELETED_ACCOUNT_ID)).willReturn(deletedAccountResultDto);
 
 		mockMvc.perform(
@@ -203,6 +212,20 @@ class AccountApiControllerTest {
 				.andExpect(jsonPath("id").value(DELETED_ACCOUNT_ID))
 				.andExpect(jsonPath("deleted").value(true))
 				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	void deleteNotAuthorizedAccount() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(deletedAccountToken);
+
+		assertThatThrownBy(
+				() -> mockMvc.perform(
+								delete("/api/users/{id}", ACCOUNT_EXISTED_ID)
+						)
+						.andDo(print())
+						.andExpect(status().isNoContent())
+		)
+				.hasCause(new AccessDeniedException("Access is denied"));
 	}
 
 //    @Test
@@ -269,15 +292,6 @@ class AccountApiControllerTest {
 //        )
 //                .andDo(print())
 //                .andExpect(status().isBadRequest());
-//    }
-//
-//    @Test
-//    void deleteWithExistedId() throws Exception {
-//        mockMvc.perform(
-//                delete("/api/users/{id}", EXISTED_ID)
-//        )
-//                .andDo(print())
-//                .andExpect(status().isNoContent());
 //    }
 //
 //    @Test
