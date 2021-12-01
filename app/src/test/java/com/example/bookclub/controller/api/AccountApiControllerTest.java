@@ -86,7 +86,7 @@ class AccountApiControllerTest {
 
     private AccountCreateDto accountCreateDto;
     private AccountUpdateDto accountUpdateDto;
-	private AccountResultDto accountResultDto;
+	private AccountResultDto accountWithoutUploadFileResultDto;
 	private AccountResultDto deletedAccountResultDto;
 
 	private UploadFile uploadFile;
@@ -179,7 +179,7 @@ class AccountApiControllerTest {
                 .nickname(UPDATED_NICKNAME)
                 .build();
 
-		accountResultDto = AccountResultDto.of(accountWithoutUploadFile);
+		accountWithoutUploadFileResultDto = AccountResultDto.of(accountWithoutUploadFile);
 
 		deletedAccountResultDto = AccountResultDto.builder()
 				.id(DELETED_ACCOUNT_ID)
@@ -200,7 +200,7 @@ class AccountApiControllerTest {
                 .build();
 
 		mockMultipartFile = new MockMultipartFile(
-				"imageFile", CREATED_FILE_ORIGINAL_NAME, IMAGE_CONTENT_TYPE, "test data".getBytes()
+				"uploadFile", CREATED_FILE_ORIGINAL_NAME, IMAGE_CONTENT_TYPE, "test data".getBytes()
 		);
 
 		accountWithUploadFileCreateDto = AccountWithUploadFileCreateDto.builder()
@@ -211,7 +211,7 @@ class AccountApiControllerTest {
 
     @Test
     void detailWithExistedId() throws Exception {
-        given(accountService.getUser(ACCOUNT_EXISTED_ID)).willReturn(accountResultDto);
+        given(accountService.getUser(ACCOUNT_EXISTED_ID)).willReturn(accountWithoutUploadFileResultDto);
 
         mockMvc.perform(
                         get("/api/users/{id}", ACCOUNT_EXISTED_ID)
@@ -262,7 +262,7 @@ class AccountApiControllerTest {
 	}
 
 	@Test
-	void createWithValidAttribute() throws Exception {
+	void createWithAllValidAttributes() throws Exception {
 		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
 				.will(invocation -> {
 					AccountCreateDto accountCreateDto = invocation.getArgument(0);
@@ -287,53 +287,32 @@ class AccountApiControllerTest {
 		mockMvc.perform(
 				multipart("/api/users")
 						.file(mockMultipartFile)
-						.param("name", ACCOUNT_NAME)
-						.param("email", ACCOUNT_EMAIL)
-						.param("nickname", ACCOUNT_NICKNAME)
-						.param("password", ACCOUNT_PASSWORD)
-						.param("authenticationNumber", ACCOUNT_AUTHENTICATION_NUMBER)
+						.param("name", CREATED_NAME)
+						.param("email", CREATED_EMAIL)
+						.param("nickname", CREATED_NICKNAME)
+						.param("password", CREATED_PASSWORD)
+						.param("authenticationNumber", CREATED_AUTHENTICATION_NUMBER)
 		)
 				.andDo(print())
 				.andExpect(status().isCreated());
 	}
 
-//    @Test
-//    void createWithAccountAttribute() throws JsonProcessingException {
-//        given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
-//                .will(invocation -> {
-//                    AccountCreateDto accountCreateDto = invocation.getArgument(0);
-//                    UploadFile uploadFile = invocation.getArgument(1);
-//                    uploadFile = UploadFile.builder()
-//                            .id(CREATED_FILE_ID)
-//                            .fileName(CREATED_FILE_NAME)
-//                            .fileOriginalName(CREATED_FILE_ORIGINAL_NAME)
-//                            .fileUrl(CREATED_FILE_URL)
-//                            .build();
-//
-//                    return AccountResultDto.builder()
-//                            .id(CREATED_ACCOUNT_ID)
-//                            .name(accountCreateDto.getName())
-//                            .email(accountCreateDto.getEmail())
-//                            .nickname(accountCreateDto.getNickname())
-//                            .password(accountCreateDto.getPassword())
-//                            .uploadFileResultDto(UploadFileResultDto.of(uploadFile))
-//                            .build();
-//                });
-//
-//        mockMvc.perform(
-//                        post("/api/users")
-//                                .contentType(MediaType.APPLICATION_JSON)
-//                                .content(objectMapper.writeValueAsString(accountCreateDto, uploadFile))
-//                )
-//                .andDo(print())
-//                .andExpect(status().isCreated())
-//                .andExpect(jsonPath("id").value(CREATED_ACCOUNT_ID))
-//                .andExpect(jsonPath("name").value(CREATED_NAME))
-//                .andExpect(jsonPath("email").value(CREATED_EMAIL))
-//                .andExpect(jsonPath("nickname").value(CREATED_NICKNAME))
-//                .andExpect(jsonPath("password").value(CREATED_PASSWORD))
-//                .andExpect(jsonPath("deleted").value(false));
-//    }
+    @Test
+    void createWithAccountAttribute() throws Exception {
+        given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+				.willReturn(accountWithoutUploadFileResultDto);
+
+		mockMvc.perform(
+						multipart("/api/users")
+								.param("name", CREATED_NAME)
+								.param("email", CREATED_EMAIL)
+								.param("nickname", CREATED_NICKNAME)
+								.param("password", CREATED_PASSWORD)
+								.param("authenticationNumber", CREATED_AUTHENTICATION_NUMBER)
+				)
+				.andDo(print())
+				.andExpect(status().isCreated());
+	}
 //
 //    @Test
 //    void createWithExistedEmail() throws Exception {
