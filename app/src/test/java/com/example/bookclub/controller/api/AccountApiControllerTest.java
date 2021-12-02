@@ -40,6 +40,7 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -349,12 +350,13 @@ class AccountApiControllerTest {
 	}
 
     @Test
-    void createWithAccountAttribute() throws Exception {
-        given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+    void createWithoutUploadFile() throws Exception {
+        given(accountService.createUser(any(AccountCreateDto.class), eq(null)))
 				.willReturn(accountWithoutUploadFileResultDto);
 
 		mockMvc.perform(
 						multipart("/api/users")
+								.file(mockMultipartFile)
 								.param("name", ACCOUNT_CREATED_NAME)
 								.param("email", ACCOUNT_CREATED_EMAIL)
 								.param("nickname", ACCOUNT_CREATED_NICKNAME)
@@ -362,6 +364,9 @@ class AccountApiControllerTest {
 								.param("authenticationNumber", ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
 				)
 				.andDo(print())
+				.andExpect(jsonPath("id").value(ACCOUNT_EXISTED_ID))
+				.andExpect(jsonPath("email").value(accountWithoutUploadFileResultDto.getEmail()))
+				.andExpect(jsonPath("name").value(accountWithoutUploadFileResultDto.getName()))
 				.andExpect(status().isCreated());
 	}
 //
