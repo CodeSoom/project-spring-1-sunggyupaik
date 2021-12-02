@@ -28,13 +28,16 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.sql.DataSource;
 import java.util.List;
 
+import static org.hamcrest.Matchers.is;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -52,13 +55,18 @@ class AccountApiControllerTest {
     private static final String ACCOUNT_EMAIL = "accountEmail";
     private static final String ACCOUNT_NICKNAME = "accountNickname";
     private static final String ACCOUNT_PASSWORD = "accountPassword";
-	private static final String ACCOUNT_AUTHENTICATION_NUMBER = "accountAuthenticationNumber";
 
-    private static final Long CREATED_ACCOUNT_ID = 2L;
-    private static final String CREATED_NAME = "creatName";
-    private static final String CREATED_EMAIL = "createEmail";
-    private static final String CREATED_NICKNAME = "createNickname";
-	private static final String CREATED_AUTHENTICATION_NUMBER = "createdAuthenticationNumber";
+	private static final Long ACCOUNT_FILE_EXISTED_ID = 5L;
+	private static final String ACCOUNT_FILE_NAME = "accountFileName";
+	private static final String ACCOUNT_FILE_EMAIL = "accountFileEmail";
+	private static final String ACCOUNT_FILE_NICKNAME = "accountFileNickname";
+	private static final String ACCOUNT_FILE_PASSWORD = "accountFilePassword";
+
+    private static final Long ACCOUNT_CREATED_ACCOUNT_ID = 2L;
+    private static final String ACCOUNT_CREATED_NAME = "creatName";
+    private static final String ACCOUNT_CREATED_EMAIL = "createEmail";
+    private static final String ACCOUNT_CREATED_NICKNAME = "createNickname";
+	private static final String ACCOUNT_CREATED_AUTHENTICATION_NUMBER = "createdAuthenticationNumber";
 
     private static final String CREATED_PASSWORD = "0987654321";
 
@@ -67,31 +75,35 @@ class AccountApiControllerTest {
 
     private static final String EXISTED_EMAIL = "email";
 
-    private static final Long CREATED_FILE_ID = 3L;
-    private static final String CREATED_FILE_NAME = "createdFileName.jpg";
-    private static final String CREATED_FILE_ORIGINAL_NAME = "createdOriginalName.jpg";
-    private static final String CREATED_FILE_URL = "createdFileUrl";
+    private static final Long FILE_CREATED_ID = 3L;
+    private static final String FILE_CREATED_NAME = "createdFileName.jpg";
+    private static final String FILE_CREATED_ORIGINAL_NAME = "createdOriginalName.jpg";
+    private static final String FILE_CREATED_URL = "createdFileUrl";
 	private static final String IMAGE_CONTENT_TYPE = "image/jpeg";
 
-	private static final Long DELETED_ACCOUNT_ID = 4L;
+	private static final Long ACCOUNT_DELETED_ID = 4L;
 
-	private static final Long NOT_EXISTED_ID = 999L;
+	private static final Long ACCOUNT_NOT_EXISTED_ID = 999L;
+
+	private UploadFile uploadFile;
+
+	private UploadFileCreateDto uploadFileCreateDto;
+	private UploadFileResultDto uploadFileResultDto;
 
     private Account accountWithoutUploadFile;
+	private Account accountWithUploadFile;
     private Account createdAccount;
 	private Account deletedAccount;
 
 	private UsernamePasswordAuthenticationToken accountWithoutUploadFileToken;
+	private UsernamePasswordAuthenticationToken accountWithUploadFileToken;
 	private UsernamePasswordAuthenticationToken deletedAccountToken;
 
     private AccountCreateDto accountCreateDto;
     private AccountUpdateDto accountUpdateDto;
 	private AccountResultDto accountWithoutUploadFileResultDto;
+	private AccountResultDto accountWithUploadFileResultDto;
 	private AccountResultDto deletedAccountResultDto;
-
-	private UploadFile uploadFile;
-
-    private UploadFileCreateDto uploadFileCreateDto;
 
 	private MockMultipartFile mockMultipartFile;
 	private AccountWithUploadFileCreateDto accountWithUploadFileCreateDto;
@@ -133,6 +145,25 @@ class AccountApiControllerTest {
                 .alwaysDo(print())
                 .build();
 
+		uploadFile = UploadFile.builder()
+				.id(FILE_CREATED_ID)
+				.fileName(FILE_CREATED_NAME)
+				.fileOriginalName(FILE_CREATED_ORIGINAL_NAME)
+				.fileUrl(FILE_CREATED_URL)
+				.build();
+
+		uploadFileCreateDto = UploadFileCreateDto.builder()
+				.fileName(FILE_CREATED_NAME)
+				.fileOriginalName(FILE_CREATED_ORIGINAL_NAME)
+				.fileUrl(FILE_CREATED_URL)
+				.build();
+
+		uploadFileResultDto = UploadFileResultDto.builder()
+				.fileName(FILE_CREATED_NAME)
+				.fileOriginalName(FILE_CREATED_ORIGINAL_NAME)
+				.fileUrl(FILE_CREATED_URL)
+				.build();
+
         accountWithoutUploadFile = Account.builder()
                 .id(ACCOUNT_EXISTED_ID)
                 .name(ACCOUNT_NAME)
@@ -141,15 +172,25 @@ class AccountApiControllerTest {
                 .password(ACCOUNT_PASSWORD)
                 .build();
 
+		accountWithUploadFile = Account.builder()
+				.id(ACCOUNT_FILE_EXISTED_ID)
+				.name(ACCOUNT_FILE_NAME)
+				.email(ACCOUNT_FILE_EMAIL)
+				.nickname(ACCOUNT_FILE_NICKNAME)
+				.password(ACCOUNT_FILE_PASSWORD)
+				.build();
+
+		accountWithUploadFile.addUploadFile(uploadFile);
+
         createdAccount = Account.builder()
-                .name(CREATED_NAME)
-                .email(CREATED_EMAIL)
-                .nickname(CREATED_NICKNAME)
+                .name(ACCOUNT_CREATED_NAME)
+                .email(ACCOUNT_CREATED_EMAIL)
+                .nickname(ACCOUNT_CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
                 .build();
 
 		deletedAccount = Account.builder()
-				.id(DELETED_ACCOUNT_ID)
+				.id(ACCOUNT_DELETED_ID)
 				.name(ACCOUNT_NAME)
 				.email(ACCOUNT_EMAIL)
 				.nickname(ACCOUNT_NICKNAME)
@@ -162,17 +203,22 @@ class AccountApiControllerTest {
 			accountWithoutUploadFile.getPassword(),
 			List.of(new SimpleGrantedAuthority("USER")));
 
+		accountWithUploadFileToken = new UsernamePasswordAuthenticationToken(
+				new UserAccount(accountWithUploadFile, List.of(new SimpleGrantedAuthority("USER"))),
+				accountWithUploadFile.getPassword(),
+				List.of(new SimpleGrantedAuthority("USER")));
+
 		deletedAccountToken = new UsernamePasswordAuthenticationToken(
 				new UserAccount(deletedAccount, List.of(new SimpleGrantedAuthority("USER"))),
 				deletedAccount.getPassword(),
 				List.of(new SimpleGrantedAuthority("USER")));
 
         accountCreateDto = AccountCreateDto.builder()
-                .name(CREATED_NAME)
-                .email(CREATED_EMAIL)
-                .nickname(CREATED_NICKNAME)
+                .name(ACCOUNT_CREATED_NAME)
+                .email(ACCOUNT_CREATED_EMAIL)
+                .nickname(ACCOUNT_CREATED_NICKNAME)
                 .password(CREATED_PASSWORD)
-				.authenticationNumber(CREATED_AUTHENTICATION_NUMBER)
+				.authenticationNumber(ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
                 .build();
 
         accountUpdateDto = AccountUpdateDto.builder()
@@ -181,26 +227,22 @@ class AccountApiControllerTest {
 
 		accountWithoutUploadFileResultDto = AccountResultDto.of(accountWithoutUploadFile);
 
+		accountWithUploadFileResultDto = AccountResultDto.builder()
+				.id(ACCOUNT_CREATED_ACCOUNT_ID)
+				.name(ACCOUNT_FILE_NAME)
+				.email(ACCOUNT_FILE_EMAIL)
+				.nickname(ACCOUNT_FILE_NICKNAME)
+				.password(ACCOUNT_FILE_PASSWORD)
+				.uploadFileResultDto(UploadFileResultDto.of(uploadFile))
+				.build();
+
 		deletedAccountResultDto = AccountResultDto.builder()
-				.id(DELETED_ACCOUNT_ID)
+				.id(ACCOUNT_DELETED_ID)
 				.deleted(true)
 				.build();
 
-		uploadFile = UploadFile.builder()
-				.id(CREATED_FILE_ID)
-				.fileName(CREATED_FILE_NAME)
-				.fileOriginalName(CREATED_FILE_ORIGINAL_NAME)
-				.fileUrl(CREATED_FILE_URL)
-				.build();
-
-        uploadFileCreateDto = UploadFileCreateDto.builder()
-                .fileName(CREATED_FILE_NAME)
-                .fileOriginalName(CREATED_FILE_ORIGINAL_NAME)
-                .fileUrl(CREATED_FILE_URL)
-                .build();
-
 		mockMultipartFile = new MockMultipartFile(
-				"uploadFile", CREATED_FILE_ORIGINAL_NAME, IMAGE_CONTENT_TYPE, "test data".getBytes()
+				"uploadFile", FILE_CREATED_ORIGINAL_NAME, IMAGE_CONTENT_TYPE, "test data".getBytes()
 		);
 
 		accountWithUploadFileCreateDto = AccountWithUploadFileCreateDto.builder()
@@ -223,10 +265,10 @@ class AccountApiControllerTest {
 
 	@Test
 	void detailWithNotExisted() throws Exception {
-		given(accountService.getUser(NOT_EXISTED_ID)).willThrow(AccountNotFoundException.class);
+		given(accountService.getUser(ACCOUNT_NOT_EXISTED_ID)).willThrow(AccountNotFoundException.class);
 
 		mockMvc.perform(
-				get("/api/user/{id}", NOT_EXISTED_ID)
+				get("/api/user/{id}", ACCOUNT_NOT_EXISTED_ID)
 		)
 				.andDo(print())
 //				.andExpect(content().string(containsString("User not found")))
@@ -236,13 +278,13 @@ class AccountApiControllerTest {
 	@Test
 	void deleteWithExistedId() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(deletedAccountToken);
-		given(accountService.deleteUser(DELETED_ACCOUNT_ID)).willReturn(deletedAccountResultDto);
+		given(accountService.deleteUser(ACCOUNT_DELETED_ID)).willReturn(deletedAccountResultDto);
 
 		mockMvc.perform(
-				delete("/api/users/{id}", DELETED_ACCOUNT_ID)
+				delete("/api/users/{id}", ACCOUNT_DELETED_ID)
 		)
 				.andDo(print())
-				.andExpect(jsonPath("id").value(DELETED_ACCOUNT_ID))
+				.andExpect(jsonPath("id").value(ACCOUNT_DELETED_ID))
 				.andExpect(jsonPath("deleted").value(true))
 				.andExpect(status().isNoContent());
 	}
@@ -263,23 +305,24 @@ class AccountApiControllerTest {
 
 	@Test
 	void createWithAllValidAttributes() throws Exception {
+		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(uploadFile);
 		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
 				.will(invocation -> {
 					AccountCreateDto accountCreateDto = invocation.getArgument(0);
 					UploadFile uploadFile = invocation.getArgument(1);
 					uploadFile = UploadFile.builder()
-							.id(CREATED_FILE_ID)
-							.fileName(CREATED_FILE_NAME)
-							.fileOriginalName(CREATED_FILE_ORIGINAL_NAME)
-							.fileUrl(CREATED_FILE_URL)
+							.id(FILE_CREATED_ID)
+							.fileName(FILE_CREATED_NAME)
+							.fileOriginalName(FILE_CREATED_ORIGINAL_NAME)
+							.fileUrl(FILE_CREATED_URL)
 							.build();
 
 					return AccountResultDto.builder()
-							.id(CREATED_ACCOUNT_ID)
-							.name(accountCreateDto.getName())
-							.email(accountCreateDto.getEmail())
-							.nickname(accountCreateDto.getNickname())
-							.password(accountCreateDto.getPassword())
+							.id(ACCOUNT_FILE_EXISTED_ID)
+							.name(accountWithUploadFile.getName())
+							.email(accountWithUploadFile.getEmail())
+							.nickname(accountWithUploadFile.getNickname())
+							.password(accountWithUploadFile.getPassword())
 							.uploadFileResultDto(UploadFileResultDto.of(uploadFile))
 							.build();
 				});
@@ -287,13 +330,21 @@ class AccountApiControllerTest {
 		mockMvc.perform(
 				multipart("/api/users")
 						.file(mockMultipartFile)
-						.param("name", CREATED_NAME)
-						.param("email", CREATED_EMAIL)
-						.param("nickname", CREATED_NICKNAME)
+						.contentType("multipart/form-data")
+						.param("name", ACCOUNT_CREATED_NAME)
+						.param("email", ACCOUNT_CREATED_EMAIL)
+						.param("nickname", ACCOUNT_CREATED_NICKNAME)
 						.param("password", CREATED_PASSWORD)
-						.param("authenticationNumber", CREATED_AUTHENTICATION_NUMBER)
+						.param("authenticationNumber", ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
 		)
 				.andDo(print())
+				.andExpect(jsonPath("id").value(ACCOUNT_FILE_EXISTED_ID))
+				.andExpect(jsonPath("email").value(accountWithUploadFileResultDto.getEmail()))
+				.andExpect(jsonPath("name").value(accountWithUploadFileResultDto.getName()))
+				.andExpect((ResultMatcher) jsonPath("$.uploadFileResultDto.fileName",
+						is(uploadFileResultDto.getFileName())))
+				.andExpect((ResultMatcher) jsonPath("$.uploadFileResultDto.fileOriginalName",
+						is(uploadFileResultDto.getFileOriginalName())))
 				.andExpect(status().isCreated());
 	}
 
@@ -304,11 +355,11 @@ class AccountApiControllerTest {
 
 		mockMvc.perform(
 						multipart("/api/users")
-								.param("name", CREATED_NAME)
-								.param("email", CREATED_EMAIL)
-								.param("nickname", CREATED_NICKNAME)
+								.param("name", ACCOUNT_CREATED_NAME)
+								.param("email", ACCOUNT_CREATED_EMAIL)
+								.param("nickname", ACCOUNT_CREATED_NICKNAME)
 								.param("password", CREATED_PASSWORD)
-								.param("authenticationNumber", CREATED_AUTHENTICATION_NUMBER)
+								.param("authenticationNumber", ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
 				)
 				.andDo(print())
 				.andExpect(status().isCreated());
