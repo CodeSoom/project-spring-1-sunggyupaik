@@ -12,6 +12,7 @@ import com.example.bookclub.dto.UploadFileCreateDto;
 import com.example.bookclub.dto.UploadFileResultDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
+import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
@@ -74,7 +75,8 @@ class AccountApiControllerTest {
     private static final String ACCOUNT_UPDATED_NICKNAME = "qwer";
     private static final String ACCOUNT_UPDATED_PASSWORD = "5678";
 
-    private static final String ACCOUNT_DUPLICATED_EMAIL = "existedEmail";
+    private static final String ACCOUNT_DUPLICATED_EMAIL = "duplicatedEmail";
+	private static final String ACCOUNT_INVALID_AUTHENTICATION_NUMBER = "invalidAuthenticationNumber";
 
     private static final Long FILE_CREATED_ID = 3L;
     private static final String FILE_CREATED_NAME = "createdFileName.jpg";
@@ -388,6 +390,25 @@ class AccountApiControllerTest {
 				.andDo(print())
 				.andExpect(status().isBadRequest());
     }
+
+	@Test
+	void createWithInvalidAuthenticationNumber() throws Exception {
+		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(uploadFile);
+		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+				.willThrow(EmailNotAuthenticatedException.class);
+
+		mockMvc.perform(
+						multipart("/api/users")
+								.file(mockMultipartFile)
+								.param("name", ACCOUNT_CREATED_NAME)
+								.param("email", ACCOUNT_DUPLICATED_EMAIL)
+								.param("nickname", ACCOUNT_CREATED_NICKNAME)
+								.param("password", ACCOUNT_CREATED_PASSWORD)
+								.param("authenticationNumber", ACCOUNT_DUPLICATED_EMAIL)
+				)
+				.andDo(print())
+				.andExpect(status().isBadRequest());
+	}
 //
 //    @Test
 //    void createWithExistedNickname() throws Exception {
