@@ -10,6 +10,7 @@ import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountWithUploadFileCreateDto;
 import com.example.bookclub.dto.UploadFileCreateDto;
 import com.example.bookclub.dto.UploadFileResultDto;
+import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
@@ -37,8 +38,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.sql.DataSource;
 import java.util.List;
 
-import static org.hamcrest.Matchers.is;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
@@ -67,14 +68,13 @@ class AccountApiControllerTest {
     private static final String ACCOUNT_CREATED_NAME = "creatName";
     private static final String ACCOUNT_CREATED_EMAIL = "createEmail";
     private static final String ACCOUNT_CREATED_NICKNAME = "createNickname";
+	private static final String ACCOUNT_CREATED_PASSWORD = "createdPassword";
 	private static final String ACCOUNT_CREATED_AUTHENTICATION_NUMBER = "createdAuthenticationNumber";
 
-    private static final String CREATED_PASSWORD = "0987654321";
+    private static final String ACCOUNT_UPDATED_NICKNAME = "qwer";
+    private static final String ACCOUNT_UPDATED_PASSWORD = "5678";
 
-    private static final String UPDATED_NICKNAME = "qwer";
-    private static final String UPDATED_PASSWORD = "5678";
-
-    private static final String EXISTED_EMAIL = "email";
+    private static final String ACCOUNT_DUPLICATED_EMAIL = "existedEmail";
 
     private static final Long FILE_CREATED_ID = 3L;
     private static final String FILE_CREATED_NAME = "createdFileName.jpg";
@@ -107,6 +107,7 @@ class AccountApiControllerTest {
 	private AccountResultDto deletedAccountResultDto;
 
 	private MockMultipartFile mockMultipartFile;
+	private MockMultipartFile mockMultipartFileNull;
 	private AccountWithUploadFileCreateDto accountWithUploadFileCreateDto;
 
 	@Autowired
@@ -187,7 +188,7 @@ class AccountApiControllerTest {
                 .name(ACCOUNT_CREATED_NAME)
                 .email(ACCOUNT_CREATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
-                .password(CREATED_PASSWORD)
+                .password(ACCOUNT_CREATED_PASSWORD)
                 .build();
 
 		deletedAccount = Account.builder()
@@ -218,12 +219,12 @@ class AccountApiControllerTest {
                 .name(ACCOUNT_CREATED_NAME)
                 .email(ACCOUNT_CREATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
-                .password(CREATED_PASSWORD)
+                .password(ACCOUNT_CREATED_PASSWORD)
 				.authenticationNumber(ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
                 .build();
 
         accountUpdateDto = AccountUpdateDto.builder()
-                .nickname(UPDATED_NICKNAME)
+                .nickname(ACCOUNT_UPDATED_NICKNAME)
                 .build();
 
 		accountWithoutUploadFileResultDto = AccountResultDto.of(accountWithoutUploadFile);
@@ -335,7 +336,7 @@ class AccountApiControllerTest {
 						.param("name", ACCOUNT_CREATED_NAME)
 						.param("email", ACCOUNT_CREATED_EMAIL)
 						.param("nickname", ACCOUNT_CREATED_NICKNAME)
-						.param("password", CREATED_PASSWORD)
+						.param("password", ACCOUNT_CREATED_PASSWORD)
 						.param("authenticationNumber", ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
 		)
 				.andDo(print())
@@ -356,11 +357,10 @@ class AccountApiControllerTest {
 
 		mockMvc.perform(
 						multipart("/api/users")
-								.file(mockMultipartFile)
 								.param("name", ACCOUNT_CREATED_NAME)
 								.param("email", ACCOUNT_CREATED_EMAIL)
 								.param("nickname", ACCOUNT_CREATED_NICKNAME)
-								.param("password", CREATED_PASSWORD)
+								.param("password", ACCOUNT_CREATED_PASSWORD)
 								.param("authenticationNumber", ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
 				)
 				.andDo(print())
@@ -369,20 +369,25 @@ class AccountApiControllerTest {
 				.andExpect(jsonPath("name").value(accountWithoutUploadFileResultDto.getName()))
 				.andExpect(status().isCreated());
 	}
-//
-//    @Test
-//    void createWithExistedEmail() throws Exception {
-//        given(accountService.createUser(any(AccountCreateDto.class)))
-//                .willThrow(AccountEmailDuplicatedException.class);
-//
-//        mockMvc.perform(
-//                post("/api/users")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                        .content(objectMapper.writeValueAsString(accountCreateDto))
-//        )
-//                .andDo(print())
-//                .andExpect(status().isBadRequest());
-//    }
+
+    @Test
+    void createWithDuplicatedEmail() throws Exception {
+		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(uploadFile);
+		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+				.willThrow(AccountEmailDuplicatedException.class);
+
+		mockMvc.perform(
+						multipart("/api/users")
+								.file(mockMultipartFile)
+								.param("name", ACCOUNT_CREATED_NAME)
+								.param("email", ACCOUNT_DUPLICATED_EMAIL)
+								.param("nickname", ACCOUNT_CREATED_NICKNAME)
+								.param("password", ACCOUNT_CREATED_PASSWORD)
+								.param("authenticationNumber", ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
+				)
+				.andDo(print())
+				.andExpect(status().isBadRequest());
+    }
 //
 //    @Test
 //    void createWithExistedNickname() throws Exception {
