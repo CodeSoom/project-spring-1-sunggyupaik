@@ -26,6 +26,13 @@ public class UploadFileResultDto {
 	}
 
 	public static UploadFileResultDto of(UploadFile uploadFile) {
+		if(uploadFile == null)
+			return UploadFileResultDto.builder()
+					.fileName("")
+					.fileOriginalName("")
+					.fileUrl("")
+					.build();
+
 		return UploadFileResultDto.builder()
 				.id(uploadFile.getId())
 				.fileName(uploadFile.getFileName())

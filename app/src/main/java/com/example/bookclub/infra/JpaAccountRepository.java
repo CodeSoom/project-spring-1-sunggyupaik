@@ -11,7 +11,8 @@ import java.util.Optional;
 
 public interface JpaAccountRepository
         extends AccountRepository, CrudRepository<Account, Long> {
-    Optional<Account> findById(Long id);
+    @Query("SELECT DISTINCT a FROM Account a LEFT JOIN FETCH a.study s LEFT JOIN FETCH a.uploadFile  WHERE a.id = :id")
+    Optional<Account> findById(@Param("id") Long id);
 
     @Query("SELECT DISTINCT a FROM Account a LEFT JOIN FETCH a.study s LEFT JOIN FETCH a.uploadFile  WHERE a.email = :email")
     Optional<Account> findByEmail(@Param("email") String email);
