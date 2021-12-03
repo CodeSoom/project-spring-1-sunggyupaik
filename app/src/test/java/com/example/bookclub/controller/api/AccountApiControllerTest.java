@@ -7,6 +7,7 @@ import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
+import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.dto.AccountWithUploadFileCreateDto;
 import com.example.bookclub.dto.AccountWithUploadFileUpdateDto;
 import com.example.bookclub.dto.UploadFileCreateDto;
@@ -48,6 +49,7 @@ import static org.mockito.BDDMockito.given;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -114,12 +116,15 @@ class AccountApiControllerTest {
 
     private AccountCreateDto accountCreateDto;
     private AccountUpdateDto accountUpdateDto;
+	private AccountUpdatePasswordDto accountUpdatePasswordDto;
+
 	private AccountResultDto accountCreatedWithUploadFileResultDto;
 	private AccountResultDto accountCreatedWithoutUploadFileResultDto;
 	private AccountResultDto accountUpdatedWithUploadFileResultDto;
 	private AccountResultDto accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto;
 	private AccountResultDto accountUpdatedWithUploadBeforeNotHasUploadFileResultDto;
 	private AccountResultDto accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto;
+	private AccountResultDto accountUpdatedWithNewPasswordResultDto;
 	private AccountResultDto deletedAccountResultDto;
 
 	private MockMultipartFile mockCreatedMultipartFile;
@@ -259,6 +264,12 @@ class AccountApiControllerTest {
                 .nickname(ACCOUNT_UPDATED_NICKNAME)
                 .build();
 
+		accountUpdatePasswordDto = AccountUpdatePasswordDto.builder()
+				.password(ACCOUNT_PASSWORD)
+				.newPassword(ACCOUNT_UPDATED_PASSWORD)
+				.newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
+				.build();
+
 		accountCreatedWithoutUploadFileResultDto = AccountResultDto.of(accountWithoutUploadFile);
 
 		accountCreatedWithUploadFileResultDto = AccountResultDto.builder()
@@ -304,6 +315,11 @@ class AccountApiControllerTest {
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_PASSWORD)
 				.uploadFileResultDto(UploadFileResultDto.of(null))
+				.build();
+
+		accountUpdatedWithNewPasswordResultDto = AccountResultDto.builder()
+				.id(ACCOUNT_ID)
+				.password(ACCOUNT_UPDATED_PASSWORD)
 				.build();
 
 		deletedAccountResultDto = AccountResultDto.builder()
@@ -618,6 +634,20 @@ class AccountApiControllerTest {
 				.andExpect(jsonPath(
 						"$.uploadFileResultDto.fileUrl", is(""))
 				);
+	}
+
+	@Test
+	void updateWithNewPassword() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
+		given(accountService.updateUserPassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
+				.willReturn(accountUpdatedWithNewPasswordResultDto);
+
+		mockMvc.perform(
+				patch("/api/users/{id}/password", ACCOUNT_ID)
+		)
+				.andDo(print())
+				.andExpect(jsonPath("id").value(ACCOUNT_ID))
+				.andExpect(jsonPath("password").value(ACCOUNT_UPDATED_PASSWORD));
 	}
 
 	@Test
