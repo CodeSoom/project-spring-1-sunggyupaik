@@ -118,6 +118,7 @@ class AccountApiControllerTest {
 	private AccountResultDto accountCreatedWithoutUploadFileResultDto;
 	private AccountResultDto accountUpdatedWithUploadFileResultDto;
 	private AccountResultDto accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto;
+	private AccountResultDto accountUpdatedWithUploadBeforeNotHasUploadFileResultDto;
 	private AccountResultDto deletedAccountResultDto;
 
 	private MockMultipartFile mockCreatedMultipartFile;
@@ -207,6 +208,7 @@ class AccountApiControllerTest {
 		accountWithUploadFile.addUploadFile(createdUploadFile);
 
         createdAccount = Account.builder()
+				.id(ACCOUNT_CREATED_ACCOUNT_ID)
                 .name(ACCOUNT_CREATED_NAME)
                 .email(ACCOUNT_CREATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
@@ -283,6 +285,15 @@ class AccountApiControllerTest {
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_FILE_PASSWORD)
 				.uploadFileResultDto(UploadFileResultDto.of(createdUploadFile))
+				.build();
+
+		accountUpdatedWithUploadBeforeNotHasUploadFileResultDto = AccountResultDto.builder()
+				.id(ACCOUNT_ID)
+				.name(ACCOUNT_NAME)
+				.email(ACCOUNT_EMAIL)
+				.nickname(ACCOUNT_UPDATED_NICKNAME)
+				.password(ACCOUNT_PASSWORD)
+				.uploadFileResultDto(UploadFileResultDto.of(updatedUploadFile))
 				.build();
 
 		deletedAccountResultDto = AccountResultDto.builder()
@@ -559,5 +570,32 @@ class AccountApiControllerTest {
 	}
 
 	//사진 x -> 새로운 사진 업로드
+	@Test
+	void updateWithUploadFileBeforeNotHasUploadFile() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
+		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(updatedUploadFile);
+		given(accountService.updateUser(eq(ACCOUNT_ID), any(AccountUpdateDto.class), any(UploadFile.class)))
+				.willReturn(accountUpdatedWithUploadBeforeNotHasUploadFileResultDto);
+
+		mockMvc.perform(
+						multipart("/api/users/{id}", ACCOUNT_ID)
+								.file(mockUpdatedMultipartFile)
+								.param("nickname", ACCOUNT_UPDATED_NICKNAME)
+								.param("password", ACCOUNT_PASSWORD)
+				)
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("id").value(ACCOUNT_ID))
+				.andExpect(jsonPath("email").value(ACCOUNT_EMAIL))
+				.andExpect(jsonPath("nickname").value(accountUpdateDto.getNickname()))
+				.andExpect(jsonPath("$.uploadFileResultDto.fileName", is(updatedUploadFile.getFileName())))
+				.andExpect(jsonPath(
+						"$.uploadFileResultDto.fileOriginalName", is(updatedUploadFile.getFileOriginalName()))
+				)
+				.andExpect(jsonPath(
+						"$.uploadFileResultDto.fileUrl", is(updatedUploadFile.getFileUrl()))
+				);
+	}
+
 	// 사진 x -> 사진 업로드x
 }
