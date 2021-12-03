@@ -119,6 +119,7 @@ class AccountApiControllerTest {
 	private AccountResultDto accountUpdatedWithUploadFileResultDto;
 	private AccountResultDto accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto;
 	private AccountResultDto accountUpdatedWithUploadBeforeNotHasUploadFileResultDto;
+	private AccountResultDto accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto;
 	private AccountResultDto deletedAccountResultDto;
 
 	private MockMultipartFile mockCreatedMultipartFile;
@@ -294,6 +295,15 @@ class AccountApiControllerTest {
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_PASSWORD)
 				.uploadFileResultDto(UploadFileResultDto.of(updatedUploadFile))
+				.build();
+
+		accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto = AccountResultDto.builder()
+				.id(ACCOUNT_ID)
+				.name(ACCOUNT_NAME)
+				.email(ACCOUNT_EMAIL)
+				.nickname(ACCOUNT_UPDATED_NICKNAME)
+				.password(ACCOUNT_PASSWORD)
+				.uploadFileResultDto(UploadFileResultDto.of(null))
 				.build();
 
 		deletedAccountResultDto = AccountResultDto.builder()
@@ -598,4 +608,31 @@ class AccountApiControllerTest {
 	}
 
 	// 사진 x -> 사진 업로드x
+	//사진 x -> 새로운 사진 업로드
+	@Test
+	void updateWithoutUploadFileBeforeNotHasUploadFile() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
+		given(accountService.updateUser(eq(ACCOUNT_ID), any(AccountUpdateDto.class), eq(null)))
+				.willReturn(accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto);
+
+		mockMvc.perform(
+						multipart("/api/users/{id}", ACCOUNT_ID)
+								.file(mockUpdatedMultipartFile)
+								.param("nickname", ACCOUNT_UPDATED_NICKNAME)
+								.param("password", ACCOUNT_PASSWORD)
+				)
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("id").value(ACCOUNT_ID))
+				.andExpect(jsonPath("email").value(ACCOUNT_EMAIL))
+				.andExpect(jsonPath("nickname").value(accountUpdateDto.getNickname()))
+				.andExpect(jsonPath("$.uploadFileResultDto.fileName", is("")))
+				.andExpect(jsonPath(
+						"$.uploadFileResultDto.fileOriginalName", is(""))
+				)
+				.andExpect(jsonPath(
+						"$.uploadFileResultDto.fileUrl", is(""))
+				);
+	}
+
 }
