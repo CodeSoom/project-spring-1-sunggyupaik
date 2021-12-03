@@ -26,6 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -76,7 +77,7 @@ class AccountApiControllerTest {
 	private static final String ACCOUNT_CREATED_AUTHENTICATION_NUMBER = "accountCreatedAuthenticationNumber";
 
     private static final String ACCOUNT_UPDATED_NICKNAME = "accountUpdatedNickname";
-    private static final String ACCOUNT_UPDATED_PASSWORD = "accountUpdatedPassword";
+    private static final String ACCOUNT_UPDATED_PASSWORD = "updatedPassword";
 
     private static final String ACCOUNT_DUPLICATED_EMAIL = "accountDuplicatedEmail";
 	private static final String ACCOUNT_INVALID_AUTHENTICATION_NUMBER = "accountInvalidAuthenticationNumber";
@@ -639,15 +640,17 @@ class AccountApiControllerTest {
 	@Test
 	void updateWithNewPassword() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
-		given(accountService.updateUserPassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
+		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
 				.willReturn(accountUpdatedWithNewPasswordResultDto);
 
 		mockMvc.perform(
 				patch("/api/users/{id}/password", ACCOUNT_ID)
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(objectMapper.writeValueAsString(accountUpdatePasswordDto))
 		)
 				.andDo(print())
 				.andExpect(jsonPath("id").value(ACCOUNT_ID))
-				.andExpect(jsonPath("password").value(ACCOUNT_UPDATED_PASSWORD));
+				.andExpect(jsonPath("password").value(accountUpdatePasswordDto.getNewPassword()));
 	}
 
 	@Test
