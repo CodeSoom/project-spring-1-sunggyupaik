@@ -355,34 +355,6 @@ class AccountApiControllerTest {
 	}
 
 	@Test
-	void deleteWithExistedId() throws Exception {
-		SecurityContextHolder.getContext().setAuthentication(deletedAccountToken);
-		given(accountService.deleteUser(ACCOUNT_DELETED_ID)).willReturn(deletedAccountResultDto);
-
-		mockMvc.perform(
-				delete("/api/users/{id}", ACCOUNT_DELETED_ID)
-		)
-				.andDo(print())
-				.andExpect(jsonPath("id").value(ACCOUNT_DELETED_ID))
-				.andExpect(jsonPath("deleted").value(true))
-				.andExpect(status().isNoContent());
-	}
-
-	@Test
-	void deleteNotAuthorizedAccount() throws Exception {
-		SecurityContextHolder.getContext().setAuthentication(deletedAccountToken);
-
-		assertThatThrownBy(
-				() -> mockMvc.perform(
-								delete("/api/users/{id}", ACCOUNT_ID)
-						)
-						.andDo(print())
-						.andExpect(status().isNoContent())
-		)
-				.hasCause(new AccessDeniedException("Access is denied"));
-	}
-
-	@Test
 	void createWithAllValidAttributes() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
 		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
@@ -505,7 +477,7 @@ class AccountApiControllerTest {
     }
 
 	@Test
-	void createWithNotAuthenticated() throws Exception {
+	void createWithNotAuthenticatedEmailAuthenticationNumnber() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
 		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
 				.willThrow(EmailNotAuthenticatedException.class);
@@ -521,6 +493,20 @@ class AccountApiControllerTest {
 		)
 		.andDo(print())
 		.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void updateNotAuthorizedAccount() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
+
+		assertThatThrownBy(
+				() -> mockMvc.perform(
+								multipart("/api/users/{id}", ACCOUNT_FILE_EXISTED_ID)
+						)
+						.andDo(print())
+						.andExpect(status().isNoContent())
+		)
+				.hasCause(new AccessDeniedException("Access is denied"));
 	}
 
 	// 사진 o -> 새로운 사진 업로드
@@ -608,7 +594,6 @@ class AccountApiControllerTest {
 	}
 
 	// 사진 x -> 사진 업로드x
-	//사진 x -> 새로운 사진 업로드
 	@Test
 	void updateWithoutUploadFileBeforeNotHasUploadFile() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
@@ -635,4 +620,31 @@ class AccountApiControllerTest {
 				);
 	}
 
+	@Test
+	void deleteWithExistedId() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(deletedAccountToken);
+		given(accountService.deleteUser(ACCOUNT_DELETED_ID)).willReturn(deletedAccountResultDto);
+
+		mockMvc.perform(
+						delete("/api/users/{id}", ACCOUNT_DELETED_ID)
+				)
+				.andDo(print())
+				.andExpect(jsonPath("id").value(ACCOUNT_DELETED_ID))
+				.andExpect(jsonPath("deleted").value(true))
+				.andExpect(status().isNoContent());
+	}
+
+	@Test
+	void deleteNotAuthorizedAccount() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(deletedAccountToken);
+
+		assertThatThrownBy(
+				() -> mockMvc.perform(
+								delete("/api/users/{id}", ACCOUNT_ID)
+						)
+						.andDo(print())
+						.andExpect(status().isNoContent())
+		)
+				.hasCause(new AccessDeniedException("Access is denied"));
+	}
 }
