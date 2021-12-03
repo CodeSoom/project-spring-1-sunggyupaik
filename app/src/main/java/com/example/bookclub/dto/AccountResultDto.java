@@ -45,18 +45,7 @@ public class AccountResultDto {
                 .nickname(account.getNickname())
                 .password(account.getPassword())
                 .deleted(account.isDeleted())
-                .build();
-    }
-
-    public static AccountResultDto of(Account account, UploadFileResultDto uploadFileResultDto) {
-        return AccountResultDto.builder()
-                .id(account.getId())
-                .name(account.getName())
-                .email(account.getEmail())
-                .nickname(account.getNickname())
-                .password(account.getPassword())
-                .deleted(account.isDeleted())
-                .uploadFileResultDto(uploadFileResultDto)
+                .uploadFileResultDto(UploadFileResultDto.of(account.getUploadFile()))
                 .build();
     }
 }
