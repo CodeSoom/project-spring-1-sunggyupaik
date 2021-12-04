@@ -15,6 +15,7 @@ import com.example.bookclub.dto.UploadFileResultDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
+import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import com.example.bookclub.security.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
@@ -83,6 +84,7 @@ class AccountApiControllerTest {
 	private static final String ACCOUNT_INVALID_AUTHENTICATION_NUMBER = "accountInvalidAuthenticationNumber";
 	private static final String ACCOUNT_DUPLICATED_NICKNAME = "accountDuplicatedNickname";
 	private static final String ACCOUNT_INVALID_EMAIL = "accountInvalidEmail";
+	private static final String ACCOUNT_INVALID_PASSWORD = "invalidPassword";
 
     private static final Long FILE_CREATED_ID = 3L;
     private static final String FILE_CREATED_NAME = "createdFileName.jpg";
@@ -118,6 +120,7 @@ class AccountApiControllerTest {
     private AccountCreateDto accountCreateDto;
     private AccountUpdateDto accountUpdateDto;
 	private AccountUpdatePasswordDto accountUpdatePasswordDto;
+	private AccountUpdatePasswordDto accountUpdateInvalidPasswordDto;
 
 	private AccountResultDto accountCreatedWithUploadFileResultDto;
 	private AccountResultDto accountCreatedWithoutUploadFileResultDto;
@@ -267,6 +270,12 @@ class AccountApiControllerTest {
 
 		accountUpdatePasswordDto = AccountUpdatePasswordDto.builder()
 				.password(ACCOUNT_PASSWORD)
+				.newPassword(ACCOUNT_UPDATED_PASSWORD)
+				.newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
+				.build();
+
+		accountUpdateInvalidPasswordDto = AccountUpdatePasswordDto.builder()
+				.password(ACCOUNT_INVALID_PASSWORD)
 				.newPassword(ACCOUNT_UPDATED_PASSWORD)
 				.newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
 				.build();
@@ -651,6 +660,21 @@ class AccountApiControllerTest {
 				.andDo(print())
 				.andExpect(jsonPath("id").value(ACCOUNT_ID))
 				.andExpect(jsonPath("password").value(accountUpdatePasswordDto.getNewPassword()));
+	}
+
+	@Test
+	void updateWithNotValidPassword() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
+		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
+				.willThrow(AccountPasswordBadRequestException.class);
+
+		mockMvc.perform(
+						patch("/api/users/{id}/password", ACCOUNT_ID)
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(objectMapper.writeValueAsString(accountUpdatePasswordDto))
+				)
+				.andDo(print())
+				.andExpect(status().isBadRequest());
 	}
 
 	@Test
