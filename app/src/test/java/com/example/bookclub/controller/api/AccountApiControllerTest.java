@@ -13,6 +13,7 @@ import com.example.bookclub.dto.AccountWithUploadFileUpdateDto;
 import com.example.bookclub.dto.UploadFileCreateDto;
 import com.example.bookclub.dto.UploadFileResultDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
@@ -44,6 +45,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -53,6 +55,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -121,6 +124,7 @@ class AccountApiControllerTest {
     private AccountUpdateDto accountUpdateDto;
 	private AccountUpdatePasswordDto accountUpdatePasswordDto;
 	private AccountUpdatePasswordDto accountUpdateInvalidPasswordDto;
+	private AccountUpdatePasswordDto accountUpdateNotMatchedNewPasswordDto;
 
 	private AccountResultDto accountCreatedWithUploadFileResultDto;
 	private AccountResultDto accountCreatedWithoutUploadFileResultDto;
@@ -278,6 +282,12 @@ class AccountApiControllerTest {
 				.password(ACCOUNT_INVALID_PASSWORD)
 				.newPassword(ACCOUNT_UPDATED_PASSWORD)
 				.newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
+				.build();
+
+		accountUpdateNotMatchedNewPasswordDto = AccountUpdatePasswordDto.builder()
+				.password(ACCOUNT_PASSWORD)
+				.newPassword(ACCOUNT_UPDATED_PASSWORD)
+				.newPasswordConfirmed(ACCOUNT_PASSWORD)
 				.build();
 
 		accountCreatedWithoutUploadFileResultDto = AccountResultDto.of(accountWithoutUploadFile);
@@ -663,7 +673,7 @@ class AccountApiControllerTest {
 	}
 
 	@Test
-	void updateWithNotValidPassword() throws Exception {
+	void updateWithInValidPassword() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
 		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
 				.willThrow(AccountPasswordBadRequestException.class);
@@ -674,6 +684,22 @@ class AccountApiControllerTest {
 								.content(objectMapper.writeValueAsString(accountUpdatePasswordDto))
 				)
 				.andDo(print())
+				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void updateWithNotMatchedNewPassword() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
+		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
+				.willThrow(new AccountNewPasswordNotMatchedException());
+
+		mockMvc.perform(
+						patch("/api/users/{id}/password", ACCOUNT_ID)
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(objectMapper.writeValueAsString(accountUpdatePasswordDto))
+				)
+				.andDo(print())
+				.andExpect(content().string(containsString("NewPassword not matched")))
 				.andExpect(status().isBadRequest());
 	}
 
