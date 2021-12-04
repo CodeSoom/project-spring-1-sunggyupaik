@@ -540,7 +540,7 @@ class AccountApiControllerTest {
 								multipart("/api/users/{id}", ACCOUNT_FILE_EXISTED_ID)
 						)
 						.andDo(print())
-						.andExpect(status().isNoContent())
+						.andExpect(status().isOk())
 		)
 				.hasCause(new AccessDeniedException("Access is denied"));
 	}
@@ -701,6 +701,22 @@ class AccountApiControllerTest {
 				.andDo(print())
 				.andExpect(content().string(containsString("NewPassword not matched")))
 				.andExpect(status().isBadRequest());
+	}
+
+	@Test
+	void updatePasswordNotAuthorizedAccount() throws Exception {
+		SecurityContextHolder.getContext().setAuthentication(accountWithUploadFileToken);
+
+		assertThatThrownBy(
+				() -> mockMvc.perform(
+								patch("/api/users/{id}/password", ACCOUNT_ID)
+										.contentType(MediaType.APPLICATION_JSON)
+										.content(objectMapper.writeValueAsString(accountUpdatePasswordDto))
+						)
+						.andDo(print())
+						.andExpect(status().isOk())
+		)
+				.hasCause(new AccessDeniedException("Access is denied"));
 	}
 
 	@Test
