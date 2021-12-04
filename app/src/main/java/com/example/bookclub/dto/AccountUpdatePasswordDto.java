@@ -15,10 +15,10 @@ import javax.validation.constraints.Size;
 public class AccountUpdatePasswordDto {
     private String password;
 
-    @Size(min=4, max=10)
+    @Size(min=4, max=20)
     private String newPassword;
 
-    @Size(min=4, max=10)
+    @Size(min=4, max=20)
     private String newPasswordConfirmed;
 
     @Builder

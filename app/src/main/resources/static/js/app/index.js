@@ -174,7 +174,7 @@ const main = {
 
         $.ajax({
             type: 'PATCH',
-            url: 'api/users/password/' + id,
+            url: 'api/users/' + id + '/password',
             dataType: 'json',
             contentType: 'application/json; charset=utf-8',
             data: JSON.stringify(data)

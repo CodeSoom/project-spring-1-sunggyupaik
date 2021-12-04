@@ -143,7 +143,7 @@ public class AccountService {
         return accountRepository.findAll().size();
     }
 
-    public AccountResultDto updateUserPassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
+    public AccountResultDto updatePassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
         Account account = findUser(id);
 
         String password = accountUpdatePasswordDto.getPassword();
