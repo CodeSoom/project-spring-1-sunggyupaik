@@ -70,7 +70,6 @@ class AccountServiceTest {
     private static final String UPLOADFILE_UPDATE_FILEURL = "updatedFileUrl";
 
     private static final Long ACCOUNT_NOT_EXISTED_ID = 100L;
-    private static final Long CREATED_IMAGE_ID = 5L;
     private static final String ACCOUNT_NOT_EXISTED_EMAIL = "accountNotExistedEmail";
     private static final String ACCOUNT_DUPLICATED_EMAIL = "accountExistedEmail";
     private static final String ACCOUNT_DUPLICATED_NICKNAME = "accountExistedNickName";
@@ -476,25 +475,17 @@ class AccountServiceTest {
                 .isInstanceOf(AccountNewPasswordNotMatchedException.class);
     }
 
-//    @Test
-//    public void updatePasswordWithNotValidPassword() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, passwordNotMatchedDto))
-//                .isInstanceOf(AccountPasswordBadRequestException.class);
-//    }
-//
-//    @Test
-//    public void deleteAccount() {
-//        given(accountRepository.findById(CREATED_IMAGE_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
-//
-//        AccountResultDto accountResultDto = accountService.deleteUser(CREATED_IMAGE_ID);
-//
-//        assertThat(accountResultDto.getId()).isEqualTo(CREATED_IMAGE_ID);
-//        assertThat(accountResultDto.isDeleted()).isTrue();
-//        assertThat(accountResultDto.getUploadFile()).isNull();
-//    }
-//
+    @Test
+    public void deleteAccount() {
+        given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
+
+        AccountResultDto accountResultDto = accountService.deleteUser(ACCOUNT_CREATED_ID);
+
+        assertThat(accountResultDto.getId()).isEqualTo(ACCOUNT_CREATED_ID);
+        assertThat(accountResultDto.isDeleted()).isTrue();
+        assertThat(accountResultDto.getUploadFileResultDto().getId()).isNull();
+    }
+
 //    @Test
 //    public void deleteAccountWithNotExistedId() {
 //        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
