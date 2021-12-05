@@ -440,7 +440,7 @@ class AccountServiceTest {
         )
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
     }
-    
+
     @Test
     public void updateWithNotExistedId() {
         given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
@@ -486,7 +486,17 @@ class AccountServiceTest {
     }
 
     @Test
-    public void deleteAccount() {
+    public void updatePasswordWithNotExistedId() {
+        given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(
+                () -> accountService.updatePassword(ACCOUNT_NOT_EXISTED_ID, accountUpdatePasswordDto)
+        )
+                .isInstanceOf(AccountNotFoundException.class);
+    }
+
+    @Test
+    public void deleteWithExistedId() {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
 
         AccountResultDto accountResultDto = accountService.deleteUser(ACCOUNT_CREATED_ID);
@@ -497,7 +507,7 @@ class AccountServiceTest {
     }
 
     @Test
-    public void deleteAccountWithNotExistedId() {
+    public void deleteWithNotExistedId() {
         given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> accountService.deleteUser(ACCOUNT_NOT_EXISTED_ID))
