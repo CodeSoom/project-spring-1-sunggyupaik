@@ -74,7 +74,8 @@ public class AccountService {
         }
 
         String nickname = accountCreateDto.getNickname();
-        if (accountRepository.existsByNickname(nickname)) {
+        boolean nicknameDuplicated = accountRepository.existsByNickname(nickname);
+        if (nicknameDuplicated) {
             throw new AccountNicknameDuplicatedException(nickname);
         }
 
