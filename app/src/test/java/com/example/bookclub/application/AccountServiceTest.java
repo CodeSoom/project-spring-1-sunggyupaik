@@ -535,4 +535,14 @@ class AccountServiceTest {
 
         verify(emailAuthenticationRepository).delete(emailAuthentication);
     }
+
+    @Test
+    public void deleteEmailAuthenticationWithNotExistedEmail() {
+        given(emailAuthenticationRepository.findByEmail(ACCOUNT_NOT_EXISTED_EMAIL)).willReturn(Optional.empty());
+
+        assertThatThrownBy(
+                () -> accountService.deleteEmailAuthentication(ACCOUNT_NOT_EXISTED_EMAIL)
+        )
+                .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
 }
