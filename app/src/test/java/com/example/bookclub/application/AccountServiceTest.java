@@ -15,6 +15,7 @@ import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
+import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -90,8 +91,9 @@ class AccountServiceTest {
 
     private AccountCreateDto accountCreateDto;
     private AccountCreateDto emailExistedAccountCreateDto;
-    private AccountCreateDto authenticationNumberNotMatchedAccountCreateDto;
     private AccountCreateDto nicknameExistedAccountCreateDto;
+    private AccountCreateDto emailNotReceivedAuthenticationNumberAccountCreateDto;
+    private AccountCreateDto authenticationNumberNotMatchedAccountCreateDto;
     private AccountUpdateDto accountUpdateDto;
     private AccountUpdateDto nicknameDuplicatedAccountUpdateDto;
     private AccountUpdateDto passwordNotValidAccountUpdateDto;
@@ -190,6 +192,10 @@ class AccountServiceTest {
                 .email(ACCOUNT_DUPLICATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
                 .password(ACCOUNT_CREATED_PASSWORD)
+                .build();
+
+        emailNotReceivedAuthenticationNumberAccountCreateDto = AccountCreateDto.builder()
+                .email(ACCOUNT_NOT_EXISTED_EMAIL)
                 .build();
 
         nicknameExistedAccountCreateDto = AccountCreateDto.builder()
@@ -344,15 +350,17 @@ class AccountServiceTest {
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
     }
 
-//    @Test
-//    public void createWithNotMatchedAuthenticationNumber() {
-//        given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL))
-//                .willReturn(Optional.of(emailAuthentication));
-//
-//        assertThatThrownBy(() -> accountService.createUser(authenticationNumberNotMatchedAccountCreateDto, null))
-//                .isInstanceOf(EmailNotAuthenticatedException.class);
-//    }
-//
+    @Test
+    public void createWithEmailNotReceivedAuthenticationNumber() {
+        given(emailAuthenticationRepository.findByEmail(ACCOUNT_NOT_EXISTED_EMAIL))
+                .willReturn(Optional.empty());
+
+        assertThatThrownBy(
+                () -> accountService.createUser(emailNotReceivedAuthenticationNumberAccountCreateDto, null)
+        )
+                .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
+
 //    @Test
 //    public void updateWithValidAttribute() {
 //        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
