@@ -71,8 +71,8 @@ class AccountServiceTest {
     private static final String ACCOUNT_NOT_EXISTED_EMAIL = "accountNotExistedEmail";
     private static final String ACCOUNT_DUPLICATED_EMAIL = "accountExistedEmail";
     private static final String ACCOUNT_DUPLICATED_NICKNAME = "accountExistedNickName";
-    private static final String CREATED_AUTHENTICATIONNUMBER = "existedAuthentication";
-    private static final String NOT_EXISTED_AUTHENTICATIONNUMBER = "notExistedAuthentication";
+    private static final String ACCOUNT_CREATED_AUTHENTICATION_NUMBER = "existedAuthentication";
+    private static final String AUTHENTICATION_NUMBER_NOT_MATCHED = "notMatchedAuthentication";
 
     private UploadFileService uploadFileService;
     private RoleRepository roleRepository;
@@ -175,11 +175,11 @@ class AccountServiceTest {
                 .email(ACCOUNT_CREATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
                 .password(ACCOUNT_CREATED_PASSWORD)
-                .authenticationNumber(CREATED_AUTHENTICATIONNUMBER)
+                .authenticationNumber(ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
                 .build();
 
         authenticationNumberNotMatchedAccountCreateDto = AccountCreateDto.builder()
-                .authenticationNumber(NOT_EXISTED_AUTHENTICATIONNUMBER)
+                .authenticationNumber(AUTHENTICATION_NUMBER_NOT_MATCHED)
                 .build();
 
         accountUpdateDto = AccountUpdateDto.builder()
@@ -237,7 +237,7 @@ class AccountServiceTest {
 
         emailAuthentication = EmailAuthentication.builder()
                 .email(ACCOUNT_CREATED_EMAIL)
-                .authenticationNumber(CREATED_AUTHENTICATIONNUMBER)
+                .authenticationNumber(ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
                 .build();
     }
 
@@ -357,6 +357,17 @@ class AccountServiceTest {
 
         assertThatThrownBy(
                 () -> accountService.createUser(emailNotReceivedAuthenticationNumberAccountCreateDto, null)
+        )
+                .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
+
+    @Test
+    public void createWithEmailNotMatchedAuthenticationNumber() {
+        given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
+                .willReturn(Optional.of(emailAuthentication));
+
+        assertThatThrownBy(
+                () -> accountService.createUser(authenticationNumberNotMatchedAccountCreateDto, null)
         )
                 .isInstanceOf(EmailNotAuthenticatedException.class);
     }
