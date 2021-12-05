@@ -282,6 +282,13 @@ class AccountServiceTest {
         assertThat(accountResultDto.getUploadFileResultDto().getId()).isEqualTo(UPLOAD_FILE_ID);
         assertThat(accountResultDto.getStudyResultDto().getId()).isEqualTo(STUDY_SETUP_ID);
     }
+
+    @Test void getUserByNotExistedId() {
+        given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountService.getUser(ACCOUNT_NOT_EXISTED_ID))
+                .isInstanceOf(AccountNotFoundException.class);
+    }
 //
 //    @Test
 //    public void createWithValidAttribute() {
