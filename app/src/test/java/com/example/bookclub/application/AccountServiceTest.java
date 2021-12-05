@@ -99,7 +99,6 @@ class AccountServiceTest {
     private AccountUpdateDto accountUpdateDto;
     private AccountUpdateDto nicknameDuplicatedAccountUpdateDto;
     private AccountUpdateDto passwordNotValidAccountUpdateDto;
-//    private AccountResultDto accountResultDto;
     private AccountUpdatePasswordDto accountUpdatePasswordDto;
     private AccountUpdatePasswordDto newPasswordNotMatchedUpdateDto;
     private AccountUpdatePasswordDto passwordNotMatchedDto;
@@ -228,14 +227,6 @@ class AccountServiceTest {
                 .newPassword(ACCOUNT_UPDATED_PASSWORD)
                 .newPasswordConfirmed(ACCOUNT_SETUP_PASSWORD)
                 .build();
-
-        passwordNotMatchedDto = AccountUpdatePasswordDto.builder()
-                .password("")
-                .newPassword(ACCOUNT_UPDATED_PASSWORD)
-                .newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
-                .build();
-
-//        accountResultDto = AccountResultDto.of(setUpAccount);
 
         emailAuthentication = EmailAuthentication.builder()
                 .email(ACCOUNT_CREATED_EMAIL)
@@ -512,5 +503,16 @@ class AccountServiceTest {
 
         assertThatThrownBy(() -> accountService.deleteUser(ACCOUNT_NOT_EXISTED_ID))
                 .isInstanceOf(AccountNotFoundException.class);
+    }
+
+    @Test
+    public void getAuthenticationNumberWithExistedEmail() {
+        given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
+                .willReturn(Optional.of(emailAuthentication));
+
+        EmailAuthentication emailAuthentication = accountService.getAuthenticationNumber(ACCOUNT_CREATED_EMAIL);
+
+        assertThat(emailAuthentication.getEmail()).isEqualTo(ACCOUNT_CREATED_EMAIL);
+        assertThat(emailAuthentication.getAuthenticationNumber()).isEqualTo(ACCOUNT_CREATED_AUTHENTICATION_NUMBER);
     }
 }
