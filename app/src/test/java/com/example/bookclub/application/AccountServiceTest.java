@@ -450,19 +450,21 @@ class AccountServiceTest {
         )
                 .isInstanceOf(AccountPasswordBadRequestException.class);
     }
-//
-//    @Test
-//    public void updatePasswordWithValidAttribute() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        AccountResultDto accountResultDto = accountService.updateUserPassword(CREATED_ID, accountUpdatePasswordDto);
-//
-//        assertThat(passwordEncoder.matches(
-//                accountUpdatePasswordDto.getNewPassword(),
-//                accountResultDto.getPassword())
-//        ).isTrue();
-//    }
-//
+
+    @Test
+    public void updatePasswordWithValidAttribute() {
+        given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
+
+        AccountResultDto accountResultDto =
+                accountService.updatePassword(ACCOUNT_CREATED_ID, accountUpdatePasswordDto);
+
+        assertThat(
+                passwordEncoder.matches(
+                    accountUpdatePasswordDto.getNewPassword(), accountResultDto.getPassword()
+                )
+        ).isTrue();
+    }
+
 //    @Test
 //    public void updatePasswordWithNotMatchedNewPassword() {
 //        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
