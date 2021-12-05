@@ -515,4 +515,12 @@ class AccountServiceTest {
         assertThat(emailAuthentication.getEmail()).isEqualTo(ACCOUNT_CREATED_EMAIL);
         assertThat(emailAuthentication.getAuthenticationNumber()).isEqualTo(ACCOUNT_CREATED_AUTHENTICATION_NUMBER);
     }
+
+    @Test
+    public void getAuthenticationNumberWithNotExistedEmail() {
+        given(emailAuthenticationRepository.findByEmail(ACCOUNT_NOT_EXISTED_EMAIL)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountService.getAuthenticationNumber(ACCOUNT_CREATED_EMAIL))
+                .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
 }
