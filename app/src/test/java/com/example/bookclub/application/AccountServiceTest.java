@@ -394,13 +394,29 @@ class AccountServiceTest {
     void updateWithUploadFileBeforeNotHasUploadFile() {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithoutUploadFile));
 
-        AccountResultDto accountResultDto = accountService.updateUser(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
+        AccountResultDto accountResultDto =
+                accountService.updateUser(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
 
         UploadFileResultDto updatedUploadFileResultDto = accountResultDto.getUploadFileResultDto();
         assertThat(updatedUploadFileResultDto.getId()).isEqualTo(updateUploadFile.getId());
         assertThat(updatedUploadFileResultDto.getFileName()).isEqualTo(updateUploadFile.getFileName());
         assertThat(updatedUploadFileResultDto.getFileOriginalName()).isEqualTo(updateUploadFile.getFileOriginalName());
         assertThat(updatedUploadFileResultDto.getFileUrl()).isEqualTo(updateUploadFile.getFileUrl());
+    }
+
+    @Test
+    void updateWithoutUploadFileAlreadyHasUploadFile() {
+        given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
+
+        AccountResultDto accountResultDto =
+                accountService.updateUser(ACCOUNT_CREATED_ID, accountUpdateDto, null);
+
+        UploadFileResultDto updatedUploadFileResultDto = accountResultDto.getUploadFileResultDto();
+        UploadFile savedUpdatedUploadFile = createdAccountWithUploadFile.getUploadFile();
+        assertThat(updatedUploadFileResultDto.getId()).isEqualTo(savedUpdatedUploadFile.getId());
+        assertThat(updatedUploadFileResultDto.getFileName()).isEqualTo(savedUpdatedUploadFile.getFileName());
+        assertThat(updatedUploadFileResultDto.getFileOriginalName()).isEqualTo(savedUpdatedUploadFile.getFileOriginalName());
+        assertThat(updatedUploadFileResultDto.getFileUrl()).isEqualTo(savedUpdatedUploadFile.getFileUrl());
     }
 
 //    @Test
