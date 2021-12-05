@@ -16,6 +16,7 @@ import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
+import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -440,13 +441,15 @@ class AccountServiceTest {
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
     }
 
-//    @Test
-//    public void updateWithNotValidPassword() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        assertThatThrownBy(() -> accountService.updateUser(CREATED_ID, passwordNotValidAccountUpdateDto, null))
-//                .isInstanceOf(AccountPasswordBadRequestException.class);
-//    }
+    @Test
+    public void updateWithNotValidPassword() {
+        given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
+
+        assertThatThrownBy(
+                () -> accountService.updateUser(ACCOUNT_CREATED_ID, passwordNotValidAccountUpdateDto, null)
+        )
+                .isInstanceOf(AccountPasswordBadRequestException.class);
+    }
 //
 //    @Test
 //    public void updatePasswordWithValidAttribute() {
