@@ -8,6 +8,7 @@ import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
+import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
@@ -86,6 +87,7 @@ class AccountServiceTest {
     private AccountUpdateDto accountUpdateDto;
     private AccountUpdateDto nicknameDuplicatedAccountUpdateDto;
     private AccountUpdateDto passwordNotValidAccountUpdateDto;
+//    private AccountResultDto accountResultDto;
     private AccountUpdatePasswordDto accountUpdatePasswordDto;
     private AccountUpdatePasswordDto newPasswordNotMatchedDto;
     private AccountUpdatePasswordDto passwordNotMatchedDto;
@@ -227,6 +229,8 @@ class AccountServiceTest {
                 .newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
                 .build();
 
+//        accountResultDto = AccountResultDto.of(setUpAccount);
+
         emailAuthentication = EmailAuthentication.builder()
                 .email(ACCOUNT_CREATED_EMAIL)
                 .authenticationNumber(CREATED_AUTHENTICATIONNUMBER)
@@ -267,6 +271,16 @@ class AccountServiceTest {
 
         assertThatThrownBy(() -> accountService.findUserByEmail(ACCOUNT_NOT_EXISTED_EMAIL))
                 .isInstanceOf(AccountEmailNotFoundException.class);
+    }
+
+    @Test void getUserByExistedId() {
+        given(accountRepository.findById(ACCOUNT_SETUP_ID)).willReturn(Optional.of(setUpAccount));
+
+        AccountResultDto accountResultDto = accountService.getUser(ACCOUNT_SETUP_ID);
+
+        assertThat(accountResultDto.getId()).isEqualTo(ACCOUNT_SETUP_ID);
+        assertThat(accountResultDto.getUploadFileResultDto().getId()).isEqualTo(UPLOAD_FILE_ID);
+        assertThat(accountResultDto.getStudyResultDto().getId()).isEqualTo(STUDY_SETUP_ID);
     }
 //
 //    @Test
