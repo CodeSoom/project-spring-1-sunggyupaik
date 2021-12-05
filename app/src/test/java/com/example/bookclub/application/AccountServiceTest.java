@@ -10,6 +10,7 @@ import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
+import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,6 +57,7 @@ class AccountServiceTest {
 
     private static final Long ACCOUNT_NOT_EXISTED_ID = 100L;
     private static final Long CREATED_IMAGE_ID = 5L;
+    private static final String ACCOUNT_NOT_EXISTED_EMAIL = "notExistedEmail";
     private static final String DUPLICATED_EMAIL = "existedEmail";
     private static final String DUPLICATED_NICKNAME = "existedNickName";
     private static final String CREATED_AUTHENTICATIONNUMBER = "existedAuthentication";
@@ -250,7 +252,7 @@ class AccountServiceTest {
                 .isInstanceOf(AccountNotFoundException.class);
     }
 
-    @Test void findUserByEmail() {
+    @Test void findUserByExistedEmail() {
         given(accountRepository.findByEmail(ACCOUNT_SETUP_EMAIL)).willReturn(Optional.of(setUpAccount));
 
         Account account = accountService.findUserByEmail(ACCOUNT_SETUP_EMAIL);
@@ -258,6 +260,13 @@ class AccountServiceTest {
         assertThat(account.getId()).isEqualTo(ACCOUNT_SETUP_ID);
         assertThat(account.getUploadFile().getId()).isEqualTo(UPLOAD_FILE_ID);
         assertThat(account.getStudy().getId()).isEqualTo(STUDY_SETUP_ID);
+    }
+
+    @Test void findUserByNotExistedEmail() {
+        given(accountRepository.findByEmail(ACCOUNT_NOT_EXISTED_EMAIL)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> accountService.findUserByEmail(ACCOUNT_NOT_EXISTED_EMAIL))
+                .isInstanceOf(AccountEmailNotFoundException.class);
     }
 //
 //    @Test
