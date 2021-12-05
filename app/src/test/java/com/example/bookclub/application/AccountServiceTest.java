@@ -11,6 +11,7 @@ import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
+import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,8 +66,8 @@ class AccountServiceTest {
 
     private static final Long ACCOUNT_NOT_EXISTED_ID = 100L;
     private static final Long CREATED_IMAGE_ID = 5L;
-    private static final String ACCOUNT_NOT_EXISTED_EMAIL = "notExistedEmail";
-    private static final String DUPLICATED_EMAIL = "existedEmail";
+    private static final String ACCOUNT_NOT_EXISTED_EMAIL = "accountNotExistedEmail";
+    private static final String ACCOUNT_DUPLICATED_EMAIL = "accountExistedEmail";
     private static final String DUPLICATED_NICKNAME = "existedNickName";
     private static final String CREATED_AUTHENTICATIONNUMBER = "existedAuthentication";
     private static final String NOT_EXISTED_AUTHENTICATIONNUMBER = "notExistedAuthentication";
@@ -87,8 +88,8 @@ class AccountServiceTest {
     private PasswordEncoder passwordEncoder;
 
     private AccountCreateDto accountCreateDto;
-    private AccountCreateDto authenticationNumberNotMatchedAccountCreateDto;
     private AccountCreateDto emailExistedAccountCreateDto;
+    private AccountCreateDto authenticationNumberNotMatchedAccountCreateDto;
     private AccountCreateDto nicknameExistedAccountCreateDto;
     private AccountUpdateDto accountUpdateDto;
     private AccountUpdateDto nicknameDuplicatedAccountUpdateDto;
@@ -185,7 +186,7 @@ class AccountServiceTest {
 
         emailExistedAccountCreateDto = AccountCreateDto.builder()
                 .name(ACCOUNT_CREATED_NAME)
-                .email(DUPLICATED_EMAIL)
+                .email(ACCOUNT_DUPLICATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
                 .password(ACCOUNT_CREATED_PASSWORD)
                 .build();
@@ -324,14 +325,14 @@ class AccountServiceTest {
         verify(emailAuthenticationRepository).delete(emailAuthentication);
     }
 
-//    @Test
-//    public void createWithDuplicatedEmail() {
-//        given(accountRepository.existsByEmail(DUPLICATED_EMAIL)).willReturn(true);
-//
-//        assertThatThrownBy(() -> accountService.createUser(emailExistedAccountCreateDto, null))
-//                .isInstanceOf(AccountEmailDuplicatedException.class);
-//    }
-//
+    @Test
+    public void createWithDuplicatedEmail() {
+        given(accountRepository.existsByEmail(ACCOUNT_DUPLICATED_EMAIL)).willReturn(true);
+
+        assertThatThrownBy(() -> accountService.createUser(emailExistedAccountCreateDto, null))
+                .isInstanceOf(AccountEmailDuplicatedException.class);
+    }
+
 //    @Test
 //    public void createWithNotMatchedAuthenticationNumber() {
 //        given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL))
