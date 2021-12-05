@@ -82,8 +82,7 @@ class AccountServiceTest {
     private UploadFile updateUploadFile;
     private Study setUpStudy;
     private Account setUpAccount;
-    private Account notEncodedCreatedAccountWithUploadFile;
-    private Account createdAccount;
+    private Account createdAccountWithoutUploadFile;
     private Account createdAccountWithUploadFile;
     private PasswordEncoder passwordEncoder;
 
@@ -150,16 +149,7 @@ class AccountServiceTest {
         setUpAccount.addUploadFile(uploadFile);
         setUpStudy.addAccount(setUpAccount);
 
-        notEncodedCreatedAccountWithUploadFile = Account.builder()
-                .id(ACCOUNT_CREATED_ID)
-                .name(ACCOUNT_CREATED_NAME)
-                .email(ACCOUNT_CREATED_EMAIL)
-                .nickname(ACCOUNT_CREATED_NICKNAME)
-                .password(ACCOUNT_CREATED_PASSWORD)
-                .uploadFile(uploadFile)
-                .build();
-
-        createdAccount = Account.builder()
+        createdAccountWithUploadFile = Account.builder()
                 .id(ACCOUNT_CREATED_ID)
                 .name(ACCOUNT_CREATED_NAME)
                 .email(ACCOUNT_CREATED_EMAIL)
@@ -168,13 +158,12 @@ class AccountServiceTest {
                 .uploadFile(createdUploadFile)
                 .build();
 
-        createdAccountWithUploadFile = Account.builder()
-                .id(CREATED_IMAGE_ID)
+        createdAccountWithoutUploadFile = Account.builder()
+                .id(ACCOUNT_CREATED_ID)
                 .name(ACCOUNT_CREATED_NAME)
                 .email(ACCOUNT_CREATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
                 .password(passwordEncoder.encode(ACCOUNT_CREATED_PASSWORD))
-                .uploadFile(uploadFile)
                 .build();
 
         accountCreateDto = AccountCreateDto.builder()
@@ -298,8 +287,8 @@ class AccountServiceTest {
     }
 
     @Test
-    public void createWithValidAttributeWithUploadFile() {
-        given(accountRepository.save(any(Account.class))).willReturn(createdAccount);
+    public void createWithUploadFile() {
+        given(accountRepository.save(any(Account.class))).willReturn(createdAccountWithUploadFile);
         given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
                 .willReturn(Optional.of(emailAuthentication));
 
@@ -315,21 +304,26 @@ class AccountServiceTest {
 
         verify(emailAuthenticationRepository).delete(emailAuthentication);
     }
-//
-//    @Test
-//    public void createWithUploadFile() {
-//        given(accountRepository.save(any(Account.class))).willReturn(notEncodedCreatedAccountWithUploadFile);
-//        given(emailAuthenticationRepository.findByEmail(CREATED_EMAIL)).willReturn(Optional.of(emailAuthentication));
-//
-//        AccountResultDto accountResultDto = accountService.createUser(accountCreateDto, uploadFile);
-//        UploadFile uploadFile = accountResultDto.getUploadFile();
-//
-//        assertThat(uploadFile.getId()).isEqualTo(UPLOADFILE_ID);
-//        assertThat(uploadFile.getFileName()).isEqualTo(UPLOADFILE_FILENAME);
-//        assertThat(uploadFile.getFileOriginalName()).isEqualTo(UPLOADFILE_FILENORIGINALNAME);
-//        assertThat(uploadFile.getFileUrl()).isEqualTo(UPLOADFILE_FILEURL);
-//    }
-//
+
+    @Test
+    public void createWithoutUploadFile() {
+        given(accountRepository.save(any(Account.class))).willReturn(createdAccountWithoutUploadFile);
+        given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
+                .willReturn(Optional.of(emailAuthentication));
+
+        AccountResultDto accountResultDto = accountService.createUser(accountCreateDto, null);
+
+        assertThat(accountResultDto.getId()).isEqualTo(ACCOUNT_CREATED_ID);
+        assertThat(accountResultDto.getName()).isEqualTo(accountCreateDto.getName());
+        assertThat(accountResultDto.getEmail()).isEqualTo(accountCreateDto.getEmail());
+        assertThat(accountResultDto.getNickname()).isEqualTo(accountCreateDto.getNickname());
+        assertThat(passwordEncoder.matches(accountCreateDto.getPassword(), accountResultDto.getPassword())).isTrue();
+        assertThat(accountResultDto.getUploadFileResultDto().getId()).isNull();
+        assertThat(emailAuthentication.getAuthenticationNumber()).isEqualTo(accountCreateDto.getAuthenticationNumber());
+
+        verify(emailAuthenticationRepository).delete(emailAuthentication);
+    }
+
 //    @Test
 //    public void createWithDuplicatedEmail() {
 //        given(accountRepository.existsByEmail(DUPLICATED_EMAIL)).willReturn(true);
