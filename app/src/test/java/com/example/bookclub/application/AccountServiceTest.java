@@ -74,6 +74,7 @@ class AccountServiceTest {
     private static final String ACCOUNT_DUPLICATED_EMAIL = "accountExistedEmail";
     private static final String ACCOUNT_DUPLICATED_NICKNAME = "accountExistedNickName";
     private static final String ACCOUNT_CREATED_AUTHENTICATION_NUMBER = "existedAuthentication";
+    private static final Long EMAIL_AUTHENTICATION_ID = 5L;
     private static final String AUTHENTICATION_NUMBER_NOT_MATCHED = "notMatchedAuthentication";
 
     private UploadFileService uploadFileService;
@@ -229,6 +230,7 @@ class AccountServiceTest {
                 .build();
 
         emailAuthentication = EmailAuthentication.builder()
+                .id(EMAIL_AUTHENTICATION_ID)
                 .email(ACCOUNT_CREATED_EMAIL)
                 .authenticationNumber(ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
                 .build();
@@ -522,5 +524,15 @@ class AccountServiceTest {
 
         assertThatThrownBy(() -> accountService.getAuthenticationNumber(ACCOUNT_CREATED_EMAIL))
                 .isInstanceOf(EmailNotAuthenticatedException.class);
+    }
+
+    @Test
+    public void deleteEmailAuthenticationWithExistedEmail() {
+        given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
+                .willReturn(Optional.of(emailAuthentication));
+
+        accountService.deleteEmailAuthentication(ACCOUNT_CREATED_EMAIL);
+
+        verify(emailAuthenticationRepository).delete(emailAuthentication);
     }
 }
