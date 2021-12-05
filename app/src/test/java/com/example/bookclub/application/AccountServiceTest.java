@@ -11,6 +11,7 @@ import com.example.bookclub.dto.AccountCreateDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
+import com.example.bookclub.dto.UploadFileResultDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
@@ -372,22 +373,23 @@ class AccountServiceTest {
                 .isInstanceOf(EmailNotAuthenticatedException.class);
     }
 
-//    @Test
-//    public void updateWithValidAttribute() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
-//
-//        AccountResultDto accountResultDto = accountService.updateUser(CREATED_ID, accountUpdateDto, updateUploadFile);
-//        UploadFile uploadFile = accountResultDto.getUploadFile();
-//
-//        assertThat(accountResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
-//        assertThat(passwordEncoder.matches(accountUpdateDto.getPassword(), accountResultDto.getPassword())).isTrue();
-//
-//        assertThat(uploadFile.getId()).isEqualTo(UPLOADFILE_UPDATE_ID);
-//        assertThat(uploadFile.getFileName()).isEqualTo(UPLOADFILE_UPDATE_FILENAME);
-//        assertThat(uploadFile.getFileOriginalName()).isEqualTo(UPLOADFILE_UPDATE_FILENORIGINALNAME);
-//        assertThat(uploadFile.getFileUrl()).isEqualTo(UPLOADFILE_UPDATE_FILEURL);
-//    }
-//
+    @Test
+    public void updateWithUploadFileAlreadyHasUploadFile() {
+        given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
+
+        AccountResultDto accountResultDto =
+                accountService.updateUser(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
+
+        assertThat(accountResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
+        assertThat(passwordEncoder.matches(accountUpdateDto.getPassword(), accountResultDto.getPassword())).isTrue();
+
+        UploadFileResultDto updatedUploadFileResultDto = accountResultDto.getUploadFileResultDto();
+        assertThat(updatedUploadFileResultDto.getId()).isEqualTo(updateUploadFile.getId());
+        assertThat(updatedUploadFileResultDto.getFileName()).isEqualTo(updateUploadFile.getFileName());
+        assertThat(updatedUploadFileResultDto.getFileOriginalName()).isEqualTo(updateUploadFile.getFileOriginalName());
+        assertThat(updatedUploadFileResultDto.getFileUrl()).isEqualTo(updateUploadFile.getFileUrl());
+    }
+
 //    @Test
 //    public void updatedWithDuplicatedNickname() {
 //        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
