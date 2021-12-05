@@ -249,6 +249,16 @@ class AccountServiceTest {
         assertThatThrownBy(() -> accountService.findUser(ACCOUNT_NOT_EXISTED_ID))
                 .isInstanceOf(AccountNotFoundException.class);
     }
+
+    @Test void findUserByEmail() {
+        given(accountRepository.findByEmail(ACCOUNT_SETUP_EMAIL)).willReturn(Optional.of(setUpAccount));
+
+        Account account = accountService.findUserByEmail(ACCOUNT_SETUP_EMAIL);
+
+        assertThat(account.getId()).isEqualTo(ACCOUNT_SETUP_ID);
+        assertThat(account.getUploadFile().getId()).isEqualTo(UPLOAD_FILE_ID);
+        assertThat(account.getStudy().getId()).isEqualTo(STUDY_SETUP_ID);
+    }
 //
 //    @Test
 //    public void createWithValidAttribute() {
