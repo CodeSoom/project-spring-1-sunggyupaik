@@ -440,6 +440,16 @@ class AccountServiceTest {
         )
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
     }
+    
+    @Test
+    public void updateWithNotExistedId() {
+        given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(
+                () -> accountService.updateUser(ACCOUNT_NOT_EXISTED_ID, accountUpdateDto, null)
+        )
+                .isInstanceOf(AccountNotFoundException.class);
+    }
 
     @Test
     public void updateWithNotValidPassword() {
