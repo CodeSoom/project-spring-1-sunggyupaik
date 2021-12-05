@@ -419,6 +419,16 @@ class AccountServiceTest {
         assertThat(updatedUploadFileResultDto.getFileUrl()).isEqualTo(savedUpdatedUploadFile.getFileUrl());
     }
 
+    @Test
+    void updateWithoutUploadFileBeforeNotHasUploadFile() {
+        given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithoutUploadFile));
+
+        AccountResultDto accountResultDto =
+                accountService.updateUser(ACCOUNT_CREATED_ID, accountUpdateDto, null);
+
+        assertThat(accountResultDto.getUploadFileResultDto().getId()).isNull();
+    }
+
 //    @Test
 //    public void updatedWithDuplicatedNickname() {
 //        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
