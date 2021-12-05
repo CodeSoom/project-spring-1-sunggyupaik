@@ -14,6 +14,7 @@ import com.example.bookclub.dto.AccountUpdatePasswordDto;
 import com.example.bookclub.dto.UploadFileResultDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
+import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
@@ -101,7 +102,7 @@ class AccountServiceTest {
     private AccountUpdateDto passwordNotValidAccountUpdateDto;
 //    private AccountResultDto accountResultDto;
     private AccountUpdatePasswordDto accountUpdatePasswordDto;
-    private AccountUpdatePasswordDto newPasswordNotMatchedDto;
+    private AccountUpdatePasswordDto newPasswordNotMatchedUpdateDto;
     private AccountUpdatePasswordDto passwordNotMatchedDto;
     private EmailAuthentication emailAuthentication;
 
@@ -223,7 +224,7 @@ class AccountServiceTest {
                 .newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
                 .build();
 
-        newPasswordNotMatchedDto = AccountUpdatePasswordDto.builder()
+        newPasswordNotMatchedUpdateDto = AccountUpdatePasswordDto.builder()
                 .password(ACCOUNT_CREATED_PASSWORD)
                 .newPassword(ACCOUNT_UPDATED_PASSWORD)
                 .newPasswordConfirmed(ACCOUNT_SETUP_PASSWORD)
@@ -465,14 +466,16 @@ class AccountServiceTest {
         ).isTrue();
     }
 
-//    @Test
-//    public void updatePasswordWithNotMatchedNewPassword() {
-//        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
-//
-//        assertThatThrownBy(() -> accountService.updateUserPassword(CREATED_ID, newPasswordNotMatchedDto))
-//                .isInstanceOf(AccountNewPasswordNotMatchedException.class);
-//    }
-//
+    @Test
+    public void updatePasswordWithNotMatchedNewPassword() {
+        given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
+
+        assertThatThrownBy(
+                () -> accountService.updatePassword(ACCOUNT_CREATED_ID, newPasswordNotMatchedUpdateDto)
+        )
+                .isInstanceOf(AccountNewPasswordNotMatchedException.class);
+    }
+
 //    @Test
 //    public void updatePasswordWithNotValidPassword() {
 //        given(accountRepository.findById(CREATED_ID)).willReturn(Optional.of(createdAccount));
