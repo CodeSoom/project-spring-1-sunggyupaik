@@ -551,6 +551,20 @@ public class StudyServiceTest {
 				.isInstanceOf(StudyStartAndEndDateNotValidException.class);
 	}
 
+	@Test
+	void updateWithEndTimeIsBeforeStartTime() {
+		given(studyRepository.findById(STUDY_CREATED_ID)).willReturn(Optional.of(createdStudy));
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(accountCreatedWithoutStudy));
+
+		assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL,
+						                       STUDY_CREATED_ID,
+						                       endTimeIsBeforeStartTimeUpdateDto)
+		)
+				.isInstanceOf(StudyStartAndEndTimeNotValidException.class);
+	}
+
 //    @Test
 //    void deleteWithExistedId() {
 //        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
