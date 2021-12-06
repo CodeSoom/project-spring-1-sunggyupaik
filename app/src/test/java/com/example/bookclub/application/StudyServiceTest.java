@@ -9,6 +9,7 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.StudyNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -86,7 +88,7 @@ public class StudyServiceTest {
     private static final String LATE_STARTTIME = "15:00";
     private static final String EARLY_ENDTIME = "13:00";
 
-    private static final Long NOT_EXISTED_ID = 100L;
+    private static final Long STUDY_NOT_EXISTED_ID = 100L;
     private static final Long FULL_SIZE_ID = 5L;
 
     private static final Long APPLIER_TWO_ID = 4L;
@@ -378,14 +380,14 @@ public class StudyServiceTest {
         assertThat(study.getId()).isEqualTo(STUDY_SETUP_ID);
     }
 
-//    @Test
-//    void detailWithNotExistedId() {
-//        given(studyRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
-//
-//        assertThatThrownBy(() -> studyService.getStudy(NOT_EXISTED_ID))
-//                .isInstanceOf(StudyNotFoundException.class);
-//    }
-//
+    @Test
+    void detailWithNotExistedId() {
+        given(studyRepository.findById(STUDY_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> studyService.getStudy(STUDY_NOT_EXISTED_ID))
+                .isInstanceOf(StudyNotFoundException.class);
+    }
+
 //    @Test
 //    void createWithValidateAttribute() throws ParseException {
 //        given(studyRepository.save(any(Study.class))).willReturn(createdStudy);
