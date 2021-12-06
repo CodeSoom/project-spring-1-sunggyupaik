@@ -124,11 +124,15 @@ public class StudyServiceTest {
     private Study pythonBookNameStudyTwo;
 
     private StudyCreateDto studyCreateDto;
-    private StudyCreateDto studyStartDateInThePastDto;
-    private StudyCreateDto studyStartDateTodayDto;
-    private StudyCreateDto endDateIsBeforeStartDateDto;
-    private StudyCreateDto endTimeIsBeforeStartTimeDto;
+    private StudyCreateDto studyStartDateInThePastCreateDto;
+    private StudyCreateDto studyStartDateTodayCreateDto;
+    private StudyCreateDto endDateIsBeforeStartDateCreateDto;
+    private StudyCreateDto endTimeIsBeforeStartTimeCreateDto;
     private StudyUpdateDto studyUpdateDto;
+	private StudyUpdateDto studyStartDateInThePastUpdateDto;
+	private StudyUpdateDto studyStartDateTodayUpdateDto;
+	private StudyUpdateDto endDateIsBeforeStartDateUpdateDto;
+	private StudyUpdateDto endTimeIsBeforeStartTimeUpdateDto;
 
     private List<Study> listAllStudies;
     private List<Study> listOpenedStudies;
@@ -306,20 +310,20 @@ public class StudyServiceTest {
                 .zone(STUDY_CREATED_ZONE)
                 .build();
 
-        studyStartDateInThePastDto = StudyCreateDto.builder()
+        studyStartDateInThePastCreateDto = StudyCreateDto.builder()
                 .startDate(PAST_STARTDATE)
                 .build();
 
-        studyStartDateTodayDto = StudyCreateDto.builder()
+        studyStartDateTodayCreateDto = StudyCreateDto.builder()
                 .startDate(TODAY_STARTDATE)
                 .build();
 
-        endDateIsBeforeStartDateDto = StudyCreateDto.builder()
+        endDateIsBeforeStartDateCreateDto = StudyCreateDto.builder()
                 .startDate(LATE_STARTDATE)
                 .endDate(EARLY_ENDDATE)
                 .build();
 
-        endTimeIsBeforeStartTimeDto = StudyCreateDto.builder()
+        endTimeIsBeforeStartTimeCreateDto = StudyCreateDto.builder()
                 .startDate(STUDY_CREATED_START_DATE)
                 .endDate(STUDY_CREATED_END_DATE)
                 .startTime(LATE_STARTTIME)
@@ -340,6 +344,26 @@ public class StudyServiceTest {
                 .studyState(STUDY_SETUP_STUDY_STATE)
                 .zone(STUDY_SETUP_ZONE)
                 .build();
+
+		studyStartDateInThePastUpdateDto = StudyUpdateDto.builder()
+				.startDate(PAST_STARTDATE)
+				.build();
+
+		studyStartDateTodayUpdateDto = StudyUpdateDto.builder()
+				.startDate(TODAY_STARTDATE)
+				.build();
+
+		endDateIsBeforeStartDateUpdateDto = StudyUpdateDto.builder()
+				.startDate(LATE_STARTDATE)
+				.endDate(EARLY_ENDDATE)
+				.build();
+
+		endTimeIsBeforeStartTimeUpdateDto = StudyUpdateDto.builder()
+				.startDate(STUDY_CREATED_START_DATE)
+				.endDate(STUDY_CREATED_END_DATE)
+				.startTime(LATE_STARTTIME)
+				.endTime(EARLY_ENDTIME)
+				.build();
 
         listAllStudies = List.of(setUpStudy, createdStudy);
         listOpenedStudies = List.of(openedStudyOne, openedStudyTwo);
@@ -442,12 +466,12 @@ public class StudyServiceTest {
 				.willReturn(Optional.of(accountCreatedWithoutStudy));
 
         assertThatThrownBy(
-				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyStartDateInThePastDto)
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyStartDateInThePastCreateDto)
 		)
                 .isInstanceOf(StudyStartDateInThePastException.class);
 
 		assertThatThrownBy(
-				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyStartDateTodayDto)
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyStartDateTodayCreateDto)
 		)
                 .isInstanceOf(StudyStartDateInThePastException.class);
     }
@@ -458,7 +482,7 @@ public class StudyServiceTest {
 				.willReturn(Optional.of(accountCreatedWithoutStudy));
 
         assertThatThrownBy(
-				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, endDateIsBeforeStartDateDto)
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, endDateIsBeforeStartDateCreateDto)
 		)
                 .isInstanceOf(StudyStartAndEndDateNotValidException.class);
     }
@@ -469,7 +493,7 @@ public class StudyServiceTest {
 				.willReturn(Optional.of(accountCreatedWithoutStudy));
 
         assertThatThrownBy(
-				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, endTimeIsBeforeStartTimeDto)
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, endTimeIsBeforeStartTimeCreateDto)
 		)
                 .isInstanceOf(StudyStartAndEndTimeNotValidException.class);
     }
@@ -497,6 +521,23 @@ public class StudyServiceTest {
 		)
                 .isInstanceOf(AccountNotManagerOfStudyException.class);
     }
+
+	@Test
+	void updateWithStartDateInThePast() {
+		given(studyRepository.findById(STUDY_CREATED_ID)).willReturn(Optional.of(createdStudy));
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(managerOfCreatedStudy));
+
+		assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_CREATED_ID, studyStartDateInThePastUpdateDto)
+		)
+				.isInstanceOf(StudyStartDateInThePastException.class);
+
+		assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_CREATED_ID, studyStartDateTodayUpdateDto)
+		)
+				.isInstanceOf(StudyStartDateInThePastException.class);
+	}
 
 //    @Test
 //    void deleteWithExistedId() {
