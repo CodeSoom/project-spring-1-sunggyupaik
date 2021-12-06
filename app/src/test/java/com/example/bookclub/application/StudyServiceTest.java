@@ -13,6 +13,7 @@ import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
@@ -485,24 +486,18 @@ public class StudyServiceTest {
         assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
     }
 
-//    @Test
-//    void updateWithNullAccount() {
-//        given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
-//        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
-//
-//        assertThatThrownBy(() -> studyService.updateStudy(null , CREATED_ID, studyUpdateDto))
-//                .isInstanceOf(AccessDeniedException.class);
-//    }
-//
-//    @Test
-//    void updateWithInvalidAccount() {
-//        given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        assertThatThrownBy(() -> studyService.updateStudy(managerOfSetUpStudy, CREATED_ID, studyUpdateDto))
-//                .isInstanceOf(AccessDeniedException.class);
-//    }
-//
+    @Test
+    void updateWithNotManagerOfStudy() {
+		given(studyRepository.findById(STUDY_CREATED_ID)).willReturn(Optional.of(createdStudy));
+		given(accountRepository.findByEmail(ACCOUNT_SETUP_MANAGER_EMAIL))
+				.willReturn(Optional.of(managerOfSetUpStudy));
+
+        assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_SETUP_MANAGER_EMAIL, STUDY_CREATED_ID, studyUpdateDto)
+		)
+                .isInstanceOf(AccountNotManagerOfStudyException.class);
+    }
+
 //    @Test
 //    void deleteWithExistedId() {
 //        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
