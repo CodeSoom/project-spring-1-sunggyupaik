@@ -25,9 +25,11 @@ public class AccountResultDto {
 
     private UploadFileResultDto uploadFileResultDto;
 
+    private StudyResultDto studyResultDto;
+
     @Builder
-    public AccountResultDto(Long id, String name, String email, String nickname,
-                            String password, boolean deleted, UploadFileResultDto uploadFileResultDto) {
+    public AccountResultDto(Long id, String name, String email, String nickname, String password,
+                            boolean deleted, UploadFileResultDto uploadFileResultDto, StudyResultDto studyResultDto) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -35,6 +37,7 @@ public class AccountResultDto {
         this.password = password;
         this.deleted = deleted;
         this.uploadFileResultDto = uploadFileResultDto;
+        this.studyResultDto = studyResultDto;
     }
 
     public static AccountResultDto of(Account account) {
@@ -46,6 +49,7 @@ public class AccountResultDto {
                 .password(account.getPassword())
                 .deleted(account.isDeleted())
                 .uploadFileResultDto(UploadFileResultDto.of(account.getUploadFile()))
+                .studyResultDto(StudyResultDto.of(account.getStudy()))
                 .build();
     }
 }

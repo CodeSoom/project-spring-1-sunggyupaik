@@ -74,7 +74,8 @@ public class AccountService {
         }
 
         String nickname = accountCreateDto.getNickname();
-        if (accountRepository.existsByNickname(nickname)) {
+        boolean nicknameDuplicated = accountRepository.existsByNickname(nickname);
+        if (nicknameDuplicated) {
             throw new AccountNicknameDuplicatedException(nickname);
         }
 
@@ -83,8 +84,8 @@ public class AccountService {
             account.addUploadFile(uploadFile);
         }
 
+        account.updatePassword(account.getPassword(), passwordEncoder);
         Account createdAccount = accountRepository.save(account);
-        createdAccount.updatePassword(createdAccount.getPassword(), passwordEncoder);
         Role role = Role.builder()
                         .email(createdAccount.getEmail())
                         .name("USER")

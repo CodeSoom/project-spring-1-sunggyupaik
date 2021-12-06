@@ -513,7 +513,7 @@ class AccountApiControllerTest {
     }
 
 	@Test
-	void createWithNotAuthenticatedEmailAuthenticationNumnber() throws Exception {
+	void createWithNotAuthenticatedEmailAuthenticationNumber() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
 		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
 				.willThrow(EmailNotAuthenticatedException.class);

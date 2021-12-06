@@ -66,6 +66,10 @@ public class StudyResultDto {
     }
 
     public static StudyResultDto of(Study study) {
+        if(study == null) {
+            return StudyResultDto.builder().build();
+        }
+
         return StudyResultDto.builder()
                 .id(study.getId())
                 .name(study.getName())
@@ -84,6 +88,4 @@ public class StudyResultDto {
                 .zone(study.getZone())
                 .build();
     }
-
-
 }
