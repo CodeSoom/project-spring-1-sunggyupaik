@@ -473,17 +473,18 @@ public class StudyServiceTest {
                 .isInstanceOf(StudyStartAndEndTimeNotValidException.class);
     }
 
-//    @Test
-//    void updateWithValidateAttribute() throws ParseException {
-//        given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        StudyResultDto studyResultDto = studyService.updateStudy(managerOfCreatedStudy, CREATED_ID, studyUpdateDto);
-//        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
-//        assertThat(studyResultDto.getName()).isEqualTo(studyUpdateDto.getName());
-//        assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
-//    }
-//
+    @Test
+    void updateWithValidateAttribute() {
+		given(studyRepository.findById(STUDY_CREATED_ID)).willReturn(Optional.of(createdStudy));
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(managerOfCreatedStudy));
+
+        StudyResultDto studyResultDto = studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_CREATED_ID, studyUpdateDto);
+        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
+        assertThat(studyResultDto.getName()).isEqualTo(studyUpdateDto.getName());
+        assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
+    }
+
 //    @Test
 //    void updateWithNullAccount() {
 //        given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
