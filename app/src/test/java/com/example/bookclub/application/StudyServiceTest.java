@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -368,15 +369,15 @@ public class StudyServiceTest {
         }
     }
 
-//    @Test
-//    void detailWithExistedId() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//
-//        Study study = studyService.getStudy(SETUP_ID);
-//
-//        assertThat(study.getId()).isEqualTo(SETUP_ID);
-//    }
-//
+    @Test
+    void detailWithExistedId() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+
+        Study study = studyService.getStudy(STUDY_SETUP_ID);
+
+        assertThat(study.getId()).isEqualTo(STUDY_SETUP_ID);
+    }
+
 //    @Test
 //    void detailWithNotExistedId() {
 //        given(studyRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
