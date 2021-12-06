@@ -13,6 +13,7 @@ import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -419,16 +420,18 @@ public class StudyServiceTest {
         assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
         assertThat(managerOfCreatedStudy.getStudy()).isEqualTo(createdStudy);
     }
-//
-//    @Test
-//    void createWithAccountAlreadyStudyExisted() {
-//        given(accountRepository.findById(SETUP_MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
-//        managerOfSetUpStudy.addStudy(setUpStudy);
-//
-//        assertThatThrownBy(() -> studyService.createStudy(managerOfSetUpStudy, studyCreateDto))
-//                .isInstanceOf(StudyAlreadyExistedException.class);
-//    }
-//
+
+    @Test
+    void createWithAccountAlreadyStudyExisted() {
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(managerOfCreatedStudy));
+
+        assertThatThrownBy(
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyCreateDto)
+		)
+                .isInstanceOf(StudyAlreadyInOpenOrClose.class);
+    }
+
 //    @Test
 //    void createWithStartDateInThePast() {
 //        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
