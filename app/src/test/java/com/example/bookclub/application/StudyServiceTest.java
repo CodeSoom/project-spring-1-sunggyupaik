@@ -334,18 +334,17 @@ public class StudyServiceTest {
 
         assertThat(lists).containsExactly(setUpStudy, createdStudy);
     }
-}
 
-//    @Test
-//    void listOpenedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
-//        }
-//    }
+    @Test
+    void listOpenedStudies() {
+        given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenedStudies);
+
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
+
+        for(Study study : lists) {
+            assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+        }
+    }
 //
 //    @Test
 //    void listClosedStudies() {
@@ -552,4 +551,4 @@ public class StudyServiceTest {
 //        }
 //        assertThat(setUpStudy.getBookName()).doesNotContain(PYTHON_KEYWORD);
 //    }
-//}
+}
