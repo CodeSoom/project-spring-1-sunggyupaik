@@ -357,17 +357,17 @@ public class StudyServiceTest {
         }
     }
 
-//    @Test
-//    void listEndedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listEndedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.END);
-//        }
-//    }
-//
+    @Test
+    void listEndedStudies() {
+        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listEndedStudies);
+
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
+
+        for(Study study : lists) {
+            assertThat(study.getStudyState()).isEqualTo(StudyState.END);
+        }
+    }
+
 //    @Test
 //    void detailWithExistedId() {
 //        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
