@@ -15,6 +15,7 @@ import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudyStartDateInThePastException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -432,17 +433,22 @@ public class StudyServiceTest {
                 .isInstanceOf(StudyAlreadyInOpenOrClose.class);
     }
 
-//    @Test
-//    void createWithStartDateInThePast() {
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        assertThatThrownBy(() -> studyService.createStudy(managerOfCreatedStudy, studyStartDateInThePastDto))
-//                .isInstanceOf(StudyStartDateInThePastException.class);
-//
-//        assertThatThrownBy(() -> studyService.createStudy(managerOfCreatedStudy, studyStartDateTodayDto))
-//                .isInstanceOf(StudyStartDateInThePastException.class);
-//    }
-//
+    @Test
+    void createWithStartDateInThePast() {
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(accountCreatedWithoutStudy));
+
+        assertThatThrownBy(
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyStartDateInThePastDto)
+		)
+                .isInstanceOf(StudyStartDateInThePastException.class);
+
+		assertThatThrownBy(
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyStartDateTodayDto)
+		)
+                .isInstanceOf(StudyStartDateInThePastException.class);
+    }
+
 //    @Test
 //    void createWithEndDateIsBeforeStartDate() {
 //        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
