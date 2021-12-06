@@ -345,18 +345,18 @@ public class StudyServiceTest {
             assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
         }
     }
-//
-//    @Test
-//    void listClosedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listClosedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
-//        }
-//    }
-//
+
+    @Test
+    void listClosedStudies() {
+        given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listClosedStudies);
+
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
+
+        for(Study study : lists) {
+            assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
+        }
+    }
+
 //    @Test
 //    void listEndedStudies() {
 //        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listEndedStudies);
