@@ -1,18 +1,21 @@
 package com.example.bookclub.application;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Day;
+import com.example.bookclub.domain.EmailAuthenticationRepository;
+import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
+import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -23,6 +26,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -43,17 +47,17 @@ public class StudyServiceTest {
     private static final StudyState STUDY_SETUP_STUDY_STATE = StudyState.OPEN;
     private static final Zone STUDY_SETUP_ZONE = Zone.SEOUL;
 
-    private static final Long ACCOUNT_CREATED_MANAGER_ID = 2L;
-    private static final String ACCOUNT_CREATED_MANAGER_NAME = "accountCreatedMangerName";
-    private static final String ACCOUNT_CREATED_MANAGER_EMAIL = "accountCreatedManagerEmail";
-    private static final String ACCOUNT_CREATED_MANAGER_NICKNAME = "accountCreatedNickName";
-    private static final String ACCOUNT_CREATED_MANAGER_PASSWORD = "accountCreatedManagerPassword";
+	private static final Long ACCOUNT_SETUP_MANAGER_ID = 2L;
+	private static final String ACCOUNT_SETUP_MANAGER_NAME = "accountSetupManagerName";
+	private static final String ACCOUNT_SETUP_MANAGER_EMAIL = "accountSetupManagerEmail";
+	private static final String ACCOUNT_SETUP_MANAGER_NICKNAME = "accountSetupManagerNickname";
+	private static final String ACCOUNT_SETUP_MANAGER_PASSWORD = "accountSetupManagerPassword";
 
-    private static final Long ACCOUNT_SETUP_MANAGER_ID = 3L;
-    private static final String ACCOUNT_SETUP_MANAGER_NAME = "accountSetupManagerName";
-    private static final String ACCOUNT_SETUP_MANAGER_EMAIL = "accountSetupManagerEmail";
-    private static final String ACCOUNT_SETUP_MANAGER_NICKNAME = "accountSetupManagerNickname";
-    private static final String ACCOUNT_SETUP_MANAGER_PASSWORD = "accountSetupManagerPassword";
+    private static final Long ACCOUNT_CREATED_STUDY_ID = 3L;
+    private static final String ACCOUNT_CREATED_NAME = "accountCreatedName";
+    private static final String ACCOUNT_CREATED_STUDY_EMAIL = "accountCreatedStudyEmail";
+    private static final String ACCOUNT_CREATED_NICKNAME = "accountCreatedNickName";
+    private static final String ACCOUNT_CREATED_PASSWORD = "accountCreatedManagerPassword";
 
     private static final Long ACCOUNT_APPLIER_ONE_ID = 4L;
     private static final String ACCOUNT_APPLIER_ONE_NAME = "accountApplierOneName";
@@ -93,14 +97,14 @@ public class StudyServiceTest {
 
     private static final Long APPLIER_TWO_ID = 4L;
     private static final Long APPLIER_THREE_ID = 5L;
-    private static final Long ACCOUNT_WITHOUT_STUDY_ID = 6L;
+    private static final Long ACCOUNT_CREATED_WITHOUT_STUDY_ID = ACCOUNT_CREATED_STUDY_ID;
 
     private Account managerOfCreatedStudy;
     private Account managerOfSetUpStudy;
     private Account applierOfSetUpStudyOne;
     private Account applierOfSetUpStudyTwo;
     private Account applierOfSetUpStudyThree;
-    private Account accountWithoutStudy;
+    private Account accountCreatedWithoutStudy;
 
     private Study setUpStudy;
     private Study createdStudy;
@@ -132,33 +136,83 @@ public class StudyServiceTest {
 	private StudyRepository studyRepository;
 	private AccountRepository accountRepository;
 	private PasswordEncoder passwordEncoder;
+	private EmailAuthenticationRepository emailAuthenticationRepository;
+	private RoleRepository roleRepository;
+	private AmazonS3 amazonS3;
+	private UploadFileService uploadFileService;
 
-	@MockBean
 	private AccountService accountService;
 
     @BeforeEach
     void setUp() {
         studyRepository = mock(StudyRepository.class);
         accountRepository = mock(AccountRepository.class);
+		emailAuthenticationRepository = mock(EmailAuthenticationRepository.class);
+		roleRepository = mock(RoleRepository.class);
+		amazonS3 = mock(AmazonS3.class);
+		uploadFileService = new UploadFileService(amazonS3);
+		passwordEncoder = new BCryptPasswordEncoder();
+		accountService = new AccountService(accountRepository, emailAuthenticationRepository,
+				                            passwordEncoder, uploadFileService, roleRepository);
         studyService = new StudyService(studyRepository, accountService);
-        passwordEncoder = new BCryptPasswordEncoder();
-        managerOfCreatedStudy = Account.builder()
-                .id(ACCOUNT_CREATED_MANAGER_ID)
-                .name(ACCOUNT_CREATED_MANAGER_NAME)
-                .email(ACCOUNT_CREATED_MANAGER_EMAIL)
-                .nickname(ACCOUNT_CREATED_MANAGER_NICKNAME)
-                .password(passwordEncoder.encode(ACCOUNT_CREATED_MANAGER_PASSWORD))
-//                .study(createdStudy)
-                .build();
 
-        managerOfSetUpStudy = Account.builder()
-                .id(ACCOUNT_SETUP_MANAGER_ID)
-                .name(ACCOUNT_SETUP_MANAGER_NAME)
-                .email(ACCOUNT_SETUP_MANAGER_EMAIL)
-                .nickname(ACCOUNT_SETUP_MANAGER_NICKNAME)
-                .password(passwordEncoder.encode(ACCOUNT_SETUP_MANAGER_PASSWORD))
-//                .study(setUpStudy)
-                .build();
+		setUpStudy = Study.builder()
+				.id(STUDY_SETUP_ID)
+				.name(STUDY_SETUP_NAME)
+				.bookName(STUDY_SETUP_BOOK_NAME)
+				.bookImage(STUDY_SETUP_BOOK_IMAGE)
+				.email(ACCOUNT_SETUP_MANAGER_EMAIL)
+				.description(STUDY_SETUP_DESCRIPTION)
+				.contact(STUDY_SETUP_CONTACT)
+				.size(STUDY_SETUP_SIZE)
+				.applyCount(STUDY_SETUP_APPLY_COUNT)
+				.startDate(STUDY_SETUP_START_DATE)
+				.endDate(STUDY_SETUP_END_DATE)
+				.startTime(STUDY_SETUP_START_TIME)
+				.endTime(STUDY_SETUP_END_TIME)
+				.day(STUDY_SETUP_DAY)
+				.studyState(STUDY_SETUP_STUDY_STATE)
+				.zone(STUDY_SETUP_ZONE)
+				.accounts(listApplierOfSetUpStudy)
+				.build();
+
+		createdStudy = Study.builder()
+				.id(STUDY_CREATED_ID)
+				.name(STUDY_CREATED_NAME)
+				.bookName(STUDY_CREATED_BOOK_NAME)
+				.bookImage(STUDY_CREATED_BOOK_IMAGE)
+				.email(ACCOUNT_CREATED_STUDY_EMAIL)
+				.description(STUDY_CREATED_DESCRIPTION)
+				.contact(STUDY_CREATED_CONTACT)
+				.size(STUDY_CREATED_SIZE)
+				.startDate(STUDY_CREATED_START_DATE)
+				.endDate(STUDY_CREATED_END_DATE)
+				.startTime(STUDY_CREATED_START_TIME)
+				.endTime(STUDY_CREATED_END_TIME)
+				.day(STUDY_CREATED_DAY)
+				.studyState(STUDY_CREATED_STUDY_STATE)
+				.zone(STUDY_CREATED_ZONE)
+				.build();
+
+		managerOfSetUpStudy = Account.builder()
+				.id(ACCOUNT_SETUP_MANAGER_ID)
+				.name(ACCOUNT_SETUP_MANAGER_NAME)
+				.email(ACCOUNT_SETUP_MANAGER_EMAIL)
+				.nickname(ACCOUNT_SETUP_MANAGER_NICKNAME)
+				.password(passwordEncoder.encode(ACCOUNT_SETUP_MANAGER_PASSWORD))
+				.build();
+
+		setUpStudy.addAdmin(managerOfSetUpStudy);
+
+		managerOfCreatedStudy = Account.builder()
+				.id(ACCOUNT_CREATED_STUDY_ID)
+				.name(ACCOUNT_CREATED_NAME)
+				.email(ACCOUNT_CREATED_STUDY_EMAIL)
+				.nickname(ACCOUNT_CREATED_NICKNAME)
+				.password(passwordEncoder.encode(ACCOUNT_CREATED_PASSWORD))
+				.build();
+
+		createdStudy.addAdmin(managerOfCreatedStudy);
 
         applierOfSetUpStudyOne = Account.builder()
                 .id(ACCOUNT_APPLIER_ONE_ID)
@@ -179,12 +233,12 @@ public class StudyServiceTest {
 //                .study(setUpStudy)
                 .build();
 
-        accountWithoutStudy = Account.builder()
-                .id(ACCOUNT_WITHOUT_STUDY_ID)
-                .name(ACCOUNT_SETUP_MANAGER_NAME)
-                .email(ACCOUNT_SETUP_MANAGER_EMAIL)
-                .nickname(ACCOUNT_SETUP_MANAGER_NICKNAME)
-                .password(passwordEncoder.encode(ACCOUNT_SETUP_MANAGER_PASSWORD))
+        accountCreatedWithoutStudy = Account.builder()
+                .id(ACCOUNT_CREATED_WITHOUT_STUDY_ID)
+                .name(ACCOUNT_CREATED_NAME)
+                .email(ACCOUNT_CREATED_STUDY_EMAIL)
+                .nickname(ACCOUNT_CREATED_NICKNAME)
+                .password(passwordEncoder.encode(ACCOUNT_CREATED_PASSWORD))
                 .build();
 
 //        listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
@@ -193,44 +247,6 @@ public class StudyServiceTest {
         listApplierOfSetUpStudy.add(applierOfSetUpStudyOne);
         listApplierOfSetUpStudy.add(applierOfSetUpStudyTwo);
         listApplierOfSetUpStudy.add(applierOfSetUpStudyThree);
-
-        setUpStudy = Study.builder()
-                .id(STUDY_SETUP_ID)
-                .name(STUDY_SETUP_NAME)
-                .bookName(STUDY_SETUP_BOOK_NAME)
-                .bookImage(STUDY_SETUP_BOOK_IMAGE)
-                .email(ACCOUNT_SETUP_MANAGER_EMAIL)
-                .description(STUDY_SETUP_DESCRIPTION)
-                .contact(STUDY_SETUP_CONTACT)
-                .size(STUDY_SETUP_SIZE)
-                .applyCount(STUDY_SETUP_APPLY_COUNT)
-                .startDate(STUDY_SETUP_START_DATE)
-                .endDate(STUDY_SETUP_END_DATE)
-                .startTime(STUDY_SETUP_START_TIME)
-                .endTime(STUDY_SETUP_END_TIME)
-                .day(STUDY_SETUP_DAY)
-                .studyState(STUDY_SETUP_STUDY_STATE)
-                .zone(STUDY_SETUP_ZONE)
-                .accounts(listApplierOfSetUpStudy)
-                .build();
-
-        createdStudy = Study.builder()
-                .id(STUDY_CREATED_ID)
-                .name(STUDY_CREATED_NAME)
-                .bookName(STUDY_CREATED_BOOK_NAME)
-                .bookImage(STUDY_CREATED_BOOK_IMAGE)
-                .email(ACCOUNT_CREATED_MANAGER_EMAIL)
-                .description(STUDY_CREATED_DESCRIPTION)
-                .contact(STUDY_CREATED_CONTACT)
-                .size(STUDY_CREATED_SIZE)
-                .startDate(STUDY_CREATED_START_DATE)
-                .endDate(STUDY_CREATED_END_DATE)
-                .startTime(STUDY_CREATED_START_TIME)
-                .endTime(STUDY_CREATED_END_TIME)
-                .day(STUDY_CREATED_DAY)
-                .studyState(STUDY_CREATED_STUDY_STATE)
-                .zone(STUDY_CREATED_ZONE)
-                .build();
 
         fullSizeStudy = Study.builder()
                 .size(STUDY_SETUP_SIZE)
@@ -274,8 +290,6 @@ public class StudyServiceTest {
                 .name(STUDY_CREATED_NAME)
                 .bookName(STUDY_CREATED_BOOK_NAME)
                 .bookImage(STUDY_CREATED_BOOK_IMAGE)
-                //스터디가 생성될 때는 이메일 입력이 없다
-//                .email(SETUP_MANAGER_EMAIL)
                 .description(STUDY_CREATED_DESCRIPTION)
                 .contact(STUDY_CREATED_CONTACT)
                 .size(STUDY_CREATED_SIZE)
@@ -388,21 +402,23 @@ public class StudyServiceTest {
                 .isInstanceOf(StudyNotFoundException.class);
     }
 
-//    @Test
-//    void createWithValidateAttribute() throws ParseException {
-//        given(studyRepository.save(any(Study.class))).willReturn(createdStudy);
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        StudyResultDto studyResultDto = studyService.createStudy(managerOfCreatedStudy, studyCreateDto);
-//
-//        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
-//        assertThat(studyResultDto.getId()).isEqualTo(createdStudy.getId());
-//        assertThat(studyResultDto.getName()).isEqualTo(createdStudy.getName());
-//        assertThat(studyResultDto.getDescription()).isEqualTo(createdStudy.getDescription());
-//        assertThat(studyResultDto.getStudyState()).isEqualTo(StudyState.OPEN);
-//        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
-//        assertThat(managerOfCreatedStudy.getStudy()).isEqualTo(createdStudy);
-//    }
+    @Test
+    void createWithValidateAttribute() {
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(accountCreatedWithoutStudy));
+		given(studyRepository.save(any(Study.class))).willReturn(createdStudy);
+
+        StudyResultDto studyResultDto = studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyCreateDto);
+
+		assertThat(studyResultDto.getId()).isEqualTo(STUDY_CREATED_ID);
+        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
+        assertThat(studyResultDto.getId()).isEqualTo(createdStudy.getId());
+        assertThat(studyResultDto.getName()).isEqualTo(createdStudy.getName());
+        assertThat(studyResultDto.getDescription()).isEqualTo(createdStudy.getDescription());
+        assertThat(studyResultDto.getStudyState()).isEqualTo(StudyState.OPEN);
+        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
+        assertThat(managerOfCreatedStudy.getStudy()).isEqualTo(createdStudy);
+    }
 //
 //    @Test
 //    void createWithAccountAlreadyStudyExisted() {

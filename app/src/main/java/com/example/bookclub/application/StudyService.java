@@ -43,10 +43,14 @@ public class StudyService {
 
     public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
         Account loginAccount = accountService.findUserByEmail(email);
-        StudyState accountStudyState = loginAccount.getStudy().getStudyState();
-        if(accountStudyState != null && (accountStudyState.equals(StudyState.OPEN)
-                || accountStudyState.equals(StudyState.CLOSE))) {
-            throw new StudyAlreadyInOpenOrClose();
+
+        if(loginAccount.getStudy() != null) {
+            StudyState accountStudyState = loginAccount.getStudy().getStudyState();
+            if(loginAccount.getStudy().getStudyState() != null &&
+                    (accountStudyState.equals(StudyState.OPEN) || accountStudyState.equals(StudyState.CLOSE))
+            ) {
+                throw new StudyAlreadyInOpenOrClose();
+            }
         }
 
         if (startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
