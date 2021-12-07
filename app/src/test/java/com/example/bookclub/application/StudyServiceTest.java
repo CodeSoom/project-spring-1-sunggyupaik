@@ -99,13 +99,15 @@ public class StudyServiceTest {
     private static final LocalDate STUDY_TODAY_START_DATE = LocalDate.now();
     private static final LocalDate STUDY_LATE_START_DATE = LocalDate.now().plusDays(5);
     private static final LocalDate STUDY_EARLY_END_DATE = LocalDate.now().plusDays(3);
+	private static final LocalDate TODAY = LocalDate.now();
+	private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1);
+	private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
 
     private static final String STUDY_LATE_START_TIME = "15:00";
     private static final String STUDY_EARLY_END_TIME = "13:00";
 
     private static final Long STUDY_NOT_EXISTED_ID = 100L;
     private static final Long STUDY_FULL_SIZE_ID = 8L;
-
 
     private static final Long ACCOUNT_CREATED_WITHOUT_STUDY_ID = ACCOUNT_CREATED_STUDY_ID;
 
@@ -123,8 +125,8 @@ public class StudyServiceTest {
     private Study setUpStudy;
     private Study createdStudy;
     private Study fullSizeStudy;
-    private Study openedStudyOne;
-    private Study openedStudyTwo;
+    private Study startTodayOpenedStudyOne;
+    private Study startTomorrowOpenedStudyTwo;
     private Study closedStudyOne;
     private Study closedStudyTwo;
     private Study endedStudyOne;
@@ -288,12 +290,14 @@ public class StudyServiceTest {
                 .studyState(StudyState.CLOSE)
                 .build();
 
-        openedStudyOne = Study.builder()
+		startTodayOpenedStudyOne = Study.builder()
                 .studyState(StudyState.OPEN)
+				.startDate(TODAY)
                 .build();
 
-        openedStudyTwo = Study.builder()
+        startTomorrowOpenedStudyTwo = Study.builder()
                 .studyState(StudyState.OPEN)
+				.startDate(TOMORROW)
                 .build();
 
         closedStudyOne = Study.builder()
@@ -391,7 +395,7 @@ public class StudyServiceTest {
 				.build();
 
         listAllStudies = List.of(setUpStudy, createdStudy);
-        listOpenedStudies = List.of(openedStudyOne, openedStudyTwo);
+        listOpenedStudies = List.of(startTodayOpenedStudyOne, startTomorrowOpenedStudyTwo);
         listClosedStudies = List.of(closedStudyOne, closedStudyTwo);
         listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
         listBookNamePythonKeywordStudies = List.of(bookNamePythonStudyOne, bookNamePythonStudyTwo);
@@ -723,4 +727,19 @@ public class StudyServiceTest {
 
 		assertThat(setUpStudy.getBookName()).doesNotContain(BOOK_PYTHON_KEYWORD);
     }
+
+	@Test
+	void scheduleOpenToClose() {
+		given(studyService.getStudies()).willReturn(listOpenedStudies);
+
+		studyService.scheduleOpenToClose();
+
+		for(Study study : listOpenedStudies) {
+			if(study.getStartDate().equals(LocalDate.now())) {
+				assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
+			} else {
+				assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+			}
+		}
+	}
 }
