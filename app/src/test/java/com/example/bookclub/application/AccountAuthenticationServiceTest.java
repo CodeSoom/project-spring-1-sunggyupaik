@@ -3,12 +3,14 @@ package com.example.bookclub.application;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.RoleRepository;
+import com.example.bookclub.errors.AccountEmailNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -18,6 +20,8 @@ class AccountAuthenticationServiceTest {
 	private final static String ACCOUNT_SETUP_EMAIL = "accountEmail";
 	private final static String ACCOUNT_SETUP_NICKNAME = "accountNickname";
 	private final static String ACCOUNT_SETUP_PASSWORD = "accountPassword";
+
+	private final static String ACCOUNT_NOT_EXISTED_EMAIL = "accountNotExistedEmail";
 
 	private Account setupAccount;
 
@@ -49,5 +53,15 @@ class AccountAuthenticationServiceTest {
 
 		assertThat(savedAccount.getId()).isEqualTo(ACCOUNT_SETUP_ID);
 		assertThat(savedAccount.getEmail()).isEqualTo(ACCOUNT_SETUP_EMAIL);
+	}
+
+	@Test
+	void detailWithNotExistedEmail() {
+		given(accountRepository.findByEmail(ACCOUNT_NOT_EXISTED_EMAIL)).willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> accountAuthenticationService.getAccountByEmail(ACCOUNT_NOT_EXISTED_EMAIL)
+		)
+				.isInstanceOf(AccountEmailNotFoundException.class);
 	}
 }
