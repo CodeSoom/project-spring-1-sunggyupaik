@@ -692,6 +692,15 @@ public class StudyServiceTest {
 				.isInstanceOf(StudyNotAppliedBefore.class);
 	}
 
+	@Test
+	void getStudyWithExistedId() {
+		given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+
+		Study getStudy = studyService.getStudy(STUDY_SETUP_ID);
+
+		assertThat(getStudy.getId()).isEqualTo(STUDY_SETUP_ID);
+	}
+
 //    @Test
 //    void listsStudiesWithKeyword() {
 //        given(studyRepository.findByBookNameContaining(PYTHON_KEYWORD)).willReturn(listPythonKeywordStudies);
