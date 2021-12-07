@@ -701,6 +701,16 @@ public class StudyServiceTest {
 		assertThat(getStudy.getId()).isEqualTo(STUDY_SETUP_ID);
 	}
 
+	@Test
+	void getStudyWithNotExistedId() {
+		given(studyRepository.findById(STUDY_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyService.getStudy(STUDY_NOT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyNotFoundException.class);
+	}
+
 //    @Test
 //    void listsStudiesWithKeyword() {
 //        given(studyRepository.findByBookNameContaining(PYTHON_KEYWORD)).willReturn(listPythonKeywordStudies);
