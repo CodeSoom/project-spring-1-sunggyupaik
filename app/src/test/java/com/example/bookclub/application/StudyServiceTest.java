@@ -565,6 +565,18 @@ public class StudyServiceTest {
 				.isInstanceOf(StudyStartAndEndTimeNotValidException.class);
 	}
 
+	@Test
+	void updateWithNotExistedId() {
+		given(studyRepository.findById(STUDY_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL,
+						STUDY_NOT_EXISTED_ID,
+						studyUpdateDto)
+		)
+				.isInstanceOf(StudyNotFoundException.class);
+	}
+
 //    @Test
 //    void deleteWithExistedId() {
 //        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
