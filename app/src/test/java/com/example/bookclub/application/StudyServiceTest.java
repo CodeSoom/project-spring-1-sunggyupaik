@@ -1,562 +1,762 @@
-//package com.example.bookclub.application;
-//
-//import com.example.bookclub.domain.Account;
-//import com.example.bookclub.domain.AccountRepository;
-//import com.example.bookclub.domain.Day;
-//import com.example.bookclub.domain.Study;
-//import com.example.bookclub.domain.StudyRepository;
-//import com.example.bookclub.domain.StudyState;
-//import com.example.bookclub.domain.Zone;
-//import com.example.bookclub.dto.StudyCreateDto;
-//import com.example.bookclub.dto.StudyResultDto;
-//import com.example.bookclub.dto.StudyUpdateDto;
-//import com.example.bookclub.errors.StartAndEndDateNotValidException;
-//import com.example.bookclub.errors.StartAndEndTimeNotValidException;
-//import com.example.bookclub.errors.StudyAlreadyExistedException;
-//import com.example.bookclub.errors.StudyNotFoundException;
-//import com.example.bookclub.errors.StudySizeFullException;
-//import com.example.bookclub.errors.StudyStartDateInThePastException;
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.security.access.AccessDeniedException;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//
-//import java.text.ParseException;
-//import java.time.LocalDate;
-//import java.util.ArrayList;
-//import java.util.List;
-//import java.util.Optional;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.assertj.core.api.Assertions.assertThatThrownBy;
-//import static org.mockito.ArgumentMatchers.any;
-//import static org.mockito.BDDMockito.given;
-//import static org.mockito.Mockito.mock;
-//import static org.mockito.Mockito.verify;
-//
-//public class StudyServiceTest {
-//    private static final Long SETUP_ID = 1L;
-//    private static final String SETUP_NAME = "setUpName";
-//    private static final String SETUP_BOOKNAME = "자바 세상의 빌드를 이끄는 메이븐";
-//    private static final String SETUP_BOOKIMAGE = "http://bimage.interpark.com/goods_image/9/4/7/8/207979478s.jpg";
-//    private static final String SETUP_DESCRIPTION = "setUpDescription";
-//    private static final String SETUP_CONTACT = "setUpContact";
-//    private static final int SETUP_SIZE = 5;
-//    private static final int SETUP_APPLYCOUNT = 3;
-//    private static final LocalDate SETUP_STARTDATE = LocalDate.now().plusDays(1);
-//    private static final LocalDate SETUP_ENDDATE = LocalDate.now().plusDays(7);
-//    private static final Day SETUP_DAY = Day.MONDAY;
-//    private static final String SETUP_STARTTIME = "13:00";
-//    private static final String SETUP_ENDTIME = "15:30";
-//    private static final StudyState SETUP_STUDYSTATE = StudyState.OPEN;
-//    private static final Zone SETUP_ZONE = Zone.SEOUL;
-//
-//    private static final Long CREATED_MANAGER_ID = 1L;
-//    private static final String CREATED_MANAGER_NAME = "createdMangerName";
-//    private static final String CREATED_MANAGER_EMAIL = "createdManagerEmail";
-//    private static final String CREATED_MANAGER_NICKNAME = "createdNickName";
-//    private static final String CREATED_MANAGER_PASSWORD = "1357924680";
-//
-//    private static final Long SETUP_MANAGER_ID = 2L;
-//    private static final String SETUP_MANAGER_NAME = "managerName";
-//    private static final String SETUP_MANAGER_EMAIL = "managerEmail";
-//    private static final String SETUP_MANAGER_NICKNAME = "managerNickName";
-//    private static final String SETUP_MANAGER_PASSWORD = "0987654321";
-//
-//    private static final Long APPLIER_ONE_ID = 3L;
-//    private static final String APPLIER_ONE_NAME = "applierOneName";
-//    private static final String APPLIER_ONE_EMAIL = "applierOneEmail";
-//    private static final String APPLIER_ONE_NICKNAME = "applierOneNickName";
-//    private static final String APPLIER_ONE_PASSWORD = "11111111";
-//
-//    private static final Long CREATED_ID = 3L;
-//    private static final String CREATED_NAME = "createdName";
-//    private static final String CREATED_BOOKNAME = "Do it! 점프 투 파이썬";
-//    private static final String CREATED_BOOKIMAGE = "http://bimage.interpark.com/goods_image/7/4/8/4/310327484s.jpg";
-//    private static final String CREATED_DESCRIPTION = "createdDescription";
-//    private static final String CREATED_CONTACT = "createdContact";
-//    private static final int CREATED_SIZE = 10;
-//    private static final LocalDate CREATED_STARTDATE = LocalDate.now().plusDays(1);
-//    private static final LocalDate CREATED_ENDDATE = LocalDate.now().plusDays(5);
-//    private static final Day CREATED_DAY = Day.THURSDAY;
-//    private static final String CREATED_STARTTIME = "12:00";
-//    private static final String CREATED_ENDTIME = "14:30";
-//    private static final StudyState CREATED_STUDYSTATE = StudyState.OPEN;
-//    private static final Zone CREATED_ZONE = Zone.BUSAN;
-//
-//    private static final String PYTHON_KEYWORD = "파이썬";
-//    private static final String PYTHON_BOOKNAME_ONE = "러닝 파이썬 - 상편";
-//    private static final String PYTHON_BOOKNAME_TWO = "파이썬 웹 프로그래밍";
-//
-//    private static final LocalDate PAST_STARTDATE = LocalDate.now().minusDays(3);
-//    private static final LocalDate TODAY_STARTDATE = LocalDate.now();
-//    private static final LocalDate LATE_STARTDATE = LocalDate.now().plusDays(5);
-//    private static final LocalDate EARLY_ENDDATE = LocalDate.now().plusDays(3);
-//
-//    private static final String LATE_STARTTIME = "15:00";
-//    private static final String EARLY_ENDTIME = "13:00";
-//
-//    private static final Long NOT_EXISTED_ID = 100L;
-//    private static final Long FULL_SIZE_ID = 5L;
-//
-//    private static final Long APPLIER_TWO_ID = 4L;
-//    private static final Long APPLIER_THREE_ID = 5L;
-//    private static final Long ACCOUNT_WITHOUT_STUDY_ID = 6L;
-//
-//    private Account managerOfCreatedStudy;
-//    private Account managerOfSetUpStudy;
-//    private Account applierOfSetUpStudyOne;
-//    private Account applierOfSetUpStudyTwo;
-//    private Account applierOfSetUpStudyThree;
-//    private Account accountWithoutStudy;
-//    private Study setUpStudy;
-//    private Study createdStudy;
-//    private Study fullSizeStudy;
-//    private Study openedStudyOne;
-//    private Study openedStudyTwo;
-//    private Study closedStudyOne;
-//    private Study closedStudyTwo;
-//    private Study endedStudyOne;
-//    private Study endedStudyTwo;
-//    private Study pythonBookNameStudyOne;
-//    private Study pythonBookNameStudyTwo;
-//
-//    private StudyCreateDto studyCreateDto;
-//    private StudyCreateDto studyStartDateInThePastDto;
-//    private StudyCreateDto studyStartDateTodayDto;
-//    private StudyCreateDto endDateIsBeforeStartDateDto;
-//    private StudyCreateDto endTimeIsBeforeStartTimeDto;
-//    private StudyUpdateDto studyUpdateDto;
-//
-//    private StudyService studyService;
-//    private StudyRepository studyRepository;
-//    private AccountRepository accountRepository;
-//    private PasswordEncoder passwordEncoder;
-//
-//    private List<Study> listAllStudies;
-//    private List<Study> listOpenedStudies;
-//    private List<Study> listClosedStudies;
-//    private List<Study> listEndedStudies;
-//    private List<Account> listApplierOfSetUpStudy;
-//    private List<Study> listPythonKeywordStudies;
-//
-//    @BeforeEach
-//    void setUp() {
-//        studyRepository = mock(StudyRepository.class);
-//        accountRepository = mock(AccountRepository.class);
-//        studyService = new StudyService(studyRepository);
-//        passwordEncoder = new BCryptPasswordEncoder();
-//        managerOfCreatedStudy = Account.builder()
-//                .id(CREATED_MANAGER_ID)
-//                .name(CREATED_MANAGER_NAME)
-//                .email(CREATED_MANAGER_EMAIL)
-//                .nickname(CREATED_MANAGER_NICKNAME)
-//                .password(passwordEncoder.encode(CREATED_MANAGER_PASSWORD))
-////                .study(createdStudy)
-//                .build();
-//
-//        managerOfSetUpStudy = Account.builder()
-//                .id(SETUP_MANAGER_ID)
-//                .name(SETUP_MANAGER_NAME)
-//                .email(SETUP_MANAGER_EMAIL)
-//                .nickname(SETUP_MANAGER_NICKNAME)
-//                .password(passwordEncoder.encode(SETUP_MANAGER_PASSWORD))
-////                .study(setUpStudy)
-//                .build();
-//
-//        applierOfSetUpStudyOne = Account.builder()
-//                .id(APPLIER_ONE_ID)
-//                .name(APPLIER_ONE_NAME)
-//                .email(APPLIER_ONE_EMAIL)
-//                .nickname(APPLIER_ONE_NICKNAME)
-//                .password(APPLIER_ONE_PASSWORD)
-////                .study(setUpStudy)
-//                .build();
-//
-//        applierOfSetUpStudyTwo = Account.builder()
-//                .id(APPLIER_TWO_ID)
-////                .study(setUpStudy)
-//                .build();
-//
-//        applierOfSetUpStudyThree = Account.builder()
-//                .id(APPLIER_THREE_ID)
-////                .study(setUpStudy)
-//                .build();
-//
-//        accountWithoutStudy = Account.builder()
-//                .id(ACCOUNT_WITHOUT_STUDY_ID)
-//                .name(SETUP_MANAGER_NAME)
-//                .email(SETUP_MANAGER_EMAIL)
-//                .nickname(SETUP_MANAGER_NICKNAME)
-//                .password(passwordEncoder.encode(SETUP_MANAGER_PASSWORD))
-//                .build();
-//
-////        listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
-////                applierOfSetUpStudyTwo, applierOfSetUpStudyThree);
-//        listApplierOfSetUpStudy = new ArrayList<>();
-//        listApplierOfSetUpStudy.add(applierOfSetUpStudyOne);
-//        listApplierOfSetUpStudy.add(applierOfSetUpStudyTwo);
-//        listApplierOfSetUpStudy.add(applierOfSetUpStudyThree);
-//
-//        setUpStudy = Study.builder()
-//                .id(SETUP_ID)
-//                .name(SETUP_NAME)
-//                .bookName(SETUP_BOOKNAME)
-//                .bookImage(SETUP_BOOKIMAGE)
-//                .email(SETUP_MANAGER_EMAIL)
-//                .description(SETUP_DESCRIPTION)
-//                .contact(SETUP_CONTACT)
-//                .size(SETUP_SIZE)
-//                .applyCount(SETUP_APPLYCOUNT)
-//                .startDate(SETUP_STARTDATE)
-//                .endDate(SETUP_ENDDATE)
-//                .startTime(SETUP_STARTTIME)
-//                .endTime(SETUP_ENDTIME)
-//                .day(SETUP_DAY)
-//                .studyState(SETUP_STUDYSTATE)
-//                .zone(SETUP_ZONE)
-//                .accounts(listApplierOfSetUpStudy)
-//                .build();
-//
-//        createdStudy = Study.builder()
-//                .id(CREATED_ID)
-//                .name(CREATED_NAME)
-//                .bookName(CREATED_BOOKNAME)
-//                .bookImage(CREATED_BOOKIMAGE)
-//                .email(CREATED_MANAGER_EMAIL)
-//                .description(CREATED_DESCRIPTION)
-//                .contact(CREATED_CONTACT)
-//                .size(CREATED_SIZE)
-//                .startDate(CREATED_STARTDATE)
-//                .endDate(CREATED_ENDDATE)
-//                .startTime(CREATED_STARTTIME)
-//                .endTime(CREATED_ENDTIME)
-//                .day(CREATED_DAY)
-//                .studyState(CREATED_STUDYSTATE)
-//                .zone(CREATED_ZONE)
-//                .build();
-//
-//        fullSizeStudy = Study.builder()
-//                .size(SETUP_SIZE)
-//                .applyCount(SETUP_SIZE)
-//                .studyState(StudyState.CLOSE)
-//                .build();
-//
-//        openedStudyOne = Study.builder()
-//                .studyState(StudyState.OPEN)
-//                .build();
-//
-//        openedStudyTwo = Study.builder()
-//                .studyState(StudyState.OPEN)
-//                .build();
-//
-//        closedStudyOne = Study.builder()
-//                .studyState(StudyState.CLOSE)
-//                .build();
-//
-//        closedStudyTwo = Study.builder()
-//                .studyState(StudyState.CLOSE)
-//                .build();
-//
-//        endedStudyOne = Study.builder()
-//                .studyState(StudyState.END)
-//                .build();
-//
-//        endedStudyTwo = Study.builder()
-//                .studyState(StudyState.END)
-//                .build();
-//
-//        pythonBookNameStudyOne = Study.builder()
-//                .bookName(PYTHON_BOOKNAME_ONE)
-//                .build();
-//
-//        pythonBookNameStudyTwo = Study.builder()
-//                .bookName(PYTHON_BOOKNAME_TWO)
-//                .build();
-//
-//        studyCreateDto = StudyCreateDto.builder()
-//                .name(CREATED_NAME)
-//                .bookName(CREATED_BOOKNAME)
-//                .bookImage(CREATED_BOOKIMAGE)
-//                //스터디가 생성될 때는 이메일 입력이 없다
-////                .email(SETUP_MANAGER_EMAIL)
-//                .description(CREATED_DESCRIPTION)
-//                .contact(CREATED_CONTACT)
-//                .size(CREATED_SIZE)
-//                .startDate(CREATED_STARTDATE)
-//                .endDate(CREATED_ENDDATE)
-//                .startTime(CREATED_STARTTIME)
-//                .endTime(CREATED_ENDTIME)
-//                .day(CREATED_DAY)
-//                .zone(CREATED_ZONE)
-//                .build();
-//
-//        studyStartDateInThePastDto = StudyCreateDto.builder()
-//                .startDate(PAST_STARTDATE)
-//                .build();
-//
-//        studyStartDateTodayDto = StudyCreateDto.builder()
-//                .startDate(TODAY_STARTDATE)
-//                .build();
-//
-//        endDateIsBeforeStartDateDto = StudyCreateDto.builder()
-//                .startDate(LATE_STARTDATE)
-//                .endDate(EARLY_ENDDATE)
-//                .build();
-//
-//        endTimeIsBeforeStartTimeDto = StudyCreateDto.builder()
-//                .startDate(CREATED_STARTDATE)
-//                .endDate(CREATED_ENDDATE)
-//                .startTime(LATE_STARTTIME)
-//                .endTime(EARLY_ENDTIME)
-//                .build();
-//
-//        //CREATED 변수들이 SETUP 변수들로 수정되었다고 가정할 것
-//        studyUpdateDto = StudyUpdateDto.builder()
-//                .name(SETUP_NAME)
-//                .description(SETUP_DESCRIPTION)
-//                .contact(SETUP_CONTACT)
-//                .size(SETUP_SIZE)
-//                .startDate(SETUP_STARTDATE)
-//                .endDate(SETUP_ENDDATE)
-//                .startTime(SETUP_STARTTIME)
-//                .endTime(SETUP_ENDTIME)
-//                .day(SETUP_DAY)
-//                .studyState(SETUP_STUDYSTATE)
-//                .zone(SETUP_ZONE)
-//                .build();
-//
-//        listAllStudies = List.of(setUpStudy, createdStudy);
-//        listOpenedStudies = List.of(openedStudyOne, openedStudyTwo);
-//        listClosedStudies = List.of(closedStudyOne, closedStudyTwo);
-//        listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
-//        listPythonKeywordStudies = List.of(pythonBookNameStudyOne, pythonBookNameStudyTwo);
-//    }
-//
-//    @Test
-//    void listAllStudies() {
-//        given(studyRepository.findAll()).willReturn(listAllStudies);
-//
-//        List<Study> lists = studyService.getStudies();
-//
-//        assertThat(lists).containsExactly(setUpStudy, createdStudy);
-//    }
-//
-//    @Test
-//    void listOpenedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
-//        }
-//    }
-//
-//    @Test
-//    void listClosedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listClosedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
-//        }
-//    }
-//
-//    @Test
-//    void listEndedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listEndedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.END);
-//        }
-//    }
-//
-//    @Test
-//    void detailWithExistedId() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//
-//        Study study = studyService.getStudy(SETUP_ID);
-//
-//        assertThat(study.getId()).isEqualTo(SETUP_ID);
-//    }
-//
-//    @Test
-//    void detailWithNotExistedId() {
-//        given(studyRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
-//
-//        assertThatThrownBy(() -> studyService.getStudy(NOT_EXISTED_ID))
-//                .isInstanceOf(StudyNotFoundException.class);
-//    }
-//
-//    @Test
-//    void createWithValidateAttribute() throws ParseException {
-//        given(studyRepository.save(any(Study.class))).willReturn(createdStudy);
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        StudyResultDto studyResultDto = studyService.createStudy(managerOfCreatedStudy, studyCreateDto);
-//
-//        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
-//        assertThat(studyResultDto.getId()).isEqualTo(createdStudy.getId());
-//        assertThat(studyResultDto.getName()).isEqualTo(createdStudy.getName());
-//        assertThat(studyResultDto.getDescription()).isEqualTo(createdStudy.getDescription());
-//        assertThat(studyResultDto.getStudyState()).isEqualTo(StudyState.OPEN);
-//        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
-//        assertThat(managerOfCreatedStudy.getStudy()).isEqualTo(createdStudy);
-//    }
-//
-//    @Test
-//    void createWithAccountAlreadyStudyExisted() {
-//        given(accountRepository.findById(SETUP_MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
-//        managerOfSetUpStudy.addStudy(setUpStudy);
-//
-//        assertThatThrownBy(() -> studyService.createStudy(managerOfSetUpStudy, studyCreateDto))
-//                .isInstanceOf(StudyAlreadyExistedException.class);
-//    }
-//
-//    @Test
-//    void createWithStartDateInThePast() {
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        assertThatThrownBy(() -> studyService.createStudy(managerOfCreatedStudy, studyStartDateInThePastDto))
-//                .isInstanceOf(StudyStartDateInThePastException.class);
-//
-//        assertThatThrownBy(() -> studyService.createStudy(managerOfCreatedStudy, studyStartDateTodayDto))
-//                .isInstanceOf(StudyStartDateInThePastException.class);
-//    }
-//
-//    @Test
-//    void createWithEndDateIsBeforeStartDate() {
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        assertThatThrownBy(() -> studyService.createStudy(managerOfCreatedStudy, endDateIsBeforeStartDateDto))
-//                .isInstanceOf(StartAndEndDateNotValidException.class);
-//    }
-//
-//    @Test
-//    void createWithEndTimeIsBeforeStartTime() {
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        assertThatThrownBy(() -> studyService.createStudy(managerOfCreatedStudy, endTimeIsBeforeStartTimeDto))
-//                .isInstanceOf(StartAndEndTimeNotValidException.class);
-//    }
-//
-//    @Test
-//    void updateWithValidateAttribute() throws ParseException {
-//        given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        StudyResultDto studyResultDto = studyService.updateStudy(managerOfCreatedStudy, CREATED_ID, studyUpdateDto);
-//        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
-//        assertThat(studyResultDto.getName()).isEqualTo(studyUpdateDto.getName());
-//        assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
-//    }
-//
-//    @Test
-//    void updateWithNullAccount() {
-//        given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
-//        given(accountRepository.findById(NOT_EXISTED_ID)).willReturn(Optional.empty());
-//
-//        assertThatThrownBy(() -> studyService.updateStudy(null , CREATED_ID, studyUpdateDto))
-//                .isInstanceOf(AccessDeniedException.class);
-//    }
-//
-//    @Test
-//    void updateWithInvalidAccount() {
-//        given(studyRepository.findById(CREATED_ID)).willReturn(Optional.of(createdStudy));
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//
-//        assertThatThrownBy(() -> studyService.updateStudy(managerOfSetUpStudy, CREATED_ID, studyUpdateDto))
-//                .isInstanceOf(AccessDeniedException.class);
-//    }
-//
-//    @Test
-//    void deleteWithExistedId() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//        given(accountRepository.findById(SETUP_MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
-//
-//        for(Account account : listApplierOfSetUpStudy) {
-//            account.addStudy(setUpStudy);
-//            assertThat(account.getStudy()).isEqualTo(setUpStudy);
-//        }
-//        managerOfSetUpStudy.addStudy(setUpStudy);
-//        assertThat(managerOfSetUpStudy.getStudy()).isEqualTo(setUpStudy);
-//
-//        StudyResultDto studyResultDto = studyService.deleteStudy(managerOfSetUpStudy, SETUP_ID);
-//
-//        assertThat(studyResultDto.getId()).isEqualTo(setUpStudy.getId());
-//        List<Account> listsAfterDelete = setUpStudy.getAccounts();
-//        for(Account account : listsAfterDelete) {
-//            assertThat(account.getStudy()).isNull();
-//        }
-//        verify(studyRepository).delete(setUpStudy);
-//    }
-//
-//    @Test
-//    void applyWithValidAttribute() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//        given(accountRepository.findById(ACCOUNT_WITHOUT_STUDY_ID))
-//                .willReturn(Optional.of(accountWithoutStudy));
-//
-//        Study study = studyService.getStudy(SETUP_ID);
-//        int beforeApplyCount = study.getApplyCount();
-//        studyService.applyStudy(accountWithoutStudy, SETUP_ID);
-//        int afterApplyCount = study.getApplyCount();
-//        assertThat(accountWithoutStudy.getStudy()).isEqualTo(study);
-//
-//        assertThat(beforeApplyCount).isEqualTo(afterApplyCount - 1);
-//        assertThat(setUpStudy.getAccounts()).contains(accountWithoutStudy);
-//        assertThat(accountWithoutStudy.getStudy()).isNotNull();
-//    }
-//
-//    @Test
-//    void applyWithStudyAlready() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//        managerOfCreatedStudy.addStudy(createdStudy);
-//
-//        assertThatThrownBy(() -> studyService.applyStudy(managerOfCreatedStudy, SETUP_ID))
-//                .isInstanceOf(StudyAlreadyExistedException.class);
-//    }
-//
-//    @Test
-//    void applyWhenSizeIsFull() {
-//        given(studyRepository.findById(FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
-//        given(accountRepository.findById(ACCOUNT_WITHOUT_STUDY_ID)).willReturn(Optional.of(accountWithoutStudy));
-//
-//        assertThatThrownBy(() -> studyService.applyStudy(accountWithoutStudy, FULL_SIZE_ID))
-//                .isInstanceOf(StudySizeFullException.class);
-//    }
-//
-//    @Test
-//    void cancelWithValidAttribute() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//        given(accountRepository.findById(APPLIER_ONE_ID)).willReturn(Optional.of(applierOfSetUpStudyOne));
-//        applierOfSetUpStudyOne.addStudy(setUpStudy);
-//
-//        Study study = studyService.getStudy(SETUP_ID);
-//        int beforeApplyCount = study.getApplyCount();
-//        studyService.cancelStudy(applierOfSetUpStudyOne, SETUP_ID);
-//        int afterApplyCount = study.getApplyCount();
-//
-//        assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);
-//        assertThat(setUpStudy.getAccounts()).doesNotContain(applierOfSetUpStudyOne);
-//        assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
-//    }
-//
-//    @Test
-//    void listsStudiesWithKeyword() {
-//        given(studyRepository.findByBookNameContaining(PYTHON_KEYWORD)).willReturn(listPythonKeywordStudies);
-//
-//        List<Study> list = studyService.getStudiesBySearch(PYTHON_KEYWORD);
-//
-//        for(Study study : list) {
-//            assertThat(study.getBookName()).contains(PYTHON_KEYWORD);
-//        }
-//        assertThat(setUpStudy.getBookName()).doesNotContain(PYTHON_KEYWORD);
-//    }
-//}
+package com.example.bookclub.application;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.AccountRepository;
+import com.example.bookclub.domain.Day;
+import com.example.bookclub.domain.EmailAuthenticationRepository;
+import com.example.bookclub.domain.RoleRepository;
+import com.example.bookclub.domain.Study;
+import com.example.bookclub.domain.StudyRepository;
+import com.example.bookclub.domain.StudyState;
+import com.example.bookclub.domain.Zone;
+import com.example.bookclub.dto.StudyCreateDto;
+import com.example.bookclub.dto.StudyResultDto;
+import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.errors.AccountNotManagerOfStudyException;
+import com.example.bookclub.errors.StudyAlreadyExistedException;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyNotAppliedBefore;
+import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudySizeFullException;
+import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
+import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
+import com.example.bookclub.errors.StudyStartDateInThePastException;
+import com.example.bookclub.security.UserAccount;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+
+public class StudyServiceTest {
+    private static final Long STUDY_SETUP_ID = 1L;
+    private static final String STUDY_SETUP_NAME = "studySetupName";
+    private static final String STUDY_SETUP_BOOK_NAME = "studySetupBookName";
+    private static final String STUDY_SETUP_BOOK_IMAGE = "studySetupBookImage";
+    private static final String STUDY_SETUP_DESCRIPTION = "studySetupDescription";
+    private static final String STUDY_SETUP_CONTACT = "studySetupContact";
+    private static final int STUDY_SETUP_SIZE = 5;
+    private static final int STUDY_SETUP_APPLY_COUNT = 3;
+    private static final LocalDate STUDY_SETUP_START_DATE = LocalDate.now().plusDays(1);
+    private static final LocalDate STUDY_SETUP_END_DATE = LocalDate.now().plusDays(7);
+    private static final Day STUDY_SETUP_DAY = Day.MONDAY;
+    private static final String STUDY_SETUP_START_TIME = "13:00";
+    private static final String STUDY_SETUP_END_TIME = "15:30";
+    private static final StudyState STUDY_SETUP_STUDY_STATE = StudyState.OPEN;
+    private static final Zone STUDY_SETUP_ZONE = Zone.SEOUL;
+
+	private static final Long ACCOUNT_SETUP_MANAGER_ID = 2L;
+	private static final String ACCOUNT_SETUP_MANAGER_NAME = "accountSetupManagerName";
+	private static final String ACCOUNT_SETUP_MANAGER_EMAIL = "accountSetupManagerEmail";
+	private static final String ACCOUNT_SETUP_MANAGER_NICKNAME = "accountSetupManagerNickname";
+	private static final String ACCOUNT_SETUP_MANAGER_PASSWORD = "accountSetupManagerPassword";
+
+    private static final Long ACCOUNT_CREATED_STUDY_ID = 3L;
+    private static final String ACCOUNT_CREATED_NAME = "accountCreatedName";
+    private static final String ACCOUNT_CREATED_STUDY_EMAIL = "accountCreatedStudyEmail";
+    private static final String ACCOUNT_CREATED_NICKNAME = "accountCreatedNickName";
+    private static final String ACCOUNT_CREATED_PASSWORD = "accountCreatedManagerPassword";
+
+    private static final Long ACCOUNT_APPLIER_ONE_ID = 4L;
+	private static final Long ACCOUNT_APPLIER_TWO_ID = 5L;
+	private static final Long ACCOUNT_APPLIER_THREE_ID = 6L;
+	private static final Long ACCOUNT_APPLIER_WITHOUT_STUDY_ID = 9L;
+
+    private static final Long STUDY_CREATED_ID = 7L;
+    private static final String STUDY_CREATED_NAME = "studyCreatedName";
+    private static final String STUDY_CREATED_BOOK_NAME = "studyCreatedBookName";
+    private static final String STUDY_CREATED_BOOK_IMAGE = "studyCreatedBookImage";
+    private static final String STUDY_CREATED_DESCRIPTION = "studyCreatedDescription";
+    private static final String STUDY_CREATED_CONTACT = "studyCreatedContact";
+    private static final int STUDY_CREATED_SIZE = 10;
+    private static final LocalDate STUDY_CREATED_START_DATE = LocalDate.now().plusDays(1);
+    private static final LocalDate STUDY_CREATED_END_DATE = LocalDate.now().plusDays(5);
+    private static final Day STUDY_CREATED_DAY = Day.THURSDAY;
+    private static final String STUDY_CREATED_START_TIME = "12:00";
+    private static final String STUDY_CREATED_END_TIME = "14:30";
+    private static final StudyState STUDY_CREATED_STUDY_STATE = StudyState.OPEN;
+    private static final Zone STUDY_CREATED_ZONE = Zone.BUSAN;
+
+    private static final String BOOK_PYTHON_KEYWORD = "파이썬";
+    private static final String BOOK_NAME_PYTHON_ONE = "러닝 파이썬 - 상편";
+    private static final String BOOK_NAME_PYTHON_TWO = "파이썬 웹 프로그래밍";
+
+    private static final LocalDate STUDY_PAST_START_DATE = LocalDate.now().minusDays(3);
+    private static final LocalDate STUDY_TODAY_START_DATE = LocalDate.now();
+    private static final LocalDate STUDY_LATE_START_DATE = LocalDate.now().plusDays(5);
+    private static final LocalDate STUDY_EARLY_END_DATE = LocalDate.now().plusDays(3);
+	private static final LocalDate TODAY = LocalDate.now();
+	private static final LocalDate YESTERDAY = LocalDate.now().minusDays(1);
+	private static final LocalDate TOMORROW = LocalDate.now().plusDays(1);
+
+    private static final String STUDY_LATE_START_TIME = "15:00";
+    private static final String STUDY_EARLY_END_TIME = "13:00";
+
+    private static final Long STUDY_NOT_EXISTED_ID = 100L;
+    private static final Long STUDY_FULL_SIZE_ID = 8L;
+
+    private static final Long ACCOUNT_CREATED_WITHOUT_STUDY_ID = ACCOUNT_CREATED_STUDY_ID;
+
+    private Account managerOfCreatedStudy;
+    private Account managerOfSetUpStudy;
+	private Account accountWithoutStudy;
+    private Account applierOfSetUpStudyOne;
+    private Account applierOfSetUpStudyTwo;
+    private Account applierOfSetUpStudyThree;
+    private Account accountCreatedWithoutStudy;
+	private UserAccount userAccountWithoutStudy;
+	private UserAccount userAccountManagerOfCreatedStudy;
+	private UserAccount userAccountApplierOneOfSetUpStudy;
+
+    private Study setUpStudy;
+    private Study createdStudy;
+    private Study fullSizeStudy;
+    private Study startTodayOpenedStudyOne;
+    private Study startTomorrowOpenedStudyTwo;
+    private Study endTodayClosedStudyOne;
+    private Study endYesterdayClosedStudyTwo;
+    private Study endedStudyOne;
+    private Study endedStudyTwo;
+    private Study bookNamePythonStudyOne;
+    private Study bookNamePythonStudyTwo;
+
+    private StudyCreateDto studyCreateDto;
+    private StudyCreateDto studyStartDateInThePastCreateDto;
+    private StudyCreateDto studyStartDateTodayCreateDto;
+    private StudyCreateDto endDateIsBeforeStartDateCreateDto;
+    private StudyCreateDto endTimeIsBeforeStartTimeCreateDto;
+    private StudyUpdateDto studyUpdateDto;
+	private StudyUpdateDto studyStartDateInThePastUpdateDto;
+	private StudyUpdateDto studyStartDateTodayUpdateDto;
+	private StudyUpdateDto endDateIsBeforeStartDateUpdateDto;
+	private StudyUpdateDto endTimeIsBeforeStartTimeUpdateDto;
+
+    private List<Study> listAllStudies;
+    private List<Study> listOpenedStudies;
+    private List<Study> listClosedStudies;
+    private List<Study> listEndedStudies;
+    private List<Account> listApplierOfSetUpStudy;
+    private List<Study> listBookNamePythonKeywordStudies;
+
+	private StudyService studyService;
+	private StudyRepository studyRepository;
+	private AccountRepository accountRepository;
+	private PasswordEncoder passwordEncoder;
+	private EmailAuthenticationRepository emailAuthenticationRepository;
+	private RoleRepository roleRepository;
+	private AmazonS3 amazonS3;
+	private UploadFileService uploadFileService;
+
+	private AccountService accountService;
+
+    @BeforeEach
+    void setUp() {
+        studyRepository = mock(StudyRepository.class);
+        accountRepository = mock(AccountRepository.class);
+		emailAuthenticationRepository = mock(EmailAuthenticationRepository.class);
+		roleRepository = mock(RoleRepository.class);
+		amazonS3 = mock(AmazonS3.class);
+		uploadFileService = new UploadFileService(amazonS3);
+		passwordEncoder = new BCryptPasswordEncoder();
+		accountService = new AccountService(accountRepository, emailAuthenticationRepository,
+				                            passwordEncoder, uploadFileService, roleRepository);
+        studyService = new StudyService(studyRepository, accountService);
+
+		setUpStudy = Study.builder()
+				.id(STUDY_SETUP_ID)
+				.name(STUDY_SETUP_NAME)
+				.bookName(STUDY_SETUP_BOOK_NAME)
+				.bookImage(STUDY_SETUP_BOOK_IMAGE)
+				.email(ACCOUNT_SETUP_MANAGER_EMAIL)
+				.description(STUDY_SETUP_DESCRIPTION)
+				.contact(STUDY_SETUP_CONTACT)
+				.size(STUDY_SETUP_SIZE)
+				.applyCount(STUDY_SETUP_APPLY_COUNT)
+				.startDate(STUDY_SETUP_START_DATE)
+				.endDate(STUDY_SETUP_END_DATE)
+				.startTime(STUDY_SETUP_START_TIME)
+				.endTime(STUDY_SETUP_END_TIME)
+				.day(STUDY_SETUP_DAY)
+				.studyState(STUDY_SETUP_STUDY_STATE)
+				.zone(STUDY_SETUP_ZONE)
+				.build();
+
+		createdStudy = Study.builder()
+				.id(STUDY_CREATED_ID)
+				.name(STUDY_CREATED_NAME)
+				.bookName(STUDY_CREATED_BOOK_NAME)
+				.bookImage(STUDY_CREATED_BOOK_IMAGE)
+				.email(ACCOUNT_CREATED_STUDY_EMAIL)
+				.description(STUDY_CREATED_DESCRIPTION)
+				.contact(STUDY_CREATED_CONTACT)
+				.size(STUDY_CREATED_SIZE)
+				.startDate(STUDY_CREATED_START_DATE)
+				.endDate(STUDY_CREATED_END_DATE)
+				.startTime(STUDY_CREATED_START_TIME)
+				.endTime(STUDY_CREATED_END_TIME)
+				.day(STUDY_CREATED_DAY)
+				.studyState(STUDY_CREATED_STUDY_STATE)
+				.zone(STUDY_CREATED_ZONE)
+				.build();
+
+		managerOfSetUpStudy = Account.builder()
+				.id(ACCOUNT_SETUP_MANAGER_ID)
+				.name(ACCOUNT_SETUP_MANAGER_NAME)
+				.email(ACCOUNT_SETUP_MANAGER_EMAIL)
+				.nickname(ACCOUNT_SETUP_MANAGER_NICKNAME)
+				.password(passwordEncoder.encode(ACCOUNT_SETUP_MANAGER_PASSWORD))
+				.build();
+
+		setUpStudy.addAdmin(managerOfSetUpStudy);
+
+		managerOfCreatedStudy = Account.builder()
+				.id(ACCOUNT_CREATED_STUDY_ID)
+				.name(ACCOUNT_CREATED_NAME)
+				.email(ACCOUNT_CREATED_STUDY_EMAIL)
+				.nickname(ACCOUNT_CREATED_NICKNAME)
+				.password(passwordEncoder.encode(ACCOUNT_CREATED_PASSWORD))
+				.build();
+
+		createdStudy.addAdmin(managerOfCreatedStudy);
+
+        applierOfSetUpStudyOne = Account.builder()
+                .id(ACCOUNT_APPLIER_ONE_ID)
+                .build();
+
+		setUpStudy.addAccount(applierOfSetUpStudyOne);
+
+        applierOfSetUpStudyTwo = Account.builder()
+                .id(ACCOUNT_APPLIER_TWO_ID)
+                .build();
+
+		setUpStudy.addAccount(applierOfSetUpStudyTwo);
+
+        applierOfSetUpStudyThree = Account.builder()
+                .id(ACCOUNT_APPLIER_THREE_ID)
+                .build();
+
+		setUpStudy.addAccount(applierOfSetUpStudyThree);
+
+		accountWithoutStudy = Account.builder()
+				.id(ACCOUNT_APPLIER_WITHOUT_STUDY_ID)
+				.build();
+
+        accountCreatedWithoutStudy = Account.builder()
+                .id(ACCOUNT_CREATED_WITHOUT_STUDY_ID)
+                .name(ACCOUNT_CREATED_NAME)
+                .email(ACCOUNT_CREATED_STUDY_EMAIL)
+                .nickname(ACCOUNT_CREATED_NICKNAME)
+                .password(passwordEncoder.encode(ACCOUNT_CREATED_PASSWORD))
+                .build();
+
+        listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
+                applierOfSetUpStudyTwo, applierOfSetUpStudyThree);
+
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		authorities.add(new SimpleGrantedAuthority("USER"));
+
+		userAccountWithoutStudy = UserAccount.builder()
+				.account(accountWithoutStudy)
+				.authorities(authorities)
+				.build();
+
+		userAccountManagerOfCreatedStudy = UserAccount.builder()
+				.account(managerOfCreatedStudy)
+				.authorities(authorities)
+				.build();
+
+		userAccountApplierOneOfSetUpStudy = UserAccount.builder()
+				.account(applierOfSetUpStudyOne)
+				.authorities(authorities)
+				.build();
+
+        fullSizeStudy = Study.builder()
+                .size(STUDY_SETUP_SIZE)
+                .applyCount(STUDY_SETUP_SIZE)
+                .studyState(StudyState.CLOSE)
+                .build();
+
+		startTodayOpenedStudyOne = Study.builder()
+                .studyState(StudyState.OPEN)
+				.startDate(TODAY)
+                .build();
+
+        startTomorrowOpenedStudyTwo = Study.builder()
+                .studyState(StudyState.OPEN)
+				.startDate(TOMORROW)
+                .build();
+
+        endTodayClosedStudyOne = Study.builder()
+                .studyState(StudyState.CLOSE)
+				.endDate(TODAY)
+                .build();
+
+        endYesterdayClosedStudyTwo = Study.builder()
+                .studyState(StudyState.CLOSE)
+				.endDate(YESTERDAY)
+                .build();
+
+        endedStudyOne = Study.builder()
+                .studyState(StudyState.END)
+                .build();
+
+        endedStudyTwo = Study.builder()
+                .studyState(StudyState.END)
+                .build();
+
+        bookNamePythonStudyOne = Study.builder()
+                .bookName(BOOK_NAME_PYTHON_ONE)
+                .build();
+
+        bookNamePythonStudyTwo = Study.builder()
+                .bookName(BOOK_NAME_PYTHON_TWO)
+                .build();
+
+        studyCreateDto = StudyCreateDto.builder()
+                .name(STUDY_CREATED_NAME)
+                .bookName(STUDY_CREATED_BOOK_NAME)
+                .bookImage(STUDY_CREATED_BOOK_IMAGE)
+                .description(STUDY_CREATED_DESCRIPTION)
+                .contact(STUDY_CREATED_CONTACT)
+                .size(STUDY_CREATED_SIZE)
+                .startDate(STUDY_CREATED_START_DATE)
+                .endDate(STUDY_CREATED_END_DATE)
+                .startTime(STUDY_CREATED_START_TIME)
+                .endTime(STUDY_CREATED_END_TIME)
+                .day(STUDY_CREATED_DAY)
+                .zone(STUDY_CREATED_ZONE)
+                .build();
+
+        studyStartDateInThePastCreateDto = StudyCreateDto.builder()
+                .startDate(STUDY_PAST_START_DATE)
+                .build();
+
+        studyStartDateTodayCreateDto = StudyCreateDto.builder()
+                .startDate(STUDY_TODAY_START_DATE)
+                .build();
+
+        endDateIsBeforeStartDateCreateDto = StudyCreateDto.builder()
+                .startDate(STUDY_LATE_START_DATE)
+                .endDate(STUDY_EARLY_END_DATE)
+                .build();
+
+        endTimeIsBeforeStartTimeCreateDto = StudyCreateDto.builder()
+                .startDate(STUDY_CREATED_START_DATE)
+                .endDate(STUDY_CREATED_END_DATE)
+                .startTime(STUDY_LATE_START_TIME)
+                .endTime(STUDY_EARLY_END_TIME)
+                .build();
+
+        //CREATED 변수들이 SETUP 변수들로 수정되었다고 가정할 것
+        studyUpdateDto = StudyUpdateDto.builder()
+                .name(STUDY_SETUP_NAME)
+                .description(STUDY_SETUP_DESCRIPTION)
+                .contact(STUDY_SETUP_CONTACT)
+                .size(STUDY_SETUP_SIZE)
+                .startDate(STUDY_SETUP_START_DATE)
+                .endDate(STUDY_SETUP_END_DATE)
+                .startTime(STUDY_SETUP_START_TIME)
+                .endTime(STUDY_SETUP_END_TIME)
+                .day(STUDY_SETUP_DAY)
+                .studyState(STUDY_SETUP_STUDY_STATE)
+                .zone(STUDY_SETUP_ZONE)
+                .build();
+
+		studyStartDateInThePastUpdateDto = StudyUpdateDto.builder()
+				.startDate(STUDY_PAST_START_DATE)
+				.build();
+
+		studyStartDateTodayUpdateDto = StudyUpdateDto.builder()
+				.startDate(STUDY_TODAY_START_DATE)
+				.build();
+
+		endDateIsBeforeStartDateUpdateDto = StudyUpdateDto.builder()
+				.startDate(STUDY_LATE_START_DATE)
+				.endDate(STUDY_EARLY_END_DATE)
+				.build();
+
+		endTimeIsBeforeStartTimeUpdateDto = StudyUpdateDto.builder()
+				.startDate(STUDY_CREATED_START_DATE)
+				.endDate(STUDY_CREATED_END_DATE)
+				.startTime(STUDY_LATE_START_TIME)
+				.endTime(STUDY_EARLY_END_TIME)
+				.build();
+
+        listAllStudies = List.of(setUpStudy, createdStudy);
+        listOpenedStudies = List.of(startTodayOpenedStudyOne, startTomorrowOpenedStudyTwo);
+        listClosedStudies = List.of(endTodayClosedStudyOne, endYesterdayClosedStudyTwo);
+        listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
+        listBookNamePythonKeywordStudies = List.of(bookNamePythonStudyOne, bookNamePythonStudyTwo);
+    }
+
+    @Test
+    void listAllStudies() {
+        given(studyRepository.findAll()).willReturn(listAllStudies);
+
+        List<Study> lists = studyService.getStudies();
+
+        assertThat(lists).containsExactly(setUpStudy, createdStudy);
+    }
+
+    @Test
+    void listOpenedStudies() {
+        given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenedStudies);
+
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
+
+        for(Study study : lists) {
+            assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+        }
+    }
+
+    @Test
+    void listClosedStudies() {
+        given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listClosedStudies);
+
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
+
+        for(Study study : lists) {
+            assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
+        }
+    }
+
+    @Test
+    void listEndedStudies() {
+        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listEndedStudies);
+
+        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
+
+        for(Study study : lists) {
+            assertThat(study.getStudyState()).isEqualTo(StudyState.END);
+        }
+    }
+
+    @Test
+    void detailWithExistedId() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+
+        Study study = studyService.getStudy(STUDY_SETUP_ID);
+
+        assertThat(study.getId()).isEqualTo(STUDY_SETUP_ID);
+    }
+
+    @Test
+    void detailWithNotExistedId() {
+        given(studyRepository.findById(STUDY_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+        assertThatThrownBy(() -> studyService.getStudy(STUDY_NOT_EXISTED_ID))
+                .isInstanceOf(StudyNotFoundException.class);
+    }
+
+    @Test
+    void createWithValidateAttribute() {
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(accountCreatedWithoutStudy));
+		given(studyRepository.save(any(Study.class))).willReturn(createdStudy);
+
+        StudyResultDto studyResultDto = studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyCreateDto);
+
+		assertThat(studyResultDto.getId()).isEqualTo(STUDY_CREATED_ID);
+        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
+        assertThat(studyResultDto.getId()).isEqualTo(createdStudy.getId());
+        assertThat(studyResultDto.getName()).isEqualTo(createdStudy.getName());
+        assertThat(studyResultDto.getDescription()).isEqualTo(createdStudy.getDescription());
+        assertThat(studyResultDto.getStudyState()).isEqualTo(StudyState.OPEN);
+        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
+        assertThat(managerOfCreatedStudy.getStudy()).isEqualTo(createdStudy);
+    }
+
+    @Test
+    void createWithAccountAlreadyStudyExisted() {
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(managerOfCreatedStudy));
+
+        assertThatThrownBy(
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyCreateDto)
+		)
+                .isInstanceOf(StudyAlreadyInOpenOrClose.class);
+    }
+
+    @Test
+    void createWithStartDateInThePast() {
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(accountCreatedWithoutStudy));
+
+        assertThatThrownBy(
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyStartDateInThePastCreateDto)
+		)
+                .isInstanceOf(StudyStartDateInThePastException.class);
+
+		assertThatThrownBy(
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyStartDateTodayCreateDto)
+		)
+                .isInstanceOf(StudyStartDateInThePastException.class);
+    }
+
+    @Test
+    void createWithEndDateIsBeforeStartDate() {
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(accountCreatedWithoutStudy));
+
+        assertThatThrownBy(
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, endDateIsBeforeStartDateCreateDto)
+		)
+                .isInstanceOf(StudyStartAndEndDateNotValidException.class);
+    }
+
+    @Test
+    void createWithEndTimeIsBeforeStartTime() {
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(accountCreatedWithoutStudy));
+
+        assertThatThrownBy(
+				() -> studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, endTimeIsBeforeStartTimeCreateDto)
+		)
+                .isInstanceOf(StudyStartAndEndTimeNotValidException.class);
+    }
+
+    @Test
+    void updateWithValidateAttribute() {
+		given(studyRepository.findById(STUDY_CREATED_ID)).willReturn(Optional.of(createdStudy));
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(managerOfCreatedStudy));
+
+        StudyResultDto studyResultDto = studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_CREATED_ID, studyUpdateDto);
+        assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
+        assertThat(studyResultDto.getName()).isEqualTo(studyUpdateDto.getName());
+        assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
+    }
+
+    @Test
+    void updateWithNotManagerOfStudy() {
+		given(studyRepository.findById(STUDY_CREATED_ID)).willReturn(Optional.of(createdStudy));
+		given(accountRepository.findByEmail(ACCOUNT_SETUP_MANAGER_EMAIL))
+				.willReturn(Optional.of(managerOfSetUpStudy));
+
+        assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_SETUP_MANAGER_EMAIL, STUDY_CREATED_ID, studyUpdateDto)
+		)
+                .isInstanceOf(AccountNotManagerOfStudyException.class);
+    }
+
+	@Test
+	void updateWithStartDateInThePast() {
+		given(studyRepository.findById(STUDY_CREATED_ID)).willReturn(Optional.of(createdStudy));
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(managerOfCreatedStudy));
+
+		assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_CREATED_ID, studyStartDateInThePastUpdateDto)
+		)
+				.isInstanceOf(StudyStartDateInThePastException.class);
+
+		assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_CREATED_ID, studyStartDateTodayUpdateDto)
+		)
+				.isInstanceOf(StudyStartDateInThePastException.class);
+	}
+
+	@Test
+	void updateWithEndDateIsBeforeStartDate() {
+		given(studyRepository.findById(STUDY_CREATED_ID)).willReturn(Optional.of(createdStudy));
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(accountCreatedWithoutStudy));
+
+		assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_CREATED_ID, endDateIsBeforeStartDateUpdateDto)
+		)
+				.isInstanceOf(StudyStartAndEndDateNotValidException.class);
+	}
+
+	@Test
+	void updateWithEndTimeIsBeforeStartTime() {
+		given(studyRepository.findById(STUDY_CREATED_ID)).willReturn(Optional.of(createdStudy));
+		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
+				.willReturn(Optional.of(accountCreatedWithoutStudy));
+
+		assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL,
+						                       STUDY_CREATED_ID,
+						                       endTimeIsBeforeStartTimeUpdateDto)
+		)
+				.isInstanceOf(StudyStartAndEndTimeNotValidException.class);
+	}
+
+	@Test
+	void updateWithNotExistedId() {
+		given(studyRepository.findById(STUDY_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL,
+						STUDY_NOT_EXISTED_ID,
+						studyUpdateDto)
+		)
+				.isInstanceOf(StudyNotFoundException.class);
+	}
+
+    @Test
+    void deleteWithExistedId() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+        given(accountRepository.findByEmail(ACCOUNT_SETUP_MANAGER_EMAIL)).willReturn(Optional.of(managerOfSetUpStudy));
+
+		List<Account> listsBeforeDelete = setUpStudy.getAccounts();
+		for(Account account : listsBeforeDelete) {
+			assertThat(account.getStudy().getId()).isEqualTo(STUDY_SETUP_ID);
+		}
+
+        assertThat(managerOfSetUpStudy.getEmail()).isEqualTo(setUpStudy.getEmail());
+
+        StudyResultDto studyResultDto = studyService.deleteStudy(ACCOUNT_SETUP_MANAGER_EMAIL, STUDY_SETUP_ID);
+
+        assertThat(studyResultDto.getId()).isEqualTo(setUpStudy.getId());
+
+		List<Account> listsAfterDelete = setUpStudy.getAccounts();
+        for(Account account : listsAfterDelete) {
+            assertThat(account.getStudy()).isNull();
+        }
+
+        verify(studyRepository).delete(setUpStudy);
+    }
+
+	@Test
+	void deleteWithNotExistedId() {
+		given(studyRepository.findById(STUDY_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyService.deleteStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_NOT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyNotFoundException.class);
+	}
+
+    @Test
+    void applyWithValidAttribute() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+
+        Study study = studyService.getStudy(STUDY_SETUP_ID);
+        int beforeApplyCount = study.getApplyCount();
+        studyService.applyStudy(userAccountWithoutStudy, STUDY_SETUP_ID);
+        int afterApplyCount = study.getApplyCount();
+        assertThat(accountWithoutStudy.getStudy()).isEqualTo(study);
+
+        assertThat(beforeApplyCount).isEqualTo(afterApplyCount - 1);
+        assertThat(setUpStudy.getAccounts()).contains(accountWithoutStudy);
+        assertThat(accountWithoutStudy.getStudy()).isNotNull();
+    }
+
+    @Test
+    void applyWithStudyAlreadyExisted() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+
+        assertThatThrownBy(() -> studyService.applyStudy(userAccountManagerOfCreatedStudy, STUDY_SETUP_ID))
+                .isInstanceOf(StudyAlreadyExistedException.class);
+    }
+
+    @Test
+    void applyThatSizeIsFull() {
+        given(studyRepository.findById(STUDY_FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
+
+        assertThatThrownBy(() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_FULL_SIZE_ID))
+                .isInstanceOf(StudySizeFullException.class);
+    }
+
+    @Test
+    void cancelWithValidAttribute() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+
+        Study study = studyService.getStudy(STUDY_SETUP_ID);
+        int beforeApplyCount = study.getApplyCount();
+        Long canceledStudyId = studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
+        int afterApplyCount = study.getApplyCount();
+
+        assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);
+        assertThat(setUpStudy.getAccounts()).doesNotContain(applierOfSetUpStudyOne);
+        assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
+		assertThat(canceledStudyId).isEqualTo(setUpStudy.getId());
+    }
+
+	@Test
+	void cancelNotAppliedBefore() {
+		given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+
+		assertThatThrownBy(
+				() -> studyService.cancelStudy(userAccountManagerOfCreatedStudy, STUDY_SETUP_ID)
+		)
+				.isInstanceOf(StudyNotAppliedBefore.class);
+	}
+
+	@Test
+	void getStudyWithExistedId() {
+		given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+
+		Study getStudy = studyService.getStudy(STUDY_SETUP_ID);
+
+		assertThat(getStudy.getId()).isEqualTo(STUDY_SETUP_ID);
+	}
+
+	@Test
+	void getStudyWithNotExistedId() {
+		given(studyRepository.findById(STUDY_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyService.getStudy(STUDY_NOT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyNotFoundException.class);
+	}
+
+    @Test
+    void listsStudiesWithKeyword() {
+        given(studyRepository.findByBookNameContaining(BOOK_PYTHON_KEYWORD)).willReturn(listBookNamePythonKeywordStudies);
+
+        List<Study> studies = studyService.getStudiesBySearch(BOOK_PYTHON_KEYWORD);
+
+        for(Study study : studies) {
+			assertThat(study.getBookName()).contains(BOOK_PYTHON_KEYWORD);
+		}
+
+		assertThat(setUpStudy.getBookName()).doesNotContain(BOOK_PYTHON_KEYWORD);
+    }
+
+	@Test
+	void scheduleOpenToClose() {
+		given(studyService.getStudies()).willReturn(listOpenedStudies);
+
+		studyService.scheduleOpenToClose();
+
+		for(Study study : listOpenedStudies) {
+			if(study.getStartDate().equals(LocalDate.now())) {
+				assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
+			} else {
+				assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+			}
+		}
+	}
+
+	@Test
+	void scheduleCloseToOpen() {
+		given(studyService.getStudies()).willReturn(listClosedStudies);
+
+		studyService.scheduleCloseToEnd();
+
+		for(Study study : listClosedStudies) {
+			if(study.getEndDate().equals(LocalDate.now())) {
+				assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
+			} else {
+				assertThat(study.getStudyState()).isEqualTo(StudyState.END);
+			}
+		}
+	}
+}

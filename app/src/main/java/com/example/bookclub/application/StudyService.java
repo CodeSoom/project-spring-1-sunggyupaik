@@ -43,10 +43,14 @@ public class StudyService {
 
     public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
         Account loginAccount = accountService.findUserByEmail(email);
-        StudyState accountStudyState = loginAccount.getStudy().getStudyState();
-        if(accountStudyState != null && (accountStudyState.equals(StudyState.OPEN)
-                || accountStudyState.equals(StudyState.CLOSE))) {
-            throw new StudyAlreadyInOpenOrClose();
+
+        if(loginAccount.getStudy() != null) {
+            StudyState accountStudyState = loginAccount.getStudy().getStudyState();
+            if(loginAccount.getStudy().getStudyState() != null &&
+                    (accountStudyState.equals(StudyState.OPEN) || accountStudyState.equals(StudyState.CLOSE))
+            ) {
+                throw new StudyAlreadyInOpenOrClose();
+            }
         }
 
         if (startDateIsTodayOrBefore(studyCreateDto.getStartDate())) {
@@ -149,10 +153,7 @@ public class StudyService {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
 
-        if(account.getEmail() == null ||
-            (!study.getEmail().equals(account.getStudy().getEmail())
-            && !account.getStudy().getId().equals(id))
-        ) {
+        if(!study.getAccounts().contains(account)) {
             throw new StudyNotAppliedBefore();
         }
 
@@ -161,13 +162,13 @@ public class StudyService {
         return id;
     }
 
+    public List<Study> getStudies() {
+        return studyRepository.findAll();
+    }
+
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
-    }
-
-    public List<Study> getStudies() {
-        return studyRepository.findAll();
     }
 
     public List<Study> getStudiesBySearch(String keyword) {
