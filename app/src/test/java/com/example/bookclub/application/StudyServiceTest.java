@@ -117,6 +117,7 @@ public class StudyServiceTest {
     private Account accountCreatedWithoutStudy;
 	private UserAccount userAccountWithoutStudy;
 	private UserAccount userAccountManagerOfCreatedStudy;
+	private UserAccount userAccountApplierOneOfSetUpStudy;
 
     private Study setUpStudy;
     private Study createdStudy;
@@ -272,6 +273,11 @@ public class StudyServiceTest {
 
 		userAccountManagerOfCreatedStudy = UserAccount.builder()
 				.account(managerOfCreatedStudy)
+				.authorities(authorities)
+				.build();
+
+		userAccountApplierOneOfSetUpStudy = UserAccount.builder()
+				.account(applierOfSetUpStudyOne)
 				.authorities(authorities)
 				.build();
 
@@ -664,22 +670,21 @@ public class StudyServiceTest {
                 .isInstanceOf(StudySizeFullException.class);
     }
 
-//    @Test
-//    void cancelWithValidAttribute() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//        given(accountRepository.findById(APPLIER_ONE_ID)).willReturn(Optional.of(applierOfSetUpStudyOne));
-//        applierOfSetUpStudyOne.addStudy(setUpStudy);
-//
-//        Study study = studyService.getStudy(SETUP_ID);
-//        int beforeApplyCount = study.getApplyCount();
-//        studyService.cancelStudy(applierOfSetUpStudyOne, SETUP_ID);
-//        int afterApplyCount = study.getApplyCount();
-//
-//        assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);
-//        assertThat(setUpStudy.getAccounts()).doesNotContain(applierOfSetUpStudyOne);
-//        assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
-//    }
-//
+    @Test
+    void cancelWithValidAttribute() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+        given(accountRepository.findById(ACCOUNT_APPLIER_ONE_ID)).willReturn(Optional.of(applierOfSetUpStudyOne));
+
+        Study study = studyService.getStudy(STUDY_SETUP_ID);
+        int beforeApplyCount = study.getApplyCount();
+        studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
+        int afterApplyCount = study.getApplyCount();
+
+        assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);
+        assertThat(setUpStudy.getAccounts()).doesNotContain(applierOfSetUpStudyOne);
+        assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
+    }
+
 //    @Test
 //    void listsStudiesWithKeyword() {
 //        given(studyRepository.findByBookNameContaining(PYTHON_KEYWORD)).willReturn(listPythonKeywordStudies);
