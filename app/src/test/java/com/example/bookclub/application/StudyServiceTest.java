@@ -19,8 +19,11 @@ import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
+import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -66,12 +69,11 @@ public class StudyServiceTest {
     private static final String ACCOUNT_CREATED_PASSWORD = "accountCreatedManagerPassword";
 
     private static final Long ACCOUNT_APPLIER_ONE_ID = 4L;
-    private static final String ACCOUNT_APPLIER_ONE_NAME = "accountApplierOneName";
-    private static final String ACCOUNT_APPLIER_ONE_EMAIL = "accountApplierOneEmail";
-    private static final String ACCOUNT_APPLIER_ONE_NICKNAME = "accountApplierOneNickname";
-    private static final String ACCOUNT_APPLIER_ONE_PASSWORD = "accountApplierOnePassword";
+	private static final Long ACCOUNT_APPLIER_TWO_ID = 5L;
+	private static final Long ACCOUNT_APPLIER_THREE_ID = 6L;
+	private static final Long ACCOUNT_APPLIER_WITHOUT_STUDY_ID = 9L;
 
-    private static final Long STUDY_CREATED_ID = 5L;
+    private static final Long STUDY_CREATED_ID = 7L;
     private static final String STUDY_CREATED_NAME = "studyCreatedName";
     private static final String STUDY_CREATED_BOOK_NAME = "studyCreatedBookName";
     private static final String STUDY_CREATED_BOOK_IMAGE = "studyCreatedBookImage";
@@ -99,18 +101,19 @@ public class StudyServiceTest {
     private static final String STUDY_EARLY_END_TIME = "13:00";
 
     private static final Long STUDY_NOT_EXISTED_ID = 100L;
-    private static final Long STUDY_FULL_SIZE_ID = 5L;
+    private static final Long STUDY_FULL_SIZE_ID = 8L;
 
-    private static final Long APPLIER_TWO_ID = 4L;
-    private static final Long APPLIER_THREE_ID = 5L;
+
     private static final Long ACCOUNT_CREATED_WITHOUT_STUDY_ID = ACCOUNT_CREATED_STUDY_ID;
 
     private Account managerOfCreatedStudy;
     private Account managerOfSetUpStudy;
+	private Account accountWithoutStudy;
     private Account applierOfSetUpStudyOne;
     private Account applierOfSetUpStudyTwo;
     private Account applierOfSetUpStudyThree;
     private Account accountCreatedWithoutStudy;
+	private UserAccount userAccount;
 
     private Study setUpStudy;
     private Study createdStudy;
@@ -230,16 +233,20 @@ public class StudyServiceTest {
 		setUpStudy.addAccount(applierOfSetUpStudyOne);
 
         applierOfSetUpStudyTwo = Account.builder()
-                .id(APPLIER_TWO_ID)
+                .id(ACCOUNT_APPLIER_TWO_ID)
                 .build();
 
 		setUpStudy.addAccount(applierOfSetUpStudyTwo);
 
         applierOfSetUpStudyThree = Account.builder()
-                .id(APPLIER_THREE_ID)
+                .id(ACCOUNT_APPLIER_THREE_ID)
                 .build();
 
 		setUpStudy.addAccount(applierOfSetUpStudyThree);
+
+		accountWithoutStudy = Account.builder()
+				.id(ACCOUNT_APPLIER_WITHOUT_STUDY_ID)
+				.build();
 
         accountCreatedWithoutStudy = Account.builder()
                 .id(ACCOUNT_CREATED_WITHOUT_STUDY_ID)
@@ -251,10 +258,14 @@ public class StudyServiceTest {
 
         listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
                 applierOfSetUpStudyTwo, applierOfSetUpStudyThree);
-        listApplierOfSetUpStudy = new ArrayList<>();
-        listApplierOfSetUpStudy.add(applierOfSetUpStudyOne);
-        listApplierOfSetUpStudy.add(applierOfSetUpStudyTwo);
-        listApplierOfSetUpStudy.add(applierOfSetUpStudyThree);
+
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		authorities.add(new SimpleGrantedAuthority("USER"));
+
+		userAccount = UserAccount.builder()
+				.account(accountWithoutStudy)
+				.authorities(authorities)
+				.build();
 
         fullSizeStudy = Study.builder()
                 .size(STUDY_SETUP_SIZE)
@@ -610,24 +621,23 @@ public class StudyServiceTest {
 				.isInstanceOf(StudyNotFoundException.class);
 	}
 
-//
-//    @Test
-//    void applyWithValidAttribute() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//        given(accountRepository.findById(ACCOUNT_WITHOUT_STUDY_ID))
-//                .willReturn(Optional.of(accountWithoutStudy));
-//
-//        Study study = studyService.getStudy(SETUP_ID);
-//        int beforeApplyCount = study.getApplyCount();
-//        studyService.applyStudy(accountWithoutStudy, SETUP_ID);
-//        int afterApplyCount = study.getApplyCount();
-//        assertThat(accountWithoutStudy.getStudy()).isEqualTo(study);
-//
-//        assertThat(beforeApplyCount).isEqualTo(afterApplyCount - 1);
-//        assertThat(setUpStudy.getAccounts()).contains(accountWithoutStudy);
-//        assertThat(accountWithoutStudy.getStudy()).isNotNull();
-//    }
-//
+    @Test
+    void applyWithValidAttribute() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+        given(accountRepository.findById(ACCOUNT_APPLIER_WITHOUT_STUDY_ID))
+				.willReturn(Optional.of(accountWithoutStudy));
+
+        Study study = studyService.getStudy(STUDY_SETUP_ID);
+        int beforeApplyCount = study.getApplyCount();
+        studyService.applyStudy(userAccount, STUDY_SETUP_ID);
+        int afterApplyCount = study.getApplyCount();
+        assertThat(accountWithoutStudy.getStudy()).isEqualTo(study);
+
+        assertThat(beforeApplyCount).isEqualTo(afterApplyCount - 1);
+        assertThat(setUpStudy.getAccounts()).contains(accountWithoutStudy);
+        assertThat(accountWithoutStudy.getStudy()).isNotNull();
+    }
+
 //    @Test
 //    void applyWithStudyAlready() {
 //        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
