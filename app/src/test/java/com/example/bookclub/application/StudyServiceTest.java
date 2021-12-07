@@ -17,6 +17,7 @@ import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
@@ -654,15 +655,15 @@ public class StudyServiceTest {
                 .isInstanceOf(StudyAlreadyExistedException.class);
     }
 
-//    @Test
-//    void applyWhenSizeIsFull() {
-//        given(studyRepository.findById(FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
-//        given(accountRepository.findById(ACCOUNT_WITHOUT_STUDY_ID)).willReturn(Optional.of(accountWithoutStudy));
-//
-//        assertThatThrownBy(() -> studyService.applyStudy(accountWithoutStudy, FULL_SIZE_ID))
-//                .isInstanceOf(StudySizeFullException.class);
-//    }
-//
+    @Test
+    void applyThatSizeIsFull() {
+        given(studyRepository.findById(STUDY_FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
+        given(accountRepository.findById(ACCOUNT_APPLIER_WITHOUT_STUDY_ID)).willReturn(Optional.of(accountWithoutStudy));
+
+        assertThatThrownBy(() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_FULL_SIZE_ID))
+                .isInstanceOf(StudySizeFullException.class);
+    }
+
 //    @Test
 //    void cancelWithValidAttribute() {
 //        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
