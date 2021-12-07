@@ -91,9 +91,9 @@ public class StudyServiceTest {
     private static final StudyState STUDY_CREATED_STUDY_STATE = StudyState.OPEN;
     private static final Zone STUDY_CREATED_ZONE = Zone.BUSAN;
 
-    private static final String PYTHON_KEYWORD = "파이썬";
-    private static final String PYTHON_BOOKNAME_ONE = "러닝 파이썬 - 상편";
-    private static final String PYTHON_BOOKNAME_TWO = "파이썬 웹 프로그래밍";
+    private static final String BOOK_PYTHON_KEYWORD = "파이썬";
+    private static final String BOOK_NAME_PYTHON_ONE = "러닝 파이썬 - 상편";
+    private static final String BOOK_NAME_PYTHON_TWO = "파이썬 웹 프로그래밍";
 
     private static final LocalDate STUDY_PAST_START_DATE = LocalDate.now().minusDays(3);
     private static final LocalDate STUDY_TODAY_START_DATE = LocalDate.now();
@@ -129,8 +129,8 @@ public class StudyServiceTest {
     private Study closedStudyTwo;
     private Study endedStudyOne;
     private Study endedStudyTwo;
-    private Study pythonBookNameStudyOne;
-    private Study pythonBookNameStudyTwo;
+    private Study bookNamePythonStudyOne;
+    private Study bookNamePythonStudyTwo;
 
     private StudyCreateDto studyCreateDto;
     private StudyCreateDto studyStartDateInThePastCreateDto;
@@ -148,7 +148,7 @@ public class StudyServiceTest {
     private List<Study> listClosedStudies;
     private List<Study> listEndedStudies;
     private List<Account> listApplierOfSetUpStudy;
-    private List<Study> listPythonKeywordStudies;
+    private List<Study> listBookNamePythonKeywordStudies;
 
 	private StudyService studyService;
 	private StudyRepository studyRepository;
@@ -312,12 +312,12 @@ public class StudyServiceTest {
                 .studyState(StudyState.END)
                 .build();
 
-        pythonBookNameStudyOne = Study.builder()
-                .bookName(PYTHON_BOOKNAME_ONE)
+        bookNamePythonStudyOne = Study.builder()
+                .bookName(BOOK_NAME_PYTHON_ONE)
                 .build();
 
-        pythonBookNameStudyTwo = Study.builder()
-                .bookName(PYTHON_BOOKNAME_TWO)
+        bookNamePythonStudyTwo = Study.builder()
+                .bookName(BOOK_NAME_PYTHON_TWO)
                 .build();
 
         studyCreateDto = StudyCreateDto.builder()
@@ -394,7 +394,7 @@ public class StudyServiceTest {
         listOpenedStudies = List.of(openedStudyOne, openedStudyTwo);
         listClosedStudies = List.of(closedStudyOne, closedStudyTwo);
         listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
-        listPythonKeywordStudies = List.of(pythonBookNameStudyOne, pythonBookNameStudyTwo);
+        listBookNamePythonKeywordStudies = List.of(bookNamePythonStudyOne, bookNamePythonStudyTwo);
     }
 
     @Test
@@ -711,15 +711,16 @@ public class StudyServiceTest {
 				.isInstanceOf(StudyNotFoundException.class);
 	}
 
-//    @Test
-//    void listsStudiesWithKeyword() {
-//        given(studyRepository.findByBookNameContaining(PYTHON_KEYWORD)).willReturn(listPythonKeywordStudies);
-//
-//        List<Study> list = studyService.getStudiesBySearch(PYTHON_KEYWORD);
-//
-//        for(Study study : list) {
-//            assertThat(study.getBookName()).contains(PYTHON_KEYWORD);
-//        }
-//        assertThat(setUpStudy.getBookName()).doesNotContain(PYTHON_KEYWORD);
-//    }
+    @Test
+    void listsStudiesWithKeyword() {
+        given(studyRepository.findByBookNameContaining(BOOK_PYTHON_KEYWORD)).willReturn(listBookNamePythonKeywordStudies);
+
+        List<Study> studies = studyService.getStudiesBySearch(BOOK_PYTHON_KEYWORD);
+
+        for(Study study : studies) {
+			assertThat(study.getBookName()).contains(BOOK_PYTHON_KEYWORD);
+		}
+
+		assertThat(setUpStudy.getBookName()).doesNotContain(BOOK_PYTHON_KEYWORD);
+    }
 }

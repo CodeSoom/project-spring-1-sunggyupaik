@@ -162,13 +162,13 @@ public class StudyService {
         return id;
     }
 
+    public List<Study> getStudies() {
+        return studyRepository.findAll();
+    }
+
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
-    }
-
-    public List<Study> getStudies() {
-        return studyRepository.findAll();
     }
 
     public List<Study> getStudiesBySearch(String keyword) {
