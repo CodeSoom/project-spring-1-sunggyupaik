@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -62,7 +63,7 @@ public class Study {
     @Enumerated(EnumType.STRING)
     private Zone zone;
 
-    @OneToMany(mappedBy = "study")
+    @OneToMany(mappedBy = "study", cascade = CascadeType.REMOVE)
     @Builder.Default
     @ToString.Exclude
     List<Account> accounts = new ArrayList<>();

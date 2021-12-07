@@ -34,6 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 public class StudyServiceTest {
     private static final Long STUDY_SETUP_ID = 1L;
@@ -89,16 +90,16 @@ public class StudyServiceTest {
     private static final String PYTHON_BOOKNAME_ONE = "러닝 파이썬 - 상편";
     private static final String PYTHON_BOOKNAME_TWO = "파이썬 웹 프로그래밍";
 
-    private static final LocalDate PAST_STARTDATE = LocalDate.now().minusDays(3);
-    private static final LocalDate TODAY_STARTDATE = LocalDate.now();
-    private static final LocalDate LATE_STARTDATE = LocalDate.now().plusDays(5);
-    private static final LocalDate EARLY_ENDDATE = LocalDate.now().plusDays(3);
+    private static final LocalDate STUDY_PAST_START_DATE = LocalDate.now().minusDays(3);
+    private static final LocalDate STUDY_TODAY_START_DATE = LocalDate.now();
+    private static final LocalDate STUDY_LATE_START_DATE = LocalDate.now().plusDays(5);
+    private static final LocalDate STUDY_EARLY_END_DATE = LocalDate.now().plusDays(3);
 
-    private static final String LATE_STARTTIME = "15:00";
-    private static final String EARLY_ENDTIME = "13:00";
+    private static final String STUDY_LATE_START_TIME = "15:00";
+    private static final String STUDY_EARLY_END_TIME = "13:00";
 
     private static final Long STUDY_NOT_EXISTED_ID = 100L;
-    private static final Long FULL_SIZE_ID = 5L;
+    private static final Long STUDY_FULL_SIZE_ID = 5L;
 
     private static final Long APPLIER_TWO_ID = 4L;
     private static final Long APPLIER_THREE_ID = 5L;
@@ -182,7 +183,6 @@ public class StudyServiceTest {
 				.day(STUDY_SETUP_DAY)
 				.studyState(STUDY_SETUP_STUDY_STATE)
 				.zone(STUDY_SETUP_ZONE)
-				.accounts(listApplierOfSetUpStudy)
 				.build();
 
 		createdStudy = Study.builder()
@@ -225,22 +225,21 @@ public class StudyServiceTest {
 
         applierOfSetUpStudyOne = Account.builder()
                 .id(ACCOUNT_APPLIER_ONE_ID)
-                .name(ACCOUNT_APPLIER_ONE_NAME)
-                .email(ACCOUNT_APPLIER_ONE_EMAIL)
-                .nickname(ACCOUNT_APPLIER_ONE_NICKNAME)
-                .password(ACCOUNT_APPLIER_ONE_PASSWORD)
-//                .study(setUpStudy)
                 .build();
+
+		setUpStudy.addAccount(applierOfSetUpStudyOne);
 
         applierOfSetUpStudyTwo = Account.builder()
                 .id(APPLIER_TWO_ID)
-//                .study(setUpStudy)
                 .build();
+
+		setUpStudy.addAccount(applierOfSetUpStudyTwo);
 
         applierOfSetUpStudyThree = Account.builder()
                 .id(APPLIER_THREE_ID)
-//                .study(setUpStudy)
                 .build();
+
+		setUpStudy.addAccount(applierOfSetUpStudyThree);
 
         accountCreatedWithoutStudy = Account.builder()
                 .id(ACCOUNT_CREATED_WITHOUT_STUDY_ID)
@@ -250,8 +249,8 @@ public class StudyServiceTest {
                 .password(passwordEncoder.encode(ACCOUNT_CREATED_PASSWORD))
                 .build();
 
-//        listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
-//                applierOfSetUpStudyTwo, applierOfSetUpStudyThree);
+        listApplierOfSetUpStudy = List.of(applierOfSetUpStudyOne,
+                applierOfSetUpStudyTwo, applierOfSetUpStudyThree);
         listApplierOfSetUpStudy = new ArrayList<>();
         listApplierOfSetUpStudy.add(applierOfSetUpStudyOne);
         listApplierOfSetUpStudy.add(applierOfSetUpStudyTwo);
@@ -311,23 +310,23 @@ public class StudyServiceTest {
                 .build();
 
         studyStartDateInThePastCreateDto = StudyCreateDto.builder()
-                .startDate(PAST_STARTDATE)
+                .startDate(STUDY_PAST_START_DATE)
                 .build();
 
         studyStartDateTodayCreateDto = StudyCreateDto.builder()
-                .startDate(TODAY_STARTDATE)
+                .startDate(STUDY_TODAY_START_DATE)
                 .build();
 
         endDateIsBeforeStartDateCreateDto = StudyCreateDto.builder()
-                .startDate(LATE_STARTDATE)
-                .endDate(EARLY_ENDDATE)
+                .startDate(STUDY_LATE_START_DATE)
+                .endDate(STUDY_EARLY_END_DATE)
                 .build();
 
         endTimeIsBeforeStartTimeCreateDto = StudyCreateDto.builder()
                 .startDate(STUDY_CREATED_START_DATE)
                 .endDate(STUDY_CREATED_END_DATE)
-                .startTime(LATE_STARTTIME)
-                .endTime(EARLY_ENDTIME)
+                .startTime(STUDY_LATE_START_TIME)
+                .endTime(STUDY_EARLY_END_TIME)
                 .build();
 
         //CREATED 변수들이 SETUP 변수들로 수정되었다고 가정할 것
@@ -346,23 +345,23 @@ public class StudyServiceTest {
                 .build();
 
 		studyStartDateInThePastUpdateDto = StudyUpdateDto.builder()
-				.startDate(PAST_STARTDATE)
+				.startDate(STUDY_PAST_START_DATE)
 				.build();
 
 		studyStartDateTodayUpdateDto = StudyUpdateDto.builder()
-				.startDate(TODAY_STARTDATE)
+				.startDate(STUDY_TODAY_START_DATE)
 				.build();
 
 		endDateIsBeforeStartDateUpdateDto = StudyUpdateDto.builder()
-				.startDate(LATE_STARTDATE)
-				.endDate(EARLY_ENDDATE)
+				.startDate(STUDY_LATE_START_DATE)
+				.endDate(STUDY_EARLY_END_DATE)
 				.build();
 
 		endTimeIsBeforeStartTimeUpdateDto = StudyUpdateDto.builder()
 				.startDate(STUDY_CREATED_START_DATE)
 				.endDate(STUDY_CREATED_END_DATE)
-				.startTime(LATE_STARTTIME)
-				.endTime(EARLY_ENDTIME)
+				.startTime(STUDY_LATE_START_TIME)
+				.endTime(STUDY_EARLY_END_TIME)
 				.build();
 
         listAllStudies = List.of(setUpStudy, createdStudy);
@@ -577,27 +576,29 @@ public class StudyServiceTest {
 				.isInstanceOf(StudyNotFoundException.class);
 	}
 
-//    @Test
-//    void deleteWithExistedId() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//        given(accountRepository.findById(SETUP_MANAGER_ID)).willReturn(Optional.of(managerOfSetUpStudy));
-//
-//        for(Account account : listApplierOfSetUpStudy) {
-//            account.addStudy(setUpStudy);
-//            assertThat(account.getStudy()).isEqualTo(setUpStudy);
-//        }
-//        managerOfSetUpStudy.addStudy(setUpStudy);
-//        assertThat(managerOfSetUpStudy.getStudy()).isEqualTo(setUpStudy);
-//
-//        StudyResultDto studyResultDto = studyService.deleteStudy(managerOfSetUpStudy, SETUP_ID);
-//
-//        assertThat(studyResultDto.getId()).isEqualTo(setUpStudy.getId());
-//        List<Account> listsAfterDelete = setUpStudy.getAccounts();
-//        for(Account account : listsAfterDelete) {
-//            assertThat(account.getStudy()).isNull();
-//        }
-//        verify(studyRepository).delete(setUpStudy);
-//    }
+    @Test
+    void deleteWithExistedId() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+        given(accountRepository.findByEmail(ACCOUNT_SETUP_MANAGER_EMAIL)).willReturn(Optional.of(managerOfSetUpStudy));
+
+		List<Account> listsBeforeDelete = setUpStudy.getAccounts();
+		for(Account account : listsBeforeDelete) {
+			assertThat(account.getStudy().getId()).isEqualTo(STUDY_SETUP_ID);
+		}
+
+        assertThat(managerOfSetUpStudy.getEmail()).isEqualTo(setUpStudy.getEmail());
+
+        StudyResultDto studyResultDto = studyService.deleteStudy(ACCOUNT_SETUP_MANAGER_EMAIL, STUDY_SETUP_ID);
+
+        assertThat(studyResultDto.getId()).isEqualTo(setUpStudy.getId());
+
+		List<Account> listsAfterDelete = setUpStudy.getAccounts();
+        for(Account account : listsAfterDelete) {
+            assertThat(account.getStudy()).isNull();
+        }
+
+        verify(studyRepository).delete(setUpStudy);
+    }
 //
 //    @Test
 //    void applyWithValidAttribute() {
