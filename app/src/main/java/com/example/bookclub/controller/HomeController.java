@@ -3,7 +3,7 @@ package com.example.bookclub.controller;
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.security.AccountAuthenticationService;
+import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

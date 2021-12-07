@@ -3,7 +3,7 @@ package com.example.bookclub.controller.api;
 import com.example.bookclub.application.InterviewService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Interview;
-import com.example.bookclub.security.AccountAuthenticationService;
+import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import com.example.bookclub.security.UserAccount;

@@ -1,7 +1,7 @@
 package com.example.bookclub.controller;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.security.AccountAuthenticationService;
+import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
