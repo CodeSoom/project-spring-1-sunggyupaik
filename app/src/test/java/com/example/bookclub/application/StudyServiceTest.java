@@ -14,6 +14,7 @@ import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
+import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
@@ -113,7 +114,8 @@ public class StudyServiceTest {
     private Account applierOfSetUpStudyTwo;
     private Account applierOfSetUpStudyThree;
     private Account accountCreatedWithoutStudy;
-	private UserAccount userAccount;
+	private UserAccount userAccountWithoutStudy;
+	private UserAccount userAccountManagerOfCreatedStudy;
 
     private Study setUpStudy;
     private Study createdStudy;
@@ -262,8 +264,13 @@ public class StudyServiceTest {
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 		authorities.add(new SimpleGrantedAuthority("USER"));
 
-		userAccount = UserAccount.builder()
+		userAccountWithoutStudy = UserAccount.builder()
 				.account(accountWithoutStudy)
+				.authorities(authorities)
+				.build();
+
+		userAccountManagerOfCreatedStudy = UserAccount.builder()
+				.account(managerOfCreatedStudy)
 				.authorities(authorities)
 				.build();
 
@@ -629,7 +636,7 @@ public class StudyServiceTest {
 
         Study study = studyService.getStudy(STUDY_SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
-        studyService.applyStudy(userAccount, STUDY_SETUP_ID);
+        studyService.applyStudy(userAccountWithoutStudy, STUDY_SETUP_ID);
         int afterApplyCount = study.getApplyCount();
         assertThat(accountWithoutStudy.getStudy()).isEqualTo(study);
 
@@ -638,16 +645,15 @@ public class StudyServiceTest {
         assertThat(accountWithoutStudy.getStudy()).isNotNull();
     }
 
-//    @Test
-//    void applyWithStudyAlready() {
-//        given(studyRepository.findById(SETUP_ID)).willReturn(Optional.of(setUpStudy));
-//        given(accountRepository.findById(CREATED_MANAGER_ID)).willReturn(Optional.of(managerOfCreatedStudy));
-//        managerOfCreatedStudy.addStudy(createdStudy);
-//
-//        assertThatThrownBy(() -> studyService.applyStudy(managerOfCreatedStudy, SETUP_ID))
-//                .isInstanceOf(StudyAlreadyExistedException.class);
-//    }
-//
+    @Test
+    void applyWithStudyAlreadyExisted() {
+        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+        given(accountRepository.findById(ACCOUNT_CREATED_STUDY_ID)).willReturn(Optional.of(managerOfCreatedStudy));
+
+        assertThatThrownBy(() -> studyService.applyStudy(userAccountManagerOfCreatedStudy, STUDY_SETUP_ID))
+                .isInstanceOf(StudyAlreadyExistedException.class);
+    }
+
 //    @Test
 //    void applyWhenSizeIsFull() {
 //        given(studyRepository.findById(FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
