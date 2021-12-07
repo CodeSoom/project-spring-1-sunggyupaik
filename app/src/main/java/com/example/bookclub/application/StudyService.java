@@ -153,10 +153,7 @@ public class StudyService {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
 
-        if(account.getEmail() == null ||
-            (!study.getEmail().equals(account.getStudy().getEmail())
-            && !account.getStudy().getId().equals(id))
-        ) {
+        if(!study.getAccounts().contains(account)) {
             throw new StudyNotAppliedBefore();
         }
 

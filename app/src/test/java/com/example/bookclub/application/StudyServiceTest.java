@@ -16,6 +16,7 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
@@ -638,8 +639,6 @@ public class StudyServiceTest {
     @Test
     void applyWithValidAttribute() {
         given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
-        given(accountRepository.findById(ACCOUNT_APPLIER_WITHOUT_STUDY_ID))
-				.willReturn(Optional.of(accountWithoutStudy));
 
         Study study = studyService.getStudy(STUDY_SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
@@ -655,7 +654,6 @@ public class StudyServiceTest {
     @Test
     void applyWithStudyAlreadyExisted() {
         given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
-        given(accountRepository.findById(ACCOUNT_CREATED_STUDY_ID)).willReturn(Optional.of(managerOfCreatedStudy));
 
         assertThatThrownBy(() -> studyService.applyStudy(userAccountManagerOfCreatedStudy, STUDY_SETUP_ID))
                 .isInstanceOf(StudyAlreadyExistedException.class);
@@ -664,7 +662,6 @@ public class StudyServiceTest {
     @Test
     void applyThatSizeIsFull() {
         given(studyRepository.findById(STUDY_FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
-        given(accountRepository.findById(ACCOUNT_APPLIER_WITHOUT_STUDY_ID)).willReturn(Optional.of(accountWithoutStudy));
 
         assertThatThrownBy(() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_FULL_SIZE_ID))
                 .isInstanceOf(StudySizeFullException.class);
@@ -673,17 +670,27 @@ public class StudyServiceTest {
     @Test
     void cancelWithValidAttribute() {
         given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
-        given(accountRepository.findById(ACCOUNT_APPLIER_ONE_ID)).willReturn(Optional.of(applierOfSetUpStudyOne));
 
         Study study = studyService.getStudy(STUDY_SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
-        studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
+        Long canceledStudyId = studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
         int afterApplyCount = study.getApplyCount();
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);
         assertThat(setUpStudy.getAccounts()).doesNotContain(applierOfSetUpStudyOne);
         assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
+		assertThat(canceledStudyId).isEqualTo(setUpStudy.getId());
     }
+
+	@Test
+	void cancelNotAppliedBefore() {
+		given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+
+		assertThatThrownBy(
+				() -> studyService.cancelStudy(userAccountManagerOfCreatedStudy, STUDY_SETUP_ID)
+		)
+				.isInstanceOf(StudyNotAppliedBefore.class);
+	}
 
 //    @Test
 //    void listsStudiesWithKeyword() {
