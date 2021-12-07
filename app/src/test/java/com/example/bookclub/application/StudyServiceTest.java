@@ -599,6 +599,17 @@ public class StudyServiceTest {
 
         verify(studyRepository).delete(setUpStudy);
     }
+
+	@Test
+	void deleteWithNotExistedId() {
+		given(studyRepository.findById(STUDY_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyService.deleteStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_NOT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyNotFoundException.class);
+	}
+
 //
 //    @Test
 //    void applyWithValidAttribute() {
