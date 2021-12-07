@@ -127,8 +127,8 @@ public class StudyServiceTest {
     private Study fullSizeStudy;
     private Study startTodayOpenedStudyOne;
     private Study startTomorrowOpenedStudyTwo;
-    private Study closedStudyOne;
-    private Study closedStudyTwo;
+    private Study endTodayClosedStudyOne;
+    private Study endYesterdayClosedStudyTwo;
     private Study endedStudyOne;
     private Study endedStudyTwo;
     private Study bookNamePythonStudyOne;
@@ -300,12 +300,14 @@ public class StudyServiceTest {
 				.startDate(TOMORROW)
                 .build();
 
-        closedStudyOne = Study.builder()
+        endTodayClosedStudyOne = Study.builder()
                 .studyState(StudyState.CLOSE)
+				.endDate(TODAY)
                 .build();
 
-        closedStudyTwo = Study.builder()
+        endYesterdayClosedStudyTwo = Study.builder()
                 .studyState(StudyState.CLOSE)
+				.endDate(YESTERDAY)
                 .build();
 
         endedStudyOne = Study.builder()
@@ -396,7 +398,7 @@ public class StudyServiceTest {
 
         listAllStudies = List.of(setUpStudy, createdStudy);
         listOpenedStudies = List.of(startTodayOpenedStudyOne, startTomorrowOpenedStudyTwo);
-        listClosedStudies = List.of(closedStudyOne, closedStudyTwo);
+        listClosedStudies = List.of(endTodayClosedStudyOne, endYesterdayClosedStudyTwo);
         listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
         listBookNamePythonKeywordStudies = List.of(bookNamePythonStudyOne, bookNamePythonStudyTwo);
     }
@@ -739,6 +741,21 @@ public class StudyServiceTest {
 				assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
 			} else {
 				assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+			}
+		}
+	}
+
+	@Test
+	void scheduleCloseToOpen() {
+		given(studyService.getStudies()).willReturn(listClosedStudies);
+
+		studyService.scheduleCloseToEnd();
+
+		for(Study study : listClosedStudies) {
+			if(study.getEndDate().equals(LocalDate.now())) {
+				assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
+			} else {
+				assertThat(study.getStudyState()).isEqualTo(StudyState.END);
 			}
 		}
 	}
