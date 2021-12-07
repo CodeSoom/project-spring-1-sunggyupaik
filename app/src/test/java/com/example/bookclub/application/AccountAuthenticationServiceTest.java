@@ -4,7 +4,10 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
+import com.example.bookclub.domain.Study;
+import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
+import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,12 +30,16 @@ class AccountAuthenticationServiceTest {
 
 	private final static String ACCOUNT_NOT_EXISTED_EMAIL = "accountNotExistedEmail";
 
-	private final static Long ROLE_SETUP = 2L;
 	private final static String ROLE_SETUP_EMAIL = ACCOUNT_SETUP_EMAIL;
 	private final static String ROLE_SETUP_NAME = "USER";
 
+	private final static Long STUDY_SETUP_ID = 2L;
+	private final static Long UPLOAD_FILE_SETUP_ID = 3L;
+
 	private Account setupAccount;
 	private Role setupRole;
+	private Study setupStudy;
+	private UploadFile setupUploadFile;
 	private List<Role> roles;
 
 	private AccountRepository accountRepository;
@@ -58,6 +65,17 @@ class AccountAuthenticationServiceTest {
 				.email(ROLE_SETUP_EMAIL)
 				.name(ROLE_SETUP_NAME)
 				.build();
+
+		setupStudy = Study.builder()
+				.id(STUDY_SETUP_ID)
+				.build();
+
+		setupUploadFile = UploadFile.builder()
+				.id(UPLOAD_FILE_SETUP_ID)
+				.build();
+
+		setupStudy.addAccount(setupAccount);
+		setupAccount.addUploadFile(setupUploadFile);
 
 		roles = List.of(setupRole);
 	}
@@ -92,5 +110,18 @@ class AccountAuthenticationServiceTest {
 			SimpleGrantedAuthority simpleGrantedAuthority = (SimpleGrantedAuthority) grantedAuthority;
 			assertThat(simpleGrantedAuthority.toString()).isEqualTo(ROLE_SETUP_NAME);
 		}
+	}
+
+	@Test
+	void detailSecurityDetailsWithExistedEmail() {
+		given(accountRepository.findByEmail(ACCOUNT_SETUP_EMAIL)).willReturn(Optional.of(setupAccount));
+		given(roleRepository.findAllByEmail(ACCOUNT_SETUP_EMAIL)).willReturn(roles);
+
+		UserAccount userAccount = (UserAccount) accountAuthenticationService.loadUserByUsername(ACCOUNT_SETUP_EMAIL);
+
+		assertThat(userAccount.getAccount().getId()).isEqualTo(setupAccount.getId());
+		assertThat(userAccount.getAuthorities()).contains(new SimpleGrantedAuthority(roles.get(0).getName()));
+		assertThat(userAccount.getAccount().getUploadFile().getId()).isEqualTo(UPLOAD_FILE_SETUP_ID);
+		assertThat(userAccount.getAccount().getStudy().getId()).isEqualTo(STUDY_SETUP_ID);
 	}
 }
