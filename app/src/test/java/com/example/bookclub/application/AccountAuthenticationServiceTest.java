@@ -2,11 +2,15 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.AccountRepository;
+import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +27,13 @@ class AccountAuthenticationServiceTest {
 
 	private final static String ACCOUNT_NOT_EXISTED_EMAIL = "accountNotExistedEmail";
 
+	private final static Long ROLE_SETUP = 2L;
+	private final static String ROLE_SETUP_EMAIL = ACCOUNT_SETUP_EMAIL;
+	private final static String ROLE_SETUP_NAME = "USER";
+
 	private Account setupAccount;
+	private Role setupRole;
+	private List<Role> roles;
 
 	private AccountRepository accountRepository;
 	private RoleRepository roleRepository;
@@ -43,6 +53,13 @@ class AccountAuthenticationServiceTest {
 				.nickname(ACCOUNT_SETUP_NICKNAME)
 				.password(ACCOUNT_SETUP_PASSWORD)
 				.build();
+
+		setupRole = Role.builder()
+				.email(ROLE_SETUP_EMAIL)
+				.name(ROLE_SETUP_NAME)
+				.build();
+
+		roles = List.of(setupRole);
 	}
 
 	@Test
@@ -63,5 +80,17 @@ class AccountAuthenticationServiceTest {
 				() -> accountAuthenticationService.getAccountByEmail(ACCOUNT_NOT_EXISTED_EMAIL)
 		)
 				.isInstanceOf(AccountEmailNotFoundException.class);
+	}
+
+	@Test
+	void listAllAuthorities() {
+		given(roleRepository.findAllByEmail(ACCOUNT_SETUP_EMAIL)).willReturn(roles);
+
+		List<GrantedAuthority> grantedAuthorities = accountAuthenticationService.getAllAuthorities(ACCOUNT_SETUP_EMAIL);
+
+		for(GrantedAuthority grantedAuthority : grantedAuthorities) {
+			SimpleGrantedAuthority simpleGrantedAuthority = (SimpleGrantedAuthority) grantedAuthority;
+			assertThat(simpleGrantedAuthority.toString()).isEqualTo(ROLE_SETUP_NAME);
+		}
 	}
 }
