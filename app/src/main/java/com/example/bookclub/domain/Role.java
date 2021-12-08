@@ -1,5 +1,6 @@
 package com.example.bookclub.domain;
 
+import com.example.bookclub.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Role {
+public class Role extends BaseTimeEntity {
     @Id
     @GeneratedValue
     private Long id;
