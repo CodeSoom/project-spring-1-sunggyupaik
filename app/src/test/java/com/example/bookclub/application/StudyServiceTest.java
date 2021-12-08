@@ -707,6 +707,16 @@ public class StudyServiceTest {
     }
 
 	@Test
+	void cancelNotOpenedStudy() {
+		given(studyRepository.findById(STUDY_CLOSED_ID)).willReturn(Optional.of(closedStudy));
+
+		assertThatThrownBy(
+				() -> studyService.cancelStudy(userAccountWithoutStudy, STUDY_CLOSED_ID)
+		)
+				.isInstanceOf(StudyNotInOpenStateException.class);
+	}
+
+	@Test
 	void cancelNotAppliedBefore() {
 		given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
 
