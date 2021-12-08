@@ -3,7 +3,7 @@ package com.example.bookclub.controller.api;
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.dto.EmailRequestDto;
 import com.example.bookclub.errors.EmailBadRequestException;
-import com.example.bookclub.security.AccountAuthenticationService;
+import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import com.fasterxml.jackson.databind.ObjectMapper;
