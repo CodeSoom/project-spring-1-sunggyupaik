@@ -124,4 +124,15 @@ class AccountAuthenticationServiceTest {
 		assertThat(userAccount.getAccount().getUploadFile().getId()).isEqualTo(UPLOAD_FILE_SETUP_ID);
 		assertThat(userAccount.getAccount().getStudy().getId()).isEqualTo(STUDY_SETUP_ID);
 	}
+
+	@Test
+	void detailSecurityDetailsWithNotExistedEmail() {
+		given(accountRepository.findByEmail(ACCOUNT_NOT_EXISTED_EMAIL)).willReturn(Optional.empty());
+		given(roleRepository.findAllByEmail(ACCOUNT_NOT_EXISTED_EMAIL)).willReturn(List.of());
+
+		assertThatThrownBy(
+				() -> accountAuthenticationService.loadUserByUsername(ACCOUNT_NOT_EXISTED_EMAIL)
+		)
+				.isInstanceOf(AccountEmailNotFoundException.class);
+	}
 }
