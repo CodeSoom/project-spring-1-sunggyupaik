@@ -1,5 +1,6 @@
 package com.example.bookclub.domain;
 
+import com.example.bookclub.common.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,7 +22,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @ToString
-public class Account {
+public class Account extends BaseEntity {
     @Id
     @GeneratedValue
     private Long id;

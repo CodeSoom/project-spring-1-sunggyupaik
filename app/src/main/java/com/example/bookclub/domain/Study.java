@@ -1,5 +1,6 @@
 package com.example.bookclub.domain;
 
+import com.example.bookclub.common.BaseEntity;
 import com.example.bookclub.dto.StudyUpdateDto;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -23,7 +24,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @ToString
-public class Study {
+public class Study extends BaseEntity {
     @Id
     @GeneratedValue
     private Long id;
