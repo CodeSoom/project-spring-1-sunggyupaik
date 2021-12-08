@@ -13,6 +13,7 @@ import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudyNotInOpenStateException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
@@ -136,6 +137,10 @@ public class StudyService {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
 
+        if(!study.getStudyState().equals(StudyState.OPEN)) {
+            throw new StudyNotInOpenStateException();
+        }
+
         if (account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
@@ -152,6 +157,10 @@ public class StudyService {
     public Long cancelStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
+
+        if(!study.getStudyState().equals(StudyState.OPEN)) {
+            throw new StudyNotInOpenStateException();
+        }
 
         if(!study.getAccounts().contains(account)) {
             throw new StudyNotAppliedBefore();

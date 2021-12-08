@@ -15,6 +15,7 @@ import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudyNotInOpenStateException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
@@ -102,7 +103,9 @@ class StudyApiControllerTest {
     private static final int STUDY_FULL_SIZE = 10;
     private static final int STUDY_FULL_SIZE_APPLY_COUNT = 10;
 
-    private static final Long NOT_EXIST_STUDY_ID = 999L;
+    private static final Long STUDY_NOT_EXISTED_ID = 999L;
+    private static final Long STUDY_CLOSED_ID = 5L;
+    private static final Long ACCOUNT_CLOSED_STUDY_ID = 6L;
     private static final LocalDate CREATE_START_DATE_PAST = LocalDate.now().minusDays(1);
 
     @Autowired
@@ -137,12 +140,15 @@ class StudyApiControllerTest {
 
     private Account accountWithoutStudy;
     private Account accountWithSetupStudy;
+    private Account accountWithClosedStudy;
     private UsernamePasswordAuthenticationToken accountWithoutStudyToken;
     private UsernamePasswordAuthenticationToken accountWithSetupStudyToken;
+    private UsernamePasswordAuthenticationToken accountWithClosedStudyToken;
     private Study setUpStudy;
     private Study updatedStudy;
     private Study dateNotValidStudy;
     private Study fullSizeStudy;
+    private Study closedStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyCreateDto studyStartDateIsPastCreateDto;
@@ -180,6 +186,10 @@ class StudyApiControllerTest {
                 .email(ACCOUNT_SECOND_EMAIL)
                 .nickname(ACCOUNT_SECOND_NICKNAME)
                 .password(ACCOUNT_SECOND_PASSWORD)
+                .build();
+
+        accountWithClosedStudy = Account.builder()
+                .id(ACCOUNT_CLOSED_STUDY_ID)
                 .build();
 
         setUpStudy = Study.builder()
@@ -221,6 +231,15 @@ class StudyApiControllerTest {
                 .applyCount(STUDY_FULL_SIZE_APPLY_COUNT)
                 .build();
 
+        closedStudy = Study.builder()
+                .id(STUDY_CLOSED_ID)
+                .studyState(StudyState.CLOSE)
+                .startDate(LocalDate.now().minusDays(1))
+                .endDate(LocalDate.now().plusDays(5))
+                .build();
+
+        closedStudy.addAccount(accountWithClosedStudy);
+
         accountWithoutStudyToken = new UsernamePasswordAuthenticationToken(
                 new UserAccount(accountWithoutStudy, List.of(new SimpleGrantedAuthority("USER"))),
                 accountWithoutStudy.getPassword(),
@@ -229,6 +248,11 @@ class StudyApiControllerTest {
         accountWithSetupStudyToken = new UsernamePasswordAuthenticationToken(
                 new UserAccount(accountWithSetupStudy, List.of(new SimpleGrantedAuthority("USER"))),
                 accountWithSetupStudy.getPassword(),
+                List.of(new SimpleGrantedAuthority("USER")));
+
+        accountWithClosedStudyToken = new UsernamePasswordAuthenticationToken(
+                new UserAccount(accountWithClosedStudy, List.of(new SimpleGrantedAuthority("USER"))),
+                accountWithClosedStudy.getPassword(),
                 List.of(new SimpleGrantedAuthority("USER")));
 
         studyCreateDto = StudyCreateDto.builder()
@@ -315,16 +339,16 @@ class StudyApiControllerTest {
 
     @Test
     void detailWithNotExistedId() throws Exception {
-        given(studyService.getStudy(NOT_EXIST_STUDY_ID)).willThrow(new StudyNotFoundException(NOT_EXIST_STUDY_ID));
+        given(studyService.getStudy(STUDY_NOT_EXISTED_ID)).willThrow(new StudyNotFoundException(STUDY_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                get("/api/study/{id}", NOT_EXIST_STUDY_ID)
+                get("/api/study/{id}", STUDY_NOT_EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(content().string(containsString("Study not found")))
                 .andExpect(status().isNotFound());
 
-        verify(studyService).getStudy(NOT_EXIST_STUDY_ID);
+        verify(studyService).getStudy(STUDY_NOT_EXISTED_ID);
     }
 
     @Test
@@ -524,11 +548,11 @@ class StudyApiControllerTest {
     @Test
     void deleteByNotExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.deleteStudy(eq(ACCOUNT_SECOND_EMAIL), eq(NOT_EXIST_STUDY_ID)))
+        given(studyService.deleteStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_NOT_EXISTED_ID)))
                 .willThrow(StudyNotFoundException.class);
 
         mockMvc.perform(
-                        delete("/api/study/{id}", NOT_EXIST_STUDY_ID)
+                        delete("/api/study/{id}", STUDY_NOT_EXISTED_ID)
                 )
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -551,15 +575,29 @@ class StudyApiControllerTest {
     @Test
     void applyStudyByNotExistedStudy() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.applyStudy(any(UserAccount.class), eq(NOT_EXIST_STUDY_ID)))
+        given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
                 .willThrow(StudyNotFoundException.class);
 
         mockMvc.perform(
-                        post("/api/study/apply/{id}", NOT_EXIST_STUDY_ID)
+                        post("/api/study/apply/{id}", STUDY_NOT_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void applyStudyNotInOpenState() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithClosedStudyToken);
+        given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_CLOSED_ID)))
+                .willThrow(StudyNotInOpenStateException.class);
+
+        mockMvc.perform(
+                        post("/api/study/apply/{id}", STUDY_CLOSED_ID)
+                            .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test
@@ -592,7 +630,6 @@ class StudyApiControllerTest {
 
     @Test
     void cancelStudyByExistedAccount() throws Exception {
-        setUpStudy.addAccount(accountWithoutStudy);
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
                 .willReturn(STUDY_SETUP_EXISTED_ID);
@@ -605,13 +642,26 @@ class StudyApiControllerTest {
     }
 
     @Test
+    void cancelStudyNotOpenedStudy() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithClosedStudyToken);
+        given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_CLOSED_ID)))
+                .willThrow(StudyNotInOpenStateException.class);
+
+        mockMvc.perform(
+                post("/api/study/cancel/{id}", STUDY_CLOSED_ID)
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void cancelStudyByNotExistedStudy() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.cancelStudy(any(UserAccount.class), eq(NOT_EXIST_STUDY_ID)))
+        given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
                 .willThrow(StudyNotFoundException.class);
 
         mockMvc.perform(
-                        post("/api/study/cancel/{id}", NOT_EXIST_STUDY_ID)
+                        post("/api/study/cancel/{id}", STUDY_NOT_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())

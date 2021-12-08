@@ -15,6 +15,7 @@ import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
+import com.example.bookclub.errors.StudyNotInOpenStateException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
@@ -108,6 +109,7 @@ public class StudyServiceTest {
 
     private static final Long STUDY_NOT_EXISTED_ID = 100L;
     private static final Long STUDY_FULL_SIZE_ID = 8L;
+	private static final Long STUDY_CLOSED_ID = 9L;
 
     private static final Long ACCOUNT_CREATED_WITHOUT_STUDY_ID = ACCOUNT_CREATED_STUDY_ID;
 
@@ -133,6 +135,7 @@ public class StudyServiceTest {
     private Study endedStudyTwo;
     private Study bookNamePythonStudyOne;
     private Study bookNamePythonStudyTwo;
+	private Study closedStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyCreateDto studyStartDateInThePastCreateDto;
@@ -211,6 +214,11 @@ public class StudyServiceTest {
 				.day(STUDY_CREATED_DAY)
 				.studyState(STUDY_CREATED_STUDY_STATE)
 				.zone(STUDY_CREATED_ZONE)
+				.build();
+
+		closedStudy = Study.builder()
+				.id(STUDY_CLOSED_ID)
+				.studyState(StudyState.CLOSE)
 				.build();
 
 		managerOfSetUpStudy = Account.builder()
@@ -673,6 +681,16 @@ public class StudyServiceTest {
                 .isInstanceOf(StudySizeFullException.class);
     }
 
+	@Test
+	void applyNotOpenedStudy() {
+		given(studyRepository.findById(STUDY_CLOSED_ID)).willReturn(Optional.of(closedStudy));
+
+		assertThatThrownBy(
+				() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_CLOSED_ID)
+		)
+				.isInstanceOf(StudyNotInOpenStateException.class);
+	}
+
     @Test
     void cancelWithValidAttribute() {
         given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
@@ -687,6 +705,16 @@ public class StudyServiceTest {
         assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
 		assertThat(canceledStudyId).isEqualTo(setUpStudy.getId());
     }
+
+	@Test
+	void cancelNotOpenedStudy() {
+		given(studyRepository.findById(STUDY_CLOSED_ID)).willReturn(Optional.of(closedStudy));
+
+		assertThatThrownBy(
+				() -> studyService.cancelStudy(userAccountWithoutStudy, STUDY_CLOSED_ID)
+		)
+				.isInstanceOf(StudyNotInOpenStateException.class);
+	}
 
 	@Test
 	void cancelNotAppliedBefore() {
