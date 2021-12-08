@@ -1,5 +1,6 @@
 package com.example.bookclub.domain;
 
+import com.example.bookclub.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-public class Interview {
+public class Interview extends BaseTimeEntity {
     @Id
     @GeneratedValue
     private Long id;
