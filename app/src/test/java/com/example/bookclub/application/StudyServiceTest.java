@@ -108,6 +108,7 @@ public class StudyServiceTest {
 
     private static final Long STUDY_NOT_EXISTED_ID = 100L;
     private static final Long STUDY_FULL_SIZE_ID = 8L;
+	private static final Long STUDY_CLOSED_ID = 9L;
 
     private static final Long ACCOUNT_CREATED_WITHOUT_STUDY_ID = ACCOUNT_CREATED_STUDY_ID;
 
@@ -133,6 +134,7 @@ public class StudyServiceTest {
     private Study endedStudyTwo;
     private Study bookNamePythonStudyOne;
     private Study bookNamePythonStudyTwo;
+	private Study closedStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyCreateDto studyStartDateInThePastCreateDto;
@@ -211,6 +213,11 @@ public class StudyServiceTest {
 				.day(STUDY_CREATED_DAY)
 				.studyState(STUDY_CREATED_STUDY_STATE)
 				.zone(STUDY_CREATED_ZONE)
+				.build();
+
+		closedStudy = Study.builder()
+				.id(STUDY_CLOSED_ID)
+				.studyState(StudyState.CLOSE)
 				.build();
 
 		managerOfSetUpStudy = Account.builder()
@@ -672,6 +679,16 @@ public class StudyServiceTest {
         assertThatThrownBy(() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_FULL_SIZE_ID))
                 .isInstanceOf(StudySizeFullException.class);
     }
+
+	@Test
+	void applyNotOpenedStudy() {
+		given(studyRepository.findById(STUDY_CLOSED_ID)).willReturn(Optional.of(closedStudy));
+
+		assertThatThrownBy(
+				() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_CLOSED_ID)
+		)
+				.isInstanceOf(StudyAlreadyInOpen.class);
+	}
 
     @Test
     void cancelWithValidAttribute() {
