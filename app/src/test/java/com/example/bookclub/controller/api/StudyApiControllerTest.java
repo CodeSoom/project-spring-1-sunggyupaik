@@ -105,6 +105,7 @@ class StudyApiControllerTest {
 
     private static final Long STUDY_NOT_EXISTED_ID = 999L;
     private static final Long STUDY_CLOSED_ID = 5L;
+    private static final Long ACCOUNT_CLOSED_STUDY_ID = 6L;
     private static final LocalDate CREATE_START_DATE_PAST = LocalDate.now().minusDays(1);
 
     @Autowired
@@ -139,12 +140,15 @@ class StudyApiControllerTest {
 
     private Account accountWithoutStudy;
     private Account accountWithSetupStudy;
+    private Account accountWithClosedStudy;
     private UsernamePasswordAuthenticationToken accountWithoutStudyToken;
     private UsernamePasswordAuthenticationToken accountWithSetupStudyToken;
+    private UsernamePasswordAuthenticationToken accountWithClosedStudyToken;
     private Study setUpStudy;
     private Study updatedStudy;
     private Study dateNotValidStudy;
     private Study fullSizeStudy;
+    private Study closedStudy;
 
     private StudyCreateDto studyCreateDto;
     private StudyCreateDto studyStartDateIsPastCreateDto;
@@ -182,6 +186,10 @@ class StudyApiControllerTest {
                 .email(ACCOUNT_SECOND_EMAIL)
                 .nickname(ACCOUNT_SECOND_NICKNAME)
                 .password(ACCOUNT_SECOND_PASSWORD)
+                .build();
+
+        accountWithClosedStudy = Account.builder()
+                .id(ACCOUNT_CLOSED_STUDY_ID)
                 .build();
 
         setUpStudy = Study.builder()
@@ -223,6 +231,15 @@ class StudyApiControllerTest {
                 .applyCount(STUDY_FULL_SIZE_APPLY_COUNT)
                 .build();
 
+        closedStudy = Study.builder()
+                .id(STUDY_CLOSED_ID)
+                .studyState(StudyState.CLOSE)
+                .startDate(LocalDate.now().minusDays(1))
+                .endDate(LocalDate.now().plusDays(5))
+                .build();
+
+        closedStudy.addAccount(accountWithClosedStudy);
+
         accountWithoutStudyToken = new UsernamePasswordAuthenticationToken(
                 new UserAccount(accountWithoutStudy, List.of(new SimpleGrantedAuthority("USER"))),
                 accountWithoutStudy.getPassword(),
@@ -231,6 +248,11 @@ class StudyApiControllerTest {
         accountWithSetupStudyToken = new UsernamePasswordAuthenticationToken(
                 new UserAccount(accountWithSetupStudy, List.of(new SimpleGrantedAuthority("USER"))),
                 accountWithSetupStudy.getPassword(),
+                List.of(new SimpleGrantedAuthority("USER")));
+
+        accountWithClosedStudyToken = new UsernamePasswordAuthenticationToken(
+                new UserAccount(accountWithClosedStudy, List.of(new SimpleGrantedAuthority("USER"))),
+                accountWithClosedStudy.getPassword(),
                 List.of(new SimpleGrantedAuthority("USER")));
 
         studyCreateDto = StudyCreateDto.builder()
@@ -566,7 +588,7 @@ class StudyApiControllerTest {
 
     @Test
     void applyStudyNotInOpenState() throws Exception {
-        SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
+        SecurityContextHolder.getContext().setAuthentication(accountWithClosedStudyToken);
         given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_CLOSED_ID)))
                 .willThrow(StudyNotInOpenStateException.class);
 
@@ -608,7 +630,6 @@ class StudyApiControllerTest {
 
     @Test
     void cancelStudyByExistedAccount() throws Exception {
-        setUpStudy.addAccount(accountWithoutStudy);
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
                 .willReturn(STUDY_SETUP_EXISTED_ID);
@@ -618,6 +639,19 @@ class StudyApiControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void cancelStudyNotOpenedStudy() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithClosedStudyToken);
+        given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_CLOSED_ID)))
+                .willThrow(StudyNotInOpenStateException.class);
+
+        mockMvc.perform(
+                post("/api/study/cancel/{id}", STUDY_CLOSED_ID)
+        )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 
     @Test

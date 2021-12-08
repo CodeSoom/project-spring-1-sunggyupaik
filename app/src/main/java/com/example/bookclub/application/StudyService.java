@@ -157,7 +157,7 @@ public class StudyService {
     public Long cancelStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
-        
+
         if(!study.getStudyState().equals(StudyState.OPEN)) {
             throw new StudyNotInOpenStateException();
         }
