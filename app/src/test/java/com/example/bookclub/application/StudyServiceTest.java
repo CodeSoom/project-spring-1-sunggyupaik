@@ -15,6 +15,7 @@ import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
+import com.example.bookclub.errors.StudyNotInOpenStateException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
@@ -687,7 +688,7 @@ public class StudyServiceTest {
 		assertThatThrownBy(
 				() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_CLOSED_ID)
 		)
-				.isInstanceOf(StudyAlreadyInOpen.class);
+				.isInstanceOf(StudyNotInOpenStateException.class);
 	}
 
     @Test
