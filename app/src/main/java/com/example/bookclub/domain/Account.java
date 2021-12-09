@@ -9,12 +9,16 @@ import lombok.ToString;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -24,6 +28,7 @@ import java.util.Objects;
 @ToString
 public class Account extends BaseTimeEntity {
     @Id
+    @Column(name = "ACCOUNT_ID")
     @GeneratedValue
     private Long id;
 
@@ -50,14 +55,18 @@ public class Account extends BaseTimeEntity {
     @ToString.Exclude
     private Study study;
 
+    @OneToMany(mappedBy = "account")
+    @ToString.Exclude
+    private List<AccountHistory> accountHistories = new ArrayList<>();
+
     @Override
     public int hashCode() {
         return Objects.hash(getId());
     }
 
     @Builder
-    public Account(Long id, String name, String email, String nickname,
-                   String password, UploadFile uploadFile, boolean deleted, Study study) {
+    public Account(Long id, String name, String email, String nickname, String password, UploadFile uploadFile,
+                   boolean deleted, Study study, List<AccountHistory> accountHistories) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -66,6 +75,7 @@ public class Account extends BaseTimeEntity {
         this.uploadFile = uploadFile;
         this.deleted = deleted;
         this.study = study;
+        this.accountHistories = accountHistories;
     }
 
     @Override
