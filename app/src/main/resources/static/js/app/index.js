@@ -89,7 +89,7 @@ const main = {
             email: $('#email').val()
         };
         $("#email").attr("readonly", true);
-        alert('메일 전송을 시작합니다.');
+        alert('인증번호 전송을 시작합니다.');
 
         $.ajax({
             type: 'POST',
@@ -98,7 +98,8 @@ const main = {
             contentType: 'application/json;',
             data: JSON.stringify(data)
         }).done(function () {
-            alert("메일 전송이 완료되었습니다.");
+            alert("인증번호 전송이 완료되었습니다.");
+            $('#authenticationNumber').focus();
         }).fail(function (request) {
             $("#email").attr("readonly", false);
             alert(request.responseText);

@@ -59,7 +59,7 @@ public class AccountApiController {
                                    @PathVariable Long id,
                                    @RequestPart(required = false) MultipartFile uploadFile,
                                    AccountUpdateDto accountUpdateDto) {
-        if (uploadFile == null) {
+    if (uploadFile == null) {
             return accountService.updateUser(id, accountUpdateDto, null);
         }
 

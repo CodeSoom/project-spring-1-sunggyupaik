@@ -1,16 +1,18 @@
 package com.example.bookclub.domain;
 
+import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -24,38 +26,32 @@ import java.util.Objects;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
-@ToString
+@ToString(callSuper = true)
+@EntityListeners(value = { AccountEntityListener.class })
 public class Account extends BaseTimeEntity {
     @Id
-    @Column(name = "ACCOUNT_ID")
     @GeneratedValue
     private Long id;
 
-    @Builder.Default
-    private String name = "";
+    private String name;
 
-    @Builder.Default
-    private String email = "";
+    private String email;
 
-    @Builder.Default
-    private String nickname = "";
+    private String nickname;
 
-    @Builder.Default
-    private String password = "";
+    private String password;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private UploadFile uploadFile;
 
-    @Builder.Default
-    private boolean deleted = false;
+    private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private Study study;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
     @ToString.Exclude
     private List<AccountHistory> accountHistories = new ArrayList<>();
 
@@ -81,7 +77,7 @@ public class Account extends BaseTimeEntity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Account)) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Account account = (Account)o;
         return account.id.equals(this.id);
     }

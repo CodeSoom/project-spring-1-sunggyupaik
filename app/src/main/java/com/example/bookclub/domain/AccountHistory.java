@@ -6,18 +6,19 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.util.Objects;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString
+@ToString(callSuper = true)
 public class AccountHistory extends BaseTimeEntity {
 	@Id
 	@GeneratedValue
@@ -34,13 +35,8 @@ public class AccountHistory extends BaseTimeEntity {
 	private boolean deleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ACCOUNT_ID")
 	@ToString.Exclude
 	private Account account;
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
 
 	@Builder
 	public AccountHistory(Long id, String name, String email, String nickname,
@@ -52,5 +48,13 @@ public class AccountHistory extends BaseTimeEntity {
 		this.password = password;
 		this.deleted = deleted;
 		this.account = account;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+		AccountHistory that = (AccountHistory) o;
+		return Objects.equals(id, that.id);
 	}
 }
