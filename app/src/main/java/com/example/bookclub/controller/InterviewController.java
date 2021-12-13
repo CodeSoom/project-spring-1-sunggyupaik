@@ -6,15 +6,15 @@ import com.example.bookclub.domain.Interview;
 import com.example.bookclub.security.UserAccount;
 import com.example.bookclub.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/interviews")
@@ -34,17 +34,13 @@ public class InterviewController {
     }
 
     @GetMapping
-    public String interviewLists(@AuthenticationPrincipal UserAccount userAccount,
-                                 @RequestParam(defaultValue = "1") int targetPage,
-                                 Model model) {
+    public String interviewLists(@AuthenticationPrincipal UserAccount userAccount, Model model,
+                                 @PageableDefault(size=5, sort="id", direction= Sort.Direction.DESC) Pageable pageable) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        List<Interview> lists = interviewService.getInterviews(
-                PageRequest.of(targetPage - 1, countList));
+        Page<Interview> lists = interviewService.getInterviews(pageable);
         model.addAttribute("lists", lists);
-        int allListsCount = interviewService.getInterviewsAll().size();
-        PageUtil pageUtils = pageUtil.makePage(allListsCount, targetPage, countList, countPage);
-        model.addAttribute("pageUtils", pageUtils);
+        int allListsCount = lists.getTotalPages();
         userAccount.getAuthorities().forEach(auth -> {
            if(auth.toString().equals("ADMIN")) {
                model.addAttribute("adminAuthority", "true");

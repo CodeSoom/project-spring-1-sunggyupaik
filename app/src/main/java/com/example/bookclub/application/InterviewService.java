@@ -7,6 +7,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -118,7 +119,7 @@ public class InterviewService {
         return interview;
     }
 
-    public List<Interview> getInterviews(Pageable pageable) {
+    public Page<Interview> getInterviews(Pageable pageable) {
         return interviewRepository.findAll(pageable);
     }
 
