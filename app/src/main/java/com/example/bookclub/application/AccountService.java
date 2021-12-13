@@ -86,11 +86,13 @@ public class AccountService {
 
         account.updatePassword(account.getPassword(), passwordEncoder);
         Account createdAccount = accountRepository.save(account);
+
         Role role = Role.builder()
-                        .email(createdAccount.getEmail())
-                        .name("USER")
-                        .build();
+                .email(account.getEmail())
+                .name("USER")
+                .build();
         roleRepository.save(role);
+
         deleteEmailAuthentication(emailAuthentication.getEmail());
 
         return AccountResultDto.of(createdAccount);

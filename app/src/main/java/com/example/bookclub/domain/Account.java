@@ -1,54 +1,59 @@
 package com.example.bookclub.domain;
 
+import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
-@ToString
+@ToString(callSuper = true)
+@EntityListeners(value = { AccountEntityListener.class })
 public class Account extends BaseTimeEntity {
     @Id
     @GeneratedValue
     private Long id;
 
-    @Builder.Default
-    private String name = "";
+    private String name;
 
-    @Builder.Default
-    private String email = "";
+    private String email;
 
-    @Builder.Default
-    private String nickname = "";
+    private String nickname;
 
-    @Builder.Default
-    private String password = "";
+    private String password;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @ToString.Exclude
     private UploadFile uploadFile;
 
-    @Builder.Default
-    private boolean deleted = false;
+    private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @ToString.Exclude
     private Study study;
+
+    @OneToMany(mappedBy = "account", fetch = FetchType.LAZY)
+    @ToString.Exclude
+    private List<AccountHistory> accountHistories = new ArrayList<>();
 
     @Override
     public int hashCode() {
@@ -56,8 +61,8 @@ public class Account extends BaseTimeEntity {
     }
 
     @Builder
-    public Account(Long id, String name, String email, String nickname,
-                   String password, UploadFile uploadFile, boolean deleted, Study study) {
+    public Account(Long id, String name, String email, String nickname, String password, UploadFile uploadFile,
+                   boolean deleted, Study study, List<AccountHistory> accountHistories) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -66,12 +71,13 @@ public class Account extends BaseTimeEntity {
         this.uploadFile = uploadFile;
         this.deleted = deleted;
         this.study = study;
+        this.accountHistories = accountHistories;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Account)) return false;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Account account = (Account)o;
         return account.id.equals(this.id);
     }
