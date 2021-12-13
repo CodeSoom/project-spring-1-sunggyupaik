@@ -2,7 +2,7 @@ package com.example.bookclub.controller;
 
 import com.example.bookclub.application.InterviewService;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Interview;
+import com.example.bookclub.dto.InterviewResultDto;
 import com.example.bookclub.security.UserAccount;
 import com.example.bookclub.utils.PageUtil;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,9 +38,8 @@ public class InterviewController {
                                  @PageableDefault(size=5, sort="id", direction= Sort.Direction.DESC) Pageable pageable) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        Page<Interview> lists = interviewService.getInterviews(pageable);
+        Page<InterviewResultDto> lists = interviewService.getInterviews(pageable);
         model.addAttribute("lists", lists);
-        int allListsCount = lists.getTotalPages();
         userAccount.getAuthorities().forEach(auth -> {
            if(auth.toString().equals("ADMIN")) {
                model.addAttribute("adminAuthority", "true");

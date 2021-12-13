@@ -2,6 +2,7 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Interview;
 import com.example.bookclub.domain.InterviewRepository;
+import com.example.bookclub.dto.InterviewResultDto;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -119,8 +120,9 @@ public class InterviewService {
         return interview;
     }
 
-    public Page<Interview> getInterviews(Pageable pageable) {
-        return interviewRepository.findAll(pageable);
+    public Page<InterviewResultDto> getInterviews(Pageable pageable) {
+        return interviewRepository.findAll(pageable)
+                .map(InterviewResultDto::of);
     }
 
     public List<Interview> getInterviewsAll() {
