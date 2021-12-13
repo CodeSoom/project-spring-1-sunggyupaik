@@ -4,8 +4,6 @@ import com.example.bookclub.application.InterviewService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.dto.InterviewResultDto;
 import com.example.bookclub.security.UserAccount;
-import com.example.bookclub.utils.PageUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,17 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/interviews")
 public class InterviewController {
     private final InterviewService interviewService;
-    private final PageUtil pageUtil;
 
-    @Value("${countList}")
-    private int countList;
-    @Value("${countPage}")
-    private int countPage;
-
-    public InterviewController(InterviewService interviewService,
-                               PageUtil pageUtil) {
+    public InterviewController(InterviewService interviewService) {
         this.interviewService = interviewService;
-        this.pageUtil = pageUtil;
     }
 
     @GetMapping
