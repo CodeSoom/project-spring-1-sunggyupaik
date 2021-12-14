@@ -1,23 +1,21 @@
 function go_targetPage(num) {
     document.frmList.target = '';
-    document.frmList.targetPage.value = num;
+    document.frmList.page.value = num - 1;
     document.frmList.action = "/interviews";
     document.frmList.submit();
 }
 
-$(document).ready(function(){
-    var targetPage = $(".targetPage").val();
-    $('.page' + targetPage).html('<strong>' + targetPage + '</strong>');
+function go_previous() {
+    document.frmList.target = '';
+    document.frmList.page.value = $(".previous").val() -1;
+    document.frmList.action = "/interviews";
+    document.frmList.submit();
+}
 
-    var totalPage = $(".totalPage").val();
-    var next = $(".next").val();
-    if(totalPage < next) {
-        $('.btn_next').hide();
-        $('.btn_last').hide();
-    }
+function go_next() {
+    document.frmList.target = '';
+    document.frmList.page.value = $(".next").val() -1;
+    document.frmList.action = "/interviews";
+    document.frmList.submit();
+}
 
-    if(targetPage < 11) {
-        $('.btn_prev').hide();
-        $('.btn_first').hide();
-    }
-})
