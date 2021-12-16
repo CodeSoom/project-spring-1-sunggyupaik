@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -25,8 +26,8 @@ import java.util.List;
 @Builder
 @ToString
 public class Study extends BaseEntity {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "STUDY_ID")
     private Long id;
 
     private String name;

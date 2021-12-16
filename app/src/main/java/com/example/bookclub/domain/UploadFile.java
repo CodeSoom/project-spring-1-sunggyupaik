@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,8 +17,8 @@ import javax.persistence.OneToOne;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UploadFile extends BaseTimeEntity {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "UPLOADFILE_ID")
     private Long id;
 
     private String fileName;

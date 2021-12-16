@@ -11,11 +11,13 @@ import org.hibernate.Hibernate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -29,8 +31,8 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @EntityListeners(value = { AccountEntityListener.class })
 public class Account extends BaseTimeEntity {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "ACCOUNT_ID")
     private Long id;
 
     private String name;
@@ -48,6 +50,7 @@ public class Account extends BaseTimeEntity {
     private boolean deleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "STUDY_ID")
     @ToString.Exclude
     private Study study;
 
