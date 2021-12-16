@@ -69,10 +69,14 @@ public class Study extends BaseEntity {
     @ToString.Exclude
     List<Account> accounts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "study")
+    @ToString.Exclude
+    List<StudyLike> studyLikes = new ArrayList<>();
+
     @Builder
     public Study(Long id, String name, String bookName, String bookImage, String email, String description,
                  String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
-                 String endTime, Day day, StudyState studyState, Zone zone, List<Account> accounts) {
+                 String endTime, Day day, StudyState studyState, Zone zone, List<Account> accounts, List<StudyLike> studyLikes) {
         this.id = id;
         this.name = name;
         this.bookName = bookName;
@@ -90,6 +94,7 @@ public class Study extends BaseEntity {
         this.studyState = studyState;
         this.zone = zone;
         this.accounts = accounts;
+        this.studyLikes = studyLikes;
     }
 
     public void updateWith(StudyUpdateDto studyUpdateDto) {
