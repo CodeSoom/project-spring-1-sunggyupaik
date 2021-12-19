@@ -16,6 +16,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,11 +74,14 @@ public class Study extends BaseEntity {
     @OneToMany(mappedBy = "study")
     @ToString.Exclude
     List<StudyLike> studyLikes = new ArrayList<>();
+    
+    @Transient
+    private boolean liked;
 
     @Builder
-    public Study(Long id, String name, String bookName, String bookImage, String email, String description,
-                 String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
-                 String endTime, Day day, StudyState studyState, Zone zone, List<Account> accounts, List<StudyLike> studyLikes) {
+    public Study(Long id, String name, String bookName, String bookImage, String email, String description, String contact,
+                 int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime, String endTime,
+                 Day day, StudyState studyState, Zone zone, List<Account> accounts, List<StudyLike> studyLikes, boolean liked) {
         this.id = id;
         this.name = name;
         this.bookName = bookName;
@@ -96,6 +100,7 @@ public class Study extends BaseEntity {
         this.zone = zone;
         this.accounts = accounts;
         this.studyLikes = studyLikes;
+        this.liked = liked;
     }
 
     public void updateWith(StudyUpdateDto studyUpdateDto) {
