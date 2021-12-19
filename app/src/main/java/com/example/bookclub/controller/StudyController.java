@@ -144,7 +144,7 @@ public class StudyController {
         List<StudyResultDto> studyResultDto = null;
 
         if(keyword == null) {
-            studyResultDto = studyService.getStudiesByStudyState(studyState);
+            studyResultDto = studyService.getStudiesByStudyState(studyState, userAccount.getAccount().getId());
         }
 
         if (keyword != null) {

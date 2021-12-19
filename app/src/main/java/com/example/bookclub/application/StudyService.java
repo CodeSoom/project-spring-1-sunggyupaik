@@ -196,8 +196,19 @@ public class StudyService {
                 .collect(Collectors.toList());
     }
 
-    public List<StudyResultDto> getStudiesByStudyState(StudyState studyState) {
-        return studyRepository.findByStudyState(studyState).stream()
+    public List<StudyResultDto> getStudiesByStudyState(StudyState studyState, Long principalId) {
+        List<Study> studies = studyRepository.findByStudyState(studyState);
+
+        studies.forEach(study -> {
+            study.addLikesCount(study.getStudyLikes().size());
+            study.getStudyLikes().forEach(like -> {
+                if(like.getAccount().getId().equals(principalId)) {
+                    study.addLiked();
+                }
+            });
+        });
+
+        return studies.stream()
                 .map(StudyResultDto::of)
                 .collect(Collectors.toList());
     }
@@ -206,12 +217,12 @@ public class StudyService {
         return getStudies().size();
     }
 
-    public long countCloseStudies() {
-        return getStudiesByStudyState(StudyState.CLOSE).size();
+    public long countCloseStudies(Long principalId) {
+        return getStudiesByStudyState(StudyState.CLOSE, principalId).size();
     }
 
-    public long countEndStudies() {
-        return getStudiesByStudyState(StudyState.END).size();
+    public long countEndStudies(Long principalId) {
+        return getStudiesByStudyState(StudyState.END, principalId).size();
     }
 
     @Scheduled(cron = "0 0 0 * * *")
