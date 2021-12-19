@@ -35,13 +35,13 @@
                 <table class="table table-hover" id='board_list'>
                     <thead>
                     <tr>
-                        <th class="text-center d-none d-md-table-cell">스터디 번호</th>
-                        <th class="text-center d-none d-md-table-cell">스터디 제목</th>
-                        <th class="text-center d-none d-md-table-cell">책 이름</th>
-                        <th class="text-center d-none d-md-table-cell">신청현황</th>
-                        <th class="text-center d-none d-md-table-cell">날짜</th>
-                        <th class="text-center d-none d-md-table-cell">시간</th>
-                        <th class="text-center d-none d-md-table-cell">요일</th>
+                        <th class="text-center d-none d-md-table-cell">번호</th>
+                        <th class="text-center d-none d-md-table-cell">제목</th>
+                        <th class="text-center d-none d-md-table-cell">책</th>
+                        <th class="text-center d-none d-md-table-cell">신청수</th>
+                        <th class="text-center d-none d-md-table-cell">첫모임</th>
+                        <th class="text-center d-none d-md-table-cell">좋아요</th>
+                        <th class="text-center d-none d-md-table-cell">좋아요수</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -51,9 +51,14 @@
                             <td class="text-center d-none d-md-table-cell"><a href='/studys/{{id}}'>{{name}}</a></td>
                             <td class="text-center d-none d-md-table-cell">{{bookName}}</td>
                             <td class="text-center d-none d-md-table-cell">{{applyCount}} / {{size}}</td>
-                            <td class="text-center d-none d-md-table-cell">{{startDate}} ~ {{endDate}}</td>
-                            <td class="text-center d-none d-md-table-cell">{{startTime}} ~ {{endTime}}</td>
-                            <td class="text-center d-none d-md-table-cell">{{day}}</td>
+                            <td class="text-center d-none d-md-table-cell">{{startDate}} {{startTime}}({{day}})</td>
+                            <td style="text-align: center;">
+                                <i class="fas fa-heart" style="font-size:24px; color:red;"></i>
+                            </td>
+<!--                            <div class="heart">
+                                <i class="far fa-heart" style="font-size:24px;color:red"></i>
+                            </div>-->
+                            <td class="text-center d-none d-md-table-cell">5</td>
                         </tr>
                     {{/studys}}
                     </tbody>

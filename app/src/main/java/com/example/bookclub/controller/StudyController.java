@@ -7,6 +7,7 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -137,14 +138,19 @@ public class StudyController {
     }
 
     private String getStudyList(Model model, String keyword, StudyState studyState) {
-        List<Study> lists = studyService.getStudiesByStudyState(studyState);
+        List<StudyResultDto> studyResultDto = null;
+
+        if(keyword == null) {
+            studyResultDto = studyService.getStudiesByStudyState(studyState);
+        }
+
         if (keyword != null) {
-            lists = studyService.getStudiesBySearch(keyword).stream()
+            studyResultDto = studyService.getStudiesBySearch(keyword).stream()
                     .filter(s -> s.getStudyState().equals(studyState))
                     .collect(Collectors.toList());
         }
 
-        model.addAttribute("studys", lists);
+        model.addAttribute("studys", studyResultDto);
         model.addAttribute("studyState", StudyState.getTitleFrom(studyState));
         model.addAttribute("studyStateCode", studyState.toString().toLowerCase());
 

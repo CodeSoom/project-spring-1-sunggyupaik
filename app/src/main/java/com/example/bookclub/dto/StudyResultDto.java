@@ -30,6 +30,8 @@ public class StudyResultDto {
 
     private int size;
 
+    private int applyCount;
+
     private LocalDate startDate;
 
     private LocalDate endDate;
@@ -38,7 +40,7 @@ public class StudyResultDto {
 
     private String endTime;
 
-    private Day day;
+    private String day;
 
     private StudyState studyState;
 
@@ -46,8 +48,8 @@ public class StudyResultDto {
 
     @Builder
     public StudyResultDto(Long id, String name, String bookName, String bookImage, String email, String description,
-                          String contact, int size, LocalDate startDate, LocalDate endDate, String startTime,
-                          String endTime, Day day, StudyState studyState, Zone zone) {
+                          String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
+                          String endTime, String day, StudyState studyState, Zone zone) {
         this.id = id;
         this.name = name;
         this.bookName = bookName;
@@ -56,6 +58,7 @@ public class StudyResultDto {
         this.description = description;
         this.contact = contact;
         this.size = size;
+        this.applyCount = applyCount;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
@@ -79,11 +82,12 @@ public class StudyResultDto {
                 .description(study.getDescription())
                 .contact(study.getContact())
                 .size(study.getSize())
+                .applyCount(study.getApplyCount())
                 .startDate(study.getStartDate())
                 .endDate(study.getEndDate())
                 .startTime(study.getStartTime())
                 .endTime(study.getEndTime())
-                .day(study.getDay())
+                .day(Day.getTitleFrom(study.getDay()))
                 .studyState(study.getStudyState())
                 .zone(study.getZone())
                 .build();
