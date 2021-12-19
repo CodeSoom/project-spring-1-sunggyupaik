@@ -180,8 +180,18 @@ public class StudyService {
                 .orElseThrow(() -> new StudyNotFoundException(id));
     }
 
-    public List<StudyResultDto> getStudiesBySearch(String keyword) {
-        return studyRepository.findByBookNameContaining(keyword).stream()
+    public List<StudyResultDto> getStudiesBySearch(String keyword, Long principalId) {
+        List<Study> studies = studyRepository.findByBookNameContaining(keyword);
+        studies.forEach(study -> {
+            study.addLikesCount(study.getStudyLikes().size());
+            study.getStudyLikes().forEach(like -> {
+                if(like.getAccount().getId().equals(principalId)) {
+                    study.addLiked();
+                }
+            });
+        });
+
+        return studies.stream()
                 .map(StudyResultDto::of)
                 .collect(Collectors.toList());
     }

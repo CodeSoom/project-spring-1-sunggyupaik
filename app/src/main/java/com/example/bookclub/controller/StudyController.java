@@ -90,28 +90,30 @@ public class StudyController {
     @GetMapping("/open")
     public String studyOpenList(@CurrentAccount Account account,
                                 @RequestParam(required = false) String keyword,
-                                Model model) {
+                                Model model, @AuthenticationPrincipal UserAccount userAccount) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.OPEN);
+        return getStudyList(model, keyword, StudyState.OPEN, userAccount);
     }
 
     @GetMapping("/close")
     public String studyCloseList(@CurrentAccount Account account,
                                  @RequestParam(required = false) String keyword,
-                                 Model model) {
+                                 Model model,
+                                 @AuthenticationPrincipal UserAccount userAccount) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.CLOSE);
+        return getStudyList(model, keyword, StudyState.CLOSE, userAccount);
     }
 
     @GetMapping("/end")
     public String studyEndList(@CurrentAccount Account account,
                                @RequestParam(required = false) String keyword,
-                               Model model) {
+                               Model model,
+                               @AuthenticationPrincipal UserAccount userAccount) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.END);
+        return getStudyList(model, keyword, StudyState.END, userAccount);
     }
 
     @GetMapping("/{id}/users")
@@ -137,7 +139,8 @@ public class StudyController {
         }
     }
 
-    private String getStudyList(Model model, String keyword, StudyState studyState) {
+    private String getStudyList(Model model, String keyword, StudyState studyState,
+                                @AuthenticationPrincipal UserAccount userAccount) {
         List<StudyResultDto> studyResultDto = null;
 
         if(keyword == null) {
@@ -145,7 +148,8 @@ public class StudyController {
         }
 
         if (keyword != null) {
-            studyResultDto = studyService.getStudiesBySearch(keyword).stream()
+            studyResultDto = studyService.getStudiesBySearch(keyword, userAccount.getAccount().getId())
+                    .stream()
                     .filter(s -> s.getStudyState().equals(studyState))
                     .collect(Collectors.toList());
         }
