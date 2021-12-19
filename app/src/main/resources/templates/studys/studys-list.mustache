@@ -52,13 +52,17 @@
                             <td class="text-center d-none d-md-table-cell">{{bookName}}</td>
                             <td class="text-center d-none d-md-table-cell">{{applyCount}} / {{size}}</td>
                             <td class="text-center d-none d-md-table-cell">{{startDate}} {{startTime}}({{day}})</td>
-                            <td style="text-align: center;">
+                        {{#liked}}
+                            <td class="text-center d-none d-md-table-cell" style="text-align: center;">
                                 <i class="fas fa-heart" style="font-size:24px; color:red;"></i>
                             </td>
-<!--                            <div class="heart">
-                                <i class="far fa-heart" style="font-size:24px;color:red"></i>
-                            </div>-->
-                            <td class="text-center d-none d-md-table-cell">5</td>
+                        {{/liked}}
+                        {{^liked}}
+                            <td class="text-center d-none d-md-table-cell" style="text-align: center;">
+                                <i class="far fa-heart" style="font-size:24px; color:red;"></i>
+                            </td>
+                        {{/liked}}
+                            <td class="text-center d-none d-md-table-cell">{{likesCount}}</td>
                         </tr>
                     {{/studys}}
                     </tbody>
