@@ -9,11 +9,23 @@
         let likeIcon = $("#"+likeId+id);
         let likeCount = $("#"+likeCountId+id);
 
+        //좋아요를 누를 경우
         if(likeIcon.hasClass("far")) {
-            likeIcon.addClass("fas");
-            likeIcon.removeClass("far");
-            likeCount.html(Number(likeCount.html()) + 1);
+            $.ajax({
+                type: 'POST',
+                url: '/api/study/like/' + id,
+                dataType: 'json',
+                contentType: 'application/json;',
+            }).done(function (data) {
+                likeIcon.addClass("fas");
+                likeIcon.removeClass("far");
+                likeCount.html(Number(likeCount.html()) + 1);
+            }).fail(function (request) {
+                alert('오류가 발생했습니다.');
+            });
         }
+
+        //좋아요 취소를 할 경우
         else if(likeIcon.hasClass("fas")) {
             likeIcon.removeClass("fas");
             likeIcon.addClass("far");

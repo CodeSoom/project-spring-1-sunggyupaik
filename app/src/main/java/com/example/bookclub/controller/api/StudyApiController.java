@@ -76,4 +76,10 @@ public class StudyApiController {
                        @PathVariable Long id) {
         return studyService.cancelStudy(userAccount, id);
     }
+
+    @PostMapping("/like/{studyId}")
+    public Long like(@AuthenticationPrincipal UserAccount userAccount,
+                     @PathVariable Long studyId) {
+        return studyService.like(userAccount, studyId);
+    }
 }
