@@ -96,7 +96,7 @@ public class StudyResultDto {
                 .day(Day.getTitleFrom(study.getDay()))
                 .studyState(study.getStudyState())
                 .zone(study.getZone())
-                .likesCount(study.getStudyLikes().size())
+                .likesCount(study.getStudyLikes() == null ? 0 : study.getStudyLikes().size())
                 .liked(study.isLiked())
                 .build();
     }

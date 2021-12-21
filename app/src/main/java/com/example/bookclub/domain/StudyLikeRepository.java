@@ -5,5 +5,5 @@ import java.util.Optional;
 public interface StudyLikeRepository {
 	StudyLike save(StudyLike studyLike);
 
-	Optional<StudyLike> findByStudyIdAndAccountId(Long studyId, Long AccountId);
+	Optional<StudyLike> findByStudyAndAccount(Study study, Account account);
 }

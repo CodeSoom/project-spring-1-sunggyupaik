@@ -1,5 +1,7 @@
 package com.example.bookclub.infra;
 
+import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyLike;
 import com.example.bookclub.domain.StudyLikeRepository;
 import org.springframework.data.repository.CrudRepository;
@@ -10,5 +12,5 @@ public interface JpaStudyLikeRepository
 		extends StudyLikeRepository, CrudRepository<StudyLike, Long> {
 	StudyLike save(StudyLike studyLike);
 
-	Optional<StudyLike> findByStudyIdAndAccountId(Long studyId, Long AccountId);
+	Optional<StudyLike> findByStudyAndAccount(Study study, Account account);
 }

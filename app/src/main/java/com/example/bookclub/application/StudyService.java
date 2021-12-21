@@ -2,6 +2,7 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.domain.StudyLike;
 import com.example.bookclub.domain.StudyLikeRepository;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
@@ -241,13 +242,25 @@ public class StudyService {
         return getStudiesByStudyState(StudyState.END, account).size();
     }
 
-
     public Long like(UserAccount userAccount, Long studyId) {
         Long accountId = userAccount.getAccount().getId();
-        studyLikeRepository.findByStudyIdAndAccountId(accountId, studyId)
-                .orElseThrow(StudyLikeAlreadyExistedException::new);
-        
-        return null;
+
+        Study study = getStudy(studyId);
+        Account account = accountService.findUser(accountId);
+        StudyLike studyLike = StudyLike.builder()
+                .study(study)
+                .account(account)
+                .build();
+
+        studyLikeRepository.findByStudyAndAccount(study, account)
+                        .ifPresent(like -> {
+                            throw new StudyLikeAlreadyExistedException();
+                        });
+
+        studyLike.addStudyAndAccount(study, account);
+        studyLikeRepository.save(studyLike);
+
+        return studyId;
     }
 
     @Scheduled(cron = "0 0 0 * * *")

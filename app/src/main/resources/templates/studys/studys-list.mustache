@@ -21,7 +21,7 @@
                 likeIcon.removeClass("far");
                 likeCount.html(Number(likeCount.html()) + 1);
             }).fail(function (request) {
-                alert('오류가 발생했습니다.');
+                alert(request.responseText);
             });
         }
 
