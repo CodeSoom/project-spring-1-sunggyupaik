@@ -27,9 +27,18 @@
 
         //좋아요 취소를 할 경우
         else if(likeIcon.hasClass("fas")) {
-            likeIcon.removeClass("fas");
-            likeIcon.addClass("far");
-            likeCount.html(Number(likeCount.html()) - 1);
+            $.ajax({
+                type: 'DELETE',
+                url: '/api/study/like/' + id,
+                dataType: 'json',
+                contentType: 'application/json;',
+            }).done(function (data) {
+                likeIcon.removeClass("fas");
+                likeIcon.addClass("far");
+                likeCount.html(Number(likeCount.html()) - 1);
+            }).fail(function (request) {
+                alert(request.responseText);
+            });
         }
     }
 </script>

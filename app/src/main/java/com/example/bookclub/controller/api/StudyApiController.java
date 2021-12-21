@@ -86,4 +86,10 @@ public class StudyApiController {
                      @PathVariable Long studyId) {
         return studyLikeService.like(userAccount, studyId);
     }
+
+    @DeleteMapping("/like/{studyId}")
+    public Long unLike(@AuthenticationPrincipal UserAccount userAccount,
+                       @PathVariable Long studyId) {
+        return studyLikeService.unLike(userAccount, studyId);
+    }
 }
