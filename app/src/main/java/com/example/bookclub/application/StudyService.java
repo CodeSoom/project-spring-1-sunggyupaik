@@ -2,6 +2,7 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.domain.StudyLikeRepository;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCreateDto;
@@ -11,6 +12,7 @@ import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyNotInOpenStateException;
@@ -35,11 +37,14 @@ import java.util.stream.Collectors;
 public class StudyService {
     private final StudyRepository studyRepository;
     private final AccountService accountService;
+    private final StudyLikeRepository studyLikeRepository;
 
     public StudyService(StudyRepository studyRepository,
-                        AccountService accountService) {
+                        AccountService accountService,
+                        StudyLikeRepository studyLikeRepository) {
         this.studyRepository = studyRepository;
         this.accountService = accountService;
+        this.studyLikeRepository = studyLikeRepository;
     }
 
     public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
@@ -234,6 +239,15 @@ public class StudyService {
 
     public long countEndStudies(Account account) {
         return getStudiesByStudyState(StudyState.END, account).size();
+    }
+
+
+    public Long like(UserAccount userAccount, Long studyId) {
+        Long accountId = userAccount.getAccount().getId();
+        studyLikeRepository.findByStudyIdAndAccountId(accountId, studyId)
+                .orElseThrow(StudyLikeAlreadyExistedException::new);
+        
+        return null;
     }
 
     @Scheduled(cron = "0 0 0 * * *")

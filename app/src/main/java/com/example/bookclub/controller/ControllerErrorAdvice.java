@@ -16,11 +16,12 @@ import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.MessageCreateBadRequestException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
-import com.example.bookclub.errors.StudyNotInOpenStateException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
+import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.StudyNotInOpenStateException;
 import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
@@ -191,6 +192,12 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(StudyNotInOpenStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleStudyNotInOpenStateException(StudyNotInOpenStateException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(StudyLikeAlreadyExistedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleStudyLikeAlreadyExistedException(StudyLikeAlreadyExistedException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
