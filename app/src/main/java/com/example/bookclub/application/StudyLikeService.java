@@ -5,6 +5,7 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyLike;
 import com.example.bookclub.domain.StudyLikeRepository;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
+import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 
@@ -44,5 +45,22 @@ public class StudyLikeService {
 		studyLikeRepository.save(studyLike);
 
 		return studyId;
+	}
+
+	@Transactional
+	public Long unLike(UserAccount userAccount, Long studyId) {
+		Long accountId = userAccount.getAccount().getId();
+
+		Study study = studyService.getStudy(studyId);
+		Account account = accountService.findUser(accountId);
+		StudyLike studyLike = StudyLike.builder()
+				.study(study)
+				.account(account)
+				.build();
+		
+		studyLikeRepository.findByStudyAndAccount(study, account)
+				.orElseThrow(StudyLikeNotExistedException::new);
+
+		return null;
 	}
 }
