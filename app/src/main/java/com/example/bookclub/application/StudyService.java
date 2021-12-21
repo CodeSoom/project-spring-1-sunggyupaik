@@ -2,7 +2,6 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyLike;
 import com.example.bookclub.domain.StudyLikeRepository;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
@@ -13,7 +12,6 @@ import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
-import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyNotInOpenStateException;
@@ -240,27 +238,6 @@ public class StudyService {
 
     public long countEndStudies(Account account) {
         return getStudiesByStudyState(StudyState.END, account).size();
-    }
-
-    public Long like(UserAccount userAccount, Long studyId) {
-        Long accountId = userAccount.getAccount().getId();
-
-        Study study = getStudy(studyId);
-        Account account = accountService.findUser(accountId);
-        StudyLike studyLike = StudyLike.builder()
-                .study(study)
-                .account(account)
-                .build();
-
-        studyLikeRepository.findByStudyAndAccount(study, account)
-                        .ifPresent(like -> {
-                            throw new StudyLikeAlreadyExistedException();
-                        });
-
-        studyLike.addStudyAndAccount(study, account);
-        studyLikeRepository.save(studyLike);
-
-        return studyId;
     }
 
     @Scheduled(cron = "0 0 0 * * *")
