@@ -57,10 +57,12 @@ public class StudyLikeService {
 				.study(study)
 				.account(account)
 				.build();
-		
-		studyLikeRepository.findByStudyAndAccount(study, account)
+
+		StudyLike savedStudyLike = studyLikeRepository.findByStudyAndAccount(study, account)
 				.orElseThrow(StudyLikeNotExistedException::new);
 
-		return null;
+		studyLikeRepository.delete(savedStudyLike);
+
+		return savedStudyLike.getId();
 	}
 }
