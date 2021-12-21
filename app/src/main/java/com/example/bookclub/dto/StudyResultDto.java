@@ -30,6 +30,8 @@ public class StudyResultDto {
 
     private int size;
 
+    private int applyCount;
+
     private LocalDate startDate;
 
     private LocalDate endDate;
@@ -38,16 +40,20 @@ public class StudyResultDto {
 
     private String endTime;
 
-    private Day day;
+    private String day;
 
     private StudyState studyState;
 
     private Zone zone;
 
+    private int likesCount;
+
+    private boolean liked;
+
     @Builder
     public StudyResultDto(Long id, String name, String bookName, String bookImage, String email, String description,
-                          String contact, int size, LocalDate startDate, LocalDate endDate, String startTime,
-                          String endTime, Day day, StudyState studyState, Zone zone) {
+                          String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
+                          String endTime, String day, StudyState studyState, Zone zone, int likesCount, boolean liked) {
         this.id = id;
         this.name = name;
         this.bookName = bookName;
@@ -56,6 +62,7 @@ public class StudyResultDto {
         this.description = description;
         this.contact = contact;
         this.size = size;
+        this.applyCount = applyCount;
         this.startDate = startDate;
         this.endDate = endDate;
         this.startTime = startTime;
@@ -63,6 +70,8 @@ public class StudyResultDto {
         this.day = day;
         this.studyState = studyState;
         this.zone = zone;
+        this.likesCount = likesCount;
+        this.liked = liked;
     }
 
     public static StudyResultDto of(Study study) {
@@ -79,13 +88,16 @@ public class StudyResultDto {
                 .description(study.getDescription())
                 .contact(study.getContact())
                 .size(study.getSize())
+                .applyCount(study.getApplyCount())
                 .startDate(study.getStartDate())
                 .endDate(study.getEndDate())
                 .startTime(study.getStartTime())
                 .endTime(study.getEndTime())
-                .day(study.getDay())
+                .day(Day.getTitleFrom(study.getDay()))
                 .studyState(study.getStudyState())
                 .zone(study.getZone())
+                .likesCount(study.getStudyLikes() == null ? 0 : study.getStudyLikes().size())
+                .liked(study.isLiked())
                 .build();
     }
 }

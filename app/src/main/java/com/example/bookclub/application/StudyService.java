@@ -2,6 +2,7 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.domain.StudyLikeRepository;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCreateDto;
@@ -35,11 +36,14 @@ import java.util.stream.Collectors;
 public class StudyService {
     private final StudyRepository studyRepository;
     private final AccountService accountService;
+    private final StudyLikeRepository studyLikeRepository;
 
     public StudyService(StudyRepository studyRepository,
-                        AccountService accountService) {
+                        AccountService accountService,
+                        StudyLikeRepository studyLikeRepository) {
         this.studyRepository = studyRepository;
         this.accountService = accountService;
+        this.studyLikeRepository = studyLikeRepository;
     }
 
     public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
@@ -180,24 +184,60 @@ public class StudyService {
                 .orElseThrow(() -> new StudyNotFoundException(id));
     }
 
-    public List<Study> getStudiesBySearch(String keyword) {
-        return studyRepository.findByBookNameContaining(keyword);
+    public List<StudyResultDto> getStudiesBySearch(String keyword, Long principalId) {
+        List<Study> studies = studyRepository.findByBookNameContaining(keyword);
+        if(principalId == null) {
+            return studies.stream()
+                    .map(StudyResultDto::of)
+                    .collect(Collectors.toList());
+        }
+
+        studies.forEach(study -> {
+            study.addLikesCount(study.getStudyLikes().size());
+            study.getStudyLikes().forEach(like -> {
+                if(like.getAccount().getId().equals(principalId)) {
+                    study.addLiked();
+                }
+            });
+        });
+
+        return studies.stream()
+                .map(StudyResultDto::of)
+                .collect(Collectors.toList());
     }
 
-    public List<Study> getStudiesByStudyState(StudyState studyState) {
-        return studyRepository.findByStudyState(studyState);
+    public List<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account) {
+        List<Study> studies = studyRepository.findByStudyState(studyState);
+        if(account == null) {
+            return studies.stream()
+                    .map(StudyResultDto::of)
+                    .collect(Collectors.toList());
+        }
+
+        studies.forEach(study -> {
+            study.addLikesCount(study.getStudyLikes().size());
+            study.getStudyLikes().forEach(like -> {
+                if(like.getAccount().getId().equals(account.getId())) {
+                    study.addLiked();
+                }
+            });
+        });
+
+        return studies.stream()
+                .map(StudyResultDto::of)
+                .collect(Collectors.toList());
     }
 
     public long countAllStudies() {
         return getStudies().size();
     }
 
-    public long countCloseStudies() {
-        return getStudiesByStudyState(StudyState.CLOSE).size();
+    public long countCloseStudies(Account account) {
+        return getStudiesByStudyState(StudyState.CLOSE, account).size();
     }
 
-    public long countEndStudies() {
-        return getStudiesByStudyState(StudyState.END).size();
+    public long countEndStudies(Account account) {
+        return getStudiesByStudyState(StudyState.END, account).size();
     }
 
     @Scheduled(cron = "0 0 0 * * *")

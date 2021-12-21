@@ -9,12 +9,14 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +27,8 @@ import java.util.List;
 @Builder
 @ToString
 public class Study extends BaseEntity {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "STUDY_ID")
     private Long id;
 
     private String name;
@@ -69,10 +71,21 @@ public class Study extends BaseEntity {
     @ToString.Exclude
     List<Account> accounts = new ArrayList<>();
 
+    @OneToMany(mappedBy = "study")
+    @ToString.Exclude
+    List<StudyLike> studyLikes = new ArrayList<>();
+    
+    @Transient
+    private boolean liked;
+
+    @Transient
+    private int likesCount;
+
     @Builder
-    public Study(Long id, String name, String bookName, String bookImage, String email, String description,
-                 String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
-                 String endTime, Day day, StudyState studyState, Zone zone, List<Account> accounts) {
+    public Study(Long id, String name, String bookName, String bookImage, String email, String description, String contact,
+                 int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime, String endTime,
+                 Day day, StudyState studyState, Zone zone, List<Account> accounts, List<StudyLike> studyLikes, boolean liked,
+                 int likesCount) {
         this.id = id;
         this.name = name;
         this.bookName = bookName;
@@ -90,6 +103,9 @@ public class Study extends BaseEntity {
         this.studyState = studyState;
         this.zone = zone;
         this.accounts = accounts;
+        this.studyLikes = studyLikes;
+        this.liked = liked;
+        this.likesCount = likesCount;
     }
 
     public void updateWith(StudyUpdateDto studyUpdateDto) {
@@ -160,5 +176,13 @@ public class Study extends BaseEntity {
         for(Account account : accounts) {
             account.deleteStudy();
         }
+    }
+
+    public void addLiked() {
+        this.liked = true;
+    }
+
+    public void addLikesCount(int likesCount) {
+        this.likesCount = likesCount;
     }
 }

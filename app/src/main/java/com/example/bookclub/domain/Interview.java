@@ -18,8 +18,8 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class Interview extends BaseTimeEntity {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "INTERVIEW_ID")
     private Long id;
 
     private String interviewUrl;

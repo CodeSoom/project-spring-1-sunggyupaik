@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -15,8 +16,8 @@ import javax.persistence.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class EmailAuthentication {
-    @Id
-    @GeneratedValue
+    @Id @GeneratedValue
+    @Column(name = "EMAILAUTHENTICATION_ID")
     private Long id;
 
     private String email;

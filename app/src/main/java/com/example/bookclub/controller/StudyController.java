@@ -7,6 +7,7 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -89,28 +90,30 @@ public class StudyController {
     @GetMapping("/open")
     public String studyOpenList(@CurrentAccount Account account,
                                 @RequestParam(required = false) String keyword,
-                                Model model) {
+                                Model model, @AuthenticationPrincipal UserAccount userAccount) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.OPEN);
+        return getStudyList(model, keyword, StudyState.OPEN, userAccount);
     }
 
     @GetMapping("/close")
     public String studyCloseList(@CurrentAccount Account account,
                                  @RequestParam(required = false) String keyword,
-                                 Model model) {
+                                 Model model,
+                                 @AuthenticationPrincipal UserAccount userAccount) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.CLOSE);
+        return getStudyList(model, keyword, StudyState.CLOSE, userAccount);
     }
 
     @GetMapping("/end")
     public String studyEndList(@CurrentAccount Account account,
                                @RequestParam(required = false) String keyword,
-                               Model model) {
+                               Model model,
+                               @AuthenticationPrincipal UserAccount userAccount) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.END);
+        return getStudyList(model, keyword, StudyState.END, userAccount);
     }
 
     @GetMapping("/{id}/users")
@@ -136,15 +139,22 @@ public class StudyController {
         }
     }
 
-    private String getStudyList(Model model, String keyword, StudyState studyState) {
-        List<Study> lists = studyService.getStudiesByStudyState(studyState);
+    private String getStudyList(Model model, String keyword, StudyState studyState,
+                                @AuthenticationPrincipal UserAccount userAccount) {
+        List<StudyResultDto> studyResultDto = null;
+
+        if(keyword == null) {
+            studyResultDto = studyService.getStudiesByStudyState(studyState, userAccount.getAccount());
+        }
+
         if (keyword != null) {
-            lists = studyService.getStudiesBySearch(keyword).stream()
+            studyResultDto = studyService.getStudiesBySearch(keyword, userAccount.getAccount().getId())
+                    .stream()
                     .filter(s -> s.getStudyState().equals(studyState))
                     .collect(Collectors.toList());
         }
 
-        model.addAttribute("studys", lists);
+        model.addAttribute("studys", studyResultDto);
         model.addAttribute("studyState", StudyState.getTitleFrom(studyState));
         model.addAttribute("studyStateCode", studyState.toString().toLowerCase());
 

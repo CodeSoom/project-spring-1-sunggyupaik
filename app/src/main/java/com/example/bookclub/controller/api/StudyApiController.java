@@ -1,5 +1,6 @@
 package com.example.bookclub.controller.api;
 
+import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
@@ -26,9 +27,12 @@ import java.util.List;
 @RequestMapping("/api/study")
 public class StudyApiController {
     private final StudyService studyService;
+    private final StudyLikeService studyLikeService;
 
-    public StudyApiController(StudyService studyService) {
+    public StudyApiController(StudyService studyService,
+                              StudyLikeService studyLikeService) {
         this.studyService = studyService;
+        this.studyLikeService = studyLikeService;
     }
 
     @GetMapping
@@ -75,5 +79,17 @@ public class StudyApiController {
     public Long cancel(@AuthenticationPrincipal UserAccount userAccount,
                        @PathVariable Long id) {
         return studyService.cancelStudy(userAccount, id);
+    }
+
+    @PostMapping("/like/{studyId}")
+    public Long like(@AuthenticationPrincipal UserAccount userAccount,
+                     @PathVariable Long studyId) {
+        return studyLikeService.like(userAccount, studyId);
+    }
+
+    @DeleteMapping("/like/{studyId}")
+    public Long unLike(@AuthenticationPrincipal UserAccount userAccount,
+                       @PathVariable Long studyId) {
+        return studyLikeService.unLike(userAccount, studyId);
     }
 }

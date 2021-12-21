@@ -8,10 +8,12 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.Objects;
 
@@ -20,8 +22,8 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 public class AccountHistory extends BaseTimeEntity {
-	@Id
-	@GeneratedValue
+	@Id @GeneratedValue
+	@Column(name = "ACCOUNTHISTORY_ID")
 	private Long id;
 
 	private String name;
@@ -35,6 +37,7 @@ public class AccountHistory extends BaseTimeEntity {
 	private boolean deleted;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ACCOUNT_ID")
 	@ToString.Exclude
 	private Account account;
 

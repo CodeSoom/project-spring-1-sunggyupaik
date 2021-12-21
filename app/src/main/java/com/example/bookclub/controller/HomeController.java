@@ -5,6 +5,8 @@ import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CurrentAccount;
+import com.example.bookclub.security.UserAccount;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +26,8 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(@CurrentAccount Account account, Model model) {
+    public String home(@CurrentAccount Account account, Model model,
+                       @AuthenticationPrincipal UserAccount userAccount) {
         if(account != null) {
             account = accountAuthenticationService.getAccountByEmail(account.getEmail());
             checkTopMenu(account, model);
@@ -36,10 +39,14 @@ public class HomeController {
         long allStudiesCount = studyService.countAllStudies();
         model.addAttribute("allStudiesCount", allStudiesCount);
 
-        long allCloseStudiesCount = studyService.countCloseStudies();
+        long allCloseStudiesCount = 0;
+        if(userAccount == null) studyService.countCloseStudies(null);
+        else studyService.countCloseStudies(userAccount.getAccount());
         model.addAttribute("allCloseStudiesCount", allCloseStudiesCount);
 
-        long allEndStudiesCount = studyService.countEndStudies();
+        long allEndStudiesCount = 0;
+        if(userAccount == null) studyService.countEndStudies(null);
+        else studyService.countEndStudies(userAccount.getAccount());
         model.addAttribute("allEndStudiesCount", allEndStudiesCount);
 
         return "index";
