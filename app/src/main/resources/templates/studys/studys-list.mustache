@@ -4,6 +4,23 @@
         text-align: center;
     }
 </style>
+<script>
+    function toggleLike(likeId, likeCountId, id) {
+        let likeIcon = $("#"+likeId+id);
+        let likeCount = $("#"+likeCountId+id);
+
+        if(likeIcon.hasClass("far")) {
+            likeIcon.addClass("fas");
+            likeIcon.removeClass("far");
+            likeCount.html(Number(likeCount.html()) + 1);
+        }
+        else if(likeIcon.hasClass("fas")) {
+            likeIcon.removeClass("fas");
+            likeIcon.addClass("far");
+            likeCount.html(Number(likeCount.html()) - 1);
+        }
+    }
+</script>
 <div class="container-fluid" style="margin-top: 100px">
     <div class="row">
         <div class="col-md-2">
@@ -52,17 +69,13 @@
                             <td class="text-center d-none d-md-table-cell">{{bookName}}</td>
                             <td class="text-center d-none d-md-table-cell">{{applyCount}} / {{size}}</td>
                             <td class="text-center d-none d-md-table-cell">{{startDate}} {{startTime}}({{day}})</td>
-                        {{#liked}}
                             <td class="text-center d-none d-md-table-cell" style="text-align: center;">
-                                <i class="fas fa-heart" style="font-size:24px; color:red;"></i>
+                                <div>
+                                    <i class="{{#liked}}fas{{/liked}} {{^liked}}far{{/liked}} fa-heart" id="studyLike{{id}}"
+                                       style="font-size:24px; color:red;" onclick="toggleLike('studyLike', 'studyLikeCount', {{id}})"></i>
+                                </div>
                             </td>
-                        {{/liked}}
-                        {{^liked}}
-                            <td class="text-center d-none d-md-table-cell" style="text-align: center;">
-                                <i class="far fa-heart" style="font-size:24px; color:red;"></i>
-                            </td>
-                        {{/liked}}
-                            <td class="text-center d-none d-md-table-cell">{{likesCount}}</td>
+                            <td class="text-center d-none d-md-table-cell" id="studyLikeCount{{id}}">{{likesCount}}</td>
                         </tr>
                     {{/studys}}
                     </tbody>

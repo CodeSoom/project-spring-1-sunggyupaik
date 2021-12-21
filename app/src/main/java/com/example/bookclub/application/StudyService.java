@@ -182,6 +182,12 @@ public class StudyService {
 
     public List<StudyResultDto> getStudiesBySearch(String keyword, Long principalId) {
         List<Study> studies = studyRepository.findByBookNameContaining(keyword);
+        if(principalId == null) {
+            return studies.stream()
+                    .map(StudyResultDto::of)
+                    .collect(Collectors.toList());
+        }
+
         studies.forEach(study -> {
             study.addLikesCount(study.getStudyLikes().size());
             study.getStudyLikes().forEach(like -> {
@@ -196,13 +202,18 @@ public class StudyService {
                 .collect(Collectors.toList());
     }
 
-    public List<StudyResultDto> getStudiesByStudyState(StudyState studyState, Long principalId) {
+    public List<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account) {
         List<Study> studies = studyRepository.findByStudyState(studyState);
+        if(account == null) {
+            return studies.stream()
+                    .map(StudyResultDto::of)
+                    .collect(Collectors.toList());
+        }
 
         studies.forEach(study -> {
             study.addLikesCount(study.getStudyLikes().size());
             study.getStudyLikes().forEach(like -> {
-                if(like.getAccount().getId().equals(principalId)) {
+                if(like.getAccount().getId().equals(account.getId())) {
                     study.addLiked();
                 }
             });
@@ -217,12 +228,12 @@ public class StudyService {
         return getStudies().size();
     }
 
-    public long countCloseStudies(Long principalId) {
-        return getStudiesByStudyState(StudyState.CLOSE, principalId).size();
+    public long countCloseStudies(Account account) {
+        return getStudiesByStudyState(StudyState.CLOSE, account).size();
     }
 
-    public long countEndStudies(Long principalId) {
-        return getStudiesByStudyState(StudyState.END, principalId).size();
+    public long countEndStudies(Account account) {
+        return getStudiesByStudyState(StudyState.END, account).size();
     }
 
     @Scheduled(cron = "0 0 0 * * *")

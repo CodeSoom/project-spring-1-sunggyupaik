@@ -39,10 +39,14 @@ public class HomeController {
         long allStudiesCount = studyService.countAllStudies();
         model.addAttribute("allStudiesCount", allStudiesCount);
 
-        long allCloseStudiesCount = studyService.countCloseStudies(userAccount.getAccount().getId());
+        long allCloseStudiesCount = 0;
+        if(userAccount == null) studyService.countCloseStudies(null);
+        else studyService.countCloseStudies(userAccount.getAccount());
         model.addAttribute("allCloseStudiesCount", allCloseStudiesCount);
 
-        long allEndStudiesCount = studyService.countEndStudies(userAccount.getAccount().getId());
+        long allEndStudiesCount = 0;
+        if(userAccount == null) studyService.countEndStudies(null);
+        else studyService.countEndStudies(userAccount.getAccount());
         model.addAttribute("allEndStudiesCount", allEndStudiesCount);
 
         return "index";
