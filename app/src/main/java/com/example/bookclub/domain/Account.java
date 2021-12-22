@@ -62,6 +62,10 @@ public class Account extends BaseTimeEntity {
     @ToString.Exclude
     private List<StudyLike> studyLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account")
+    @ToString.Exclude
+    private List<StudyComment> studyComments = new ArrayList<>();
+
     @Override
     public int hashCode() {
         return Objects.hash(getId());
@@ -69,7 +73,8 @@ public class Account extends BaseTimeEntity {
 
     @Builder
     public Account(Long id, String name, String email, String nickname, String password, UploadFile uploadFile,
-                   boolean deleted, Study study, List<AccountHistory> accountHistories, List<StudyLike> studyLikes) {
+                   boolean deleted, Study study, List<AccountHistory> accountHistories, List<StudyLike> studyLikes,
+                   List<StudyComment> studyComments) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -80,6 +85,7 @@ public class Account extends BaseTimeEntity {
         this.study = study;
         this.accountHistories = accountHistories;
         this.studyLikes = studyLikes;
+        this.studyComments = studyComments;
     }
 
     @Override
