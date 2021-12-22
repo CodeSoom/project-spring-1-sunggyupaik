@@ -4,6 +4,8 @@ import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.dto.StudyCommentCreateDto;
+import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
@@ -82,6 +84,7 @@ public class StudyApiController {
     }
 
     @PostMapping("/like/{studyId}")
+    @ResponseStatus(HttpStatus.CREATED)
     public Long like(@AuthenticationPrincipal UserAccount userAccount,
                      @PathVariable Long studyId) {
         return studyLikeService.like(userAccount, studyId);
@@ -91,5 +94,14 @@ public class StudyApiController {
     public Long unLike(@AuthenticationPrincipal UserAccount userAccount,
                        @PathVariable Long studyId) {
         return studyLikeService.unLike(userAccount, studyId);
+    }
+
+    @PostMapping("/{studyId}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudyCommentResultDto createStudyComment(@AuthenticationPrincipal UserAccount userAccount,
+                                                    @PathVariable Long studyId,
+                                                    @RequestBody StudyCommentCreateDto studyCommentCreateDto) {
+        
+        return null;
     }
 }

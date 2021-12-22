@@ -2,6 +2,7 @@ package com.example.bookclub.domain;
 
 import com.example.bookclub.common.BaseEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -35,4 +36,12 @@ public class StudyComment extends BaseEntity {
 	@JoinColumn(name = "STUDY_ID")
 	@ToString.Exclude
 	private Study study;
+
+	@Builder
+	public StudyComment(Long id, String content, Account account, Study study) {
+		this.id = id;
+		this.content = content;
+		this.account = account;
+		this.study = study;
+	}
 }
