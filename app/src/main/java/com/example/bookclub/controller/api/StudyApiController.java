@@ -1,5 +1,6 @@
 package com.example.bookclub.controller.api;
 
+import com.example.bookclub.application.StudyCommentService;
 import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
@@ -30,11 +31,14 @@ import java.util.List;
 public class StudyApiController {
     private final StudyService studyService;
     private final StudyLikeService studyLikeService;
+    private final StudyCommentService studyCommentService;
 
     public StudyApiController(StudyService studyService,
-                              StudyLikeService studyLikeService) {
+                              StudyLikeService studyLikeService,
+                              StudyCommentService studyCommentService) {
         this.studyService = studyService;
         this.studyLikeService = studyLikeService;
+        this.studyCommentService = studyCommentService;
     }
 
     @GetMapping
@@ -101,7 +105,6 @@ public class StudyApiController {
     public StudyCommentResultDto createStudyComment(@AuthenticationPrincipal UserAccount userAccount,
                                                     @PathVariable Long studyId,
                                                     @RequestBody StudyCommentCreateDto studyCommentCreateDto) {
-        
-        return null;
+        return studyCommentService.createStudyComment(userAccount, studyId, studyCommentCreateDto);
     }
 }
