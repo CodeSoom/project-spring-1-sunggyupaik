@@ -34,6 +34,6 @@ public class StudyCommentService {
 
 		StudyComment savedStudyComment = studyCommentRepository.save(studyComment);
 
-		return StudyCommentResultDto.of(savedStudyComment);
+		return StudyCommentResultDto.of(savedStudyComment, userAccount.getAccount());
 	}
 }

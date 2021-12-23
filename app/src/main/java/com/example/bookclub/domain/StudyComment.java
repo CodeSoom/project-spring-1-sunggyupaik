@@ -14,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 
 @Entity
 @Getter
@@ -37,11 +38,15 @@ public class StudyComment extends BaseEntity {
 	@ToString.Exclude
 	private Study study;
 
+	@Transient
+	private boolean isWrittenByMe;
+
 	@Builder
-	public StudyComment(Long id, String content, Account account, Study study) {
+	public StudyComment(Long id, String content, Account account, Study study, boolean isWrittenByMe) {
 		this.id = id;
 		this.content = content;
 		this.account = account;
 		this.study = study;
+		this.isWrittenByMe = isWrittenByMe;
 	}
 }
