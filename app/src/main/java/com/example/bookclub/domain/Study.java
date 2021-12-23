@@ -2,6 +2,7 @@ package com.example.bookclub.domain;
 
 import com.example.bookclub.common.BaseEntity;
 import com.example.bookclub.dto.StudyUpdateDto;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -26,6 +27,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @ToString
+@JsonIgnoreProperties({"accounts", "studyLikes", "studyComments"})
 public class Study extends BaseEntity {
     @Id @GeneratedValue
     @Column(name = "STUDY_ID")

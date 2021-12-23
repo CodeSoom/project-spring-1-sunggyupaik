@@ -2,6 +2,7 @@ package com.example.bookclub.domain;
 
 import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 @EntityListeners(value = { AccountEntityListener.class })
+@JsonIgnoreProperties({"study", "accountHistories", "studyLikes", "studyComments"})
 public class Account extends BaseTimeEntity {
     @Id @GeneratedValue
     @Column(name = "ACCOUNT_ID")
