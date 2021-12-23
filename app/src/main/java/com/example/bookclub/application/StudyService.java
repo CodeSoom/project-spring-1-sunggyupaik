@@ -6,6 +6,7 @@ import com.example.bookclub.domain.StudyLikeRepository;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCreateDto;
+import com.example.bookclub.dto.StudyDetailResultDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
@@ -182,6 +183,10 @@ public class StudyService {
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
+    }
+
+    public StudyDetailResultDto getDetailedStudy(Long id) {
+        return null;
     }
 
     public List<StudyResultDto> getStudiesBySearch(String keyword, Long principalId) {
