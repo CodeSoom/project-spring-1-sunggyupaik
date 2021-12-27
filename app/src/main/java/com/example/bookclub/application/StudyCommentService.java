@@ -7,6 +7,7 @@ import com.example.bookclub.domain.StudyCommentRepository;
 import com.example.bookclub.dto.StudyCommentCreateDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.security.UserAccount;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -36,6 +37,15 @@ public class StudyCommentService {
 		StudyComment savedStudyComment = studyCommentRepository.save(studyComment);
 
 		return StudyCommentResultDto.of(savedStudyComment, userAccount.getAccount());
+	}
+
+	@Transactional
+	public Long deleteStudyComment(UserAccount userAccount, long studyCommentId) {
+		StudyComment studyComment = getStudyComment(studyCommentId);
+
+		studyCommentRepository.delete(studyComment);
+
+		return studyCommentId;
 	}
 
 	@Transactional
