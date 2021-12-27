@@ -153,7 +153,7 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div class="user d-flex flex-row align-items-center">
                                 {{#uploadFileResultDto}}
-                                    <img src="/upload/{{uploadFileResultDto.fileName}}" width="30" class="user-img rounded-circle mr-2">
+                                    <img src="/upload/{{uploadFileResultDto.fileName}}" width="30" height="30" class="user-img rounded-circle mr-2">
                                 {{/uploadFileResultDto}}
                                 {{^uploadFileResultDto}}
                                     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAAADFBMV
@@ -175,10 +175,10 @@
                         <div class="action d-flex justify-content-between mt-2 align-items-center">
                             <div class="reply px-4">
                                 {{#isWrittenByMe}}
-                                    <small onclick="deleteStudyComment({{detailedStudy.studyResultDto.id}});">Remove</small>
-                                    <span class="dots"></span>
+                                    <small onclick="deleteStudyComment({{id}}, {{detailedStudy.studyResultDto.id}});">Remove</small>
                                 {{/isWrittenByMe}}
-                                <small>Reply</small>
+                                <!--<span class="dots"></span>
+                                <small>Reply</small>-->
                             </div>
                             <!--<div class="icons align-items-center">
                                 <i class="fa fa-star text-warning"></i>
@@ -195,7 +195,19 @@
             <div class="col-md-8">
                 <div class="shadow p-3 bg-white rounded">
                     <div class="mt-5 d-flex flex-row">
-                        <img src="https://i.imgur.com/jD4jCW9.png" width="40" height="40">
+                        {{#uploadFileResultDto}}
+                            <img src="/upload/{{uploadFileResultDto.fileName}}" width="30" class="user-img rounded-circle mr-2">
+                        {{/uploadFileResultDto}}
+                        {{^uploadFileResultDto}}
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAAADFBMV
+                                    EWYmZuCg4WZmpxvcHGW7YJ5AAABTklEQVR4nO3QwQ3DMAwAMavef+cEfUW4FcgReO6w3TM/tnlPDl9Oykk5KS
+                                    flpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkp
+                                    J+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJO
+                                    Skn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk
+                                    5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7K
+                                    STkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJ/U/Y5txhuw874Aqpr4CHoAAAAABJRU5ErkJggg=="
+                                 width="30" height="30" class="user-img rounded-circle mr-2">
+                        {{/uploadFileResultDto}}
                         <div class="w-100 ml-2 comment-area">
                             <textarea class="form-control" id="studyComment"></textarea>
                             <button class="btn btn-secondary btn-block mt-2 post-btn" id="btn-save-studyComment">등록</button>
@@ -207,15 +219,15 @@
     </div>
 </div>
 <script>
-     function deleteStudyComment(id) {
+     function deleteStudyComment(studyCommentId, studyId) {
         $.ajax({
             type: 'DELETE',
-            url: `/api/study/comment/${id}`,
+            url: `/api/study/comment/${studyCommentId}`,
             dtaType: 'json',
             contentType: 'application/json; charset=utf-8',
         }).done(function() {
             alert('댓글삭제가 완료되었습니다.');
-            window.location.href = '/studys/'+id;
+            window.location.href = '/studys/'+studyId;
         }).fail(function(request) {
             alert(request.responseText);
         })
