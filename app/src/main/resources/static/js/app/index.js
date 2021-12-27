@@ -44,6 +44,10 @@ const main = {
         $('#btn-save-interviews').on('click', function () {
             _this.saveInterviews();
         })
+
+        $('#btn-save-studyComment').on('click', function () {
+            _this.saveStudyComment();
+        })
     },
 
     cancelStudy: function () {
@@ -318,7 +322,27 @@ const main = {
         }).fail(function (request) {
             alert(request.responseText);
         });
-    }
+    },
+
+    saveStudyComment : function() {
+        let id = $('#id').val();
+        let data = {
+            content : $('#studyComment').val(),
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: `/api/study/${id}/comment`,
+            data: JSON.stringify(data),
+            dtaType: 'json',
+            contentType: 'application/json; charset=utf-8',
+        }).done(function() {
+            alert('댓글등록이 완료되었습니다');
+            window.location.href = '/studys/'+id;
+        }).fail(function(request) {
+            alert(request.responseText);
+        })
+    },
 };
 
 main.init();

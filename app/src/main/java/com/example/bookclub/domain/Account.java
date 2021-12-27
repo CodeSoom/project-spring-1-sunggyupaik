@@ -2,6 +2,7 @@ package com.example.bookclub.domain;
 
 import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseTimeEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,6 +31,7 @@ import java.util.Objects;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 @EntityListeners(value = { AccountEntityListener.class })
+@JsonIgnoreProperties({"study", "accountHistories", "studyLikes", "studyComments"})
 public class Account extends BaseTimeEntity {
     @Id @GeneratedValue
     @Column(name = "ACCOUNT_ID")
@@ -62,6 +64,10 @@ public class Account extends BaseTimeEntity {
     @ToString.Exclude
     private List<StudyLike> studyLikes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account")
+    @ToString.Exclude
+    private List<StudyComment> studyComments = new ArrayList<>();
+
     @Override
     public int hashCode() {
         return Objects.hash(getId());
@@ -69,7 +75,8 @@ public class Account extends BaseTimeEntity {
 
     @Builder
     public Account(Long id, String name, String email, String nickname, String password, UploadFile uploadFile,
-                   boolean deleted, Study study, List<AccountHistory> accountHistories, List<StudyLike> studyLikes) {
+                   boolean deleted, Study study, List<AccountHistory> accountHistories, List<StudyLike> studyLikes,
+                   List<StudyComment> studyComments) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -80,6 +87,7 @@ public class Account extends BaseTimeEntity {
         this.study = study;
         this.accountHistories = accountHistories;
         this.studyLikes = studyLikes;
+        this.studyComments = studyComments;
     }
 
     @Override

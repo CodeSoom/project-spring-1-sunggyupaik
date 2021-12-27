@@ -2,10 +2,12 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyLikeRepository;
+import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
+import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
+import com.example.bookclub.dto.StudyDetailResultDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
@@ -36,14 +38,11 @@ import java.util.stream.Collectors;
 public class StudyService {
     private final StudyRepository studyRepository;
     private final AccountService accountService;
-    private final StudyLikeRepository studyLikeRepository;
 
     public StudyService(StudyRepository studyRepository,
-                        AccountService accountService,
-                        StudyLikeRepository studyLikeRepository) {
+                        AccountService accountService) {
         this.studyRepository = studyRepository;
         this.accountService = accountService;
-        this.studyLikeRepository = studyLikeRepository;
     }
 
     public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
@@ -182,6 +181,25 @@ public class StudyService {
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
+    }
+
+    public StudyDetailResultDto getDetailedStudy(UserAccount userAccount, Long id) {
+        Long principalId = userAccount.getAccount().getId();
+        Study study = getStudy(id);
+        List<StudyComment> studyComments = study.getStudyComments();
+        study.addCommentsCount(studyComments.size());
+        studyComments.forEach(studyComment -> {
+           if(studyComment.getAccount().getId().equals(principalId))
+               studyComment.setIsWrittenByMeTrue();
+        });
+
+        List<StudyCommentResultDto> studyCommentResultDtos = studyComments.stream()
+                .map(studyComment -> {
+                    return StudyCommentResultDto.of(studyComment, studyComment.getAccount());
+                    })
+                .collect(Collectors.toList());
+
+        return StudyDetailResultDto.of(StudyResultDto.of(study), studyCommentResultDtos);
     }
 
     public List<StudyResultDto> getStudiesBySearch(String keyword, Long principalId) {

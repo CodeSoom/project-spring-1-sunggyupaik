@@ -1,5 +1,70 @@
 {{>layout/header}}
+<style>
+    body {
+        background-color: #f7f6f6
+    }
 
+    .card {
+        border: none;
+        box-shadow: 5px 6px 6px 2px #e9ecef;
+        border-radius: 4px
+    }
+
+    .dots {
+        height: 4px;
+        width: 4px;
+        margin-bottom: 2px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block
+    }
+
+    .badge {
+        padding: 7px;
+        padding-right: 9px;
+        padding-left: 16px;
+        box-shadow: 5px 6px 6px 2px #e9ecef
+    }
+
+    .user-img {
+        margin-top: 4px
+    }
+
+    .check-icon {
+        font-size: 17px;
+        color: #c3bfbf;
+        top: 1px;
+        position: relative;
+        margin-left: 3px
+    }
+
+    .form-check-input {
+        margin-top: 6px;
+        margin-left: -24px !important;
+        cursor: pointer
+    }
+
+    .form-check-input:focus {
+        box-shadow: none
+    }
+
+    .icons i {
+        margin-left: 8px
+    }
+
+    .reply {
+        margin-left: 12px
+    }
+
+    .reply small {
+        color: #b7b4b4
+    }
+
+    .reply small:hover {
+        color: green;
+        cursor: pointer
+    }
+</style>
 <h1>스터디 조회</h1>
 
 <div class="col-md-12">
@@ -7,39 +72,39 @@
         <form>
             <div class="form-group">
                 <label for="id"> 스터디 번호 </label>
-                <input type="text" class="form-control" id="id" value="{{study.id}}"  readOnly>
+                <input type="text" class="form-control" id="id" value="{{detailedStudy.studyResultDto.id}}"  readOnly>
             </div>
             <div class="form-group">
                 <label for="name"> 스터디 이름 </label>
-                <input type="text" class="form-control" id="name" value="{{study.name}}" readOnly>
+                <input type="text" class="form-control" id="name" value="{{detailedStudy.studyResultDto.name}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="bookName"> 스터디 책 </label>
-                <input type="text" class="form-control" id="bookName" value="{{study.bookName}}" readOnly>
+                <input type="text" class="form-control" id="bookName" value="{{detailedStudy.studyResultDto.bookName}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="bookImage"></label>
-                <img src="{{study.bookImage}}" id="bookImage" alt="">
+                <img src="{{detailedStudy.studyResultDto.bookImage}}" id="bookImage" alt="">
             </div>
             <div class="form-group">
                 <label for="description"> 설명 </label>
-                <input type="text" class="form-control" id="description" value="{{study.description}}" readOnly>
+                <input type="text" class="form-control" id="description" value="{{detailedStudy.studyResultDto.description}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="contact"> 연락처 </label>
-                <input type="text" class="form-control" id="contact" value="{{study.contact}}" readOnly>
+                <input type="text" class="form-control" id="contact" value="{{detailedStudy.studyResultDto.contact}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="size"> 인원 제한 </label>
-                <input type="number" class="form-control" id="size" value="{{study.size}}" readOnly>
+                <input type="number" class="form-control" id="size" value="{{detailedStudy.studyResultDto.size}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="startDate"> 시작 날짜 </label>
-                <input type="date" class="form-control" id="startDate" value="{{study.startDate}}" readOnly>
+                <input type="date" class="form-control" id="startDate" value="{{detailedStudy.studyResultDto.startDate}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="endDate"> 종료 날짜 </label>
-                <input type="date" class="form-control" id="endDate" value="{{study.endDate}}" readOnly>
+                <input type="date" class="form-control" id="endDate" value="{{detailedStudy.studyResultDto.endDate}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="day"> 요일 </label>
@@ -47,11 +112,11 @@
             </div>
             <div class="form-group">
                 <label for="startTime"> 시작 시간 </label>
-                <input type="time" class="form-control" id="startTime" value="{{study.startTime}}" readOnly>
+                <input type="time" class="form-control" id="startTime" value="{{detailedStudy.studyResultDto.startTime}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="endTime"> 종료 시간 </label>
-                <input type="time" class="form-control" id="endTime" value="{{study.endTime}}" readOnly>
+                <input type="time" class="form-control" id="endTime" value="{{detailedStudy.studyResultDto.endTime}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="studyState"> 스터디 모집 상황 </label>
@@ -72,9 +137,100 @@
             <button type="button" class="btn btn-danger" id="btn-cancel-study">신청 취소</button>
         {{/studyApplier}}
         {{#studyAdmin}}
-            <button type="button" class="btn btn-warning" onclick="location.href='/studys/update/{{id}}'">수정</button>
+            <button type="button" class="btn btn-warning"
+                    onclick="location.href='/studys/update/{{detailedStudy.studyResultDto.id}}'">수정</button>
         {{/studyAdmin}}
     </div>
-</div>
 
+    <div class="container mt-5">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-8">
+                <div class="headings d-flex justify-content-between align-items-center mb-3">
+                    <h5>댓글 수({{detailedStudy.studyResultDto.commentsCount}})</h5>
+                </div>
+                {{#detailedStudy.studyComments}}
+                    <div class="card p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="user d-flex flex-row align-items-center">
+                                {{#uploadFileResultDto}}
+                                    <img src="/upload/{{uploadFileResultDto.fileName}}" width="30" height="30" class="user-img rounded-circle mr-2">
+                                {{/uploadFileResultDto}}
+                                {{^uploadFileResultDto}}
+                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAAADFBMV
+                                    EWYmZuCg4WZmpxvcHGW7YJ5AAABTklEQVR4nO3QwQ3DMAwAMavef+cEfUW4FcgReO6w3TM/tnlPDl9Oykk5KS
+                                    flpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkp
+                                    J+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJO
+                                    Skn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk
+                                    5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7K
+                                    STkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJ/U/Y5txhuw874Aqpr4CHoAAAAABJRU5ErkJggg=="
+                                         width="30" class="user-img rounded-circle mr-2">
+                                {{/uploadFileResultDto}}
+                                <span>
+                                    <small class="font-weight-bold text-primary">{{nickname}}</small>
+                                    <small class="font-weight-bold">{{content}}</small>
+                                </span>
+                            </div>
+                            <small>{{updatedDate}}</small>
+                        </div>
+                        <div class="action d-flex justify-content-between mt-2 align-items-center">
+                            <div class="reply px-4">
+                                {{#isWrittenByMe}}
+                                    <small onclick="deleteStudyComment({{id}}, {{detailedStudy.studyResultDto.id}});">Remove</small>
+                                {{/isWrittenByMe}}
+                                <!--<span class="dots"></span>
+                                <small>Reply</small>-->
+                            </div>
+                            <!--<div class="icons align-items-center">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-check-circle-o check-icon"></i>
+                            </div>-->
+                        </div>
+                    </div>
+                {{/detailedStudy.studyComments}}
+            </div>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row d-flex justify-content-center">
+            <div class="col-md-8">
+                <div class="shadow p-3 bg-white rounded">
+                    <div class="mt-5 d-flex flex-row">
+                        {{#uploadFileResultDto}}
+                            <img src="/upload/{{uploadFileResultDto.fileName}}" width="30" class="user-img rounded-circle mr-2">
+                        {{/uploadFileResultDto}}
+                        {{^uploadFileResultDto}}
+                            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAAADFBMV
+                                    EWYmZuCg4WZmpxvcHGW7YJ5AAABTklEQVR4nO3QwQ3DMAwAMavef+cEfUW4FcgReO6w3TM/tnlPDl9Oykk5KS
+                                    flpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkp
+                                    J+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJO
+                                    Skn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk
+                                    5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7K
+                                    STkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJ/U/Y5txhuw874Aqpr4CHoAAAAABJRU5ErkJggg=="
+                                 width="30" height="30" class="user-img rounded-circle mr-2">
+                        {{/uploadFileResultDto}}
+                        <div class="w-100 ml-2 comment-area">
+                            <textarea class="form-control" id="studyComment"></textarea>
+                            <button class="btn btn-secondary btn-block mt-2 post-btn" id="btn-save-studyComment">등록</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     function deleteStudyComment(studyCommentId, studyId) {
+        $.ajax({
+            type: 'DELETE',
+            url: `/api/study/comment/${studyCommentId}`,
+            dtaType: 'json',
+            contentType: 'application/json; charset=utf-8',
+        }).done(function() {
+            alert('댓글삭제가 완료되었습니다.');
+            window.location.href = '/studys/'+studyId;
+        }).fail(function(request) {
+            alert(request.responseText);
+        })
+    }
+</script>
 {{>layout/footer}}

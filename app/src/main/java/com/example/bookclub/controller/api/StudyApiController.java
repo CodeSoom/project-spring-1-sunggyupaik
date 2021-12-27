@@ -1,9 +1,12 @@
 package com.example.bookclub.controller.api;
 
+import com.example.bookclub.application.StudyCommentService;
 import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.dto.StudyCommentCreateDto;
+import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
@@ -28,11 +31,14 @@ import java.util.List;
 public class StudyApiController {
     private final StudyService studyService;
     private final StudyLikeService studyLikeService;
+    private final StudyCommentService studyCommentService;
 
     public StudyApiController(StudyService studyService,
-                              StudyLikeService studyLikeService) {
+                              StudyLikeService studyLikeService,
+                              StudyCommentService studyCommentService) {
         this.studyService = studyService;
         this.studyLikeService = studyLikeService;
+        this.studyCommentService = studyCommentService;
     }
 
     @GetMapping
@@ -82,6 +88,7 @@ public class StudyApiController {
     }
 
     @PostMapping("/like/{studyId}")
+    @ResponseStatus(HttpStatus.CREATED)
     public Long like(@AuthenticationPrincipal UserAccount userAccount,
                      @PathVariable Long studyId) {
         return studyLikeService.like(userAccount, studyId);
@@ -91,5 +98,20 @@ public class StudyApiController {
     public Long unLike(@AuthenticationPrincipal UserAccount userAccount,
                        @PathVariable Long studyId) {
         return studyLikeService.unLike(userAccount, studyId);
+    }
+
+    @PostMapping("/{studyId}/comment")
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudyCommentResultDto createStudyComment(@AuthenticationPrincipal UserAccount userAccount,
+                                                    @PathVariable Long studyId,
+                                                    @RequestBody StudyCommentCreateDto studyCommentCreateDto) {
+        return studyCommentService.createStudyComment(userAccount, studyId, studyCommentCreateDto);
+    }
+
+    @DeleteMapping("/comment/{studyCommentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Long deleteStudyComment(@AuthenticationPrincipal UserAccount userAccount,
+                                   @PathVariable Long studyCommentId) {
+        return studyCommentService.deleteStudyComment(userAccount, studyCommentId);
     }
 }
