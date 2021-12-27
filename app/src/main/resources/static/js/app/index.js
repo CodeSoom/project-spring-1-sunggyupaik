@@ -338,6 +338,7 @@ const main = {
             contentType: 'application/json; charset=utf-8',
         }).done(function() {
             alert('댓글등록이 완료되었습니다');
+            window.location.href = '/studys/'+id;
         }).fail(function(request) {
             alert(request.responseText);
         })
