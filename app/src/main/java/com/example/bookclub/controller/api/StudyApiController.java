@@ -107,4 +107,11 @@ public class StudyApiController {
                                                     @RequestBody StudyCommentCreateDto studyCommentCreateDto) {
         return studyCommentService.createStudyComment(userAccount, studyId, studyCommentCreateDto);
     }
+
+    @DeleteMapping("/comment/{studyCommentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Long deleteStudyComment(@AuthenticationPrincipal UserAccount userAccount,
+                                   @PathVariable Long studyCommentId) {
+        return studyCommentService.deleteStudyComment(userAccount, studyCommentId);
+    }
 }
