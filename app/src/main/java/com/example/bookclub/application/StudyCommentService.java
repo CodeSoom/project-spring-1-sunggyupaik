@@ -6,8 +6,8 @@ import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentRepository;
 import com.example.bookclub.dto.StudyCommentCreateDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
+import com.example.bookclub.errors.StudyCommentNotFoundException;
 import com.example.bookclub.security.UserAccount;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -46,6 +46,12 @@ public class StudyCommentService {
 		studyCommentRepository.delete(studyComment);
 
 		return studyCommentId;
+	}
+
+	@Transactional
+	public StudyComment getStudyComment(Long id) {
+		return studyCommentRepository.findById(id)
+				.orElseThrow(() -> new StudyCommentNotFoundException(id));
 	}
 
 	@Transactional
