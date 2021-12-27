@@ -175,7 +175,7 @@
                         <div class="action d-flex justify-content-between mt-2 align-items-center">
                             <div class="reply px-4">
                                 {{#isWrittenByMe}}
-                                    <small>Remove</small>
+                                    <small onclick="deleteStudyComment({{detailedStudy.studyResultDto.id}});">Remove</small>
                                     <span class="dots"></span>
                                 {{/isWrittenByMe}}
                                 <small>Reply</small>
@@ -206,4 +206,19 @@
         </div>
     </div>
 </div>
+<script>
+     function deleteStudyComment(id) {
+        $.ajax({
+            type: 'DELETE',
+            url: `/api/study/comment/${id}`,
+            dtaType: 'json',
+            contentType: 'application/json; charset=utf-8',
+        }).done(function() {
+            alert('댓글삭제가 완료되었습니다.');
+            window.location.href = '/studys/'+id;
+        }).fail(function(request) {
+            alert(request.responseText);
+        })
+    }
+</script>
 {{>layout/footer}}

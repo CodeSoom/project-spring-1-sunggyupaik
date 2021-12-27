@@ -342,7 +342,7 @@ const main = {
         }).fail(function(request) {
             alert(request.responseText);
         })
-    }
+    },
 };
 
 main.init();
