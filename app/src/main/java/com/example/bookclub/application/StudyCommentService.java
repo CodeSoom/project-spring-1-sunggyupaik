@@ -10,6 +10,7 @@ import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class StudyCommentService {
@@ -35,5 +36,10 @@ public class StudyCommentService {
 		StudyComment savedStudyComment = studyCommentRepository.save(studyComment);
 
 		return StudyCommentResultDto.of(savedStudyComment, userAccount.getAccount());
+	}
+
+	@Transactional
+	public List<StudyComment> findByStudyId(Long studyId) {
+		return studyCommentRepository.findByStudyId(studyId);
 	}
 }

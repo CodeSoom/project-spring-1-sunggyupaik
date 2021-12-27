@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -19,11 +19,11 @@ public class StudyCommentResultDto {
 	private String nickname;
 	private UploadFileResultDto uploadFileResultDto;
 	private boolean isWrittenByMe;
-	private LocalDateTime updatedDate;
+	private String updatedDate;
 
 	@Builder
 	public StudyCommentResultDto(Long id, String content, Long studyId, Long accountId, String nickname,
-								 UploadFileResultDto uploadFileResultDto, boolean isWrittenByMe, LocalDateTime updatedDate) {
+								 UploadFileResultDto uploadFileResultDto, boolean isWrittenByMe, String updatedDate) {
 		this.id = id;
 		this.content = content;
 		this.studyId = studyId;
@@ -41,9 +41,11 @@ public class StudyCommentResultDto {
 				.studyId(studyComment.getStudy().getId())
 				.accountId(studyComment.getAccount().getId())
 				.nickname(account.getNickname())
-				.uploadFileResultDto(UploadFileResultDto.of(account.getUploadFile()))
+				.uploadFileResultDto(
+						account.getUploadFile() == null ? null : UploadFileResultDto.of(account.getUploadFile())
+				)
 				.isWrittenByMe(studyComment.isWrittenByMe())
-				.updatedDate(studyComment.getUpdatedDate())
+				.updatedDate(studyComment.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
 				.build();
 	}
 }

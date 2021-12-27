@@ -87,11 +87,14 @@ public class Study extends BaseEntity {
     @Transient
     private int likesCount;
 
+    @Transient
+    private int commentsCount;
+
     @Builder
     public Study(Long id, String name, String bookName, String bookImage, String email, String description, String contact,
                  int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime, String endTime,
                  Day day, StudyState studyState, Zone zone, List<Account> accounts, List<StudyLike> studyLikes,
-                 List<StudyComment> studyComments, boolean liked, int likesCount) {
+                 List<StudyComment> studyComments, boolean liked, int likesCount, int commentsCount) {
         this.id = id;
         this.name = name;
         this.bookName = bookName;
@@ -113,6 +116,7 @@ public class Study extends BaseEntity {
         this.studyComments = studyComments;
         this.liked = liked;
         this.likesCount = likesCount;
+        this.commentsCount = commentsCount;
     }
 
     public void updateWith(StudyUpdateDto studyUpdateDto) {
@@ -191,5 +195,9 @@ public class Study extends BaseEntity {
 
     public void addLikesCount(int likesCount) {
         this.likesCount = likesCount;
+    }
+
+    public void addCommentsCount(int commentsCount) {
+        this.commentsCount = commentsCount;
     }
 }

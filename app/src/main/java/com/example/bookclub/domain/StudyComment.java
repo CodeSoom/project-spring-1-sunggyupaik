@@ -49,4 +49,8 @@ public class StudyComment extends BaseEntity {
 		this.study = study;
 		this.isWrittenByMe = isWrittenByMe;
 	}
+
+	public void setIsWrittenByMeTrue() {
+		this.isWrittenByMe = true;
+	}
 }

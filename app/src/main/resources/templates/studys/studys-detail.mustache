@@ -72,39 +72,39 @@
         <form>
             <div class="form-group">
                 <label for="id"> 스터디 번호 </label>
-                <input type="text" class="form-control" id="id" value="{{study.id}}"  readOnly>
+                <input type="text" class="form-control" id="id" value="{{detailedStudy.studyResultDto.id}}"  readOnly>
             </div>
             <div class="form-group">
                 <label for="name"> 스터디 이름 </label>
-                <input type="text" class="form-control" id="name" value="{{study.name}}" readOnly>
+                <input type="text" class="form-control" id="name" value="{{detailedStudy.studyResultDto.name}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="bookName"> 스터디 책 </label>
-                <input type="text" class="form-control" id="bookName" value="{{study.bookName}}" readOnly>
+                <input type="text" class="form-control" id="bookName" value="{{detailedStudy.studyResultDto.bookName}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="bookImage"></label>
-                <img src="{{study.bookImage}}" id="bookImage" alt="">
+                <img src="{{detailedStudy.studyResultDto.bookImage}}" id="bookImage" alt="">
             </div>
             <div class="form-group">
                 <label for="description"> 설명 </label>
-                <input type="text" class="form-control" id="description" value="{{study.description}}" readOnly>
+                <input type="text" class="form-control" id="description" value="{{detailedStudy.studyResultDto.description}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="contact"> 연락처 </label>
-                <input type="text" class="form-control" id="contact" value="{{study.contact}}" readOnly>
+                <input type="text" class="form-control" id="contact" value="{{detailedStudy.studyResultDto.contact}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="size"> 인원 제한 </label>
-                <input type="number" class="form-control" id="size" value="{{study.size}}" readOnly>
+                <input type="number" class="form-control" id="size" value="{{detailedStudy.studyResultDto.size}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="startDate"> 시작 날짜 </label>
-                <input type="date" class="form-control" id="startDate" value="{{study.startDate}}" readOnly>
+                <input type="date" class="form-control" id="startDate" value="{{detailedStudy.studyResultDto.startDate}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="endDate"> 종료 날짜 </label>
-                <input type="date" class="form-control" id="endDate" value="{{study.endDate}}" readOnly>
+                <input type="date" class="form-control" id="endDate" value="{{detailedStudy.studyResultDto.endDate}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="day"> 요일 </label>
@@ -112,11 +112,11 @@
             </div>
             <div class="form-group">
                 <label for="startTime"> 시작 시간 </label>
-                <input type="time" class="form-control" id="startTime" value="{{study.startTime}}" readOnly>
+                <input type="time" class="form-control" id="startTime" value="{{detailedStudy.studyResultDto.startTime}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="endTime"> 종료 시간 </label>
-                <input type="time" class="form-control" id="endTime" value="{{study.endTime}}" readOnly>
+                <input type="time" class="form-control" id="endTime" value="{{detailedStudy.studyResultDto.endTime}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="studyState"> 스터디 모집 상황 </label>
@@ -137,7 +137,8 @@
             <button type="button" class="btn btn-danger" id="btn-cancel-study">신청 취소</button>
         {{/studyApplier}}
         {{#studyAdmin}}
-            <button type="button" class="btn btn-warning" onclick="location.href='/studys/update/{{id}}'">수정</button>
+            <button type="button" class="btn btn-warning"
+                    onclick="location.href='/studys/update/{{detailedStudy.studyResultDto.id}}'">수정</button>
         {{/studyAdmin}}
     </div>
 
@@ -145,44 +146,47 @@
         <div class="row d-flex justify-content-center">
             <div class="col-md-8">
                 <div class="headings d-flex justify-content-between align-items-center mb-3">
-                    <h5>댓글 수(6)</h5>
+                    <h5>댓글 수({{detailedStudy.studyResultDto.commentsCount}})</h5>
                 </div>
-                <div class="card p-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="user d-flex flex-row align-items-center"> <img src="https://i.imgur.com/hczKIze.jpg" width="30" class="user-img rounded-circle mr-2"> <span><small class="font-weight-bold text-primary">james_olesenn</small> <small class="font-weight-bold">Hmm, This poster looks cool</small></span> </div> <small>2 days ago</small>
+                {{#detailedStudy.studyComments}}
+                    <div class="card p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="user d-flex flex-row align-items-center">
+                                {{#uploadFileResultDto}}
+                                    <img src="/upload/{{uploadFileResultDto.fileName}}" width="30" class="user-img rounded-circle mr-2">
+                                {{/uploadFileResultDto}}
+                                {{^uploadFileResultDto}}
+                                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAARMAAAC3CAMAAAAGjUrGAAAADFBMV
+                                    EWYmZuCg4WZmpxvcHGW7YJ5AAABTklEQVR4nO3QwQ3DMAwAMavef+cEfUW4FcgReO6w3TM/tnlPDl9Oykk5KS
+                                    flpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkp
+                                    J+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJO
+                                    Skn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk
+                                    5KSflpJyUk3JSTspJOSkn5aSclJNyUk7KSTkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJOSkn5aSclJNyUk7K
+                                    STkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJ/U/Y5txhuw874Aqpr4CHoAAAAABJRU5ErkJggg=="
+                                         width="30" class="user-img rounded-circle mr-2">
+                                {{/uploadFileResultDto}}
+                                <span>
+                                    <small class="font-weight-bold text-primary">{{nickname}}</small>
+                                    <small class="font-weight-bold">{{content}}</small>
+                                </span>
+                            </div>
+                            <small>{{updatedDate}}</small>
+                        </div>
+                        <div class="action d-flex justify-content-between mt-2 align-items-center">
+                            <div class="reply px-4">
+                                {{#isWrittenByMe}}
+                                    <small>Remove</small>
+                                    <span class="dots"></span>
+                                {{/isWrittenByMe}}
+                                <small>Reply</small>
+                            </div>
+                            <!--<div class="icons align-items-center">
+                                <i class="fa fa-star text-warning"></i>
+                                <i class="fa fa-check-circle-o check-icon"></i>
+                            </div>-->
+                        </div>
                     </div>
-                    <div class="action d-flex justify-content-between mt-2 align-items-center">
-                        <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
-                        <div class="icons align-items-center"> <i class="fa fa-star text-warning"></i> <i class="fa fa-check-circle-o check-icon"></i> </div>
-                    </div>
-                </div>
-                <div class="card p-3 mt-2">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="user d-flex flex-row align-items-center"> <img src="https://i.imgur.com/C4egmYM.jpg" width="30" class="user-img rounded-circle mr-2"> <span><small class="font-weight-bold text-primary">olan_sams</small> <small class="font-weight-bold">Loving your work and profile! </small></span> </div> <small>3 days ago</small>
-                    </div>
-                    <div class="action d-flex justify-content-between mt-2 align-items-center">
-                        <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
-                        <div class="icons align-items-center"> <i class="fa fa-check-circle-o check-icon text-primary"></i> </div>
-                    </div>
-                </div>
-                <div class="card p-3 mt-2">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="user d-flex flex-row align-items-center"> <img src="https://i.imgur.com/0LKZQYM.jpg" width="30" class="user-img rounded-circle mr-2"> <span><small class="font-weight-bold text-primary">rashida_jones</small> <small class="font-weight-bold">Really cool Which filter are you using? </small></span> </div> <small>3 days ago</small>
-                    </div>
-                    <div class="action d-flex justify-content-between mt-2 align-items-center">
-                        <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
-                        <div class="icons align-items-center"> <i class="fa fa-user-plus text-muted"></i> <i class="fa fa-star-o text-muted"></i> <i class="fa fa-check-circle-o check-icon text-primary"></i> </div>
-                    </div>
-                </div>
-                <div class="card p-3 mt-2">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="user d-flex flex-row align-items-center"> <img src="https://i.imgur.com/ZSkeqnd.jpg" width="30" class="user-img rounded-circle mr-2"> <span><small class="font-weight-bold text-primary">simona_rnasi</small> <small class="font-weight-bold text-primary">@macky_lones</small> <small class="font-weight-bold text-primary">@rashida_jones</small> <small class="font-weight-bold">Thanks </small></span> </div> <small>3 days ago</small>
-                    </div>
-                    <div class="action d-flex justify-content-between mt-2 align-items-center">
-                        <div class="reply px-4"> <small>Remove</small> <span class="dots"></span> <small>Reply</small> <span class="dots"></span> <small>Translate</small> </div>
-                        <div class="icons align-items-center"> <i class="fa fa-check-circle-o check-icon text-primary"></i> </div>
-                    </div>
-                </div>
+                {{/detailedStudy.studyComments}}
             </div>
         </div>
     </div>
@@ -201,7 +205,5 @@
             </div>
         </div>
     </div>
-
 </div>
-
 {{>layout/footer}}
