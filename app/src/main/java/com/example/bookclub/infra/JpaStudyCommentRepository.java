@@ -11,4 +11,6 @@ public interface JpaStudyCommentRepository
 	StudyComment save(StudyComment studyComment);
 
 	List<StudyComment> findByStudyId(Long id);
+
+	void delete(StudyComment studyComment);
 }
