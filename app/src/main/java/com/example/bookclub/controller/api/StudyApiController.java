@@ -32,13 +32,16 @@ public class StudyApiController {
     private final StudyService studyService;
     private final StudyLikeService studyLikeService;
     private final StudyCommentService studyCommentService;
+    private final StudyCommentLikeService studyCommentLikeService;
 
     public StudyApiController(StudyService studyService,
                               StudyLikeService studyLikeService,
-                              StudyCommentService studyCommentService) {
+                              StudyCommentService studyCommentService,
+                              StudyCommentLikeService studyCommentLikeService) {
         this.studyService = studyService;
         this.studyLikeService = studyLikeService;
         this.studyCommentService = studyCommentService;
+        this.studyCommentLikeService = studyCommentLikeService;
     }
 
     @GetMapping
@@ -113,5 +116,13 @@ public class StudyApiController {
     public Long deleteStudyComment(@AuthenticationPrincipal UserAccount userAccount,
                                    @PathVariable Long studyCommentId) {
         return studyCommentService.deleteStudyComment(userAccount, studyCommentId);
+    }
+
+    @PostMapping("/{studyId}/comment/{commentId}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    public StudyCommentLikeResultDto createStudyCommentLike(@AuthenticationPrincipal UserAccount userAccount,
+                                                            @PathVariable Long studyId,
+                                                            @PathVariable Long commentId) {
+        return studyCommentLikeService.createStudyCommentLike(userAccount, studyId, commentId);
     }
 }
