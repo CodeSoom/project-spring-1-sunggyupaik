@@ -210,4 +210,8 @@ public class Study extends BaseEntity {
     public void addCommentsCount(int commentsCount) {
         this.commentsCount = commentsCount;
     }
+
+    public void addFavorite() {
+        this.isFavorite = true;
+    }
 }

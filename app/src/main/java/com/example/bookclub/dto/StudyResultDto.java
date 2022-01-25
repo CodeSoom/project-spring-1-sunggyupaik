@@ -52,11 +52,13 @@ public class StudyResultDto {
 
     private int commentsCount;
 
+    private boolean isFavorite;
+
     @Builder
     public StudyResultDto(Long id, String name, String bookName, String bookImage, String email, String description,
                           String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
                           String endTime, String day, StudyState studyState, Zone zone, int likesCount, boolean liked,
-                          int commentsCount) {
+                          int commentsCount, boolean isFavorite) {
         this.id = id;
         this.name = name;
         this.bookName = bookName;
@@ -76,6 +78,7 @@ public class StudyResultDto {
         this.likesCount = likesCount;
         this.liked = liked;
         this.commentsCount = commentsCount;
+        this.isFavorite = isFavorite;
     }
 
     public static StudyResultDto of(Study study) {
@@ -103,6 +106,7 @@ public class StudyResultDto {
                 .likesCount(study.getStudyLikes() == null ? 0 : study.getStudyLikes().size())
                 .liked(study.isLiked())
                 .commentsCount(study.getCommentsCount())
+                .isFavorite(study.isFavorite())
                 .build();
     }
 }
