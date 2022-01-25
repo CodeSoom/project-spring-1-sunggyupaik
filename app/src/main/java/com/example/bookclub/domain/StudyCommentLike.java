@@ -41,4 +41,9 @@ public class StudyCommentLike extends BaseTimeEntity {
 		this.account = account;
 		this.studyComment = studyComment;
 	}
+
+	public void addStudyCommentAndAccount(StudyComment studyComment, Account account) {
+		this.studyComment = studyComment;
+		this.account = account;
+	}
 }
