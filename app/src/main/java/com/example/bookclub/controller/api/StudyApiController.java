@@ -143,4 +143,11 @@ public class StudyApiController {
                               @PathVariable Long id) {
         return studyFavoriteService.favoriteStudy(userAccount, id);
     }
+
+    @DeleteMapping("/{id}/favorite")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Long unFavoriteStudy(@AuthenticationPrincipal UserAccount userAccount,
+                                @PathVariable Long id) {
+        return studyFavoriteService.unFavoriteStudy(userAccount, id);
+    }
 }
