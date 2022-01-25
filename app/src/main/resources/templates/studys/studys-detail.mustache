@@ -212,7 +212,7 @@
                             <span style="float:right">
                                 <i class="{{#liked}}fas{{/liked}} {{^liked}}far{{/liked}} fa-heart" id="studyCommentLike{{id}}"
                                    style="font-size:24px; color:red;" onclick="toggleLike('studyCommentLike', 'studyCommentLikeCount', {{id}})"></i>
-                                <span>5</span>
+                                <span id="studyLikeCount{{id}}">{{likesCount}}</span>
                             </span>
                         </div>
                         <div class="font-weight-bold">{{content}}</div>
