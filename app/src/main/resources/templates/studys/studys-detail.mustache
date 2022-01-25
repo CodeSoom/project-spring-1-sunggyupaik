@@ -103,6 +103,40 @@
             });
         }
     }
+
+    function toggleFavorite(favoriteId, id) {
+        let favoriteIcon = $("#" + favoriteId + id);
+
+        //즐겨찾기를 추가할 경우
+        if (favoriteIcon.hasClass("far")) {
+            $.ajax({
+                type: 'POST',
+                url: `/api/study/${id}/favorite/`,
+                dataType: 'json',
+                contentType: 'application/json;',
+            }).done(function (data) {
+                favoriteIcon.addClass("fas");
+                favoriteIcon.removeClass("far");
+            }).fail(function (request) {
+                alert(request.responseText);
+            });
+        }
+
+        //즐겨찾기를 취소 할 경우
+        else if (favoriteIcon.hasClass("fas")) {
+            $.ajax({
+                type: 'DELETE',
+                url: `/api/study/${id}/favorite`,
+                dataType: 'json',
+                contentType: 'application/json;',
+            }).done(function (data) {
+                favoriteIcon.removeClass("fas");
+                favoriteIcon.addClass("far");
+            }).fail(function (request) {
+                alert(request.responseText);
+            });
+        }
+    }
 </script>
 <h1>스터디 조회</h1>
 
@@ -167,6 +201,8 @@
             </div>
         </form>
         <a href="/" role="button" class="btn btn-secondary">돌아가기</a>
+        <i class="{{#isFavorite}}fas{{/isFavorite}} {{^isFavorite}}far{{/isFavorite}} fa-star" id="Favorite{{id}}"
+           style="font-size:24px; color:yellow;" onclick="toggleFavorite('Favorite', {{id}})"></i>
         {{#account}}
             {{^study}}
                 <button type="button" class="btn btn-primary" id="btn-apply-study">신청</button>
