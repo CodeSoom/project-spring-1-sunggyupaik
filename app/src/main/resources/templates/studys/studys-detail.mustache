@@ -75,7 +75,7 @@
         if(likeIcon.hasClass("far")) {
             $.ajax({
                 type: 'POST',
-                url: `/api/study/${commentId}/like`,
+                url: `/api/study/comment/${commentId}/like`,
                 dataType: 'json',
                 contentType: 'application/json;',
             }).done(function (data) {
@@ -91,7 +91,7 @@
         else if(likeIcon.hasClass("fas")) {
             $.ajax({
                 type: 'DELETE',
-                url: `/api/study/comment/${commentId}/like`,
+                url: `/api/study/comment/${commentId}/unlike`,
                 dataType: 'json',
                 contentType: 'application/json;',
             }).done(function (data) {
