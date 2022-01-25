@@ -132,4 +132,11 @@ public class StudyApiController {
                               @PathVariable Long commentId) {
         return studyCommentLikeService.unlikeComment(userAccount, commentId);
     }
+
+    @PostMapping("/{id}/favorite")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Long favoriteStudy(@AuthenticationPrincipal UserAccount userAccount,
+                              @PathVariable Long id)
+        return studyFavoriteService.favoriteStudy(id);
+
 }
