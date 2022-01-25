@@ -5,6 +5,7 @@ import com.example.bookclub.domain.Favorite;
 import com.example.bookclub.domain.FavoriteRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
+import com.example.bookclub.errors.StudyFavoriteNotExistedException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 
@@ -52,7 +53,7 @@ public class StudyFavoriteService {
 
 		Favorite savedFavorite = favoriteRepository.findByStudyAndAccount(study, account)
 				.orElseThrow(() -> new StudyFavoriteNotExistedException(studyId));
-		
+
 		favoriteRepository.delete(savedFavorite);
 
 		return savedFavorite.getId();
