@@ -3,6 +3,7 @@ package com.example.bookclub.application;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyComment;
+import com.example.bookclub.domain.StudyCommentLikeRepository;
 import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCommentResultDto;
@@ -38,11 +39,14 @@ import java.util.stream.Collectors;
 public class StudyService {
     private final StudyRepository studyRepository;
     private final AccountService accountService;
+    private final StudyCommentLikeRepository studyCommentLikeRepository;
 
     public StudyService(StudyRepository studyRepository,
-                        AccountService accountService) {
+                        AccountService accountService,
+                        StudyCommentLikeRepository studyCommentLikeRepository) {
         this.studyRepository = studyRepository;
         this.accountService = accountService;
+        this.studyCommentLikeRepository = studyCommentLikeRepository;
     }
 
     public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
@@ -189,13 +193,20 @@ public class StudyService {
         List<StudyComment> studyComments = study.getStudyComments();
         study.addCommentsCount(studyComments.size());
         studyComments.forEach(studyComment -> {
-           if(studyComment.getAccount().getId().equals(principalId))
-               studyComment.setIsWrittenByMeTrue();
+            studyComment.setLikesCount(studyComment.getStudyCommentLikes().size());
+            studyComment.getStudyCommentLikes().forEach(studyCommentLike -> {
+               if(studyCommentLike.getAccount().getId().equals(principalId)) {
+                   studyComment.addLiked();
+               }
+            });
+
+            if(studyComment.getAccount().getId().equals(principalId))
+                studyComment.setIsWrittenByMeTrue();
         });
 
         List<StudyCommentResultDto> studyCommentResultDtos = studyComments.stream()
                 .map(studyComment -> {
-                    return StudyCommentResultDto.of(studyComment, studyComment.getAccount());
+                        return StudyCommentResultDto.of(studyComment, studyComment.getAccount());
                     })
                 .collect(Collectors.toList());
 
@@ -212,8 +223,8 @@ public class StudyService {
 
         studies.forEach(study -> {
             study.addLikesCount(study.getStudyLikes().size());
-            study.getStudyLikes().forEach(like -> {
-                if(like.getAccount().getId().equals(principalId)) {
+            study.getStudyLikes().forEach(studyLike -> {
+                if(studyLike.getAccount().getId().equals(principalId)) {
                     study.addLiked();
                 }
             });

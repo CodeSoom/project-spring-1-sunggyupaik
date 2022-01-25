@@ -1,5 +1,6 @@
 package com.example.bookclub.controller.api;
 
+import com.example.bookclub.application.StudyCommentLikeService;
 import com.example.bookclub.application.StudyCommentService;
 import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
@@ -32,13 +33,16 @@ public class StudyApiController {
     private final StudyService studyService;
     private final StudyLikeService studyLikeService;
     private final StudyCommentService studyCommentService;
+    private final StudyCommentLikeService studyCommentLikeService;
 
     public StudyApiController(StudyService studyService,
                               StudyLikeService studyLikeService,
-                              StudyCommentService studyCommentService) {
+                              StudyCommentService studyCommentService,
+                              StudyCommentLikeService studyCommentLikeService) {
         this.studyService = studyService;
         this.studyLikeService = studyLikeService;
         this.studyCommentService = studyCommentService;
+        this.studyCommentLikeService = studyCommentLikeService;
     }
 
     @GetMapping
@@ -113,5 +117,19 @@ public class StudyApiController {
     public Long deleteStudyComment(@AuthenticationPrincipal UserAccount userAccount,
                                    @PathVariable Long studyCommentId) {
         return studyCommentService.deleteStudyComment(userAccount, studyCommentId);
+    }
+
+    @PostMapping("/comment/{commentId}/like")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Long likeComment(@AuthenticationPrincipal UserAccount userAccount,
+                            @PathVariable Long commentId) {
+        return studyCommentLikeService.likeComment(userAccount, commentId);
+    }
+
+    @DeleteMapping("/comment/{commentId}/unlike")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public Long unLikeComment(@AuthenticationPrincipal UserAccount userAccount,
+                              @PathVariable Long commentId) {
+        return studyCommentLikeService.unlikeComment(userAccount, commentId);
     }
 }

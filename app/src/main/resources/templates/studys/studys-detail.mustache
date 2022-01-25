@@ -65,6 +65,45 @@
         cursor: pointer
     }
 </style>
+<script>
+    function toggleLike(likeId, likeCountId, commentId) {
+        const studyId = $(".id").val();
+        let likeIcon = $("#"+likeId+commentId);
+        let likeCount = $("#"+likeCountId+commentId);
+
+        //좋아요를 누를 경우
+        if(likeIcon.hasClass("far")) {
+            $.ajax({
+                type: 'POST',
+                url: `/api/study/comment/${commentId}/like`,
+                dataType: 'json',
+                contentType: 'application/json;',
+            }).done(function (data) {
+                likeIcon.addClass("fas");
+                likeIcon.removeClass("far");
+                likeCount.html(Number(likeCount.html()) + 1);
+            }).fail(function (request) {
+                alert(request.responseText);
+            });
+        }
+
+        //좋아요 취소를 할 경우
+        else if(likeIcon.hasClass("fas")) {
+            $.ajax({
+                type: 'DELETE',
+                url: `/api/study/comment/${commentId}/unlike`,
+                dataType: 'json',
+                contentType: 'application/json;',
+            }).done(function (data) {
+                likeIcon.removeClass("fas");
+                likeIcon.addClass("far");
+                likeCount.html(Number(likeCount.html()) - 1);
+            }).fail(function (request) {
+                alert(request.responseText);
+            });
+        }
+    }
+</script>
 <h1>스터디 조회</h1>
 
 <div class="col-md-12">
@@ -165,13 +204,18 @@
                                     STkpJ+WknJSTclJOykk5KSflpJyUk3JSTspJ/U/Y5txhuw874Aqpr4CHoAAAAABJRU5ErkJggg=="
                                          width="30" class="user-img rounded-circle mr-2">
                                 {{/uploadFileResultDto}}
-                                <span>
+                                <div>
                                     <small class="font-weight-bold text-primary">{{nickname}}</small>
-                                    <small class="font-weight-bold">{{content}}</small>
-                                </span>
+                                    <small>{{updatedDate}}</small>
+                                </div>
                             </div>
-                            <small>{{updatedDate}}</small>
+                            <span style="float:right">
+                                <i class="{{#liked}}fas{{/liked}} {{^liked}}far{{/liked}} fa-heart" id="studyCommentLike{{id}}"
+                                   style="font-size:24px; color:red;" onclick="toggleLike('studyCommentLike', 'StudyCommentLikeCount', {{id}})"></i>
+                                <span id="StudyCommentLikeCount{{id}}">{{likesCount}}</span>
+                            </span>
                         </div>
+                        <div class="font-weight-bold">{{content}}</div>
                         <div class="action d-flex justify-content-between mt-2 align-items-center">
                             <div class="reply px-4">
                                 {{#isWrittenByMe}}
@@ -219,7 +263,7 @@
     </div>
 </div>
 <script>
-     function deleteStudyComment(studyCommentId, studyId) {
+    function deleteStudyComment(studyCommentId, studyId) {
         $.ajax({
             type: 'DELETE',
             url: `/api/study/comment/${studyCommentId}`,
