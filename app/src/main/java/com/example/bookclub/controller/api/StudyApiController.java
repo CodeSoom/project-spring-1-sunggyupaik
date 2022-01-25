@@ -2,6 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.StudyCommentLikeService;
 import com.example.bookclub.application.StudyCommentService;
+import com.example.bookclub.application.StudyFavoriteService;
 import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
@@ -34,15 +35,18 @@ public class StudyApiController {
     private final StudyLikeService studyLikeService;
     private final StudyCommentService studyCommentService;
     private final StudyCommentLikeService studyCommentLikeService;
+    private final StudyFavoriteService studyFavoriteService;
 
     public StudyApiController(StudyService studyService,
                               StudyLikeService studyLikeService,
                               StudyCommentService studyCommentService,
-                              StudyCommentLikeService studyCommentLikeService) {
+                              StudyCommentLikeService studyCommentLikeService,
+                              StudyFavoriteService studyFavoriteService) {
         this.studyService = studyService;
         this.studyLikeService = studyLikeService;
         this.studyCommentService = studyCommentService;
         this.studyCommentLikeService = studyCommentLikeService;
+        this.studyFavoriteService = studyFavoriteService;
     }
 
     @GetMapping
@@ -136,7 +140,7 @@ public class StudyApiController {
     @PostMapping("/{id}/favorite")
     @ResponseStatus(HttpStatus.CREATED)
     public Long favoriteStudy(@AuthenticationPrincipal UserAccount userAccount,
-                              @PathVariable Long id)
+                              @PathVariable Long id) {
         return studyFavoriteService.favoriteStudy(id);
-
+    }
 }
