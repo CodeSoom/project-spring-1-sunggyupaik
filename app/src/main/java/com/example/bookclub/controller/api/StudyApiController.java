@@ -119,11 +119,10 @@ public class StudyApiController {
         return studyCommentService.deleteStudyComment(userAccount, studyCommentId);
     }
 
-    @PostMapping("/{studyId}/comment/{commentId}/like")
+    @PostMapping("/{commentId}/like")
     @ResponseStatus(HttpStatus.CREATED)
     public Long createStudyCommentLike(@AuthenticationPrincipal UserAccount userAccount,
-                                                            @PathVariable Long studyId,
                                                             @PathVariable Long commentId) {
-        return studyCommentLikeService.likeComment(userAccount, studyId, commentId);
+        return studyCommentLikeService.likeComment(userAccount, commentId);
     }
 }

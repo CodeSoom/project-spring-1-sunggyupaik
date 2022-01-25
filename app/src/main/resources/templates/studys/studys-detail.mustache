@@ -75,7 +75,7 @@
         if(likeIcon.hasClass("far")) {
             $.ajax({
                 type: 'POST',
-                url: `/api/study/${studyId}/comment/${commentId}/like`,
+                url: `/api/study/${commentId}/like`,
                 dataType: 'json',
                 contentType: 'application/json;',
             }).done(function (data) {
@@ -91,7 +91,7 @@
         else if(likeIcon.hasClass("fas")) {
             $.ajax({
                 type: 'DELETE',
-                url: `/api/study/${studyId}/comment/${commentId}/like`,
+                url: `/api/study/comment/${commentId}/like`,
                 dataType: 'json',
                 contentType: 'application/json;',
             }).done(function (data) {
@@ -211,8 +211,8 @@
                             </div>
                             <span style="float:right">
                                 <i class="{{#liked}}fas{{/liked}} {{^liked}}far{{/liked}} fa-heart" id="studyCommentLike{{id}}"
-                                   style="font-size:24px; color:red;" onclick="toggleLike('studyCommentLike', 'studyCommentLikeCount', {{id}})"></i>
-                                <span id="studyLikeCount{{id}}">{{likesCount}}</span>
+                                   style="font-size:24px; color:red;" onclick="toggleLike('studyCommentLike', 'StudyCommentLikeCount', {{id}})"></i>
+                                <span id="StudyCommentLikeCount{{id}}">{{likesCount}}</span>
                             </span>
                         </div>
                         <div class="font-weight-bold">{{content}}</div>

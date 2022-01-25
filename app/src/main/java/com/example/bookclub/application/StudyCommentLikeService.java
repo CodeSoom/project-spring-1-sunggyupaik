@@ -25,7 +25,7 @@ public class StudyCommentLikeService {
 	}
 
 	@Transactional
-	public Long likeComment(UserAccount userAccount, Long studyId, Long commentId) {
+	public Long likeComment(UserAccount userAccount, Long commentId) {
 		Long accountId = userAccount.getAccount().getId();
 
 		StudyComment studyComment = studyCommentService.getStudyComment(commentId);

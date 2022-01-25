@@ -20,10 +20,13 @@ public class StudyCommentResultDto {
 	private UploadFileResultDto uploadFileResultDto;
 	private boolean isWrittenByMe;
 	private String updatedDate;
+	private boolean liked;
+	private int likesCount;
 
 	@Builder
 	public StudyCommentResultDto(Long id, String content, Long studyId, Long accountId, String nickname,
-								 UploadFileResultDto uploadFileResultDto, boolean isWrittenByMe, String updatedDate) {
+								 UploadFileResultDto uploadFileResultDto, boolean isWrittenByMe, String updatedDate,
+								 boolean liked, int likesCount) {
 		this.id = id;
 		this.content = content;
 		this.studyId = studyId;
@@ -32,6 +35,8 @@ public class StudyCommentResultDto {
 		this.uploadFileResultDto = uploadFileResultDto;
 		this.isWrittenByMe = isWrittenByMe;
 		this.updatedDate = updatedDate;
+		this.liked = liked;
+		this.likesCount = likesCount;
 	}
 
 	public static StudyCommentResultDto of(StudyComment studyComment, Account account) {
@@ -46,6 +51,8 @@ public class StudyCommentResultDto {
 				)
 				.isWrittenByMe(studyComment.isWrittenByMe())
 				.updatedDate(studyComment.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+				.liked(studyComment.isLiked())
+				.likesCount(studyComment.getLikesCount())
 				.build();
 	}
 }

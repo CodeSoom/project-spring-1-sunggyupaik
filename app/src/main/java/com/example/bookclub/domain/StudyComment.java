@@ -70,4 +70,12 @@ public class StudyComment extends BaseEntity {
 	public void setIsWrittenByMeTrue() {
 		this.isWrittenByMe = true;
 	}
+
+	public void setLikesCount(int likesCount) {
+		this.likesCount = likesCount;
+	}
+
+	public void addLiked() {
+		this.liked = true;
+	}
 }
