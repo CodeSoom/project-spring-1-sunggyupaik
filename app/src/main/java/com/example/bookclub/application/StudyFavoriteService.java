@@ -43,4 +43,18 @@ public class StudyFavoriteService {
 
 		return studyId;
 	}
+
+	public Long unFavoriteStudy(UserAccount userAccount, Long studyId) {
+		Long accountId = userAccount.getAccount().getId();
+
+		Study study = studyService.getStudy(studyId);
+		Account account = accountService.findUser(accountId);
+
+		Favorite savedFavorite = favoriteRepository.findByStudyAndAccount(study, account)
+				.orElseThrow(() -> new StudyFavoriteNotExistedException(studyId));
+		
+		favoriteRepository.delete(savedFavorite);
+
+		return savedFavorite.getId();
+	}
 }
