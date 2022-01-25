@@ -1,10 +1,10 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentLike;
 import com.example.bookclub.domain.StudyCommentLikeRepository;
+import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +38,7 @@ public class StudyCommentLikeService {
 
 		studyCommentLikeRepository.findByStudyCommentAndAccount(studyComment, account)
 				.ifPresent(study -> {
-					throw new SutdyCommentLikeAlreadyExistedException();
+					throw new StudyCommentLikeAlreadyExistedException();
 				});
 
 		studyCommentLike.addStudyCommentAndAccount(studyComment, account);
