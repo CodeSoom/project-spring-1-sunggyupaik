@@ -1,5 +1,6 @@
 package com.example.bookclub.controller.api;
 
+import com.example.bookclub.application.StudyCommentLikeService;
 import com.example.bookclub.application.StudyCommentService;
 import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
