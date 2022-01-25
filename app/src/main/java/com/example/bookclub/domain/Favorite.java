@@ -42,4 +42,9 @@ public class Favorite {
 		this.study = study;
 		this.account = account;
 	}
+
+	public void addStudyAndAccount(Study study, Account account) {
+		this.study = study;
+		this.account = account;
+	}
 }

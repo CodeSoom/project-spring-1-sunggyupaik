@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Favorite;
 import com.example.bookclub.domain.FavoriteRepository;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 
@@ -33,13 +34,13 @@ public class StudyFavoriteService {
 				.build();
 
 		favoriteRepository.findByStudyAndAccount(study, account)
-				.ifPresnet(favorite -> {
-					throw new StudyFavoriteAlreadyExistedException();
+				.ifPresent(studyFavorite -> {
+					throw new StudyFavoriteAlreadyExistedException(studyFavorite.getId());
 				});
 
 		favorite.addStudyAndAccount(study, account);
 		favoriteRepository.save(favorite);
-		
+
 		return studyId;
 	}
 }
