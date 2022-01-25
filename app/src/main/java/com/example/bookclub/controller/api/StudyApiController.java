@@ -124,6 +124,6 @@ public class StudyApiController {
     public StudyCommentLikeResultDto createStudyCommentLike(@AuthenticationPrincipal UserAccount userAccount,
                                                             @PathVariable Long studyId,
                                                             @PathVariable Long commentId) {
-        return studyCommentLikeService.createStudyCommentLike(userAccount, studyId, commentId);
+        return studyCommentLikeService.likeComment(userAccount, studyId, commentId);
     }
 }

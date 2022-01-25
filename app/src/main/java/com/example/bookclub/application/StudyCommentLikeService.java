@@ -1,5 +1,6 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.domain.StudyCommentLikeRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +12,9 @@ public class StudyCommentLikeService {
 		this.studyCommentLikeRepository = studyCommentLikeRepository;
 	}
 
-	public StudyCommentLikeResultDto createStudyCommentLike(UserAccount userAccount, Long studyId, Long commentId) {
+	public StudyCommentLikeResultDto likeComment(UserAccount userAccount, Long studyId, Long commentId) {
+		Long accountId = userAccount.getAccount().getId();
+		
 		return null;
 	}
 }
