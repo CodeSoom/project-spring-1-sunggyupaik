@@ -5,6 +5,7 @@ import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentLike;
 import com.example.bookclub.domain.StudyCommentLikeRepository;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
+import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 
@@ -48,21 +49,16 @@ public class StudyCommentLikeService {
 	}
 
 	@Transactional
-	public Long unlikeComment(UserAccount userAccount, Long commentId) {
+	public Long unlikeComment(UserAccount userAccount, Long studyCommentId) {
 		Long accountId = userAccount.getAccount().getId();
 
-		StudyComment studyComment = studyCommentService.getStudyComment(commentId);
+		StudyComment studyComment = studyCommentService.getStudyComment(studyCommentId);
 		Account account = accountService.findUser(accountId);
 		StudyCommentLike savedStudyCommentLike = studyCommentLikeRepository.findByStudyCommentAndAccount(studyComment, account)
-				.orElse(StudyCommentLikeNotExistedException::new);
-		
+				.orElseThrow(() -> new StudyCommentLikeNotFoundException(studyCommentId));
+
 		studyCommentLikeRepository.delete(savedStudyCommentLike);
 
 		return savedStudyCommentLike.getId();
-	}
-
-	public StudyCommentLike getStudyCommentLike(Long id) {
-		return studyCommentLikeRepository.findById(id)
-				.orElse(() -> new StudyCommentLikeNotFoundException(id));
 	}
 }
