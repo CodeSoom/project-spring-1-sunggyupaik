@@ -80,6 +80,10 @@ public class Study extends BaseEntity {
     @OneToMany(mappedBy = "study")
     @ToString.Exclude
     List<StudyComment> studyComments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "study")
+    @ToString.Exclude
+    List<Favorite> favorites = new ArrayList<>();
     
     @Transient
     private boolean liked;
@@ -90,11 +94,15 @@ public class Study extends BaseEntity {
     @Transient
     private int commentsCount;
 
+    @Transient
+    private boolean isFavorite;
+
     @Builder
     public Study(Long id, String name, String bookName, String bookImage, String email, String description, String contact,
                  int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime, String endTime,
                  Day day, StudyState studyState, Zone zone, List<Account> accounts, List<StudyLike> studyLikes,
-                 List<StudyComment> studyComments, boolean liked, int likesCount, int commentsCount) {
+                 List<StudyComment> studyComments, List<Favorite> favorites, boolean liked, int likesCount, int commentsCount,
+                 boolean isFavorite) {
         this.id = id;
         this.name = name;
         this.bookName = bookName;
@@ -114,9 +122,11 @@ public class Study extends BaseEntity {
         this.accounts = accounts;
         this.studyLikes = studyLikes;
         this.studyComments = studyComments;
+        this.favorites = favorites;
         this.liked = liked;
         this.likesCount = likesCount;
         this.commentsCount = commentsCount;
+        this.isFavorite = isFavorite;
     }
 
     public void updateWith(StudyUpdateDto studyUpdateDto) {
