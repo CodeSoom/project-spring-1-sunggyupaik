@@ -141,6 +141,6 @@ public class StudyApiController {
     @ResponseStatus(HttpStatus.CREATED)
     public Long favoriteStudy(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id) {
-        return studyFavoriteService.favoriteStudy(id);
+        return studyFavoriteService.favoriteStudy(userAccount, id);
     }
 }
