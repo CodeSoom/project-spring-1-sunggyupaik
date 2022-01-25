@@ -53,11 +53,6 @@ public class StudyLikeService {
 
 		Study study = studyService.getStudy(studyId);
 		Account account = accountService.findUser(accountId);
-		StudyLike studyLike = StudyLike.builder()
-				.study(study)
-				.account(account)
-				.build();
-
 		StudyLike savedStudyLike = studyLikeRepository.findByStudyAndAccount(study, account)
 				.orElseThrow(StudyLikeNotExistedException::new);
 

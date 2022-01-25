@@ -48,12 +48,17 @@ public class StudyCommentLikeService {
 	}
 
 	@Transactional
-	public Long unlikeComment(UserAccount userAccount, Long studyCommentLikeId) {
-		StudyCommentLike studyCommentLike = getStudyCommentLike(studyCommentLikeId);
+	public Long unlikeComment(UserAccount userAccount, Long commentId) {
+		Long accountId = userAccount.getAccount().getId();
 
-		studyCommentLikeRepository.delete(studyCommentLike);
+		StudyComment studyComment = studyCommentService.getStudyComment(commentId);
+		Account account = accountService.findUser(accountId);
+		StudyCommentLike savedStudyCommentLike = studyCommentLikeRepository.findByStudyCommentAndAccount(studyComment, account)
+				.orElse(StudyCommentLikeNotExistedException::new);
+		
+		studyCommentLikeRepository.delete(savedStudyCommentLike);
 
-		return studyCommentLikeId;
+		return savedStudyCommentLike.getId();
 	}
 
 	public StudyCommentLike getStudyCommentLike(Long id) {
