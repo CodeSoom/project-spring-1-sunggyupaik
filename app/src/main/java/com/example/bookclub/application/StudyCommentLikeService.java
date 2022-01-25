@@ -46,4 +46,18 @@ public class StudyCommentLikeService {
 
 		return commentId;
 	}
+
+	@Transactional
+	public Long unlikeComment(UserAccount userAccount, Long studyCommentLikeId) {
+		StudyCommentLike studyCommentLike = getStudyCommentLike(studyCommentLikeId);
+
+		studyCommentLikeRepository.delete(studyCommentLike);
+
+		return studyCommentLikeId;
+	}
+
+	public StudyCommentLike getStudyCommentLike(Long id) {
+		return studyCommentLikeRepository.findById(id)
+				.orElse(() -> new StudyCommentLikeNotFoundException(id));
+	}
 }
