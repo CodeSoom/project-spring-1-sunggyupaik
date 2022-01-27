@@ -201,8 +201,10 @@
             </div>
         </form>
         <a href="/" role="button" class="btn btn-secondary">돌아가기</a>
-        <i class="{{#isFavorite}}fas{{/isFavorite}} {{^isFavorite}}far{{/isFavorite}} fa-star" id="Favorite{{id}}"
-           style="font-size:24px; color:yellow;" onclick="toggleFavorite('Favorite', {{id}})"></i>
+        {{#detailedStudy.studyResultDto}}
+            <i class="{{#isFavorite}}fas{{/isFavorite}} {{^isFavorite}}far{{/isFavorite}} fa-star" id="Favorite{{id}}"
+               style="font-size:24px; color:yellow;" onclick="toggleFavorite('Favorite', {{id}})"></i>
+        {{/detailedStudy.studyResultDto}}
         {{#account}}
             {{^study}}
                 <button type="button" class="btn btn-primary" id="btn-apply-study">신청</button>
