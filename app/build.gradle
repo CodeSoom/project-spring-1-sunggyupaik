@@ -5,6 +5,9 @@ plugins {
 	// Spring
 	id 'org.springframework.boot' version '2.3.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+
+	//Querydsl
+	id 'com.ewerk.gradle.plugins.querydsl' version '1.0.10'
 }
 
 group = 'com.example.bookclub'
@@ -124,6 +127,9 @@ dependencies {
 
 	//AOP
 	implementation 'org.springframework.boot:spring-boot-starter-aop:2.6.1'
+
+	//Querydsl
+	implementation 'com.querydsl:querydsl-jpa'
 }
 
 application {
@@ -134,4 +140,19 @@ application {
 test {
 	// Use junit platform for unit tests.
 	useJUnitPlatform()
+}
+
+def querydslDir = "$buildDir/generated/querydsl"
+querydsl {
+	jpa = true
+	querydslSourcesDir = querydslDir
+}
+sourceSets {
+	main.java.srcDir querydslDir
+}
+configurations {
+	querydsl.extendsFrom compileClasspath
+}
+compileQuerydsl {
+	options.annotationProcessorPath = configurations.querydsl
 }
