@@ -80,16 +80,9 @@ public class Account extends BaseTimeEntity {
     @Transient
     private int favoritesCount;
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId());
-    }
-
     @Builder
     public Account(Long id, String name, String email, String nickname, String password, UploadFile uploadFile,
-                   boolean deleted, Study study, List<AccountHistory> accountHistories, List<StudyLike> studyLikes,
-                   List<StudyComment> studyComments, List<StudyCommentLike> studyCommentLikes, List<Favorite> favorites,
-                   int favoritesCount) {
+                   boolean deleted, Study study, List<AccountHistory> accountHistories, List<StudyLike> studyLikes, List<StudyComment> studyComments, List<StudyCommentLike> studyCommentLikes, List<Favorite> favorites, int favoritesCount) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -104,6 +97,11 @@ public class Account extends BaseTimeEntity {
         this.studyCommentLikes = studyCommentLikes;
         this.favorites = favorites;
         this.favoritesCount = favoritesCount;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
     }
 
     @Override

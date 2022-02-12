@@ -38,7 +38,13 @@ public class EmailService {
             throw new EmailBadRequestException(email);
         }
 
-        emailAuthenticationRepository.save(new EmailAuthentication(email, authenticationNumber));
+
+        emailAuthenticationRepository.save(
+                EmailAuthentication.builder()
+                        .email(email)
+                        .authenticationNumber(authenticationNumber)
+                        .build()
+        );
 
         return email;
     }

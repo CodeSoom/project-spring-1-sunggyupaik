@@ -55,14 +55,14 @@ public class StudyComment extends BaseEntity {
 	private int likesCount;
 
 	@Builder
-	public StudyComment(Long id, String content, Account account, Study study, boolean isWrittenByMe,
-						List<StudyCommentLike> studyCommentLikes, boolean liked, int likesCount) {
+	public StudyComment(Long id, String content, Account account, Study study, List<StudyCommentLike> studyCommentLikes,
+						boolean isWrittenByMe, boolean liked, int likesCount) {
 		this.id = id;
 		this.content = content;
 		this.account = account;
 		this.study = study;
-		this.isWrittenByMe = isWrittenByMe;
 		this.studyCommentLikes = studyCommentLikes;
+		this.isWrittenByMe = isWrittenByMe;
 		this.liked = liked;
 		this.likesCount = likesCount;
 	}

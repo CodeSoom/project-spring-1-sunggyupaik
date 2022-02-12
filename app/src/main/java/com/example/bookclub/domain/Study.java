@@ -74,14 +74,17 @@ public class Study extends BaseEntity {
     List<Account> accounts = new ArrayList<>();
 
     @OneToMany(mappedBy = "study")
+    @Builder.Default
     @ToString.Exclude
     List<StudyLike> studyLikes = new ArrayList<>();
 
     @OneToMany(mappedBy = "study")
+    @Builder.Default
     @ToString.Exclude
     List<StudyComment> studyComments = new ArrayList<>();
 
     @OneToMany(mappedBy = "study")
+    @Builder.Default
     @ToString.Exclude
     List<Favorite> favorites = new ArrayList<>();
     
