@@ -18,6 +18,7 @@ import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.infra.JpaAccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -26,13 +27,13 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 public class AccountService {
-    private final AccountRepository accountRepository;
+    private final JpaAccountRepository accountRepository;
     private final EmailAuthenticationRepository emailAuthenticationRepository;
     private final PasswordEncoder passwordEncoder;
     private final UploadFileService uploadFileService;
     private final RoleRepository roleRepository;
 
-    public AccountService(AccountRepository accountRepository,
+    public AccountService(JpaAccountRepository accountRepository,
                           EmailAuthenticationRepository emailAuthenticationRepository,
                           PasswordEncoder passwordEncoder,
                           UploadFileService uploadFileService,
