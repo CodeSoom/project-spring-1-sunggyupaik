@@ -124,8 +124,4 @@ public class InterviewService {
         return interviewRepository.findAll(pageable)
                 .map(InterviewResultDto::of);
     }
-
-    public List<Interview> getInterviewsAll() {
-        return interviewRepository.findAll();
-    }
 }

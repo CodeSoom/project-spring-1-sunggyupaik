@@ -192,6 +192,11 @@ public class StudyService {
         Study study = getStudy(id);
         List<StudyComment> studyComments = study.getStudyComments();
         study.addCommentsCount(studyComments.size());
+        study.getFavorites().forEach(favorite -> {
+            if(favorite.getAccount().getId().equals(principalId))
+                study.addFavorite();
+        });
+        
         studyComments.forEach(studyComment -> {
             studyComment.setLikesCount(studyComment.getStudyCommentLikes().size());
             studyComment.getStudyCommentLikes().forEach(studyCommentLike -> {

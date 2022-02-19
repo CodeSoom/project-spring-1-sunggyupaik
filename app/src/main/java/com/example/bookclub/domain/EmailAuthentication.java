@@ -14,6 +14,7 @@ import javax.persistence.Id;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @ToString
 public class EmailAuthentication {
     @Id @GeneratedValue
@@ -27,12 +28,6 @@ public class EmailAuthentication {
     @Builder
     public EmailAuthentication(Long id, String email, String authenticationNumber) {
         this.id = id;
-        this.email = email;
-        this.authenticationNumber = authenticationNumber;
-    }
-
-    @Builder
-    public EmailAuthentication(String email, String authenticationNumber) {
         this.email = email;
         this.authenticationNumber = authenticationNumber;
     }

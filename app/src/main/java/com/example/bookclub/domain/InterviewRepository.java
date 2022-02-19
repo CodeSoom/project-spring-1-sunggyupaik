@@ -11,7 +11,5 @@ public interface InterviewRepository {
 
 	Page<Interview> findAll(Pageable pageable);
 
-    List<Interview> findAll();
-
 	Optional<Interview> findByTitle(String title);
 }

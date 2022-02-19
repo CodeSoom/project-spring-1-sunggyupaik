@@ -21,6 +21,8 @@ import com.example.bookclub.errors.StudyAlreadyStartedException;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
+import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
+import com.example.bookclub.errors.StudyFavoriteNotExistedException;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
@@ -226,6 +228,18 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(StudyCommentLikeNotFoundException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleStudyCommentLikeNotFoundException(StudyCommentLikeNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(StudyFavoriteAlreadyExistedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleStudyFavoriteAlreadyExistedException(StudyFavoriteAlreadyExistedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(StudyFavoriteNotExistedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleStudyFavoriteNotExistedException(StudyFavoriteNotExistedException e) {
         return new ErrorResponse(e.getMessage());
     }
 }
