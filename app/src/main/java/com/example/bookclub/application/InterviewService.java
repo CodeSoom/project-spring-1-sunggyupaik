@@ -126,6 +126,6 @@ public class InterviewService {
     }
 
     public List<Interview> getInterviewsAll() {
-        return interviewRepository.findAll();
+        return interviewRepository.findAllByOrderByDateDesc();
     }
 }

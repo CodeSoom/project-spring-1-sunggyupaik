@@ -11,7 +11,7 @@ public interface InterviewRepository {
 
 	Page<Interview> findAll(Pageable pageable);
 
-    List<Interview> findAll();
+	List<Interview> findAllByOrderByDateDesc();
 
 	Optional<Interview> findByTitle(String title);
 }

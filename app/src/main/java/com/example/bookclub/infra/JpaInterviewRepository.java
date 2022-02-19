@@ -15,9 +15,8 @@ public interface JpaInterviewRepository
     Interview save(Interview interview);
 
     Page<Interview> findAll(Pageable pageable);
-
-    @Query("SELECT i from Interview i ORDER BY i.date DESC")
-    List<Interview> findAll();
+    
+    List<Interview> findAllByOrderByDateDesc();
 
     Optional<Interview> findByTitle(String title);
 }
