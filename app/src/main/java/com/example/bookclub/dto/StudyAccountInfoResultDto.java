@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyAccountInfoResultDto {
 	private String name;
+
 	private String email;
+
 	private String nickname;
 
 	@QueryProjection

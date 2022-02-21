@@ -4,7 +4,6 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentLikeRepository;
-import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
@@ -23,6 +22,7 @@ import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
+import com.example.bookclub.infra.JapStudyRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -38,11 +38,11 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class StudyService {
-    private final StudyRepository studyRepository;
+    private final JapStudyRepository studyRepository;
     private final AccountService accountService;
     private final StudyCommentLikeRepository studyCommentLikeRepository;
 
-    public StudyService(StudyRepository studyRepository,
+    public StudyService(JapStudyRepository studyRepository,
                         AccountService accountService,
                         StudyCommentLikeRepository studyCommentLikeRepository) {
         this.studyRepository = studyRepository;
@@ -274,10 +274,9 @@ public class StudyService {
     public long countEndStudies(Account account) {
         return getStudiesByStudyState(StudyState.END, account).size();
     }
-    
+
     public StudyInfoResultDto getStudyInfo(Long id) {
-        return studyRepository.getStudyInfo(id)
-                .orElseThrow(() -> new StudyNotFoundException(id));
+        return studyRepository.getStudyInfoById(id);
     }
 
     @Scheduled(cron = "0 0 0 * * *")

@@ -1,20 +1,7 @@
 package com.example.bookclub.domain;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.bookclub.dto.StudyInfoResultDto;
 
 public interface StudyRepository {
-    Optional<Study> findById(Long id);
-
-    Optional<Study> findByEmail(String email);
-
-    List<Study> findAll();
-
-    List<Study> findByStudyState(StudyState studyState);
-
-    List<Study> findByBookNameContaining(String keyword);
-
-    Study save(Study study);
-
-    void delete(Study study);
+    StudyInfoResultDto getStudyInfoById(Long id);
 }
