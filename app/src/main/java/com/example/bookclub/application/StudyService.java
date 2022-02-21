@@ -9,6 +9,7 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyDetailResultDto;
+import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
@@ -272,6 +273,11 @@ public class StudyService {
 
     public long countEndStudies(Account account) {
         return getStudiesByStudyState(StudyState.END, account).size();
+    }
+    
+    public StudyInfoResultDto getStudyInfo(Long id) {
+        return studyRepository.getStudyInfo(id)
+                .orElseThrow(() -> new StudyNotFoundException(id));
     }
 
     @Scheduled(cron = "0 0 0 * * *")

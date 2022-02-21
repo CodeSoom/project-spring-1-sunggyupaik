@@ -8,6 +8,7 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyDetailResultDto;
+import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
@@ -123,10 +124,8 @@ public class StudyController {
                                      @PathVariable Long id,
                                      Model model) {
         checkTopMenu(account, model);
-        Study findStudy = studyService.getStudy(id);
-        model.addAttribute("study", findStudy);
-        List<Account> accounts = studyService.getStudy(id).getAccounts();
-        model.addAttribute("accounts", accounts);
+        StudyInfoResultDto studyInfo = studyService.getStudyInfo(id);
+        model.addAttribute("StudyInfoResultDto", studyInfo);
 
         return "studys/studys-users-list";
     }
