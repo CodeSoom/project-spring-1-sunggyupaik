@@ -5,6 +5,7 @@ import com.example.bookclub.domain.AccountRepository;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
+import com.example.bookclub.infra.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -24,7 +25,7 @@ public class AccountAuthenticationService implements UserDetailsService {
     private final AccountRepository accountRepository;
 
     public AccountAuthenticationService(RoleRepository roleRepository,
-                                        AccountRepository accountRepository) {
+                                        JpaAccountRepository accountRepository) {
         this.roleRepository = roleRepository;
         this.accountRepository = accountRepository;
     }

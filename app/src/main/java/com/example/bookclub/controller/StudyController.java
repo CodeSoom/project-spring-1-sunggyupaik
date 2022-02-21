@@ -123,7 +123,8 @@ public class StudyController {
                                      @PathVariable Long id,
                                      Model model) {
         checkTopMenu(account, model);
-        model.addAttribute("study", account.getStudy());
+        Study findStudy = studyService.getStudy(id);
+        model.addAttribute("study", findStudy);
         List<Account> accounts = studyService.getStudy(id).getAccounts();
         model.addAttribute("accounts", accounts);
         return "studys/studys-users-list";
