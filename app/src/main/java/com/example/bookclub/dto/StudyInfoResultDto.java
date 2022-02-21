@@ -1,26 +1,44 @@
 package com.example.bookclub.dto;
 
+import com.example.bookclub.domain.Day;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import java.time.LocalDate;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyInfoResultDto {
+	private Long id;
+
 	private String name;
+
 	private String bookName;
+
 	private String contact;
-	private String startDate;
-	private String endDate;
+
+	private LocalDate startDate;
+
+	private LocalDate endDate;
+
 	private String startTime;
+
 	private String endTime;
-	private String day;
-	private StudyAccountInfoResultDto accountInfoResultDto;
+
+	@Enumerated(EnumType.STRING)
+	private Day day;
+
+	private List<StudyAccountInfoResultDto> studyAccountInfoResultDto;
 
 	@QueryProjection
-	public StudyInfoResultDto(String name, String bookName, String contact, String startDate,
-							  String endDate, String startTime, String endTime, String day) {
+	public StudyInfoResultDto(Long id, String name, String bookName, String contact, LocalDate startDate,
+							  LocalDate endDate, String startTime, String endTime, Day day) {
+		this.id = id;
 		this.name = name;
 		this.bookName = bookName;
 		this.contact = contact;
@@ -29,5 +47,9 @@ public class StudyInfoResultDto {
 		this.startTime = startTime;
 		this.endTime = endTime;
 		this.day = day;
+	}
+
+	public void setStudyAccountInfoResultDto(List<StudyAccountInfoResultDto> studyAccountInfoResultDto) {
+		this.studyAccountInfoResultDto = studyAccountInfoResultDto;
 	}
 }
