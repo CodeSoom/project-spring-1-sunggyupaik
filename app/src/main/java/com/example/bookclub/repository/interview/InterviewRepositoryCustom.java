@@ -1,14 +1,12 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.repository.interview;
 
+import com.example.bookclub.domain.Interview;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
 import java.util.Optional;
 
-public interface InterviewRepository {
-    Interview save(Interview interview);
-
+public interface InterviewRepositoryCustom {
 	Page<Interview> findAll(Pageable pageable);
 
 	Optional<Interview> findByTitle(String title);
