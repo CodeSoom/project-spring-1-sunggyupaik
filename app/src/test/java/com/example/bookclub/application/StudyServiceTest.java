@@ -7,7 +7,7 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyRepository;
+import com.example.bookclub.infra.study.StudyRepositoryCustom;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;
@@ -156,7 +156,7 @@ public class StudyServiceTest {
     private List<Study> listBookNamePythonKeywordStudies;
 
 	private StudyService studyService;
-	private StudyRepository studyRepository;
+	private StudyRepositoryCustom studyRepository;
 	private AccountRepository accountRepository;
 	private PasswordEncoder passwordEncoder;
 	private EmailAuthenticationRepository emailAuthenticationRepository;
@@ -168,7 +168,7 @@ public class StudyServiceTest {
 
     @BeforeEach
     void setUp() {
-        studyRepository = mock(StudyRepository.class);
+        studyRepository = mock(StudyRepositoryCustom.class);
         accountRepository = mock(AccountRepository.class);
 		emailAuthenticationRepository = mock(EmailAuthenticationRepository.class);
 		roleRepository = mock(RoleRepository.class);

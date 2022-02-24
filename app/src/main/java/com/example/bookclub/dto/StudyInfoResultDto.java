@@ -2,9 +2,8 @@ package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.Day;
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -12,7 +11,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class StudyInfoResultDto {
 	private Long id;
 

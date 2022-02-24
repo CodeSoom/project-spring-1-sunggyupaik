@@ -1,13 +1,11 @@
-package com.example.bookclub.repository.study;
+package com.example.bookclub.infra.study;
 
-import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.dto.QStudyAccountInfoResultDto;
 import com.example.bookclub.dto.QStudyInfoResultDto;
 import com.example.bookclub.dto.StudyAccountInfoResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +13,7 @@ import java.util.Optional;
 import static com.example.bookclub.domain.QAccount.account;
 import static com.example.bookclub.domain.QStudy.study;
 
-@Repository
-public class StudyRepositoryImpl implements StudyRepository {
+public class StudyRepositoryImpl implements StudyRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 
 	public StudyRepositoryImpl(JPAQueryFactory queryFactory) {
@@ -24,7 +21,7 @@ public class StudyRepositoryImpl implements StudyRepository {
 	}
 
 	@Override
-	public StudyInfoResultDto getStudyInfoById(Long id) {
+	public StudyInfoResultDto getStudyInfo(Long id) {
 		StudyInfoResultDto studyInfoResultDto = getStudyInfoResultDto(id)
 				.orElseThrow(() -> new StudyNotFoundException(id));
 

@@ -1,12 +1,9 @@
 package com.example.bookclub.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudyAccountInfoResultDto {
 	private String name;
 

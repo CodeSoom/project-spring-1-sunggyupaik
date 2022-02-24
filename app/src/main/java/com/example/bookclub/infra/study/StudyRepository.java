@@ -1,16 +1,14 @@
-package com.example.bookclub.infra;
+package com.example.bookclub.infra.study;
 
 import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyRepository;
 import com.example.bookclub.domain.StudyState;
-import com.example.bookclub.dto.StudyInfoResultDto;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface JapStudyRepository
-        extends StudyRepository, CrudRepository<Study, Long> {
+public interface StudyRepository
+        extends StudyRepositoryCustom, JpaRepository<Study, Long> {
     Optional<Study> findById(Long id);
 
     Optional<Study> findByEmail(String email);
@@ -24,6 +22,4 @@ public interface JapStudyRepository
     void delete(Study study);
 
     List<Study> findByBookNameContaining(String keyword);
-
-    StudyInfoResultDto getStudyInfoById(Long id);
 }
