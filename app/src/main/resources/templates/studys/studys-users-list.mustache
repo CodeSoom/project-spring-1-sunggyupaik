@@ -14,13 +14,13 @@
         <div class="col-md-2">
             <div class="panel panel-info">
                 <ul class="list-group">
-                    <li class="list-group-item">스터디 이름<br> <bold>{{study.name}}</bold></li>
-                    <li class="list-group-item">스터디 책<br> <bold>{{study.bookName}}</bold></li>
-                    <li class="list-group-item">연락처<br> <bold>{{study.contact}}</bold></li>
-                    <li class="list-group-item">시작날짜<br> <bold>{{study.startDate}}</bold></li>
-                    <li class="list-group-item">마감날짜<br> <bold>{{study.endDate}}</bold></li>
-                    <li class="list-group-item">시간<br> <bold>{{study.startTime}} ~ {{study.endTime}}</bold></li>
-                    <li class="list-group-item">요일<br> <bold>{{study.day}}</bold></li>
+                    <li class="list-group-item">스터디 이름<br> <bold>{{StudyInfoResultDto.name}}</bold></li>
+                    <li class="list-group-item">스터디 책<br> <bold>{{StudyInfoResultDto.bookName}}</bold></li>
+                    <li class="list-group-item">연락처<br> <bold>{{StudyInfoResultDto.contact}}</bold></li>
+                    <li class="list-group-item">시작날짜<br> <bold>{{StudyInfoResultDto.startDate}}</bold></li>
+                    <li class="list-group-item">마감날짜<br> <bold>{{StudyInfoResultDto.endDate}}</bold></li>
+                    <li class="list-group-item">시간<br> <bold>{{StudyInfoResultDto.startTime}} ~ {{StudyInfoResultDto.endTime}}</bold></li>
+                    <li class="list-group-item">요일<br> <bold>{{StudyInfoResultDto.day}}</bold></li>
                 </ul>
             </div>
         </div>
@@ -36,13 +36,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {{#accounts}}
+                    {{#StudyInfoResultDto.studyAccountInfoResultDto}}
                         <tr>
                             <td class="text-center d-none d-md-table-cell">{{name}}</td>
                             <td class="text-center d-none d-md-table-cell">{{email}}</td>
                             <td class="text-center d-none d-md-table-cell">{{nickname}}</td>
                         </tr>
-                    {{/accounts}}
+                    {{/StudyInfoResultDto.studyAccountInfoResultDto}}
                     </tbody>
                 </table>
             </div>

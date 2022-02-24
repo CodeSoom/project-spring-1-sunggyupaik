@@ -22,7 +22,7 @@ import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
-import com.example.bookclub.infra.JapStudyRepository;
+import com.example.bookclub.infra.study.StudyRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -38,13 +38,14 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class StudyService {
-    private final JapStudyRepository studyRepository;
+    private final StudyRepository studyRepository;
     private final AccountService accountService;
     private final StudyCommentLikeRepository studyCommentLikeRepository;
 
-    public StudyService(JapStudyRepository studyRepository,
+    public StudyService(StudyRepository studyRepository,
                         AccountService accountService,
-                        StudyCommentLikeRepository studyCommentLikeRepository) {
+                        StudyCommentLikeRepository studyCommentLikeRepository
+    ) {
         this.studyRepository = studyRepository;
         this.accountService = accountService;
         this.studyCommentLikeRepository = studyCommentLikeRepository;
@@ -276,7 +277,8 @@ public class StudyService {
     }
 
     public StudyInfoResultDto getStudyInfo(Long id) {
-        return studyRepository.getStudyInfoById(id);
+        System.out.println("getStudyInfo123123");
+        return studyRepository.getStudyInfo(id);
     }
 
     @Scheduled(cron = "0 0 0 * * *")
