@@ -1,4 +1,4 @@
-package com.example.bookclub.infra.study;
+package com.example.bookclub.repository.study;
 
 import com.example.bookclub.dto.StudyInfoResultDto;
 

@@ -1,4 +1,4 @@
-package com.example.bookclub.infra.account;
+package com.example.bookclub.repository.account;
 
 import com.example.bookclub.domain.Account;
 

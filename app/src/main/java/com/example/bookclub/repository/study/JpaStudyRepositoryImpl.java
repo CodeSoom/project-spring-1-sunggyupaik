@@ -1,4 +1,4 @@
-package com.example.bookclub.infra.study;
+package com.example.bookclub.repository.study;
 
 import com.example.bookclub.dto.QStudyAccountInfoResultDto;
 import com.example.bookclub.dto.QStudyInfoResultDto;
@@ -13,10 +13,10 @@ import java.util.Optional;
 import static com.example.bookclub.domain.QAccount.account;
 import static com.example.bookclub.domain.QStudy.study;
 
-public class StudyRepositoryImpl implements StudyRepositoryCustom {
+public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 
-	public StudyRepositoryImpl(JPAQueryFactory queryFactory) {
+	public JpaStudyRepositoryImpl(JPAQueryFactory queryFactory) {
 		this.queryFactory = queryFactory;
 	}
 
