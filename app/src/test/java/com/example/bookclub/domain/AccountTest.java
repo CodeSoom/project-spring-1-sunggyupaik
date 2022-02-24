@@ -3,6 +3,7 @@ package com.example.bookclub.domain;
 import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.infra.JpaAccountHistoryRepository;
 import com.example.bookclub.infra.JpaRoleRepository;
+import com.example.bookclub.infra.account.AccountRepositoryCustom;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -10,7 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class AccountTest {
 	@Autowired
-	private AccountRepository accountRepository;
+	private AccountRepositoryCustom accountRepository;
 
 	@Autowired
 	private JpaRoleRepository jpaRoleRepository;

@@ -2,7 +2,7 @@ package com.example.bookclub.application;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.AccountRepository;
+import com.example.bookclub.infra.account.AccountRepositoryCustom;
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.domain.RoleRepository;
@@ -157,7 +157,7 @@ public class StudyServiceTest {
 
 	private StudyService studyService;
 	private StudyRepositoryCustom studyRepository;
-	private AccountRepository accountRepository;
+	private AccountRepositoryCustom accountRepository;
 	private PasswordEncoder passwordEncoder;
 	private EmailAuthenticationRepository emailAuthenticationRepository;
 	private RoleRepository roleRepository;
@@ -169,7 +169,7 @@ public class StudyServiceTest {
     @BeforeEach
     void setUp() {
         studyRepository = mock(StudyRepositoryCustom.class);
-        accountRepository = mock(AccountRepository.class);
+        accountRepository = mock(AccountRepositoryCustom.class);
 		emailAuthenticationRepository = mock(EmailAuthenticationRepository.class);
 		roleRepository = mock(RoleRepository.class);
 		amazonS3 = mock(AmazonS3.class);

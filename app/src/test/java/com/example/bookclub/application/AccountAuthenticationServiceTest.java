@@ -1,7 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.AccountRepository;
+import com.example.bookclub.infra.account.AccountRepositoryCustom;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
@@ -42,13 +42,13 @@ class AccountAuthenticationServiceTest {
 	private UploadFile setupUploadFile;
 	private List<Role> roles;
 
-	private AccountRepository accountRepository;
+	private AccountRepositoryCustom accountRepository;
 	private RoleRepository roleRepository;
 	private AccountAuthenticationService accountAuthenticationService;
 
 	@BeforeEach
 	void setup() {
-		accountRepository = mock(AccountRepository.class);
+		accountRepository = mock(AccountRepositoryCustom.class);
 		roleRepository = mock(RoleRepository.class);
 		accountAuthenticationService = new AccountAuthenticationService(
 				roleRepository, accountRepository);
