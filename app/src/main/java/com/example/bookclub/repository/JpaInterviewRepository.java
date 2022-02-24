@@ -1,4 +1,4 @@
-package com.example.bookclub.infra;
+package com.example.bookclub.repository;
 
 import com.example.bookclub.domain.Interview;
 import com.example.bookclub.domain.InterviewRepository;

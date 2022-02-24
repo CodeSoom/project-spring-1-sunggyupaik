@@ -1,4 +1,4 @@
-package com.example.bookclub.infra.account;
+package com.example.bookclub.repository.account;
 
 import com.example.bookclub.domain.Account;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,10 +11,10 @@ import static com.example.bookclub.domain.QStudy.study;
 import static com.example.bookclub.domain.QUploadFile.uploadFile;
 
 @Repository
-public class AccountRepositoryImpl implements AccountRepositoryCustom {
+public class JpaAccountRepositoryImpl implements AccountRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
 
-	public AccountRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
+	public JpaAccountRepositoryImpl(JPAQueryFactory jpaQueryFactory) {
 		this.queryFactory = jpaQueryFactory;
 	}
 

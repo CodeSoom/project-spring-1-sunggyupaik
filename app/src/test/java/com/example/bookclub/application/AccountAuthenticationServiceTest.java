@@ -1,7 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.infra.account.AccountRepositoryCustom;
+import com.example.bookclub.repository.account.AccountRepositoryCustom;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;

@@ -2,12 +2,12 @@ package com.example.bookclub.application;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.infra.account.AccountRepositoryCustom;
+import com.example.bookclub.repository.account.AccountRepositoryCustom;
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
-import com.example.bookclub.infra.study.StudyRepositoryCustom;
+import com.example.bookclub.repository.study.StudyRepositoryCustom;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyCreateDto;

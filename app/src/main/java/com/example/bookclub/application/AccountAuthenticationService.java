@@ -1,11 +1,11 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.infra.account.AccountRepositoryCustom;
+import com.example.bookclub.repository.account.AccountRepositoryCustom;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
-import com.example.bookclub.infra.account.AccountRepository;
+import com.example.bookclub.repository.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,7 +25,7 @@ public class AccountAuthenticationService implements UserDetailsService {
     private final AccountRepositoryCustom accountRepository;
 
     public AccountAuthenticationService(RoleRepository roleRepository,
-                                        AccountRepository accountRepository) {
+                                        JpaAccountRepository accountRepository) {
         this.roleRepository = roleRepository;
         this.accountRepository = accountRepository;
     }

@@ -1,4 +1,4 @@
-package com.example.bookclub.infra;
+package com.example.bookclub.repository;
 
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
