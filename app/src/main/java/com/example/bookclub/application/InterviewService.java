@@ -1,7 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Interview;
-import com.example.bookclub.domain.InterviewRepository;
+import com.example.bookclub.repository.interview.InterviewRepositoryCustom;
 import com.example.bookclub.dto.InterviewResultDto;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -24,9 +24,9 @@ import java.util.Optional;
 @Service
 @Transactional
 public class InterviewService {
-    private final InterviewRepository interviewRepository;
+    private final InterviewRepositoryCustom interviewRepository;
 
-    public InterviewService(InterviewRepository interviewRepository) {
+    public InterviewService(InterviewRepositoryCustom interviewRepository) {
         this.interviewRepository = interviewRepository;
     }
 
