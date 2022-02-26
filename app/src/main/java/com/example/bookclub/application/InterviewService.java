@@ -120,7 +120,7 @@ public class InterviewService {
         return interview;
     }
 
-    public Page<InterviewResultDto> getInterviews(Pageable pageable) {
-        return interviewRepository.findAll(pageable);
+    public Page<InterviewResultDto> getInterviews(String search, Pageable pageable) {
+        return interviewRepository.findAllContainsTileOrContent(search, pageable);
     }
 }

@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 public interface InterviewRepositoryCustom {
-	Page<InterviewResultDto> findAll(Pageable pageable);
+	Page<InterviewResultDto> findAllContainsTileOrContent(String search, Pageable pageable);
 
 	Optional<Interview> findByTitle(String title);
 }

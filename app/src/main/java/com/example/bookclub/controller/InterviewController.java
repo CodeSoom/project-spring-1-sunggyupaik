@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/interviews")
@@ -26,10 +27,11 @@ public class InterviewController {
 
     @GetMapping
     public String interviewLists(@AuthenticationPrincipal UserAccount userAccount, Model model,
-                                 @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable) {
+                                 @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable,
+                                 @RequestParam(defaultValue = "") String search) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        Page<InterviewResultDto> page = interviewService.getInterviews(pageable);
+        Page<InterviewResultDto> page = interviewService.getInterviews(search, pageable);
         model.addAttribute("list", page.getContent());
         model.addAttribute("page", PageResultDto.of(page));
 
