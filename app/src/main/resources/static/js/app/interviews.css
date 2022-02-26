@@ -43,3 +43,12 @@ a, a:link, a:visited, a:hover {
     margin-bottom: 10px;
     font-size: 15px;
 }
+
+.input-box {
+    text-align: center;
+    padding: 20px;
+}
+.searchButton {
+    background-color: #1b5ac2;
+    color: white;
+}
