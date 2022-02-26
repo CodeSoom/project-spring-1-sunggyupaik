@@ -24,6 +24,7 @@ import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import com.example.bookclub.repository.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -220,7 +221,7 @@ public class StudyService {
         return StudyDetailResultDto.of(StudyResultDto.of(study), studyCommentResultDtos);
     }
 
-    public List<StudyResultDto> getStudiesBySearch(String keyword, Long principalId) {
+    public List<StudyResultDto> getStudiesBySearch(String keyword, Long principalId, Pageable pageable) {
         List<Study> studies = studyRepository.findByBookNameContaining(keyword);
         if(principalId == null) {
             return studies.stream()
@@ -242,7 +243,7 @@ public class StudyService {
                 .collect(Collectors.toList());
     }
 
-    public List<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account) {
+    public List<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account, Pageable pageable) {
         List<Study> studies = studyRepository.findByStudyState(studyState);
         if(account == null) {
             return studies.stream()
@@ -268,12 +269,12 @@ public class StudyService {
         return getStudies().size();
     }
 
-    public long countCloseStudies(Account account) {
-        return getStudiesByStudyState(StudyState.CLOSE, account).size();
+    public long countCloseStudies(Account account, Pageable pageable) {
+        return getStudiesByStudyState(StudyState.CLOSE, account, pageable).size();
     }
 
-    public long countEndStudies(Account account) {
-        return getStudiesByStudyState(StudyState.END, account).size();
+    public long countEndStudies(Account account, Pageable pageable) {
+        return getStudiesByStudyState(StudyState.END, account, pageable).size();
     }
 
     public StudyInfoResultDto getStudyInfo(Long id) {

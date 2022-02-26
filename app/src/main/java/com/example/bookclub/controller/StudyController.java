@@ -12,6 +12,9 @@ import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -91,32 +94,30 @@ public class StudyController {
     }
 
     @GetMapping("/open")
-    public String studyOpenList(@CurrentAccount Account account,
-                                @RequestParam(required = false) String keyword,
-                                Model model, @AuthenticationPrincipal UserAccount userAccount) {
+    public String studyOpenList(@CurrentAccount Account account, @RequestParam(required = false) String keyword,
+                                Model model, @AuthenticationPrincipal UserAccount userAccount,
+                                @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.OPEN, userAccount);
+        return getStudyList(model, keyword, StudyState.OPEN, userAccount, pageable);
     }
 
     @GetMapping("/close")
-    public String studyCloseList(@CurrentAccount Account account,
-                                 @RequestParam(required = false) String keyword,
-                                 Model model,
-                                 @AuthenticationPrincipal UserAccount userAccount) {
+    public String studyCloseList(@CurrentAccount Account account, @RequestParam(required = false) String keyword,
+                                 Model model, @AuthenticationPrincipal UserAccount userAccount,
+                                 @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.CLOSE, userAccount);
+        return getStudyList(model, keyword, StudyState.CLOSE, userAccount, pageable);
     }
 
     @GetMapping("/end")
-    public String studyEndList(@CurrentAccount Account account,
-                               @RequestParam(required = false) String keyword,
-                               Model model,
-                               @AuthenticationPrincipal UserAccount userAccount) {
+    public String studyEndList(@CurrentAccount Account account, @RequestParam(required = false) String keyword,
+                               Model model, @AuthenticationPrincipal UserAccount userAccount,
+                               @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.END, userAccount);
+        return getStudyList(model, keyword, StudyState.END, userAccount, pageable);
     }
 
     @GetMapping("/{id}/users")
@@ -143,15 +144,15 @@ public class StudyController {
     }
 
     private String getStudyList(Model model, String keyword, StudyState studyState,
-                                @AuthenticationPrincipal UserAccount userAccount) {
+                                @AuthenticationPrincipal UserAccount userAccount, Pageable pageable) {
         List<StudyResultDto> studyResultDto = null;
 
         if(keyword == null) {
-            studyResultDto = studyService.getStudiesByStudyState(studyState, userAccount.getAccount());
+            studyResultDto = studyService.getStudiesByStudyState(studyState, userAccount.getAccount(), pageable);
         }
 
         if (keyword != null) {
-            studyResultDto = studyService.getStudiesBySearch(keyword, userAccount.getAccount().getId())
+            studyResultDto = studyService.getStudiesBySearch(keyword, userAccount.getAccount().getId(), pageable)
                     .stream()
                     .filter(s -> s.getStudyState().equals(studyState))
                     .collect(Collectors.toList());
