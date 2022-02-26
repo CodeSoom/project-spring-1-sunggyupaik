@@ -1,17 +1,24 @@
 package com.example.bookclub.repository.study;
 
+import com.example.bookclub.domain.Study;
+import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.QStudyAccountInfoResultDto;
 import com.example.bookclub.dto.QStudyInfoResultDto;
 import com.example.bookclub.dto.StudyAccountInfoResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.errors.StudyNotFoundException;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.bookclub.domain.QAccount.account;
 import static com.example.bookclub.domain.QStudy.study;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 	private final JPAQueryFactory queryFactory;
@@ -37,6 +44,52 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 		studyInfoResultDto.setStudyAccountInfoResultDto(studyAccountInfoResultDto);
 
 		return studyInfoResultDto;
+	}
+
+	@Override
+	public Page<Study> findByBookNameContaining(String keyword, Pageable pageable) {
+		List<Study> content = queryFactory
+				.select(study)
+				.from(study)
+				.where(nameContains(keyword))
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize())
+				.orderBy(study.id.desc())
+				.fetch();
+
+		long total = queryFactory
+				.select(study)
+				.from(study)
+				.fetchCount();
+
+		return new PageImpl<>(content, pageable, total);
+	}
+
+	private BooleanExpression nameContains(String name) {
+		return isEmpty(name) ? null : study.name.contains(name);
+	}
+
+	@Override
+	public Page<Study> findByStudyState(StudyState studyState, Pageable pageable) {
+		List<Study> content = queryFactory
+				.select(study)
+				.from(study)
+				.where(studyStateEq(studyState))
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize())
+				.orderBy(study.id.desc())
+				.fetch();
+
+		long total = queryFactory
+				.select(study)
+				.from(study)
+				.fetchCount();
+
+		return new PageImpl<>(content, pageable, total);
+	}
+
+	private BooleanExpression studyStateEq(StudyState studyState) {
+		return isEmpty(studyState) ? null : study.studyState.eq(studyState);
 	}
 
 	private Optional<StudyInfoResultDto> getStudyInfoResultDto(Long id) {
