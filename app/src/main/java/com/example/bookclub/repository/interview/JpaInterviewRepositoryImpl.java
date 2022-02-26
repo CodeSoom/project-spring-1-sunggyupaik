@@ -3,6 +3,7 @@ package com.example.bookclub.repository.interview;
 import com.example.bookclub.domain.Interview;
 import com.example.bookclub.dto.InterviewResultDto;
 import com.example.bookclub.dto.QInterviewResultDto;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static com.example.bookclub.domain.QInterview.interview;
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @Repository
 public class JpaInterviewRepositoryImpl implements InterviewRepositoryCustom {
@@ -23,7 +25,7 @@ public class JpaInterviewRepositoryImpl implements InterviewRepositoryCustom {
 	}
 
 	@Override
-	public Page<InterviewResultDto> findAll(Pageable pageable) {
+	public Page<InterviewResultDto> findAllContainsTileOrContent(String search, Pageable pageable) {
 		List<InterviewResultDto> content = queryFactory
 				.select(new QInterviewResultDto(
 						interview.interviewUrl,
@@ -34,6 +36,7 @@ public class JpaInterviewRepositoryImpl implements InterviewRepositoryCustom {
 						interview.content
 				))
 				.from(interview)
+				.where(titleOrContentContains(search))
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
 				.fetch();
@@ -41,9 +44,22 @@ public class JpaInterviewRepositoryImpl implements InterviewRepositoryCustom {
 		long total = queryFactory
 				.select(interview)
 				.from(interview)
+				.where(titleOrContentContains(search))
 				.fetchCount();
 
 		return new PageImpl<>(content, pageable, total);
+	}
+
+	private BooleanExpression titleOrContentContains(String search) {
+		return titleContains(search).or(contentContains(search));
+	}
+
+	private BooleanExpression titleContains(String search) {
+		return isEmpty(search) ? null : interview.title.contains(search);
+	}
+
+	private BooleanExpression contentContains(String search) {
+		return isEmpty(search) ? null : interview.content.contains(search);
 	}
 
 	@Override
