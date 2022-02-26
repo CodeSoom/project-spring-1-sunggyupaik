@@ -24,6 +24,7 @@ import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
 import com.example.bookclub.repository.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -222,7 +223,7 @@ public class StudyService {
     }
 
     public List<StudyResultDto> getStudiesBySearch(String keyword, Long principalId, Pageable pageable) {
-        List<Study> studies = studyRepository.findByBookNameContaining(keyword);
+        Page<Study> studies = studyRepository.findByBookNameContaining(keyword, pageable);
         if(principalId == null) {
             return studies.stream()
                     .map(StudyResultDto::of)
@@ -244,7 +245,7 @@ public class StudyService {
     }
 
     public List<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account, Pageable pageable) {
-        List<Study> studies = studyRepository.findByStudyState(studyState);
+        Page<Study> studies = studyRepository.findByStudyState(studyState, pageable);
         if(account == null) {
             return studies.stream()
                     .map(StudyResultDto::of)

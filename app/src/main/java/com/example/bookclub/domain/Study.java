@@ -3,6 +3,7 @@ package com.example.bookclub.domain;
 import com.example.bookclub.common.BaseEntity;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -101,6 +102,7 @@ public class Study extends BaseEntity {
     private boolean isFavorite;
 
     @Builder
+    @QueryProjection
     public Study(Long id, String name, String bookName, String bookImage, String email, String description, String contact,
                  int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime, String endTime,
                  Day day, StudyState studyState, Zone zone, List<Account> accounts, List<StudyLike> studyLikes,
