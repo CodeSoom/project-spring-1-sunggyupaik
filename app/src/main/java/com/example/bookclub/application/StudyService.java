@@ -222,13 +222,13 @@ public class StudyService {
         return StudyDetailResultDto.of(StudyResultDto.of(study), studyCommentResultDtos);
     }
 
-    public List<StudyResultDto> getStudiesBySearch(String keyword, Long principalId, Pageable pageable) {
+    public Page<StudyResultDto> getStudiesBySearch(String keyword, Long principalId, Pageable pageable) {
         Page<Study> studies = studyRepository.findByBookNameContaining(keyword, pageable);
-        if(principalId == null) {
-            return studies.stream()
+/*        if(principalId == null) {
+            return (Page<StudyResultDto>) studies.stream()
                     .map(StudyResultDto::of)
                     .collect(Collectors.toList());
-        }
+        }*/
 
         studies.forEach(study -> {
             study.addLikesCount(study.getStudyLikes().size());
@@ -239,15 +239,15 @@ public class StudyService {
             });
         });
 
-        return studies.stream()
+        return (Page<StudyResultDto>) studies.stream()
                 .map(StudyResultDto::of)
                 .collect(Collectors.toList());
     }
 
-    public List<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account, Pageable pageable) {
+    public Page<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account, Pageable pageable) {
         Page<Study> studies = studyRepository.findByStudyState(studyState, pageable);
         if(account == null) {
-            return studies.stream()
+            return (Page<StudyResultDto>) studies.stream()
                     .map(StudyResultDto::of)
                     .collect(Collectors.toList());
         }
@@ -261,7 +261,7 @@ public class StudyService {
             });
         });
 
-        return studies.stream()
+        return (Page<StudyResultDto>) studies.stream()
                 .map(StudyResultDto::of)
                 .collect(Collectors.toList());
     }

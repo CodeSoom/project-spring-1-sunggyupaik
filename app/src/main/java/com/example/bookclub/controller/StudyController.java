@@ -7,11 +7,13 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.dto.PageResultDto;
 import com.example.bookclub.dto.StudyDetailResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -24,8 +26,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @Controller
 @RequestMapping("/studys")
@@ -94,12 +97,12 @@ public class StudyController {
     }
 
     @GetMapping("/open")
-    public String studyOpenList(@CurrentAccount Account account, @RequestParam(required = false) String keyword,
+    public String studyOpenList(@CurrentAccount Account account, @RequestParam(required = false) String title,
                                 Model model, @AuthenticationPrincipal UserAccount userAccount,
                                 @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable) {
         checkTopMenu(account, model);
 
-        return getStudyList(model, keyword, StudyState.OPEN, userAccount, pageable);
+        return getStudyList(model, title, StudyState.OPEN, userAccount, pageable);
     }
 
     @GetMapping("/close")
@@ -145,20 +148,21 @@ public class StudyController {
 
     private String getStudyList(Model model, String keyword, StudyState studyState,
                                 @AuthenticationPrincipal UserAccount userAccount, Pageable pageable) {
-        List<StudyResultDto> studyResultDto = null;
+        Page<StudyResultDto> page = null;
 
-        if(keyword == null) {
-            studyResultDto = studyService.getStudiesByStudyState(studyState, userAccount.getAccount(), pageable);
-        }
-
-        if (keyword != null) {
-            studyResultDto = studyService.getStudiesBySearch(keyword, userAccount.getAccount().getId(), pageable)
+        //검색이 없는 경우
+        if(isEmpty(keyword)) {
+            page = studyService.getStudiesByStudyState(studyState, userAccount.getAccount(), pageable);
+        //검색 문자열이 있는 경우
+        } else {
+            page = (Page<StudyResultDto>) studyService.getStudiesBySearch(keyword, userAccount.getAccount().getId(), pageable)
                     .stream()
                     .filter(s -> s.getStudyState().equals(studyState))
                     .collect(Collectors.toList());
         }
 
-        model.addAttribute("studys", studyResultDto);
+        model.addAttribute("studys", page);
+        model.addAttribute("page", PageResultDto.of(page));
         model.addAttribute("studyState", StudyState.getTitleFrom(studyState));
         model.addAttribute("studyStateCode", studyState.toString().toLowerCase());
 
