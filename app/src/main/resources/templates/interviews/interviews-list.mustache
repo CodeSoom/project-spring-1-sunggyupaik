@@ -12,15 +12,6 @@
 
         var totalPages = $(".totalPage").val();
         var next = $(".next").val();
-        // if(totalPages < next) {
-        //     $('.btn_next').hide();
-        //     $('.btn_last').hide();
-        // }
-
-/*        if(targetPage < 11) {
-            $('.btn_prev').hide();
-            $('.btn_first').hide();
-        }*/
     })
 </script>
 <div class="container-fluid" style="margin-top: 100px; text-align: center">
@@ -33,9 +24,12 @@
                     <input type="hidden" class="totalPages" value="">
                     <input type="hidden" class="next" value="">
                     <input type="hidden" class="previous" value="">
+                    <input type="hidden" name="search" class="name"
+                        {{#list}}{{#search}}value="{{.}}"{{/search}}{{/list}}{{^list}}value=""{{/list}}>
                 </form>
                 <div class="input-box">
-                    <input type="text" placeholder="검색어 입력" id="searchText">
+                    <label for="searchText"></label><input type="text" placeholder="검색어 입력" id="searchText"
+                    {{#list}}{{#search}}value="{{.}}"{{/search}}{{/list}}{{^list}}value=""{{/list}} />
                     <button id="btn-interview-search" class="searchButton" href="javascript:void(0)" onclick="search()">검색</button>
                 </div>
                 {{#adminAuthority}}

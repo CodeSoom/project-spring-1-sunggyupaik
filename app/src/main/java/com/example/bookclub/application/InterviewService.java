@@ -123,4 +123,8 @@ public class InterviewService {
     public Page<InterviewResultDto> getInterviews(String search, Pageable pageable) {
         return interviewRepository.findAllContainsTileOrContent(search, pageable);
     }
+
+    public Page<InterviewResultDto> getAllInterviews(Pageable pageable) {
+        return interviewRepository.findAll(pageable);
+    }
 }

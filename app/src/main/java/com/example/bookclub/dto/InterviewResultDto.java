@@ -23,7 +23,21 @@ public class InterviewResultDto {
 
 	private String content;
 
+	private String search;
+
 	@Builder
+	@QueryProjection
+	public InterviewResultDto(String interviewUrl, String imgUrl, String author,
+							  String title, LocalDate date, String content, String search) {
+		this.interviewUrl = interviewUrl;
+		this.imgUrl = imgUrl;
+		this.author = author;
+		this.title = title;
+		this.date = date;
+		this.content = content;
+		this.search = search;
+	}
+
 	@QueryProjection
 	public InterviewResultDto(String interviewUrl, String imgUrl, String author,
 							  String title, LocalDate date, String content) {
@@ -44,5 +58,21 @@ public class InterviewResultDto {
 				.date(interview.getDate())
 				.content(interview.getContent())
 				.build();
+	}
+
+	public static InterviewResultDto of(Interview interview, String search) {
+		return InterviewResultDto.builder()
+				.interviewUrl(interview.getInterviewUrl())
+				.imgUrl(interview.getImgUrl())
+				.author(interview.getAuthor())
+				.title(interview.getTitle())
+				.date(interview.getDate())
+				.content(interview.getContent())
+				.search(search)
+				.build();
+	}
+
+	public void setSearch(String search) {
+		this.search = search;
 	}
 }
