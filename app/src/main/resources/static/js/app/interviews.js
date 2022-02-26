@@ -19,3 +19,8 @@ function go_next() {
     document.frmList.submit();
 }
 
+function search() {
+    let search = $("#searchText").val();
+    window.location = "/interviews?search=" + search;
+}
+
