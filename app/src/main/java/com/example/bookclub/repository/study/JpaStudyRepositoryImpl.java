@@ -65,10 +65,6 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 		return new PageImpl<>(content, pageable, total);
 	}
 
-	private BooleanExpression nameContains(String name) {
-		return isEmpty(name) ? null : study.name.contains(name);
-	}
-
 	@Override
 	public Page<Study> findByStudyState(StudyState studyState, Pageable pageable) {
 		List<Study> content = queryFactory
@@ -88,10 +84,6 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 		return new PageImpl<>(content, pageable, total);
 	}
 
-	private BooleanExpression studyStateEq(StudyState studyState) {
-		return isEmpty(studyState) ? null : study.studyState.eq(studyState);
-	}
-
 	private Optional<StudyInfoResultDto> getStudyInfoResultDto(Long id) {
 		return Optional.ofNullable(queryFactory
 				.select(new QStudyInfoResultDto(
@@ -103,5 +95,28 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 				.where(study.id.eq(id))
 				.fetchOne()
 		);
+	}
+
+	@Override
+	public long getStudiesCount(StudyState studyState) {
+		return queryFactory
+				.selectFrom(study)
+				.where(studyStateEq(studyState))
+				.fetchCount();
+	}
+
+	@Override
+	public long getAllStudiesCount() {
+		return queryFactory
+				.selectFrom(study)
+				.fetchCount();
+	}
+
+	private BooleanExpression nameContains(String name) {
+		return isEmpty(name) ? null : study.name.contains(name);
+	}
+
+	private BooleanExpression studyStateEq(StudyState studyState) {
+		return isEmpty(studyState) ? null : study.studyState.eq(studyState);
 	}
 }

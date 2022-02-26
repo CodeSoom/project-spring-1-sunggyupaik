@@ -8,4 +8,6 @@ public interface AccountRepositoryCustom {
     Optional<Account> findById(Long id);
 
     Optional<Account> findByEmail(String email);
+
+	long getAllAccountsCount();
 }
