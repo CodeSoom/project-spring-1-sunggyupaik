@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,7 +41,7 @@ public class StudyResultDto {
 
     private String endTime;
 
-    private String day;
+    private Day day;
 
     private StudyState studyState;
 
@@ -55,10 +56,37 @@ public class StudyResultDto {
     private boolean isFavorite;
 
     @Builder
+    @QueryProjection
     public StudyResultDto(Long id, String name, String bookName, String bookImage, String email, String description,
-                          String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
-                          String endTime, String day, StudyState studyState, Zone zone, int likesCount, boolean liked,
-                          int commentsCount, boolean isFavorite) {
+                String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
+                String endTime, Day day, StudyState studyState, Zone zone, int likesCount, boolean liked,
+        int commentsCount, boolean isFavorite) {
+            this.id = id;
+            this.name = name;
+            this.bookName = bookName;
+            this.bookImage = bookImage;
+            this.email = email;
+        this.description = description;
+        this.contact = contact;
+        this.size = size;
+        this.applyCount = applyCount;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.day = day;
+        this.studyState = studyState;
+        this.zone = zone;
+        this.likesCount = likesCount;
+        this.liked = liked;
+        this.commentsCount = commentsCount;
+        this.isFavorite = isFavorite;
+    }
+
+    @QueryProjection
+    public StudyResultDto(Long id, String name, String bookName, String bookImage, String email, String description,
+                          String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate,
+                          String startTime, String endTime, Day day, StudyState studyState, Zone zone) {
         this.id = id;
         this.name = name;
         this.bookName = bookName;
@@ -75,10 +103,6 @@ public class StudyResultDto {
         this.day = day;
         this.studyState = studyState;
         this.zone = zone;
-        this.likesCount = likesCount;
-        this.liked = liked;
-        this.commentsCount = commentsCount;
-        this.isFavorite = isFavorite;
     }
 
     public static StudyResultDto of(Study study) {
@@ -100,7 +124,7 @@ public class StudyResultDto {
                 .endDate(study.getEndDate())
                 .startTime(study.getStartTime())
                 .endTime(study.getEndTime())
-                .day(Day.getTitleFrom(study.getDay()))
+                .day(study.getDay())
                 .studyState(study.getStudyState())
                 .zone(study.getZone())
                 .likesCount(study.getStudyLikes() == null ? 0 : study.getStudyLikes().size())

@@ -245,25 +245,23 @@ public class StudyService {
     }
 
     public Page<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account, Pageable pageable) {
-        Page<Study> studies = studyRepository.findByStudyState(studyState, pageable);
-        if(account == null) {
+        Page<StudyResultDto> studies = studyRepository.findByStudyState(studyState, pageable);
+/*        if(account == null) {
             return (Page<StudyResultDto>) studies.stream()
                     .map(StudyResultDto::of)
                     .collect(Collectors.toList());
-        }
+        }*/
 
-        studies.forEach(study -> {
+/*        studies.forEach(study -> {
             study.addLikesCount(study.getStudyLikes().size());
             study.getStudyLikes().forEach(like -> {
                 if(like.getAccount().getId().equals(account.getId())) {
                     study.addLiked();
                 }
             });
-        });
+        });*/
 
-        return (Page<StudyResultDto>) studies.stream()
-                .map(StudyResultDto::of)
-                .collect(Collectors.toList());
+        return studies;
     }
 
     public long countAllStudies() {
@@ -271,7 +269,6 @@ public class StudyService {
     }
 
     public StudyInfoResultDto getStudyInfo(Long id) {
-        System.out.println("getStudyInfo123123");
         return studyRepository.getStudyInfo(id);
     }
 
