@@ -1,8 +1,8 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Interview;
-import com.example.bookclub.repository.interview.InterviewRepositoryCustom;
 import com.example.bookclub.dto.InterviewResultDto;
+import com.example.bookclub.repository.interview.JpaInterviewRepository;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -24,9 +24,9 @@ import java.util.Optional;
 @Service
 @Transactional
 public class InterviewService {
-    private final InterviewRepositoryCustom interviewRepository;
+    private final JpaInterviewRepository interviewRepository;
 
-    public InterviewService(InterviewRepositoryCustom interviewRepository) {
+    public InterviewService(JpaInterviewRepository interviewRepository) {
         this.interviewRepository = interviewRepository;
     }
 
@@ -121,7 +121,6 @@ public class InterviewService {
     }
 
     public Page<InterviewResultDto> getInterviews(Pageable pageable) {
-        return interviewRepository.findAll(pageable)
-                .map(InterviewResultDto::of);
+        return interviewRepository.findAll(pageable);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.bookclub.repository.interview;
 
 import com.example.bookclub.domain.Interview;
+import com.example.bookclub.dto.InterviewResultDto;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +18,7 @@ public class JpaInterviewRepositoryImpl implements InterviewRepositoryCustom {
 	}
 
 	@Override
-	public Page<Interview> findAll(Pageable pageable) {
+	public Page<InterviewResultDto> findAll(Pageable pageable) {
 		return null;
 	}
 

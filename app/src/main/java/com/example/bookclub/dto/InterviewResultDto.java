@@ -1,16 +1,14 @@
 package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.Interview;
-import lombok.AccessLevel;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.time.LocalDate;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
 public class InterviewResultDto {
 	private String interviewUrl;
@@ -26,6 +24,7 @@ public class InterviewResultDto {
 	private String content;
 
 	@Builder
+	@QueryProjection
 	public InterviewResultDto(String interviewUrl, String imgUrl, String author,
 							  String title, LocalDate date, String content) {
 		this.interviewUrl = interviewUrl;
