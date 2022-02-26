@@ -1,6 +1,5 @@
 package com.example.bookclub.repository.interview;
 
-import com.example.bookclub.domain.Interview;
 import com.example.bookclub.dto.InterviewResultDto;
 import com.example.bookclub.dto.QInterviewResultDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -11,7 +10,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 import static com.example.bookclub.domain.QInterview.interview;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
@@ -41,10 +39,36 @@ public class JpaInterviewRepositoryImpl implements InterviewRepositoryCustom {
 				.limit(pageable.getPageSize())
 				.fetch();
 
+		content.forEach(o -> o.setSearch(search));
+
 		long total = queryFactory
 				.select(interview)
 				.from(interview)
 				.where(titleOrContentContains(search))
+				.fetchCount();
+
+		return new PageImpl<>(content, pageable, total);
+	}
+
+	@Override
+	public Page<InterviewResultDto> findAll(Pageable pageable) {
+		List<InterviewResultDto> content = queryFactory
+				.select(new QInterviewResultDto(
+						interview.interviewUrl,
+						interview.imgUrl,
+						interview.author,
+						interview.title,
+						interview.date,
+						interview.content
+				))
+				.from(interview)
+				.offset(pageable.getOffset())
+				.limit(pageable.getPageSize())
+				.fetch();
+
+		long total = queryFactory
+				.select(interview)
+				.from(interview)
 				.fetchCount();
 
 		return new PageImpl<>(content, pageable, total);
@@ -60,10 +84,5 @@ public class JpaInterviewRepositoryImpl implements InterviewRepositoryCustom {
 
 	private BooleanExpression contentContains(String search) {
 		return isEmpty(search) ? null : interview.content.contains(search);
-	}
-
-	@Override
-	public Optional<Interview> findByTitle(String title) {
-		return Optional.empty();
 	}
 }

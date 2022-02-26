@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static org.apache.commons.lang3.ObjectUtils.isEmpty;
+
 @Controller
 @RequestMapping("/interviews")
 public class InterviewController {
@@ -31,7 +33,13 @@ public class InterviewController {
                                  @RequestParam(defaultValue = "") String search) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        Page<InterviewResultDto> page = interviewService.getInterviews(search, pageable);
+        Page<InterviewResultDto> page = null;
+        if(isEmpty(search)) {
+            page = interviewService.getAllInterviews(pageable);
+        } else {
+            page = interviewService.getInterviews(search, pageable);
+        }
+
         model.addAttribute("list", page.getContent());
         model.addAttribute("page", PageResultDto.of(page));
 
