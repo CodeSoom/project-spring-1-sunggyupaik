@@ -5,6 +5,40 @@
     }
 </style>
 <script>
+    $(document).ready(function(){
+        $(".page").val({{page.currentPage}});
+        $(".previous").val({{page.previous}});
+        $(".next").val({{page.next}});
+        $(".totalPages").val({{page.totalPages}});
+
+        var targetPage = $(".page").val();
+        $('.page' + targetPage).html('<strong>' + targetPage + '</strong>');
+
+        var totalPages = $(".totalPage").val();
+        var next = $(".next").val();
+    })
+
+    function go_targetPage(num) {
+        document.frmList.target = '';
+        document.frmList.page.value = num - 1;
+        document.frmList.action = "/interviews";
+        document.frmList.submit();
+    }
+
+    function go_previous() {
+        document.frmList.target = '';
+        document.frmList.page.value = $(".previous").val() -1;
+        document.frmList.action = "/interviews";
+        document.frmList.submit();
+    }
+
+    function go_next() {
+        document.frmList.target = '';
+        document.frmList.page.value = $(".next").val() -1;
+        document.frmList.action = "/interviews";
+        document.frmList.submit();
+    }
+
     function toggleLike(likeId, likeCountId, id) {
         let likeIcon = $("#"+likeId+id);
         let likeCount = $("#"+likeCountId+id);
@@ -44,6 +78,14 @@
 </script>
 <div class="container-fluid" style="margin-top: 100px">
     <div class="row">
+        <form name="frmList" method="get">
+            <input type="hidden" name="page" class="page" value="">
+            <input type="hidden" class="totalPages" value="">
+            <input type="hidden" class="next" value="">
+            <input type="hidden" class="previous" value="">
+            <input type="hidden" name="search" class="name"
+                {{#list}}{{#search}}value="{{.}}"{{/search}}{{/list}}{{^list}}value=""{{/list}}>
+        </form>
         <div class="col-md-2">
             <div class="panel panel-info">
                 <ul class="list-group">
@@ -101,6 +143,25 @@
                     {{/studys}}
                     </tbody>
                 </table>
+                <div class="list_paging">
+                    <a class="btn_first" href="javascript:void(0)" onclick="go_targetPage('0')">
+                        <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_prev10.gif" alt="처음">
+                    </a>
+                    <a class="btn_prev" href="javascript:void(0)" onclick="go_previous()">
+                        <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_prev.gif" alt="이전">
+                    </a>
+                    {{#page.pageNumbers}}
+                        <a class="page{{.}}" href="javascript:void(0)" onclick="go_targetPage('{{.}}')">
+                            {{.}}
+                        </a>
+                    {{/page.pageNumbers}}
+                    <a class="btn_next" href="javascript:void(0)" onclick="go_next()">
+                        <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_next.gif" alt="이후">
+                    </a>
+                    <a class="btn_last" href="javascript:void(0)" onclick="go_targetPage('{{page.totalPages}}')">
+                        <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_next10.gif" alt="마지막">
+                    </a>
+                </div>
             </div>
         </div>
     </div>
