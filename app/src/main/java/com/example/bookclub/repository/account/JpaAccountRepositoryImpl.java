@@ -43,4 +43,11 @@ public class JpaAccountRepositoryImpl implements AccountRepositoryCustom {
 						.fetchOne()
 		);
 	}
+
+	@Override
+	public long getAllAccountsCount() {
+		return queryFactory
+				.selectFrom(account)
+				.fetchCount();
+	}
 }

@@ -12,4 +12,8 @@ public interface StudyRepositoryCustom {
     Page<Study> findByBookNameContaining(String keyword, Pageable pageable);
 
     Page<Study> findByStudyState(StudyState studyState, Pageable pageable);
+
+    long getStudiesCount(StudyState studyState);
+
+    long getAllStudiesCount();
 }

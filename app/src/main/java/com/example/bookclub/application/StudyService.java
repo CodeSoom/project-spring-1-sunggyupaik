@@ -270,14 +270,6 @@ public class StudyService {
         return getStudies().size();
     }
 
-    public long countCloseStudies(Account account, Pageable pageable) {
-        return getStudiesByStudyState(StudyState.CLOSE, account, pageable).size();
-    }
-
-    public long countEndStudies(Account account, Pageable pageable) {
-        return getStudiesByStudyState(StudyState.END, account, pageable).size();
-    }
-
     public StudyInfoResultDto getStudyInfo(Long id) {
         System.out.println("getStudyInfo123123");
         return studyRepository.getStudyInfo(id);
@@ -311,5 +303,13 @@ public class StudyService {
                 study.changeCloseToEnd();
             }
         });
+    }
+
+    public long getStudiesCount(StudyState studyState) {
+        return studyRepository.getStudiesCount(studyState);
+    }
+
+    public long getAllStudiesCount() {
+        return studyRepository.getAllStudiesCount();
     }
 }

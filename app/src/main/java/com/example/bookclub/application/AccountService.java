@@ -142,10 +142,6 @@ public class AccountService {
         return accountRepository.existsByIdNotAndNickname(id, nickname);
     }
 
-    public long countAllAccounts() {
-        return accountRepository.findAll().size();
-    }
-
     public AccountResultDto updatePassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
         Account account = findUser(id);
 
@@ -163,5 +159,9 @@ public class AccountService {
         account.updatePassword(accountUpdatePasswordDto.getNewPassword(), passwordEncoder);
 
         return AccountResultDto.of(account);
+    }
+
+    public long getAllAccountsCount() {
+        return accountRepository.getAllAccountsCount();
     }
 }

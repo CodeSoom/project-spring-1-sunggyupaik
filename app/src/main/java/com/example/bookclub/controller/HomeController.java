@@ -4,6 +4,7 @@ import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.application.AccountAuthenticationService;
+import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -33,20 +34,16 @@ public class HomeController {
             checkTopMenu(account, model);
         }
 
-        long allAccountsCount = accountService.countAllAccounts();
+        long allAccountsCount = accountService.getAllAccountsCount();
         model.addAttribute("allAccountsCount", allAccountsCount);
 
-        long allStudiesCount = studyService.countAllStudies();
+        long allStudiesCount = studyService.getAllStudiesCount();
         model.addAttribute("allStudiesCount", allStudiesCount);
 
-        long allCloseStudiesCount = 0;
-        if(userAccount == null) studyService.countCloseStudies(null);
-        else studyService.countCloseStudies(userAccount.getAccount());
+        long allCloseStudiesCount = studyService.getStudiesCount(StudyState.CLOSE);
         model.addAttribute("allCloseStudiesCount", allCloseStudiesCount);
 
-        long allEndStudiesCount = 0;
-        if(userAccount == null) studyService.countEndStudies(null);
-        else studyService.countEndStudies(userAccount.getAccount());
+        long allEndStudiesCount = studyService.getStudiesCount(StudyState.END);
         model.addAttribute("allEndStudiesCount", allEndStudiesCount);
 
         return "index";
