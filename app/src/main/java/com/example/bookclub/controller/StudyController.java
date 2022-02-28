@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.stream.Collectors;
-
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @Controller
@@ -148,21 +146,18 @@ public class StudyController {
 
     private String getStudyList(Model model, String keyword, StudyState studyState,
                                 @AuthenticationPrincipal UserAccount userAccount, Pageable pageable) {
-        Page<StudyResultDto> page = null;
+        Page<StudyResultDto> studyResultDtos = null;
 
         //검색이 없는 경우
         if(isEmpty(keyword)) {
-            page = studyService.getStudiesByStudyState(studyState, userAccount.getAccount(), pageable);
+            studyResultDtos = studyService.getStudiesByStudyState(studyState, userAccount.getAccount(), pageable);
         //검색 문자열이 있는 경우
         } else {
-            page = (Page<StudyResultDto>) studyService.getStudiesBySearch(keyword, userAccount.getAccount().getId(), pageable)
-                    .stream()
-                    .filter(s -> s.getStudyState().equals(studyState))
-                    .collect(Collectors.toList());
+            studyResultDtos = studyService.getStudiesBySearch(keyword, studyState, userAccount.getAccount().getId(), pageable);
         }
 
-        model.addAttribute("studys", page);
-        model.addAttribute("page", PageResultDto.of(page));
+        model.addAttribute("studys", studyResultDtos);
+        model.addAttribute("page", PageResultDto.of(studyResultDtos));
         model.addAttribute("studyState", StudyState.getTitleFrom(studyState));
         model.addAttribute("studyStateCode", studyState.toString().toLowerCase());
 

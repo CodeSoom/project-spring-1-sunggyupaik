@@ -94,6 +94,13 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 				.selectFrom(study)
 				.fetchCount();
 	}
+	@Override
+	public long getStudiesCountByKeyword(String keyword, StudyState studyState) {
+		return queryFactory
+				.selectFrom(study)
+				.where(nameContains(keyword), studyStateEq(studyState))
+				.fetchCount();
+	}
 
 	private BooleanExpression nameContains(String name) {
 		return isEmpty(name) ? null : study.name.contains(name);
