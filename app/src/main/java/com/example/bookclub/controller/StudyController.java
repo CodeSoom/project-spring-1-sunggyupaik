@@ -144,16 +144,16 @@ public class StudyController {
         }
     }
 
-    private String getStudyList(Model model, String keyword, StudyState studyState,
+    private String getStudyList(Model model, String title, StudyState studyState,
                                 @AuthenticationPrincipal UserAccount userAccount, Pageable pageable) {
         Page<StudyResultDto> studyResultDtos = null;
 
         //검색이 없는 경우
-        if(isEmpty(keyword)) {
+        if(isEmpty(title)) {
             studyResultDtos = studyService.getStudiesByStudyState(studyState, userAccount.getAccount(), pageable);
         //검색 문자열이 있는 경우
         } else {
-            studyResultDtos = studyService.getStudiesBySearch(keyword, studyState, userAccount.getAccount().getId(), pageable);
+            studyResultDtos = studyService.getStudiesBySearch(title, studyState, userAccount.getAccount().getId(), pageable);
         }
 
         model.addAttribute("studys", studyResultDtos);
