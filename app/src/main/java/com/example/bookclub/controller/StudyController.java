@@ -8,6 +8,7 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.PageResultDto;
+import com.example.bookclub.dto.StudyCreateInfoDto;
 import com.example.bookclub.dto.StudyDetailResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.dto.StudyResultDto;
@@ -69,11 +70,13 @@ public class StudyController {
                             @RequestParam(defaultValue = "") String bookImage,
                             Model model) {
         checkTopMenu(account, model);
-        model.addAttribute("bookName", bookName);
-        model.addAttribute("bookImage", bookImage);
-        model.addAttribute("day", Day.getAllDays());
-        model.addAttribute("studyState", StudyState.getAllStudyStates());
-        model.addAttribute("zone", Zone.getAllZones());
+
+        StudyCreateInfoDto studyCreateInfoDto = StudyCreateInfoDto.of(
+                bookName, bookImage, Day.getAllDays(), StudyState.getAllStudyStates(), Zone.getAllZones()
+        );
+
+        model.addAttribute("StudyCreateInfoDto", studyCreateInfoDto);
+
         return "studys/studys-save";
     }
 
