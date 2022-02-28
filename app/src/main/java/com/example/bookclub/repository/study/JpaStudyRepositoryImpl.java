@@ -92,7 +92,7 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 	}
 
 	private BooleanBuilder nameContains(String name) {
-		return isEmpty(name) ? new BooleanBuilder() : new BooleanBuilder(study.name.contains(name));
+		return isEmpty(name) ? new BooleanBuilder() : new BooleanBuilder(study.bookName.contains(name));
 	}
 
 	private BooleanBuilder studyStateEq(StudyState studyState) {
