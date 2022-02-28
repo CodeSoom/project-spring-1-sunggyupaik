@@ -4,7 +4,6 @@ import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.dto.EmailRequestDto;
 import com.example.bookclub.errors.EmailBadRequestException;
-import com.example.bookclub.errors.MessageCreateBadRequestException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -59,7 +58,7 @@ public class EmailService {
             System.out.println("BookClub 인증번호=" + authenticationNumber);
         } catch(MessagingException ex) {
             System.out.println(ex.getMessage());
-            throw new MessageCreateBadRequestException();
+//            throw new MessageCreateBadRequestException();
         }
 
         return message;
