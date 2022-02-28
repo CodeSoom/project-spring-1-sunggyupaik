@@ -7,7 +7,7 @@ import com.example.bookclub.dto.QStudyInfoResultDto;
 import com.example.bookclub.dto.StudyAccountInfoResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.errors.StudyNotFoundException;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
 
@@ -45,22 +45,11 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 	}
 
 	@Override
-	public List<Study> findByBookNameContaining(String keyword, Pageable pageable) {
+	public List<Study> findByBookNameContaining(String keyword, StudyState studyState, Pageable pageable) {
 		return queryFactory
 				.select(study)
 				.from(study)
-				.where(nameContains(keyword))
-				.offset(pageable.getOffset())
-				.limit(pageable.getPageSize())
-				.orderBy(study.id.desc())
-				.fetch();
-	}
-
-	@Override
-	public List<Study> findByStudyState(StudyState studyState, Pageable pageable) {
-		return queryFactory
-				.selectFrom(study)
-				.where(studyStateEq(studyState))
+				.where(nameContains(keyword).and(studyStateEq(studyState)))
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
 				.orderBy(study.id.desc())
@@ -102,11 +91,11 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 				.fetchCount();
 	}
 
-	private BooleanExpression nameContains(String name) {
-		return isEmpty(name) ? null : study.name.contains(name);
+	private BooleanBuilder nameContains(String name) {
+		return isEmpty(name) ? new BooleanBuilder() : new BooleanBuilder(study.name.contains(name));
 	}
 
-	private BooleanExpression studyStateEq(StudyState studyState) {
-		return isEmpty(studyState) ? null : study.studyState.eq(studyState);
+	private BooleanBuilder studyStateEq(StudyState studyState) {
+		return isEmpty(studyState) ? new BooleanBuilder() : new BooleanBuilder(study.studyState.eq(studyState));
 	}
 }

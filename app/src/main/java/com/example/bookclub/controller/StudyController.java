@@ -26,8 +26,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import static org.apache.commons.lang3.ObjectUtils.isEmpty;
-
 @Controller
 @RequestMapping("/studys")
 public class StudyController {
@@ -148,13 +146,7 @@ public class StudyController {
                                 @AuthenticationPrincipal UserAccount userAccount, Pageable pageable) {
         Page<StudyResultDto> studyResultDtos = null;
 
-        //검색이 없는 경우
-        if(isEmpty(title)) {
-            studyResultDtos = studyService.getStudiesByStudyState(studyState, userAccount.getAccount(), pageable);
-        //검색 문자열이 있는 경우
-        } else {
-            studyResultDtos = studyService.getStudiesBySearch(title, studyState, userAccount.getAccount().getId(), pageable);
-        }
+        studyResultDtos = studyService.getStudiesBySearch(title, studyState, userAccount.getAccount().getId(), pageable);
 
         model.addAttribute("studys", studyResultDtos);
         model.addAttribute("page", PageResultDto.of(studyResultDtos));

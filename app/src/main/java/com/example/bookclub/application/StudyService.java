@@ -224,33 +224,13 @@ public class StudyService {
     }
 
     public Page<StudyResultDto> getStudiesBySearch(String keyword, StudyState studyState, Long principalId, Pageable pageable) {
-        List<Study> studies = studyRepository.findByBookNameContaining(keyword, pageable);
+        List<Study> studies = studyRepository.findByBookNameContaining(keyword, studyState, pageable);
         long total = studyRepository.getStudiesCountByKeyword(keyword, studyState);
 
         studies.forEach(study -> {
             study.addLikesCount(study.getStudyLikes().size());
             study.getStudyLikes().forEach(studyLike -> {
                 if(studyLike.getAccount().getId().equals(principalId)) {
-                    study.addLiked();
-                }
-            });
-        });
-
-        List<StudyResultDto> studyResultDtos = studies.stream()
-                .map(StudyResultDto::of)
-                .collect(Collectors.toList());
-
-        return new PageImpl<>(studyResultDtos, pageable, total);
-    }
-
-    public Page<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account, Pageable pageable) {
-        List<Study> studies = studyRepository.findByStudyState(studyState, pageable);
-        long total = studyRepository.getStudiesCount(studyState);
-
-        studies.forEach(study -> {
-            study.addLikesCount(study.getStudyLikes().size());
-            study.getStudyLikes().forEach(like -> {
-                if(like.getAccount().getId().equals(account.getId())) {
                     study.addLiked();
                 }
             });

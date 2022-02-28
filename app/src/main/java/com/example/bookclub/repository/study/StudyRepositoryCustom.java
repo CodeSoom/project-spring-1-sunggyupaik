@@ -10,9 +10,7 @@ import java.util.List;
 public interface StudyRepositoryCustom {
     StudyInfoResultDto getStudyInfo(Long id);
 
-    List<Study> findByBookNameContaining(String keyword, Pageable pageable);
-
-    List<Study> findByStudyState(StudyState studyState, Pageable pageable);
+    List<Study> findByBookNameContaining(String keyword, StudyState studyState, Pageable pageable);
 
     long getStudiesCount(StudyState studyState);
 
