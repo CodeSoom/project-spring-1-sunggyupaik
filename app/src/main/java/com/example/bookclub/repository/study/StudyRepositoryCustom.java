@@ -16,5 +16,7 @@ public interface StudyRepositoryCustom {
 
     long getStudiesCount(StudyState studyState);
 
+    long getStudiesCountByKeyword(String keyword, StudyState studyState);
+
     long getAllStudiesCount();
 }
