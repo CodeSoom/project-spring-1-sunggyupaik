@@ -131,7 +131,7 @@
                             <td class="text-center d-none d-md-table-cell"><a href='/studys/{{id}}'>{{name}}</a></td>
                             <td class="text-center d-none d-md-table-cell">{{bookName}}</td>
                             <td class="text-center d-none d-md-table-cell">{{applyCount}} / {{size}}</td>
-                            <td class="text-center d-none d-md-table-cell">{{startDate}} {{startTime}}({{day}})</td>
+                            <td class="text-center d-none d-md-table-cell">{{startDate}} {{startTime}}({{day.title}})</td>
                             <td class="text-center d-none d-md-table-cell" style="text-align: center;">
                                 <div>
                                     <i class="{{#liked}}fas{{/liked}} {{^liked}}far{{/liked}} fa-heart" id="studyLike{{id}}"
@@ -143,7 +143,7 @@
                     {{/studys}}
                     </tbody>
                 </table>
-                <div class="list_paging">
+                <div class="list_paging"  style="text-align: center;">
                     <a class="btn_first" href="javascript:void(0)" onclick="go_targetPage('0')">
                         <img src="http://image.kyobobook.co.kr/new_ink/booknews/FRONT/images/common/pg_prev10.gif" alt="처음">
                     </a>
