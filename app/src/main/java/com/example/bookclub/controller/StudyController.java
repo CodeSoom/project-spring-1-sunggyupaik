@@ -11,6 +11,7 @@ import com.example.bookclub.dto.PageResultDto;
 import com.example.bookclub.dto.StudyCreateInfoDto;
 import com.example.bookclub.dto.StudyDetailResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
+import com.example.bookclub.dto.StudyListInfoDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateInfoDto;
 import com.example.bookclub.security.CurrentAccount;
@@ -144,14 +145,14 @@ public class StudyController {
 
     private String getStudyList(Model model, String title, StudyState studyState,
                                 @AuthenticationPrincipal UserAccount userAccount, Pageable pageable) {
-        Page<StudyResultDto> studyResultDtos = null;
+        Page<StudyResultDto> studyResultDto = null;
 
-        studyResultDtos = studyService.getStudiesBySearch(title, studyState, userAccount.getAccount().getId(), pageable);
+        studyResultDto = studyService.getStudiesBySearch(title, studyState, userAccount.getAccount().getId(), pageable);
 
-        model.addAttribute("studys", studyResultDtos);
-        model.addAttribute("page", PageResultDto.of(studyResultDtos));
-        model.addAttribute("studyState", StudyState.getTitleFrom(studyState));
-        model.addAttribute("studyStateCode", studyState.toString().toLowerCase());
+        StudyListInfoDto studyListInfoDto = StudyListInfoDto.of(studyResultDto, studyState, title);
+
+        model.addAttribute("StudyListInfoDto", studyListInfoDto);
+        model.addAttribute("page", PageResultDto.of(studyResultDto));
 
         return "studys/studys-list";
     }
