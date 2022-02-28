@@ -25,6 +25,17 @@ public enum Day implements EnumMapperType {
                 .collect(Collectors.toList());
     }
 
+    public static Day getDay(Day day) {
+        return Arrays.stream(Day.values())
+                .filter(d -> d.getCode().equals(day.getCode()))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format("%s는 요일 형식에 맞지 않습니다.", day.toString())
+                        )
+                );
+    }
+
     public static List<EnumMapperValue> getAllDaysSelectedWith(Day day) {
         return Arrays.stream(Day.values())
                 .map(enumMapperType -> {

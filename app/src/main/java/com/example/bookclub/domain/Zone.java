@@ -22,7 +22,7 @@ public enum Zone implements EnumMapperType {
                 .collect(Collectors.toList());
     }
 
-    public static Object getAllZonesSelectedWith(Zone zone) {
+    public static List<EnumMapperValue> getAllZonesSelectedWith(Zone zone) {
         return Arrays.stream(Zone.values())
                 .map(enumMapperType -> {
                     if(enumMapperType.getCode().equals(zone.toString())) {
@@ -41,6 +41,17 @@ public enum Zone implements EnumMapperType {
     @Override
     public String getTitle() {
         return this.zone;
+    }
+
+    public static Zone getZone(Zone zone) {
+        return Arrays.stream(Zone.values())
+                .filter(d -> d.getCode().equals(zone.getCode()))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format("%s는 지역 형식에 맞지 않습니다.", zone.toString())
+                        )
+                );
     }
 
     public static String getTitleFrom(Object object) {

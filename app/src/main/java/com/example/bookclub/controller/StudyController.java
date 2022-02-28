@@ -8,9 +8,12 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.PageResultDto;
+import com.example.bookclub.dto.StudyCreateInfoDto;
 import com.example.bookclub.dto.StudyDetailResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
+import com.example.bookclub.dto.StudyListInfoDto;
 import com.example.bookclub.dto.StudyResultDto;
+import com.example.bookclub.dto.StudyUpdateInfoDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.data.domain.Page;
@@ -44,20 +47,17 @@ public class StudyController {
         checkTopMenu(userAccount.getAccount(), model);
 
         StudyDetailResultDto detailedStudy = studyService.getDetailedStudy(userAccount, id);
-        Study study = studyService.getStudy(id);
         model.addAttribute("detailedStudy", detailedStudy);
-        model.addAttribute("day", Day.getTitleFrom(study.getDay()));
-        model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
-        model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
 
+        Study study = studyService.getStudy(id);
         if (study.isAlreadyStarted() || study.isNotOpened()) {
             return "studys/studys-detail";
         }
         if (userAccount.getAccount().isMangerOf(study)) {
-            model.addAttribute("studyAdmin", "true");
+            model.addAttribute("studyManage", "true");
         }
         if (userAccount.getAccount().isApplierOf(study)) {
-            model.addAttribute("studyApplier", "true");
+            model.addAttribute("studyApply", "true");
         }
 
         return "studys/studys-detail";
@@ -69,11 +69,13 @@ public class StudyController {
                             @RequestParam(defaultValue = "") String bookImage,
                             Model model) {
         checkTopMenu(account, model);
-        model.addAttribute("bookName", bookName);
-        model.addAttribute("bookImage", bookImage);
-        model.addAttribute("day", Day.getAllDays());
-        model.addAttribute("studyState", StudyState.getAllStudyStates());
-        model.addAttribute("zone", Zone.getAllZones());
+
+        StudyCreateInfoDto studyCreateInfoDto = StudyCreateInfoDto.of(
+                bookName, bookImage, Day.getAllDays(), StudyState.getAllStudyStates(), Zone.getAllZones()
+        );
+
+        model.addAttribute("StudyCreateInfoDto", studyCreateInfoDto);
+
         return "studys/studys-save";
     }
 
@@ -81,14 +83,13 @@ public class StudyController {
     @GetMapping("/update/{id}")
     public String studyUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {
-        Study study = studyService.getStudy(id);
-
         checkTopMenu(userAccount.getAccount(), model);
 
-        model.addAttribute("study", study);
-        model.addAttribute("day", Day.getAllDaysSelectedWith(study.getDay()));
-        model.addAttribute("studyState", StudyState.getAllStudyStatesSelectedWith(study.getStudyState()));
-        model.addAttribute("zone", Zone.getAllZonesSelectedWith(study.getZone()));
+        Study study = studyService.getStudy(id);
+
+        StudyUpdateInfoDto studyUpdateInfoDto = StudyUpdateInfoDto.of(study);
+        model.addAttribute("StudyUpdateInfoDto", studyUpdateInfoDto);
+
         return "studys/studys-update";
     }
 
@@ -144,14 +145,14 @@ public class StudyController {
 
     private String getStudyList(Model model, String title, StudyState studyState,
                                 @AuthenticationPrincipal UserAccount userAccount, Pageable pageable) {
-        Page<StudyResultDto> studyResultDtos = null;
+        Page<StudyResultDto> studyResultDto = null;
 
-        studyResultDtos = studyService.getStudiesBySearch(title, studyState, userAccount.getAccount().getId(), pageable);
+        studyResultDto = studyService.getStudiesBySearch(title, studyState, userAccount.getAccount().getId(), pageable);
 
-        model.addAttribute("studys", studyResultDtos);
-        model.addAttribute("page", PageResultDto.of(studyResultDtos));
-        model.addAttribute("studyState", StudyState.getTitleFrom(studyState));
-        model.addAttribute("studyStateCode", studyState.toString().toLowerCase());
+        StudyListInfoDto studyListInfoDto = StudyListInfoDto.of(studyResultDto, studyState, title);
+
+        model.addAttribute("StudyListInfoDto", studyListInfoDto);
+        model.addAttribute("page", PageResultDto.of(studyResultDto));
 
         return "studys/studys-list";
     }

@@ -42,6 +42,17 @@ public enum StudyState implements EnumMapperType {
         return this.studyState;
     }
 
+    public static StudyState getStudyState(StudyState studyState) {
+        return Arrays.stream(StudyState.values())
+                .filter(d -> d.getCode().equals(studyState.getCode()))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalArgumentException(
+                                String.format("%s는 스터디 상태 형식에 맞지 않습니다.", studyState.toString())
+                        )
+                );
+    }
+
     public static String getTitleFrom(Object object) {
         StudyState studyState = (StudyState) object;
         return Arrays.stream(StudyState.values())

@@ -84,7 +84,7 @@
             <input type="hidden" class="next" value="">
             <input type="hidden" class="previous" value="">
             <input type="hidden" name="search" class="name"
-                {{#list}}{{#search}}value="{{.}}"{{/search}}{{/list}}{{^list}}value=""{{/list}}>
+                {{#StudyListInfoDto.search}}value="{{StudyListInfoDto.search}}"{{/StudyListInfoDto.search}}>
         </form>
         <div class="col-md-2">
             <div class="panel panel-info">
@@ -93,8 +93,9 @@
                     <li class="list-group-item"><a href="/studys/close">진행중</a></li>
                     <li class="list-group-item"><a href="/studys/end">종료</a></li>
                     <li class="list-group-item">
-                        <form class="navbar-form pull-left" action="/studys/{{studyStateCode}}" method="get">
-                            <label for="title"></label><input type="text" id="title" name="title" placeholder="책 제목을 입력하세요">
+                        <form class="navbar-form pull-left" action="/studys/{{StudyListInfoDto.searchStudyStateCode}}" method="get">
+                            <label for="title"></label><input type="text" id="title" name="title" placeholder="책 제목을 입력하세요"
+                          {{#StudyListInfoDto.search}}value="{{StudyListInfoDto.search}}"{{/StudyListInfoDto.search}}>
                             <button type="submit" class="btn btn-primary btn-sm">검색</button>
                         </form>
                     </li>
@@ -104,12 +105,7 @@
         <div class="card shadow col-md-9" style="min-height:600px;">
             <div class="card-body">
                 <h4 class="card-title">
-                    {{#keyword}}
-                        {{studyState}}<br><{{.}}>
-                    {{/keyword}}
-                    {{^keyword}}
-                        {{studyState}}
-                    {{/keyword}}
+                    {{StudyListInfoDto.studyState.title}}
                 </h4>
                 <table class="table table-hover" id='board_list'>
                     <thead>
@@ -124,7 +120,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {{#studys}}
+                    {{#StudyListInfoDto.studyResultDtos}}
                         <tr>
                             <td class="text-center d-none d-md-table-cell">{{id}}</td>
                             <td class="text-center d-none d-md-table-cell"><a href='/studys/{{id}}'>{{name}}</a></td>
@@ -139,7 +135,7 @@
                             </td>
                             <td class="text-center d-none d-md-table-cell" id="studyLikeCount{{id}}">{{likesCount}}</td>
                         </tr>
-                    {{/studys}}
+                    {{/StudyListInfoDto.studyResultDtos}}
                     </tbody>
                 </table>
                 <div class="list_paging"  style="text-align: center;">

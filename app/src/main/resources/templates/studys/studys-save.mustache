@@ -11,11 +11,11 @@
             </div>
             <div class="form-group">
                 <label for="bookName"> 책제목 </label>
-                <input type="text" class="form-control" id="bookName" value="{{bookName}}" readonly>
+                <input type="text" class="form-control" id="bookName" value="{{StudyCreateInfoDto.bookName}}" readonly>
             </div>
             <div class="form-group">
                 <label for="bookImage"></label>
-                <img src="{{bookImage}}" id="bookImage" alt="">
+                <img src="{{StudyCreateInfoDto.bookImage}}" id="bookImage" alt="">
             </div>
             <div class="form-group">
                 <label for="description"> 설명 </label>
@@ -44,9 +44,9 @@
             <div class="form-group">
                 <label for="day"> 요일
                     <select id="day">
-                        {{#day}}
+                        {{#StudyCreateInfoDto.days}}
                             <option value="{{code}}">{{title}}</option>
-                        {{/day}}
+                        {{/StudyCreateInfoDto.days}}
                     </select>
                 </label>
             </div>
@@ -63,9 +63,9 @@
             <div class="form-group">
                 <label for="zone"> 지역
                     <select id="zone">
-                        {{#zone}}
+                        {{#StudyCreateInfoDto.zones}}
                             <option value="{{code}}">{{title}}</option>
-                        {{/zone}}
+                        {{/StudyCreateInfoDto.zones}}
                     </select>
                 </label>
             </div>
