@@ -26,11 +26,11 @@ public class EnumMapperValue {
     }
 
     @Override
-    public String
-    toString() {
-        return "{" +
+    public String toString() {
+        return "EnumMapperValue{" +
                 "code='" + code + '\'' +
                 ", title='" + title + '\'' +
+                ", selected=" + selected +
                 '}';
     }
 }

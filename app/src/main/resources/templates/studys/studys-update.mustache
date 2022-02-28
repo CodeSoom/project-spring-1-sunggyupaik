@@ -7,92 +7,92 @@
         <form>
             <div class="form-group">
                 <label for="id"> 스터디 번호 </label>
-                <input type="text" class="form-control" id="id" value="{{study.id}}"  readOnly>
+                <input type="text" class="form-control" id="id" value="{{StudyUpdateInfoDto.id}}"  readOnly>
             </div>
             <div class="form-group">
                 <label for="name"> 스터디 이름 </label>
-                <input type="text" class="form-control" id="name" value="{{study.name}}">
+                <input type="text" class="form-control" id="name" value="{{StudyUpdateInfoDto.name}}">
             </div>
             <div class="form-group">
                 <label for="bookName"> 스터디 책 </label>
-                <input type="text" class="form-control" id="bookName" value="{{study.bookName}}" readOnly>
+                <input type="text" class="form-control" id="bookName" value="{{StudyUpdateInfoDto.bookName}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="bookImage"></label>
-                <img src="{{study.bookImage}}" id="bookImage" alt="">
+                <img src="{{StudyUpdateInfoDto.bookImage}}" id="bookImage" alt="">
             </div>
             <div class="form-group">
                 <label for="description"> 설명 </label>
-                <input type="text" class="form-control" id="description" value="{{study.description}}">
+                <input type="text" class="form-control" id="description" value="{{StudyUpdateInfoDto.description}}">
             </div>
             <div class="form-group">
                 <label for="contact"> 연락처 </label>
-                <input type="text" class="form-control" id="contact" value="{{study.contact}}">
+                <input type="text" class="form-control" id="contact" value="{{StudyUpdateInfoDto.contact}}">
             </div>
             <div class="form-group">
                 <label for="size"> 인원 제한 </label>
-                <input type="number" class="form-control" id="size" value="{{study.size}}">
+                <input type="number" class="form-control" id="size" value="{{StudyUpdateInfoDto.size}}">
             </div>
         </form>
         <form class="form-inline">
             <div class="form-group">
                 <label for="startDate"> 시작 날짜 </label>
-                <input type="date" class="form-control" id="startDate" value="{{study.startDate}}">
+                <input type="date" class="form-control" id="startDate" value="{{StudyUpdateInfoDto.startDate}}">
             </div>
             <div class="form-group">
                 <label for="endDate"> 종료 날짜 </label>
-                <input type="date" class="form-control" id="endDate" value="{{study.endDate}}">
+                <input type="date" class="form-control" id="endDate" value="{{StudyUpdateInfoDto.endDate}}">
             </div>
         </form>
         <form class="form-inline">
             <div class="form-group">
-                <input type="hidden" value="{{study.day}}" id="savedDay">
+                <input type="hidden" {{#StudyUpdateInfoDto.days}}{{#selected}}value="{{code}}"{{/selected}}{{/StudyUpdateInfoDto.days}} id="savedDay">
                 <label for="day"> 요일
                     <select id="day">
-                        {{#day}}
+                        {{#StudyUpdateInfoDto.days}}
                             <option value="{{code}}" {{#selected}}selected{{/selected}}>
                                 {{title}}
                             </option>
-                        {{/day}}
+                        {{/StudyUpdateInfoDto.days}}
                     </select>
                 </label>
             </div>
             <div class="form-group">
                 <label for="startTime"> 시작 시간 </label>
-                <input type="time" class="form-control" id="startTime" value="{{study.startTime}}">
+                <input type="time" class="form-control" id="startTime" value="{{StudyUpdateInfoDto.startTime}}">
             </div>
             <div class="form-group">
                 <label for="endTime"> 종료 시간 </label>
-                <input type="time" class="form-control" id="endTime" value="{{study.endTime}}">
+                <input type="time" class="form-control" id="endTime" value="{{StudyUpdateInfoDto.endTime}}">
             </div>
         </form>
         <form>
             <div class="form-group">
-                <input type="hidden" value="{{study.studyState}}" id="savedStudyState">
+                <input type="hidden" {{#StudyUpdateInfoDto.studyStates}}{{#selected}}value="{{code}}"{{/selected}}{{/StudyUpdateInfoDto.studyStates}} id="savedStudyState">
                 <label for="studyState"> 스터디 상태
                     <select id="studyState">
-                        {{#studyState}}
+                        {{#StudyUpdateInfoDto.studyStates}}
                             <option value="{{code}}" {{#selected}}selected{{/selected}}>
                                 {{title}}
                             </option>
-                        {{/studyState}}
+                        {{/StudyUpdateInfoDto.studyStates}}
                     </select>
                 </label>
             </div>
             <div class="form-group">
-                <input type="hidden" value="{{study.zone}}" id="savedZone">
+                <input type="hidden" {{#StudyUpdateInfoDto.zones}}{{#selected}}value="{{code}}"{{/selected}}{{/StudyUpdateInfoDto.zones}} id="savedZone">
                 <label for="zone"> 지역
                     <select id="zone">
-                        {{#zone}}
+                        {{#StudyUpdateInfoDto.zones}}
                             <option value="{{code}}" {{#selected}}selected{{/selected}}>
                                 {{title}}
                             </option>
-                        {{/zone}}
+                        {{/StudyUpdateInfoDto.zones}}
                     </select>
                 </label>
             </div>
         </form>
-        <a href="/studys/{{id}}" role="button" class="btn btn-secondary">돌아가기</a>
+        <a href="/studys/{{StudyUpdateInfoDto.id}}" role="button" class="btn btn-secondary">돌아가기</a>
         <button type="button" class="btn btn-primary" id="btn-update-study">수정</button>
         <button type="button" class="btn btn-danger" id="btn-delete-study">삭제</button>
     </div>

@@ -12,6 +12,7 @@ import com.example.bookclub.dto.StudyCreateInfoDto;
 import com.example.bookclub.dto.StudyDetailResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.dto.StudyResultDto;
+import com.example.bookclub.dto.StudyUpdateInfoDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.data.domain.Page;
@@ -52,10 +53,10 @@ public class StudyController {
             return "studys/studys-detail";
         }
         if (userAccount.getAccount().isMangerOf(study)) {
-            model.addAttribute("studyAdmin", "true");
+            model.addAttribute("studyManage", "true");
         }
         if (userAccount.getAccount().isApplierOf(study)) {
-            model.addAttribute("studyApplier", "true");
+            model.addAttribute("studyApply", "true");
         }
 
         return "studys/studys-detail";
@@ -81,14 +82,13 @@ public class StudyController {
     @GetMapping("/update/{id}")
     public String studyUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {
-        Study study = studyService.getStudy(id);
-
         checkTopMenu(userAccount.getAccount(), model);
 
-        model.addAttribute("study", study);
-        model.addAttribute("day", Day.getAllDaysSelectedWith(study.getDay()));
-        model.addAttribute("studyState", StudyState.getAllStudyStatesSelectedWith(study.getStudyState()));
-        model.addAttribute("zone", Zone.getAllZonesSelectedWith(study.getZone()));
+        Study study = studyService.getStudy(id);
+
+        StudyUpdateInfoDto studyUpdateInfoDto = StudyUpdateInfoDto.of(study);
+        model.addAttribute("StudyUpdateInfoDto", studyUpdateInfoDto);
+
         return "studys/studys-update";
     }
 

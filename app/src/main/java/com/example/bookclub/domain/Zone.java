@@ -22,7 +22,7 @@ public enum Zone implements EnumMapperType {
                 .collect(Collectors.toList());
     }
 
-    public static Object getAllZonesSelectedWith(Zone zone) {
+    public static List<EnumMapperValue> getAllZonesSelectedWith(Zone zone) {
         return Arrays.stream(Zone.values())
                 .map(enumMapperType -> {
                     if(enumMapperType.getCode().equals(zone.toString())) {
