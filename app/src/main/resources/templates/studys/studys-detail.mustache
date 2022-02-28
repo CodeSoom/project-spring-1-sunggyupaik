@@ -181,7 +181,7 @@
             </div>
             <div class="form-group">
                 <label for="day"> 요일 </label>
-                <input type="text" class="form-control" id="day" value="{{day}}" readOnly>
+                <input type="text" class="form-control" id="day" value="{{detailedStudy.studyResultDto.day.title}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="startTime"> 시작 시간 </label>
@@ -193,11 +193,11 @@
             </div>
             <div class="form-group">
                 <label for="studyState"> 스터디 모집 상황 </label>
-                <input type="text" class="form-control" id="studyState" value="{{studyState}}" readOnly>
+                <input type="text" class="form-control" id="studyState" value="{{detailedStudy.studyResultDto.studyState.title}}" readOnly>
             </div>
             <div class="form-group">
                 <label for="zone"> 지역 </label>
-                <input type="text" class="form-control" id="zone" value="{{zone}}" readOnly>
+                <input type="text" class="form-control" id="zone" value="{{detailedStudy.studyResultDto.zone.title}}" readOnly>
             </div>
         </form>
         <a href="/" role="button" class="btn btn-secondary">돌아가기</a>

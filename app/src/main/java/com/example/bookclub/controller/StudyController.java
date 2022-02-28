@@ -45,12 +45,9 @@ public class StudyController {
         checkTopMenu(userAccount.getAccount(), model);
 
         StudyDetailResultDto detailedStudy = studyService.getDetailedStudy(userAccount, id);
-        Study study = studyService.getStudy(id);
         model.addAttribute("detailedStudy", detailedStudy);
-        model.addAttribute("day", Day.getTitleFrom(study.getDay()));
-        model.addAttribute("studyState", StudyState.getTitleFrom(study.getStudyState()));
-        model.addAttribute("zone", Zone.getTitleFrom(study.getZone()));
 
+        Study study = studyService.getStudy(id);
         if (study.isAlreadyStarted() || study.isNotOpened()) {
             return "studys/studys-detail";
         }
