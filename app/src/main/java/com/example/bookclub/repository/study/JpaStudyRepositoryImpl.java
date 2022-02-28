@@ -4,15 +4,11 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.QStudyAccountInfoResultDto;
 import com.example.bookclub.dto.QStudyInfoResultDto;
-import com.example.bookclub.dto.QStudyResultDto;
 import com.example.bookclub.dto.StudyAccountInfoResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
-import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -49,8 +45,8 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 	}
 
 	@Override
-	public Page<Study> findByBookNameContaining(String keyword, Pageable pageable) {
-		List<Study> content = queryFactory
+	public List<Study> findByBookNameContaining(String keyword, Pageable pageable) {
+		return queryFactory
 				.select(study)
 				.from(study)
 				.where(nameContains(keyword))
@@ -58,51 +54,17 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 				.limit(pageable.getPageSize())
 				.orderBy(study.id.desc())
 				.fetch();
-
-		long total = queryFactory
-				.select(study)
-				.from(study)
-				.fetchCount();
-
-		return new PageImpl<>(content, pageable, total);
 	}
 
 	@Override
-	public Page<StudyResultDto> findByStudyState(StudyState studyState, Pageable pageable) {
-		List<StudyResultDto> content = queryFactory
-				.select(new QStudyResultDto(
-						study.id,
-						study.name,
-						study.bookName,
-						study.bookImage,
-						study.email,
-						study.description,
-						study.contact,
-						study.size,
-						study.applyCount,
-						study.startDate,
-						study.endDate,
-						study.startTime,
-						study.endTime,
-						study.day,
-						study.studyState,
-						study.zone
-				))
-				.from(study)
+	public List<Study> findByStudyState(StudyState studyState, Pageable pageable) {
+		return queryFactory
+				.selectFrom(study)
 				.where(studyStateEq(studyState))
 				.offset(pageable.getOffset())
 				.limit(pageable.getPageSize())
 				.orderBy(study.id.desc())
 				.fetch();
-
-		long total = queryFactory
-				.selectFrom(study)
-				.where(studyStateEq(studyState))
-				.offset(pageable.getOffset())
-				.limit(pageable.getPageSize())
-				.fetchCount();
-
-		return new PageImpl<>(content, pageable, total);
 	}
 
 	private Optional<StudyInfoResultDto> getStudyInfoResultDto(Long id) {

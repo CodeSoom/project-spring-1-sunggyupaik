@@ -25,6 +25,7 @@ import com.example.bookclub.errors.StudyStartDateInThePastException;
 import com.example.bookclub.repository.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -223,7 +224,7 @@ public class StudyService {
     }
 
     public Page<StudyResultDto> getStudiesBySearch(String keyword, Long principalId, Pageable pageable) {
-        Page<Study> studies = studyRepository.findByBookNameContaining(keyword, pageable);
+        Page<Study> studies = (Page<Study>) studyRepository.findByBookNameContaining(keyword, pageable);
 /*        if(principalId == null) {
             return (Page<StudyResultDto>) studies.stream()
                     .map(StudyResultDto::of)
@@ -245,27 +246,23 @@ public class StudyService {
     }
 
     public Page<StudyResultDto> getStudiesByStudyState(StudyState studyState, Account account, Pageable pageable) {
-        Page<StudyResultDto> studies = studyRepository.findByStudyState(studyState, pageable);
-/*        if(account == null) {
-            return (Page<StudyResultDto>) studies.stream()
-                    .map(StudyResultDto::of)
-                    .collect(Collectors.toList());
-        }*/
+        List<Study> studies = studyRepository.findByStudyState(studyState, pageable);
+        long total = studyRepository.getStudiesCount(studyState);
 
-/*        studies.forEach(study -> {
+        studies.forEach(study -> {
             study.addLikesCount(study.getStudyLikes().size());
             study.getStudyLikes().forEach(like -> {
                 if(like.getAccount().getId().equals(account.getId())) {
                     study.addLiked();
                 }
             });
-        });*/
+        });
 
-        return studies;
-    }
+        List<StudyResultDto> studyResultDtos = studies.stream()
+                .map(StudyResultDto::of)
+                .collect(Collectors.toList());
 
-    public long countAllStudies() {
-        return getStudies().size();
+        return new PageImpl<>(studyResultDtos, pageable, total);
     }
 
     public StudyInfoResultDto getStudyInfo(Long id) {
