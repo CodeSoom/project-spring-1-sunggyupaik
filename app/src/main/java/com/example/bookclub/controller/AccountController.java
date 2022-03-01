@@ -2,20 +2,30 @@ package com.example.bookclub.controller;
 
 import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.Favorite;
+import com.example.bookclub.repository.study.JpaStudyRepository;
 import com.example.bookclub.security.CurrentAccount;
+import com.example.bookclub.security.UserAccount;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("/users")
 public class AccountController {
     private final AccountAuthenticationService accountAuthenticationService;
-    public AccountController(AccountAuthenticationService accountAuthenticationService) {
+    private final JpaStudyRepository studyRepository;
+
+    public AccountController(AccountAuthenticationService accountAuthenticationService,
+                             JpaStudyRepository studyRepository) {
         this.accountAuthenticationService = accountAuthenticationService;
+        this.studyRepository = studyRepository;
     }
 
     @GetMapping("/save")
@@ -24,6 +34,16 @@ public class AccountController {
             return "redirect:/";
         }
         return "users/users-save";
+    }
+
+    @PreAuthorize("#userAccount.account.id == #id")
+    @GetMapping("/{id}/favorite")
+    public String usersFavorite(@AuthenticationPrincipal UserAccount userAccount,
+                                @PathVariable Long id, Model model) {
+        List<Favorite> favorites = userAccount.getAccount().getFavorites();
+
+        checkTopMenu(userAccount.getAccount(), model);
+        return "users/users-favorite";
     }
 
     @PreAuthorize("#account.id == #id")
