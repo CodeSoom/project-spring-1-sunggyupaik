@@ -1,0 +1,39 @@
+{{>layout/header}}
+<style type="text/css">
+    h4 {
+        text-align: center;
+    }
+
+    .list-group {
+        text-align: center;
+        line-height: 25px;
+    }
+</style>
+<div class="container-fluid" style="margin-top: 100px">
+    <div class="row">
+        <div class="card shadow col-md-12" style="min-height:600px;">
+            <div class="card-body">
+                <h4 class="card-title">즐겨찾기 스터디</h4>
+                <table class="table table-hover" id='board_list'>
+                    <thead>
+                    <tr>
+                        <th class="text-center d-none d-md-table-cell">이름</th>
+                        <th class="text-center d-none d-md-table-cell">책 제목</th>
+                        <th class="text-center d-none d-md-table-cell">스터디 상태</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {{#StudyFavoriteResultDto}}
+                        <tr>
+                            <td class="text-center d-none d-md-table-cell"><a href='/studys/{{id}}'>{{name}}</a></td>
+                            <td class="text-center d-none d-md-table-cell">{{bookName}}</td>
+                            <td class="text-center d-none d-md-table-cell">{{studyState.title}}</td>
+                        </tr>
+                    {{/StudyFavoriteResultDto}}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{{>layout/footer}}

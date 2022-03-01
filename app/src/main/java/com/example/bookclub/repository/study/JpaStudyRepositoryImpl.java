@@ -3,8 +3,10 @@ package com.example.bookclub.repository.study;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.QStudyAccountInfoResultDto;
+import com.example.bookclub.dto.QStudyFavoriteResultDto;
 import com.example.bookclub.dto.QStudyInfoResultDto;
 import com.example.bookclub.dto.StudyAccountInfoResultDto;
+import com.example.bookclub.dto.StudyFavoriteResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.querydsl.core.BooleanBuilder;
@@ -83,6 +85,7 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 				.selectFrom(study)
 				.fetchCount();
 	}
+
 	@Override
 	public long getStudiesCountByKeyword(String keyword, StudyState studyState) {
 		return queryFactory
@@ -91,11 +94,27 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 				.fetchCount();
 	}
 
+	@Override
+	public List<StudyFavoriteResultDto> findByFavoriteStudies(List<Long> studyIds) {
+		return queryFactory
+				.select(new QStudyFavoriteResultDto(
+						study.id, study.name, study.bookName, study.studyState
+				))
+				.from(study)
+				.where(studyIdsIn(studyIds))
+				.orderBy(study.id.asc())
+				.fetch();
+	}
+
 	private BooleanBuilder nameContains(String name) {
 		return isEmpty(name) ? new BooleanBuilder() : new BooleanBuilder(study.bookName.contains(name));
 	}
 
 	private BooleanBuilder studyStateEq(StudyState studyState) {
 		return isEmpty(studyState) ? new BooleanBuilder() : new BooleanBuilder(study.studyState.eq(studyState));
+	}
+
+	private BooleanBuilder studyIdsIn(List<Long> studyIds) {
+		return isEmpty(studyIds) ? new BooleanBuilder() : new BooleanBuilder(study.id.in(studyIds));
 	}
 }

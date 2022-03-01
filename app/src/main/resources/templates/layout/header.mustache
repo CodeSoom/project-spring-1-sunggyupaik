@@ -39,6 +39,9 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             {{#account}}
+                <li class="nav-item">
+                    <a href="/users/{{id}}/favorite" class="nav-link">즐겨찾기 스터디</a>
+                </li>
                 {{#studyApply}}
                     <li class="nav-item">
                         <a href="/studys/{{id}}" class="nav-link">신청 스터디</a>

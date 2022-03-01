@@ -1,6 +1,7 @@
 package com.example.bookclub.repository.account;
 
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.QFavorite;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
@@ -37,6 +38,7 @@ public class JpaAccountRepositoryImpl implements AccountRepositoryCustom {
 				queryFactory
 						.select(account).distinct()
 						.from(account)
+						.leftJoin(account.favorites, QFavorite.favorite).fetchJoin()
 						.leftJoin(account.study, study).fetchJoin()
 						.leftJoin(account.uploadFile, uploadFile).fetchJoin()
 						.where(account.email.eq(email))
