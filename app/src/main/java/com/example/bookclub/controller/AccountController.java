@@ -2,7 +2,7 @@ package com.example.bookclub.controller;
 
 import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Study;
+import com.example.bookclub.dto.StudyFavoriteResultDto;
 import com.example.bookclub.repository.study.JpaStudyRepository;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
@@ -41,16 +41,17 @@ public class AccountController {
     @GetMapping("/{id}/favorite")
     public String usersFavorite(@AuthenticationPrincipal UserAccount userAccount,
                                 @PathVariable Long id, Model model) {
+        checkTopMenu(userAccount.getAccount(), model);
+
         List<Long> favoriteStudyIds = userAccount.getAccount().getFavorites()
                 .stream().filter(favorite -> favorite.getAccount().getId().equals(id))
                 .map(favorite -> favorite.getStudy().getId())
                 .collect(Collectors.toList());
 
-        List<Study> studies = studyRepository.findByFavoriteStudies(favoriteStudyIds);
+        List<StudyFavoriteResultDto> studies = studyRepository.findByFavoriteStudies(favoriteStudyIds);
 
-        model.addAttribute("studies", studies);
+        model.addAttribute("StudyFavoriteResultDto", studies);
 
-        checkTopMenu(userAccount.getAccount(), model);
         return "users/users-favorite";
     }
 

@@ -3,8 +3,10 @@ package com.example.bookclub.repository.study;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.QStudyAccountInfoResultDto;
+import com.example.bookclub.dto.QStudyFavoriteResultDto;
 import com.example.bookclub.dto.QStudyInfoResultDto;
 import com.example.bookclub.dto.StudyAccountInfoResultDto;
+import com.example.bookclub.dto.StudyFavoriteResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.querydsl.core.BooleanBuilder;
@@ -93,9 +95,12 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 	}
 
 	@Override
-	public List<Study> findByFavoriteStudies(List<Long> studyIds) {
+	public List<StudyFavoriteResultDto> findByFavoriteStudies(List<Long> studyIds) {
 		return queryFactory
-				.selectFrom(study)
+				.select(new QStudyFavoriteResultDto(
+						study.id, study.name, study.bookName, study.studyState
+				))
+				.from(study)
 				.where(studyIdsIn(studyIds))
 				.orderBy(study.id.asc())
 				.fetch();

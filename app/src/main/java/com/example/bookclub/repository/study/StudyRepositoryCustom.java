@@ -2,6 +2,7 @@ package com.example.bookclub.repository.study;
 
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
+import com.example.bookclub.dto.StudyFavoriteResultDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import org.springframework.data.domain.Pageable;
 
@@ -18,5 +19,5 @@ public interface StudyRepositoryCustom {
 
     long getAllStudiesCount();
 
-	List<Study> findByFavoriteStudies(List<Long> studyIds);
+	List<StudyFavoriteResultDto> findByFavoriteStudies(List<Long> studyIds);
 }
