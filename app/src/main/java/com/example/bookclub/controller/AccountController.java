@@ -51,6 +51,8 @@ public class AccountController {
         List<StudyFavoriteResultDto> studies = studyRepository.findByFavoriteStudies(favoriteStudyIds);
 
         model.addAttribute("StudyFavoriteResultDto", studies);
+        model.addAttribute("account", userAccount.getAccount());
+        checkTopMenu(userAccount.getAccount(), model);
 
         return "users/users-favorite";
     }
