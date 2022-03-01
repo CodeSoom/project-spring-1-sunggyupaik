@@ -2,7 +2,7 @@ package com.example.bookclub.controller;
 
 import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Favorite;
+import com.example.bookclub.domain.Study;
 import com.example.bookclub.repository.study.JpaStudyRepository;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/users")
@@ -40,7 +41,14 @@ public class AccountController {
     @GetMapping("/{id}/favorite")
     public String usersFavorite(@AuthenticationPrincipal UserAccount userAccount,
                                 @PathVariable Long id, Model model) {
-        List<Favorite> favorites = userAccount.getAccount().getFavorites();
+        List<Long> favoriteStudyIds = userAccount.getAccount().getFavorites()
+                .stream().filter(favorite -> favorite.getAccount().getId().equals(id))
+                .map(favorite -> favorite.getStudy().getId())
+                .collect(Collectors.toList());
+
+        List<Study> studies = studyRepository.findByFavoriteStudies(favoriteStudyIds);
+
+        model.addAttribute("studies", studies);
 
         checkTopMenu(userAccount.getAccount(), model);
         return "users/users-favorite";

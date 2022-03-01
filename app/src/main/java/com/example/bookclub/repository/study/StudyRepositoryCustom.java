@@ -17,4 +17,6 @@ public interface StudyRepositoryCustom {
     long getStudiesCountByKeyword(String keyword, StudyState studyState);
 
     long getAllStudiesCount();
+
+	List<Study> findByFavoriteStudies(List<Long> studyIds);
 }

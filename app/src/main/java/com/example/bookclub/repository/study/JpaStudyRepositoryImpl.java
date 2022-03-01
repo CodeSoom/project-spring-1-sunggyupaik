@@ -83,6 +83,7 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 				.selectFrom(study)
 				.fetchCount();
 	}
+
 	@Override
 	public long getStudiesCountByKeyword(String keyword, StudyState studyState) {
 		return queryFactory
@@ -91,11 +92,24 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 				.fetchCount();
 	}
 
+	@Override
+	public List<Study> findByFavoriteStudies(List<Long> studyIds) {
+		return queryFactory
+				.selectFrom(study)
+				.where(studyIdsIn(studyIds))
+				.orderBy(study.id.asc())
+				.fetch();
+	}
+
 	private BooleanBuilder nameContains(String name) {
 		return isEmpty(name) ? new BooleanBuilder() : new BooleanBuilder(study.bookName.contains(name));
 	}
 
 	private BooleanBuilder studyStateEq(StudyState studyState) {
 		return isEmpty(studyState) ? new BooleanBuilder() : new BooleanBuilder(study.studyState.eq(studyState));
+	}
+
+	private BooleanBuilder studyIdsIn(List<Long> studyIds) {
+		return isEmpty(studyIds) ? new BooleanBuilder() : new BooleanBuilder(study.id.in(studyIds));
 	}
 }
