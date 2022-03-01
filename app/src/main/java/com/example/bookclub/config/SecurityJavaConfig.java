@@ -3,6 +3,7 @@ package com.example.bookclub.config;
 import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
+import com.example.bookclub.security.PersistTokenRepository;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -17,9 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,15 +32,18 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final DataSource dataSource;
     private final CustomEntryPoint customEntryPoint;
     private final CustomDeniedHandler customDeniedHandler;
+    private final PersistTokenRepository persistTokenRepository;
 
     public SecurityJavaConfig(AccountAuthenticationService accountAuthenticationService,
                               DataSource dataSource,
                               CustomEntryPoint customEntryPoint,
-                              CustomDeniedHandler customDeniedHandler) {
+                              CustomDeniedHandler customDeniedHandler,
+                              PersistTokenRepository persistTokenRepository) {
         this.accountAuthenticationService = accountAuthenticationService;
         this.dataSource = dataSource;
         this.customEntryPoint = customEntryPoint;
         this.customDeniedHandler = customDeniedHandler;
+        this.persistTokenRepository = persistTokenRepository;
     }
 
     @Bean
@@ -71,7 +73,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(accountAuthenticationService);
     }
 
-    @Bean
+    /*@Bean
     PersistentTokenRepository tokenRepository(){
         JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
         repository.setDataSource(dataSource);
@@ -81,14 +83,12 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
             repository.setCreateTableOnStartup(true);
         }
         return repository;
-    }
+    }*/
 
     @Bean
     PersistentTokenBasedRememberMeServices rememberMeServices(){
         PersistentTokenBasedRememberMeServices services = new PersistentTokenBasedRememberMeServices(
-                "bookclub-remember-me",
-                accountAuthenticationService,
-                tokenRepository()) {
+                "bookclub-remember-me", accountAuthenticationService, persistTokenRepository) {
             @Override
             protected Authentication createSuccessfulAuthentication(HttpServletRequest request, UserDetails user) {
                 return new UsernamePasswordAuthenticationToken(
