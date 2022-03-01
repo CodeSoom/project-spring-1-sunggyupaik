@@ -130,6 +130,9 @@ dependencies {
 
 	//Querydsl
 	implementation 'com.querydsl:querydsl-jpa'
+
+	//Redis
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis:2.6.3'
 }
 
 application {
