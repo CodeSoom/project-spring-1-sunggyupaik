@@ -23,13 +23,13 @@
                     </tr>
                     </thead>
                     <tbody>
-                    {{#StudyInfoResultDto.studyAccountInfoResultDto}}
+                    {{#StudyFavoriteResultDto}}
                         <tr>
-                            <td class="text-center d-none d-md-table-cell">{{name}}</td>
-                            <td class="text-center d-none d-md-table-cell">{{email}}</td>
-                            <td class="text-center d-none d-md-table-cell">{{nickname}}</td>
+                            <td class="text-center d-none d-md-table-cell"><a href='/studys/{{id}}'>{{name}}</a></td>
+                            <td class="text-center d-none d-md-table-cell">{{bookName}}</td>
+                            <td class="text-center d-none d-md-table-cell">{{studyState.title}}</td>
                         </tr>
-                    {{/StudyInfoResultDto.studyAccountInfoResultDto}}
+                    {{/StudyFavoriteResultDto}}
                     </tbody>
                 </table>
             </div>
