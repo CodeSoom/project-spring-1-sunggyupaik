@@ -115,6 +115,6 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 	}
 
 	private BooleanBuilder studyIdsIn(List<Long> studyIds) {
-		return isEmpty(studyIds) ? new BooleanBuilder() : new BooleanBuilder(study.id.in(studyIds));
+		return studyIds.size() == 0 ? new BooleanBuilder(study.id.eq(0L)) : new BooleanBuilder(study.id.in(studyIds));
 	}
 }

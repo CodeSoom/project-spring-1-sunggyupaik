@@ -3,6 +3,7 @@ package com.example.bookclub.config;
 import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
+import com.example.bookclub.security.PersistTokenRepository;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -33,15 +34,18 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final DataSource dataSource;
     private final CustomEntryPoint customEntryPoint;
     private final CustomDeniedHandler customDeniedHandler;
+    private final PersistTokenRepository persistTokenRepository;
 
     public SecurityJavaConfig(AccountAuthenticationService accountAuthenticationService,
                               DataSource dataSource,
                               CustomEntryPoint customEntryPoint,
-                              CustomDeniedHandler customDeniedHandler) {
+                              CustomDeniedHandler customDeniedHandler,
+                              PersistTokenRepository persistTokenRepository) {
         this.accountAuthenticationService = accountAuthenticationService;
         this.dataSource = dataSource;
         this.customEntryPoint = customEntryPoint;
         this.customDeniedHandler = customDeniedHandler;
+        this.persistTokenRepository = persistTokenRepository;
     }
 
     @Bean
@@ -88,7 +92,8 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         PersistentTokenBasedRememberMeServices services = new PersistentTokenBasedRememberMeServices(
                 "bookclub-remember-me",
                 accountAuthenticationService,
-                tokenRepository()) {
+                persistTokenRepository
+                ) {
             @Override
             protected Authentication createSuccessfulAuthentication(HttpServletRequest request, UserDetails user) {
                 return new UsernamePasswordAuthenticationToken(
