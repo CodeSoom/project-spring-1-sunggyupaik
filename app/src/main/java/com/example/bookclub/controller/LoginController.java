@@ -5,7 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * 로그인 , 로그인 실패, 로그인 요청, 로그인 제한 화면으로 이동한다
+ * 로그인 , 로그인 실패, 로그인 요청, 로그인 제한 페이지를 요청한다
  */
 @Controller
 public class LoginController {

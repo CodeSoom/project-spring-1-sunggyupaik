@@ -11,7 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 /**
- * 루트 페이지로 이동한다
+ * 루트 페이지를 요청한다
  */
 @Controller
 public class HomeController {

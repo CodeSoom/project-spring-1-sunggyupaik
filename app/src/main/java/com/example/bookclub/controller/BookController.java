@@ -1,6 +1,5 @@
 package com.example.bookclub.controller;
 
-import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.BookService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.BookType;
@@ -14,18 +13,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- *  책을 베스트셀러, 추천, 신간 기준으로 검색한다
+ *  베스트셀러, 추천, 신간 기준으로 도서 검색 페이지를 요청한다.
  */
 @Controller
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
-    private final AccountService accountService;
 
-    public BookController(BookService bookService,
-                          AccountService accountService) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
-        this.accountService = accountService;
     }
 
     /**

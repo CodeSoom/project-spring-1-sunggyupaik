@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 사용자의 가입, 수정, 즐겨찾기 등 페이지로 이동한다
+ * 사용자의 가입, 수정, 즐겨찾기 등 페이지를 요청한다
  */
 @Controller
 @RequestMapping("/users")

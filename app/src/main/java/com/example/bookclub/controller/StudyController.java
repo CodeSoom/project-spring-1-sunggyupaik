@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * 스터디 조회, 생성, 수정 페이지로 이동한다
+ * 스터디 조회, 생성, 수정 페이지를 요청한다
  */
 @Controller
 @RequestMapping("/studies")

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 /**
- * 인터뷰 조회 페이지로 이동한다
+ * 인터뷰 조회 페이지를 요청한다
  */
 @Controller
 @RequestMapping("/interviews")
