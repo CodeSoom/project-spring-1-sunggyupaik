@@ -5,8 +5,7 @@ import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.StudyState;
-import com.example.bookclub.security.UserAccount;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import com.example.bookclub.security.CurrentAccount;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,14 +30,15 @@ public class HomeController {
     /**
      * 루트 페이지로 이동한다
      *
-     * @param userAccount 로그인한 사용자
+     * @param account 로그인한 사용자
      * @param model 모델
      * @return 루트 페이지
      */
     @GetMapping("/")
-    public String home(@AuthenticationPrincipal UserAccount userAccount, Model model) {
-        if(userAccount.getAccount() != null) {
-            checkTopMenu(userAccount.getAccount(), model);
+    public String home(@CurrentAccount Account account, Model model) {
+        if(account != null) {
+            account = accountAuthenticationService.getAccountByEmail(account.getEmail());
+            checkTopMenu(account, model);
         }
 
         long allAccountsCount = accountService.getAllAccountsCount();

@@ -89,12 +89,12 @@
         <div class="col-md-2">
             <div class="panel panel-info">
                 <ul class="list-group">
-                    <li class="list-group-item"><a href="/studys/open">모집중</a></li>
-                    <li class="list-group-item"><a href="/studys/close">진행중</a></li>
-                    <li class="list-group-item"><a href="/studys/end">종료</a></li>
+                    <li class="list-group-item"><a href="/studies/open">모집중</a></li>
+                    <li class="list-group-item"><a href="/studies/close">진행중</a></li>
+                    <li class="list-group-item"><a href="/studies/end">종료</a></li>
                     <li class="list-group-item">
-                        <form class="navbar-form pull-left" action="/studys/{{StudyListInfoDto.searchStudyStateCode}}" method="get">
-                            <label for="title"></label><input type="text" id="title" name="title" placeholder="책 제목을 입력하세요"
+                        <form class="navbar-form pull-left" action="/studies/{{StudyListInfoDto.searchStudyStateCode}}" method="get">
+                            <label for="search"></label><input type="text" id="search" name="search" placeholder="책 제목을 입력하세요"
                           {{#StudyListInfoDto.search}}value="{{StudyListInfoDto.search}}"{{/StudyListInfoDto.search}}>
                             <button type="submit" class="btn btn-primary btn-sm">검색</button>
                         </form>
@@ -123,7 +123,7 @@
                     {{#StudyListInfoDto.studyResultDtos}}
                         <tr>
                             <td class="text-center d-none d-md-table-cell">{{id}}</td>
-                            <td class="text-center d-none d-md-table-cell"><a href='/studys/{{id}}'>{{name}}</a></td>
+                            <td class="text-center d-none d-md-table-cell"><a href='/studies/{{id}}'>{{name}}</a></td>
                             <td class="text-center d-none d-md-table-cell">{{bookName}}</td>
                             <td class="text-center d-none d-md-table-cell">{{applyCount}} / {{size}}</td>
                             <td class="text-center d-none d-md-table-cell">{{startDate}} {{startTime}}({{day.title}})</td>
