@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
+/**
+ * 인터뷰 조회 페이지로 이동한다
+ */
 @Controller
 @RequestMapping("/interviews")
 public class InterviewController {
@@ -27,6 +30,15 @@ public class InterviewController {
         this.interviewService = interviewService;
     }
 
+    /**
+     * 인터뷰 조회 페이지로 이동한다
+     *
+     * @param userAccount 로그인한 사용자
+     * @param model 모델
+     * @param pageable 페이징 정보
+     * @param search 검색어
+     * @return 인터뷰 조회 페이지
+     */
     @GetMapping
     public String interviewLists(@AuthenticationPrincipal UserAccount userAccount, Model model,
                                  @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable,
@@ -52,6 +64,12 @@ public class InterviewController {
         return "interviews/interviews-list";
     }
 
+    /**
+     * 로그인한 사용자의 스터디 개설, 참여 여부를 확인한다
+     *
+     * @param account 로그인한 사용자
+     * @param model 모델
+     */
     private void checkTopMenu(Account account, Model model) {
         model.addAttribute("account", account);
         if (account.isMangerOf(account.getStudy())) {
