@@ -30,7 +30,7 @@ public class StudyCommentLikeService {
 		Long accountId = userAccount.getAccount().getId();
 
 		StudyComment studyComment = studyCommentService.getStudyComment(commentId);
-		Account account = accountService.findUser(accountId);
+		Account account = accountService.findAccount(accountId);
 
 		StudyCommentLike studyCommentLike = StudyCommentLike.builder()
 				.account(account)
@@ -53,7 +53,7 @@ public class StudyCommentLikeService {
 		Long accountId = userAccount.getAccount().getId();
 
 		StudyComment studyComment = studyCommentService.getStudyComment(studyCommentId);
-		Account account = accountService.findUser(accountId);
+		Account account = accountService.findAccount(accountId);
 		StudyCommentLike savedStudyCommentLike = studyCommentLikeRepository.findByStudyCommentAndAccount(studyComment, account)
 				.orElseThrow(() -> new StudyCommentLikeNotFoundException(studyCommentId));
 

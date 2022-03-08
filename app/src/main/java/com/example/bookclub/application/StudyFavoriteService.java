@@ -26,7 +26,7 @@ public class StudyFavoriteService {
 	public Long favoriteStudy(UserAccount userAccount, Long studyId) {
 		Long accountId = userAccount.getAccount().getId();
 
-		Account account = accountService.findUser(accountId);
+		Account account = accountService.findAccount(accountId);
 		Study study = studyService.getStudy(studyId);
 
 		Favorite favorite = Favorite.builder()
@@ -49,7 +49,7 @@ public class StudyFavoriteService {
 		Long accountId = userAccount.getAccount().getId();
 
 		Study study = studyService.getStudy(studyId);
-		Account account = accountService.findUser(accountId);
+		Account account = accountService.findAccount(accountId);
 
 		Favorite savedFavorite = favoriteRepository.findByStudyAndAccount(study, account)
 				.orElseThrow(() -> new StudyFavoriteNotExistedException(studyId));

@@ -49,7 +49,7 @@ public class AccountApiController {
      */
     @GetMapping("/{id}")
     public AccountResultDto get(@PathVariable Long id) {
-        return accountService.getUser(id);
+        return accountService.getAccount(id);
     }
 
     /**
@@ -64,11 +64,11 @@ public class AccountApiController {
     public AccountResultDto create(@RequestPart(required = false) MultipartFile uploadFile,
                                    AccountCreateDto accountCreateDto) {
         if (uploadFile == null) {
-            return accountService.createUser(accountCreateDto, null);
+            return accountService.createAccount(accountCreateDto, null);
         }
 
         UploadFile accountFile = uploadFileService.upload(uploadFile);
-        return accountService.createUser(accountCreateDto, accountFile);
+        return accountService.createAccount(accountCreateDto, accountFile);
     }
 
     /**
@@ -123,6 +123,6 @@ public class AccountApiController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public AccountResultDto delete(@CurrentAccount Account account,
                                    @PathVariable Long id) {
-        return accountService.deleteUser(id);
+        return accountService.deleteAccount(id);
     }
 }

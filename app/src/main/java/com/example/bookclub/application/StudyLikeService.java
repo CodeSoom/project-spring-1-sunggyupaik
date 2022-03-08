@@ -30,7 +30,7 @@ public class StudyLikeService {
 		Long accountId = userAccount.getAccount().getId();
 
 		Study study = studyService.getStudy(studyId);
-		Account account = accountService.findUser(accountId);
+		Account account = accountService.findAccount(accountId);
 		StudyLike studyLike = StudyLike.builder()
 				.study(study)
 				.account(account)
@@ -52,7 +52,7 @@ public class StudyLikeService {
 		Long accountId = userAccount.getAccount().getId();
 
 		Study study = studyService.getStudy(studyId);
-		Account account = accountService.findUser(accountId);
+		Account account = accountService.findAccount(accountId);
 		StudyLike savedStudyLike = studyLikeRepository.findByStudyAndAccount(study, account)
 				.orElseThrow(StudyLikeNotExistedException::new);
 

@@ -55,7 +55,7 @@ public class StudyService {
     }
 
     public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
-        Account loginAccount = accountService.findUserByEmail(email);
+        Account loginAccount = accountService.findAccountByEmail(email);
 
         if(loginAccount.getStudy() != null) {
             StudyState accountStudyState = loginAccount.getStudy().getStudyState();
@@ -89,7 +89,7 @@ public class StudyService {
 
     public StudyResultDto updateStudy(String email, Long id, StudyUpdateDto studyUpdateDto) {
         Study study = getStudy(id);
-        Account loginAccount = accountService.findUserByEmail(email);
+        Account loginAccount = accountService.findAccountByEmail(email);
         if(!study.getEmail().equals(loginAccount.getEmail())) {
             throw new AccountNotManagerOfStudyException();
         }
@@ -134,7 +134,7 @@ public class StudyService {
 
     public StudyResultDto deleteStudy(String email, Long id) {
         Study study = getStudy(id);
-        Account loginAccount = accountService.findUserByEmail(email);
+        Account loginAccount = accountService.findAccountByEmail(email);
         if(!study.getEmail().equals(loginAccount.getEmail())) {
             throw new AccountNotManagerOfStudyException();
         }

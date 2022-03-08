@@ -30,7 +30,7 @@ public class StudyCommentService {
 	@Transactional
 	public StudyCommentResultDto createStudyComment(UserAccount userAccount, Long studyId,
 													StudyCommentCreateDto studyCommentCreateDto) {
-		Account account = accountService.findUser(userAccount.getAccount().getId());
+		Account account = accountService.findAccount(userAccount.getAccount().getId());
 		Study study = studyService.getStudy(studyId);
 		StudyComment studyComment = studyCommentCreateDto.toEntity(account, study);
 
