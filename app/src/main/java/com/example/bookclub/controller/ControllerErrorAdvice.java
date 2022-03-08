@@ -18,6 +18,7 @@ import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
+import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
@@ -240,6 +241,12 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(StudyFavoriteNotExistedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleStudyFavoriteNotExistedException(StudyFavoriteNotExistedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(StudyCommentDeleteBadRequest.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleStudyCommentDeleteBadRequest(StudyCommentDeleteBadRequest e) {
         return new ErrorResponse(e.getMessage());
     }
 }
