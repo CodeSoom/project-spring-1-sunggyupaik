@@ -24,7 +24,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 
 /**
- * 사용자 조회, 생성, 수정, 삭제, 인증번호 조회, 삭제, 닉네임 중복검사, 비밀번호 변경, 사용자 수 조회를 한다
+ * 사용자 조회, 생성, 수정, 삭제, 인증번호 조회, 삭제, 닉네임 중복검사, 비밀번호 변경, 사용자 수 조회를 한다.
  */
 @Service
 @Transactional

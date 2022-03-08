@@ -16,11 +16,21 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * 책 검색, URL 조회를 한다.
+ */
 @Service
 public class BookService {
     @Value("${interpark.apikey}")
     private String apikey;
 
+    /**
+     * 주어진 책 타입과 검색어로 책 리스트를 반환한다.
+     *
+     * @param bookType 책 타입 식별자
+     * @param keyword 책 검색 식별자
+     * @return 조회한 책 리스트 정보
+     */
     public JSONArray getBookLists(BookType bookType, String keyword) {
         URL url = getBooksUrl(bookType, keyword);
         String stringValue;
@@ -37,15 +47,21 @@ public class BookService {
             JSONObject jsonObject = (JSONObject) jsonParser.parse(stringValue);
 
             return (JSONArray) jsonObject.get("item");
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (IOException | ParseException e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
+    /**
+     * 주어진 책 타입과 검색어로 URL을 반환한다.
+     * 인터파크의 API를 이용해서 검색한다.
+     *
+     * @param bookType 책 타입 식별자
+     * @param keyword 책 검색 식별자
+     * @return 검색하려는 URL 주소
+     */
     public URL getBooksUrl(BookType bookType, String keyword) {
         String address = "";
 
