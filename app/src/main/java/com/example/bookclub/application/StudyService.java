@@ -37,6 +37,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 스터디 생성, 수정, 조회, 지원 생성, 지원 삭제, 검색, 스터디상태 변경, 갯수 조회를 한다.
+ */
 @Service
 @Transactional
 public class StudyService {
