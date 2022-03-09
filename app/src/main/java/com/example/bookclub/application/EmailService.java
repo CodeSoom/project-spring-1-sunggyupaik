@@ -33,7 +33,7 @@ public class EmailService {
      *
      * @param emailRequestDto 이메일 정보 식별자
      * @return 인증번호를 전송한 이메일
-     * @throws EmailBadRequestException 메일 전송이 안되는 경우
+     * @throws EmailBadRequestException 메일 전송 요청이 잘못된 경우
      */
     public String sendAuthenticationNumber(EmailRequestDto emailRequestDto) {
         String authenticationNumber = createAuthenticationNumber();

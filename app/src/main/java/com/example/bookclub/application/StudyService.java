@@ -13,7 +13,7 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
-import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyNotInOpenStateException;
@@ -59,7 +59,7 @@ public class StudyService {
      * @param email 사용자 식별자
      * @param studyCreateDto 생성할 스터디 정보
      * @return 생성된 스터디 정보
-     * @throws StudyAlreadyInOpenOrClose 이미 모집중이거나 진행중 스터디에 참여하고 있는 경우
+     * @throws StudyAlreadyInOpenOrCloseException 이미 모집중이거나 진행중 스터디에 참여하고 있는 경우
      * @throws StudyStartDateInThePastException 생성하려는 스터디 시작일이 과거인 경우
      * @throws StudyStartAndEndDateNotValidException 생성하려는 스터디 종료일이 시작일보다 빠른 경우
      * @throws StudyStartAndEndTimeNotValidException 생성하려는 스터디 종료시간이 시작시간보다 빠른 경우
@@ -72,7 +72,7 @@ public class StudyService {
             if(loginAccount.getStudy().getStudyState() != null &&
                     (accountStudyState.equals(StudyState.OPEN) || accountStudyState.equals(StudyState.CLOSE))
             ) {
-                throw new StudyAlreadyInOpenOrClose();
+                throw new StudyAlreadyInOpenOrCloseException();
             }
         }
 

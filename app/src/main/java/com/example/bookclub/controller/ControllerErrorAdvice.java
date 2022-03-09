@@ -16,7 +16,7 @@ import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.MessageCreateBadRequestException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
-import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
 import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
@@ -92,8 +92,8 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(StudyAlreadyInOpenOrClose.class)
-    public ErrorResponse handleStudyAlreadyInOpenOrClose(StudyAlreadyInOpenOrClose e) {
+    @ExceptionHandler(StudyAlreadyInOpenOrCloseException.class)
+    public ErrorResponse handleStudyAlreadyInOpenOrClose(StudyAlreadyInOpenOrCloseException e) {
         return new ErrorResponse(e.getMessage());
     }
 
