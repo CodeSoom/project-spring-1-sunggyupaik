@@ -28,7 +28,7 @@ public class Role extends BaseTimeEntity {
 
     /* 이름 */
     private String name;
-    
+
     public Role(String name) {
         this(null, name);
     }
