@@ -6,6 +6,9 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 
+/**
+ * upload 경로 감지를 등록합니다.
+ */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 	@Value("${image.path}")

@@ -6,6 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 
+/**
+ * 비밀번호 암호화, 파일업로드를 등록한다.
+ */
 @Configuration
 public class AppConfig {
     @Bean

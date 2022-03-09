@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * aws 인증 정보, s3를 등록한다.
+ */
 @Configuration
 public class AwsConfig {
     @Value("${cloud.aws.credentials.accessKey}")

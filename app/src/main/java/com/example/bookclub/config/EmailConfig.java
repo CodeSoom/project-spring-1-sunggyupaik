@@ -8,6 +8,9 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+/**
+ * 메일 전송 정보를 등록합니다.
+ */
 @Configuration
 public class EmailConfig {
     @Value("${spring.mail.host}")

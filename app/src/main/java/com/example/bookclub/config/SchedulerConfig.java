@@ -5,6 +5,9 @@ import org.springframework.scheduling.annotation.SchedulingConfigurer;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.scheduling.config.ScheduledTaskRegistrar;
 
+/**
+ * 스케쥴러 설정을 등록합니다.
+ */
 @Configuration
 public class SchedulerConfig implements SchedulingConfigurer {
     private static final int POOL_SIZE = 10;
