@@ -16,8 +16,9 @@ import com.example.bookclub.errors.InvalidTokenException;
 import com.example.bookclub.errors.MessageCreateBadRequestException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
-import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
 import com.example.bookclub.errors.StudyAlreadyStartedException;
+import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
@@ -91,8 +92,8 @@ public class ControllerErrorAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(StudyAlreadyInOpenOrClose.class)
-    public ErrorResponse handleStudyAlreadyInOpenOrClose(StudyAlreadyInOpenOrClose e) {
+    @ExceptionHandler(StudyAlreadyInOpenOrCloseException.class)
+    public ErrorResponse handleStudyAlreadyInOpenOrClose(StudyAlreadyInOpenOrCloseException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -240,6 +241,12 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(StudyFavoriteNotExistedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleStudyFavoriteNotExistedException(StudyFavoriteNotExistedException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(StudyCommentDeleteBadRequest.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleStudyCommentDeleteBadRequest(StudyCommentDeleteBadRequest e) {
         return new ErrorResponse(e.getMessage());
     }
 }

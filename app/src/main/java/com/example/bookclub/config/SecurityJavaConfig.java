@@ -28,6 +28,9 @@ import javax.servlet.http.HttpSessionEvent;
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
 
+/**
+ * 정보 보안 설정을 등록합니다.
+ */
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final AccountAuthenticationService accountAuthenticationService;

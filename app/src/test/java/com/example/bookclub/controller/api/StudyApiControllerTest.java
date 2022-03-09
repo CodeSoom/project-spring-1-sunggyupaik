@@ -12,7 +12,7 @@ import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
-import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyNotInOpenStateException;
@@ -421,7 +421,7 @@ class StudyApiControllerTest {
     void createWithAccountAlreadyInStudyOpenOrClose() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyService.createStudy(eq(ACCOUNT_SECOND_EMAIL), any(StudyCreateDto.class)))
-                .willThrow(new StudyAlreadyInOpenOrClose());
+                .willThrow(new StudyAlreadyInOpenOrCloseException());
 
         mockMvc.perform(
                         post("/api/study")

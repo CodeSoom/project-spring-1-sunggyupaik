@@ -17,6 +17,9 @@ import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * 사진 업로드 생성, 삭제를 한다.
+ */
 @Service
 @Transactional
 public class UploadFileService {
@@ -29,6 +32,13 @@ public class UploadFileService {
         this.s3Client = amazonS3;
     }
 
+    /**
+     * 주어진 파일로 업로드 파일을 생성하고 반환한다.
+     *
+     * @param file 파일
+     * @return 생성된 업로드 파일
+     * @throws FileUploadBadRequestException 파일 업로드 생성 요청이 잘못된 경우
+     */
     public UploadFile upload(MultipartFile file) {
         String sourceFileName = file.getOriginalFilename();
         String sourceFileNameExtension = Objects.requireNonNull(FilenameUtils.getExtension(sourceFileName)).toLowerCase();
@@ -50,6 +60,12 @@ public class UploadFileService {
                 .build();
     }
 
+    /**
+     * 주어진 업로드 파일 식별자에 해당하는 파일을 삭제한다.
+     *
+     * @param deleteFile 업로드 파일 식별자
+     * @throws FileUploadBadRequestException 파일 업로드 삭제 요청이 잘못된 경우
+     */
     public void deleteUploadFile(String deleteFile) {
         try {
             DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(this.bucket, deleteFile);

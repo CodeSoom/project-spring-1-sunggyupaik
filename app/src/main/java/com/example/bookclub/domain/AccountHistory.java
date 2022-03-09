@@ -17,25 +17,35 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.util.Objects;
 
+/**
+ * 계정 히스토리
+ */
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 public class AccountHistory extends BaseTimeEntity {
+	/* 식별자 */
 	@Id @GeneratedValue
 	@Column(name = "ACCOUNTHISTORY_ID")
 	private Long id;
 
+	/* 이름 */
 	private String name;
 
+	/* 이메일 */
 	private String email;
 
+	/* 닉네임 */
 	private String nickname;
 
+	/* 비밀번호 */
 	private String password;
 
+	/* 삭제 여부 */
 	private boolean deleted;
 
+	/* 계정 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ACCOUNT_ID")
 	@ToString.Exclude

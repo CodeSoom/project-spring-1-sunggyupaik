@@ -12,25 +12,28 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 
+/**
+ * 즐겨찾기
+ */
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @ToString
 public class Favorite {
+	/* 식별자 */
 	@Id
 	@GeneratedValue
 	private Long id;
 
+	/* 스터디 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "STUDY_ID")
 	@ToString.Exclude
 	private Study study;
 
+	/* 사용자 */
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ACCOUNT_ID")
 	@ToString.Exclude
@@ -43,6 +46,12 @@ public class Favorite {
 		this.account = account;
 	}
 
+	/**
+	 * 주어진 스터디와 사용자를 즐겨찾기에 추가한다.
+	 *
+	 * @param study 스터디
+	 * @param account 사용자
+	 */
 	public void addStudyAndAccount(Study study, Account account) {
 		this.study = study;
 		this.account = account;

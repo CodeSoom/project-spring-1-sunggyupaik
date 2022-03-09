@@ -240,7 +240,7 @@ class AccountServiceTest {
     public void findWithExistedId() {
         given(accountRepository.findById(ACCOUNT_SETUP_ID)).willReturn(Optional.of(setUpAccount));
 
-        Account account = accountService.findUser(ACCOUNT_SETUP_ID);
+        Account account = accountService.findAccount(ACCOUNT_SETUP_ID);
 
         assertThat(account.getId()).isEqualTo(ACCOUNT_SETUP_ID);
         assertThat(account.getUploadFile().getId()).isEqualTo(UPLOAD_FILE_ID);
@@ -251,14 +251,14 @@ class AccountServiceTest {
     public void findWithNotExistedId() {
         given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> accountService.findUser(ACCOUNT_NOT_EXISTED_ID))
+        assertThatThrownBy(() -> accountService.findAccount(ACCOUNT_NOT_EXISTED_ID))
                 .isInstanceOf(AccountNotFoundException.class);
     }
 
     @Test void findUserByExistedEmail() {
         given(accountRepository.findByEmail(ACCOUNT_SETUP_EMAIL)).willReturn(Optional.of(setUpAccount));
 
-        Account account = accountService.findUserByEmail(ACCOUNT_SETUP_EMAIL);
+        Account account = accountService.findAccountByEmail(ACCOUNT_SETUP_EMAIL);
 
         assertThat(account.getId()).isEqualTo(ACCOUNT_SETUP_ID);
         assertThat(account.getUploadFile().getId()).isEqualTo(UPLOAD_FILE_ID);
@@ -268,14 +268,14 @@ class AccountServiceTest {
     @Test void findUserByNotExistedEmail() {
         given(accountRepository.findByEmail(ACCOUNT_NOT_EXISTED_EMAIL)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> accountService.findUserByEmail(ACCOUNT_NOT_EXISTED_EMAIL))
+        assertThatThrownBy(() -> accountService.findAccountByEmail(ACCOUNT_NOT_EXISTED_EMAIL))
                 .isInstanceOf(AccountEmailNotFoundException.class);
     }
 
     @Test void getUserByExistedId() {
         given(accountRepository.findById(ACCOUNT_SETUP_ID)).willReturn(Optional.of(setUpAccount));
 
-        AccountResultDto accountResultDto = accountService.getUser(ACCOUNT_SETUP_ID);
+        AccountResultDto accountResultDto = accountService.getAccount(ACCOUNT_SETUP_ID);
 
         assertThat(accountResultDto.getId()).isEqualTo(ACCOUNT_SETUP_ID);
         assertThat(accountResultDto.getUploadFileResultDto().getId()).isEqualTo(UPLOAD_FILE_ID);
@@ -285,7 +285,7 @@ class AccountServiceTest {
     @Test void getUserByNotExistedId() {
         given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> accountService.getUser(ACCOUNT_NOT_EXISTED_ID))
+        assertThatThrownBy(() -> accountService.getAccount(ACCOUNT_NOT_EXISTED_ID))
                 .isInstanceOf(AccountNotFoundException.class);
     }
 
@@ -295,7 +295,7 @@ class AccountServiceTest {
         given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
                 .willReturn(Optional.of(emailAuthentication));
 
-        AccountResultDto accountResultDto = accountService.createUser(accountCreateDto, createdUploadFile);
+        AccountResultDto accountResultDto = accountService.createAccount(accountCreateDto, createdUploadFile);
 
         assertThat(accountResultDto.getId()).isEqualTo(ACCOUNT_CREATED_ID);
         assertThat(accountResultDto.getName()).isEqualTo(accountCreateDto.getName());
@@ -314,7 +314,7 @@ class AccountServiceTest {
         given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
                 .willReturn(Optional.of(emailAuthentication));
 
-        AccountResultDto accountResultDto = accountService.createUser(accountCreateDto, null);
+        AccountResultDto accountResultDto = accountService.createAccount(accountCreateDto, null);
 
         assertThat(accountResultDto.getId()).isEqualTo(ACCOUNT_CREATED_ID);
         assertThat(accountResultDto.getName()).isEqualTo(accountCreateDto.getName());
@@ -331,7 +331,7 @@ class AccountServiceTest {
     public void createWithDuplicatedEmail() {
         given(accountRepository.existsByEmail(ACCOUNT_DUPLICATED_EMAIL)).willReturn(true);
 
-        assertThatThrownBy(() -> accountService.createUser(emailExistedAccountCreateDto, null))
+        assertThatThrownBy(() -> accountService.createAccount(emailExistedAccountCreateDto, null))
                 .isInstanceOf(AccountEmailDuplicatedException.class);
     }
 
@@ -341,7 +341,7 @@ class AccountServiceTest {
         given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
                 .willReturn(Optional.of(emailAuthentication));
 
-        assertThatThrownBy(() -> accountService.createUser(nicknameExistedAccountCreateDto, null))
+        assertThatThrownBy(() -> accountService.createAccount(nicknameExistedAccountCreateDto, null))
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
     }
 
@@ -351,7 +351,7 @@ class AccountServiceTest {
                 .willReturn(Optional.empty());
 
         assertThatThrownBy(
-                () -> accountService.createUser(emailNotReceivedAuthenticationNumberAccountCreateDto, null)
+                () -> accountService.createAccount(emailNotReceivedAuthenticationNumberAccountCreateDto, null)
         )
                 .isInstanceOf(EmailNotAuthenticatedException.class);
     }
@@ -362,7 +362,7 @@ class AccountServiceTest {
                 .willReturn(Optional.of(emailAuthentication));
 
         assertThatThrownBy(
-                () -> accountService.createUser(authenticationNumberNotMatchedAccountCreateDto, null)
+                () -> accountService.createAccount(authenticationNumberNotMatchedAccountCreateDto, null)
         )
                 .isInstanceOf(EmailNotAuthenticatedException.class);
     }
@@ -492,7 +492,7 @@ class AccountServiceTest {
     public void deleteWithExistedId() {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
 
-        AccountResultDto accountResultDto = accountService.deleteUser(ACCOUNT_CREATED_ID);
+        AccountResultDto accountResultDto = accountService.deleteAccount(ACCOUNT_CREATED_ID);
 
         assertThat(accountResultDto.getId()).isEqualTo(ACCOUNT_CREATED_ID);
         assertThat(accountResultDto.isDeleted()).isTrue();
@@ -503,7 +503,7 @@ class AccountServiceTest {
     public void deleteWithNotExistedId() {
         given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
 
-        assertThatThrownBy(() -> accountService.deleteUser(ACCOUNT_NOT_EXISTED_ID))
+        assertThatThrownBy(() -> accountService.deleteAccount(ACCOUNT_NOT_EXISTED_ID))
                 .isInstanceOf(AccountNotFoundException.class);
     }
 

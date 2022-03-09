@@ -59,10 +59,10 @@ const main = {
             contentType: 'application/json;',
         }).done(function (data) {
             alert("취소가 완료되었습니다.");
-            location.href = '/studys/open';
+            location.href = '/studies/open';
         }).fail(function (request) {
             alert(request.responseText);
-            location.herf = '/studys/open';
+            location.herf = '/studies/open';
         });
     },
 
@@ -75,7 +75,7 @@ const main = {
             contentType: 'application/json;',
         }).done(function () {
             alert("신청이 완료되었습니다.");
-            location.href = '/studys/open';
+            location.href = '/studies/open';
         }).fail(function (request) {
             if (request.responseText.match("Study already existed")) {
                 alert("이미 스터디에 참여하고 있어서 신청이 불가능합니다");
@@ -84,7 +84,7 @@ const main = {
             } else {
                 alert(request.responseText);
             }
-            location.herf = '/studys/open';
+            location.herf = '/studies/open';
         });
     },
 
@@ -338,7 +338,7 @@ const main = {
             contentType: 'application/json; charset=utf-8',
         }).done(function() {
             alert('댓글등록이 완료되었습니다');
-            window.location.href = '/studys/'+id;
+            window.location.href = '/studies/'+id;
         }).fail(function(request) {
             alert(request.responseText);
         })

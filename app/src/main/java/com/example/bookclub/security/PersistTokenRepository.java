@@ -11,6 +11,9 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * remember-me 토큰 생성, 수정, 조회를 한다.
+ */
 @Log4j2
 @Service
 public class PersistTokenRepository implements PersistentTokenRepository {

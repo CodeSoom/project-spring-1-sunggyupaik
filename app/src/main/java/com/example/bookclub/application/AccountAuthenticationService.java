@@ -18,6 +18,9 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 사용자 조회, 시큐리티 인증, 권한을 반환한다
+ */
 @Service
 @Transactional
 public class AccountAuthenticationService implements UserDetailsService {
@@ -30,6 +33,14 @@ public class AccountAuthenticationService implements UserDetailsService {
         this.accountRepository = accountRepository;
     }
 
+    /**
+     * 주어진 이메일로 시큐리티 계정을 반환한다
+     * 권한도 조회해서 사용자 정보에 넣어준다
+     *
+     * @param email 사용자 이메일 식별자
+     * @return 사용자
+     * @throws UsernameNotFoundException 주어진 이메일에 해당하는 사용자가 없는 경우
+     */
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Account account = getAccountByEmail(email);
@@ -40,11 +51,24 @@ public class AccountAuthenticationService implements UserDetailsService {
                 .build();
     }
 
+    /**
+     * 주어진 이메일로 사용자를 반환한다
+     *
+     * @param email 사용자 이메일 식별자
+     * @return 사용자
+     * @throws AccountEmailNotFoundException 주어진 이메일에 해당하는 사용자가 없는 경우
+     */
     public Account getAccountByEmail(String email) {
         return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountEmailNotFoundException(email));
     }
 
+    /**
+     * 주어진 이메일로 권한을 반환한다
+     *
+     * @param email 사용자 이메일 식별자
+     * @return 권한
+     */
     public List<GrantedAuthority> getAllAuthorities(String email) {
         List<Role> roles = roleRepository.findAllByEmail(email);
         return roles.stream()

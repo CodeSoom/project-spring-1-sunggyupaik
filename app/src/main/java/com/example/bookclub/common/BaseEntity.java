@@ -9,6 +9,9 @@ import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 
+/**
+ * 생성자, 수정자 칼럼을 추가한다.
+ */
 @EntityListeners(value = AuditingEntityListener.class)
 @MappedSuperclass
 @Getter

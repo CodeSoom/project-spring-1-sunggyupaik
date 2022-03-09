@@ -3,7 +3,6 @@ package com.example.bookclub.application;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyComment;
-import com.example.bookclub.domain.StudyCommentLikeRepository;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
@@ -14,7 +13,7 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
-import com.example.bookclub.errors.StudyAlreadyInOpenOrClose;
+import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyNotInOpenStateException;
@@ -38,31 +37,42 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * 스터디 생성, 수정, 조회, 지원 생성, 지원 삭제, 검색, 스터디상태 변경, 갯수 조회를 한다.
+ */
 @Service
 @Transactional
 public class StudyService {
     private final JpaStudyRepository studyRepository;
     private final AccountService accountService;
-    private final StudyCommentLikeRepository studyCommentLikeRepository;
 
     public StudyService(JpaStudyRepository studyRepository,
-                        AccountService accountService,
-                        StudyCommentLikeRepository studyCommentLikeRepository
+                        AccountService accountService
     ) {
         this.studyRepository = studyRepository;
         this.accountService = accountService;
-        this.studyCommentLikeRepository = studyCommentLikeRepository;
     }
 
+    /**
+     * 주어진 사용자 식별자과 생성할 스터디 정보로 스터디를 생성하고 반환한다.
+     *
+     * @param email 사용자 식별자
+     * @param studyCreateDto 생성할 스터디 정보
+     * @return 생성된 스터디 정보
+     * @throws StudyAlreadyInOpenOrCloseException 이미 모집중이거나 진행중 스터디에 참여하고 있는 경우
+     * @throws StudyStartDateInThePastException 생성하려는 스터디 시작일이 과거인 경우
+     * @throws StudyStartAndEndDateNotValidException 생성하려는 스터디 종료일이 시작일보다 빠른 경우
+     * @throws StudyStartAndEndTimeNotValidException 생성하려는 스터디 종료시간이 시작시간보다 빠른 경우
+     */
     public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
-        Account loginAccount = accountService.findUserByEmail(email);
+        Account loginAccount = accountService.findAccountByEmail(email);
 
         if(loginAccount.getStudy() != null) {
             StudyState accountStudyState = loginAccount.getStudy().getStudyState();
             if(loginAccount.getStudy().getStudyState() != null &&
                     (accountStudyState.equals(StudyState.OPEN) || accountStudyState.equals(StudyState.CLOSE))
             ) {
-                throw new StudyAlreadyInOpenOrClose();
+                throw new StudyAlreadyInOpenOrCloseException();
             }
         }
 
@@ -87,9 +97,21 @@ public class StudyService {
         return StudyResultDto.of(createdStudy);
     }
 
+    /**
+     * 주어진 사용자 식별자, 스터디 식별자, 수정할 스터디 정보로 스터디를 수정하고 반환한다.
+     *
+     * @param email 사용자 식별자
+     * @param id 스터디 식별자
+     * @param studyUpdateDto 수정할 스터디 정보
+     * @return 수정된 스터디 식별자
+     * @throws AccountNotManagerOfStudyException 스터디 식별자에 해당하는 스터디의 메일과 사용자 식별자가 다른 경우
+     * @throws StudyStartDateInThePastException 스터디 식별자에 해당하는 스터디 시작일이 과거인 경우
+     * @throws StudyStartAndEndDateNotValidException 스터디 식별자에 해당하는 스터디 종료일이 시작일보다 빠른 경우
+     * @throws StudyStartAndEndTimeNotValidException 스터디 식별자에 해당하는 스터디 종료시간이 시작시간보다 빠른 경우
+     */
     public StudyResultDto updateStudy(String email, Long id, StudyUpdateDto studyUpdateDto) {
         Study study = getStudy(id);
-        Account loginAccount = accountService.findUserByEmail(email);
+        Account loginAccount = accountService.findAccountByEmail(email);
         if(!study.getEmail().equals(loginAccount.getEmail())) {
             throw new AccountNotManagerOfStudyException();
         }
@@ -112,6 +134,14 @@ public class StudyService {
         return StudyResultDto.of(study);
     }
 
+    /**
+     * 스터디 시작 시간이 종료 시간보다 늦은지 검사하고 반환한다.
+     *
+     * @param startTime 스터디 시작 시간
+     * @param endTime 스터디 종료 시간
+     * @return 스터디 시작시간이 종료시간보다 늦는지 여부
+     * @throws ParseTimeException 시간 패턴이 잘못된 경우
+     */
     private boolean startTimeIsAfterEndTime(String startTime, String endTime) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
@@ -123,18 +153,39 @@ public class StudyService {
         }
     }
 
+    /**
+     * 스터디 시작 날짜가 종료 날짜보다 늦은지 검사하고 반환한다.
+     *
+     * @param startDate 스터디 시작 날짜
+     * @param endDate 스터디 종료 날짜
+     * @return 스터디 시작 날짜가 종료 날짜보다 늦는지 여부
+     */
     private boolean startDateIsAfterEndDate(LocalDate startDate, LocalDate endDate) {
         return startDate.isAfter(endDate);
     }
 
+    /**
+     * 스터디 시작 날짜가 오늘이거나 과거인지 검사하고 반환한다.
+     *
+     * @param startDate 스터디 시작 날짜
+     * @return 스터디 시작 날짜가 오늘이거나 과거인지 여부
+     */
     private boolean startDateIsTodayOrBefore(LocalDate startDate) {
         LocalDate today = LocalDate.now();
         return startDate.isBefore(today) || startDate.isEqual(today);
     }
 
+    /**
+     * 주어진 사용자 식별자와 스터디 식별자에 해당하는 스터디를 삭제하고 반환한다.
+     *
+     * @param email 사용자 식별자
+     * @param id 스터디 식별자
+     * @return 삭제된 스터디 식별자
+     * @throws AccountNotManagerOfStudyException 스터디 식별자에 해당하는 스터디 이메일과 사용자 식별자가 다른 경우
+     */
     public StudyResultDto deleteStudy(String email, Long id) {
         Study study = getStudy(id);
-        Account loginAccount = accountService.findUserByEmail(email);
+        Account loginAccount = accountService.findAccountByEmail(email);
         if(!study.getEmail().equals(loginAccount.getEmail())) {
             throw new AccountNotManagerOfStudyException();
         }
@@ -145,6 +196,16 @@ public class StudyService {
         return StudyResultDto.of(study);
     }
 
+    /**
+     * 주어진 스터디 식별자로 스터디 지원을 생성하고 아이디를 반환한다.
+     *
+     * @param userAccount 로그인한 사용자
+     * @param id 스터디 식별자
+     * @return 지원한 스터디 식별자
+     * @throws StudyNotInOpenStateException 스터디 식별자에 해당하는 스터디가 모집중이 아닌 경우
+     * @throws StudyAlreadyExistedException 스터디 식별자에 해당하는 스터디 지원이 이미 존재하는 경우
+     * @throws StudySizeFullException 스터디 식별자에 해당하는 스터디 정원이 다 찬 경우
+     */
     public Long applyStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
@@ -166,6 +227,15 @@ public class StudyService {
         return id;
     }
 
+    /**
+     * 주어진 스터디 식별자로 스터디 신청을 취소하고 아이디를 반환한다.
+     *
+     * @param userAccount 로그인한 사용자
+     * @param id 스터디 식별자
+     * @return 취소한 스터디 식별자
+     * @throws StudyNotInOpenStateException 스터디 식별자에 해당하는 스터디가 모집중이 아닌 경우
+     * @throws StudyNotAppliedBefore 스터디 식별자에 해당하는 스터디 신청이 존재하지 않는 경우
+     */
     public Long cancelStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
@@ -183,15 +253,35 @@ public class StudyService {
         return id;
     }
 
+    /**
+     * 모든 스터디 리스트를 반환한다.
+     *
+     * @return 스터디 리스트
+     */
     public List<Study> getStudies() {
         return studyRepository.findAll();
     }
 
+    /**
+     * 주어진 스터디 식별자에 해당하는 스터디를 반환한다.
+     *
+     * @param id 스터디 식별자
+     * @return 스터디 식별자에 해당하는 스터디
+     * @throws StudyNotFoundException 스터디 식별자에 해당하는 스터디가 존재하지 않는 경우
+     */
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
     }
 
+    /**
+     * 주어진 스터디 식별자에 해당하는 스터디 정보를 반환한다.
+     * 로그인한 사용자의 스터디 즐겨찾기 여부, 댓글, 댓글 좋아요 여부를 포함한다.
+     *
+     * @param userAccount 로그인한 사용자
+     * @param id 스터디 식별자
+     * @return 스터디 식별자에 해당하는 스터디 정보
+     */
     public StudyDetailResultDto getDetailedStudy(UserAccount userAccount, Long id) {
         Long principalId = userAccount.getAccount().getId();
         Study study = getStudy(id);
@@ -223,6 +313,15 @@ public class StudyService {
         return StudyDetailResultDto.of(StudyResultDto.of(study), studyCommentResultDtos);
     }
 
+    /**
+     * 주어진 검색어와 스터디 상태에 해당하는 스터디 페이징 정보를 반환한다.
+     *
+     * @param keyword 검색어
+     * @param studyState 스터디 상태
+     * @param principalId 로그인한 사용자 식별자
+     * @param pageable 페이징 정보
+     * @return 검색어와 스터디 상태에 해당하는 스터디 페이징 정보
+     */
     public Page<StudyResultDto> getStudiesBySearch(String keyword, StudyState studyState, Long principalId, Pageable pageable) {
         List<Study> studies = studyRepository.findByBookNameContaining(keyword, studyState, pageable);
         long total = studyRepository.getStudiesCountByKeyword(keyword, studyState);
@@ -243,10 +342,21 @@ public class StudyService {
         return new PageImpl<>(studyResultDtos, pageable, total);
     }
 
+    /**
+     * 주어진 스터디 식별자에 해당하는 스터디 정보를 반환한다.
+     * 스터디 참가자 정보를 조회할 때 사용한다.
+     *
+     * @param id 스터디 식별자
+     * @return 스터디 식별자에 해당하는 스터디 정보
+     */
     public StudyInfoResultDto getStudyInfo(Long id) {
         return studyRepository.getStudyInfo(id);
     }
 
+    /**
+     * 모집중인 스터디의 날짜가 마감되면 스터디 상태를 진행중으로 수정한다.
+     * 매일 밤 12시에 스케쥴러로 동작한다.
+     */
     @Scheduled(cron = "0 0 0 * * *")
     public void scheduleOpenToClose() {
         List<Study> lists = getStudies().stream()
@@ -262,6 +372,10 @@ public class StudyService {
         });
     }
 
+    /**
+     * 진행중인 스터디의 날짜가 마감되면 스터디 상태를 종료로 수정한다.
+     * 매일 밤 12시에 스케쥴러로 동작한다.
+     */
     @Scheduled(cron = "0 0 0 * * *")
     public void scheduleCloseToEnd() {
         List<Study> lists = getStudies().stream()
@@ -277,10 +391,21 @@ public class StudyService {
         });
     }
 
+    /**
+     * 주어진 스터디 상태에 해당하는 스터디 갯수를 반환한다.
+     *
+     * @param studyState 스터디 상태
+     * @return 스터디 상태에 해당하는 스터디 갯수
+     */
     public long getStudiesCount(StudyState studyState) {
         return studyRepository.getStudiesCount(studyState);
     }
 
+    /**
+     * 모든 스터디 갯수를 반환한다.
+     *
+     * @return 스터디 갯수
+     */
     public long getAllStudiesCount() {
         return studyRepository.getAllStudiesCount();
     }

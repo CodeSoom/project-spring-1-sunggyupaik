@@ -1,17 +1,18 @@
 package com.example.bookclub.controller;
 
+import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.security.CurrentAccount;
-import com.example.bookclub.security.UserAccount;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+/**
+ * 루트 페이지를 요청한다
+ */
 @Controller
 public class HomeController {
     private final AccountService accountService;
@@ -26,9 +27,15 @@ public class HomeController {
         this.accountAuthenticationService = accountAuthenticationService;
     }
 
+    /**
+     * 루트 페이지로 이동한다
+     *
+     * @param account 로그인한 사용자
+     * @param model 모델
+     * @return 루트 페이지
+     */
     @GetMapping("/")
-    public String home(@CurrentAccount Account account, Model model,
-                       @AuthenticationPrincipal UserAccount userAccount) {
+    public String home(@CurrentAccount Account account, Model model) {
         if(account != null) {
             account = accountAuthenticationService.getAccountByEmail(account.getEmail());
             checkTopMenu(account, model);
@@ -49,13 +56,20 @@ public class HomeController {
         return "index";
     }
 
+    /**
+     * 로그인한 사용자의 스터디 개설, 참여 여부를 확인한다
+     *
+     * @param account 로그인한 사용자
+     * @param model 모델
+     */
     private void checkTopMenu(Account account, Model model) {
-        model.addAttribute("account", account);
         if (account.isMangerOf(account.getStudy())) {
             model.addAttribute("studyManager", account.getStudy());
         }
         if (account.isApplierOf(account.getStudy())) {
             model.addAttribute("studyApply", account.getStudy());
         }
+
+        model.addAttribute("account", account);
     }
 }

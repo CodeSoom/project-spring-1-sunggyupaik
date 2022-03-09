@@ -10,6 +10,9 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StopWatch;
 
+/**
+ * 요청, 서비스에 메서드명과 걸린시간에 로그를 찍는다
+ */
 @Slf4j
 @Aspect
 @Component

@@ -368,7 +368,7 @@ class AccountApiControllerTest {
 
     @Test
     void detailWithExistedId() throws Exception {
-        given(accountService.getUser(ACCOUNT_ID)).willReturn(accountCreatedWithoutUploadFileResultDto);
+        given(accountService.getAccount(ACCOUNT_ID)).willReturn(accountCreatedWithoutUploadFileResultDto);
 
         mockMvc.perform(
                         get("/api/users/{id}", ACCOUNT_ID)
@@ -380,7 +380,7 @@ class AccountApiControllerTest {
 
 	@Test
 	void detailWithNotExisted() throws Exception {
-		given(accountService.getUser(ACCOUNT_NOT_EXISTED_ID)).willThrow(AccountNotFoundException.class);
+		given(accountService.getAccount(ACCOUNT_NOT_EXISTED_ID)).willThrow(AccountNotFoundException.class);
 
 		mockMvc.perform(
 				get("/api/user/{id}", ACCOUNT_NOT_EXISTED_ID)
@@ -393,7 +393,7 @@ class AccountApiControllerTest {
 	@Test
 	void createWithAllValidAttributes() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
 				.will(invocation -> {
 					AccountCreateDto accountCreateDto = invocation.getArgument(0);
 					UploadFile uploadFile = invocation.getArgument(1);
@@ -437,7 +437,7 @@ class AccountApiControllerTest {
 
     @Test
     void createWithoutUploadFile() throws Exception {
-        given(accountService.createUser(any(AccountCreateDto.class), eq(null)))
+        given(accountService.createAccount(any(AccountCreateDto.class), eq(null)))
 				.willReturn(accountCreatedWithoutUploadFileResultDto);
 
 		mockMvc.perform(
@@ -458,7 +458,7 @@ class AccountApiControllerTest {
     @Test
     void createWithDuplicatedEmail() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
 				.willThrow(AccountEmailDuplicatedException.class);
 
 		mockMvc.perform(
@@ -477,7 +477,7 @@ class AccountApiControllerTest {
 	@Test
 	void createWithInvalidAuthenticationNumber() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
 				.willThrow(EmailNotAuthenticatedException.class);
 
 		mockMvc.perform(
@@ -496,7 +496,7 @@ class AccountApiControllerTest {
     @Test
     void createWithDuplicatedNickname() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
 				.willThrow(AccountNicknameDuplicatedException.class);
 
 		mockMvc.perform(
@@ -515,7 +515,7 @@ class AccountApiControllerTest {
 	@Test
 	void createWithNotAuthenticatedEmailAuthenticationNumber() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createUser(any(AccountCreateDto.class), any(UploadFile.class)))
+		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
 				.willThrow(EmailNotAuthenticatedException.class);
 
 		mockMvc.perform(
@@ -722,7 +722,7 @@ class AccountApiControllerTest {
 	@Test
 	void deleteWithExistedId() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(deletedAccountToken);
-		given(accountService.deleteUser(ACCOUNT_DELETED_ID)).willReturn(deletedAccountResultDto);
+		given(accountService.deleteAccount(ACCOUNT_DELETED_ID)).willReturn(deletedAccountResultDto);
 
 		mockMvc.perform(
 						delete("/api/users/{id}", ACCOUNT_DELETED_ID)

@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 
 import javax.persistence.EntityManager;
 
+/**
+ * Querydsl 사용을 위한 설정을 등록합니다.
+ */
 @Configuration
 public class JpaQueryFactoryConfig {
 	@Bean

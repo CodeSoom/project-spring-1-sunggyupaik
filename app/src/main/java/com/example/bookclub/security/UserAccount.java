@@ -10,10 +10,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * 보안을 이용한 사용자
+ */
 @Getter
 @ToString
 public class UserAccount implements UserDetails {
+    /* 사용쟈 */
     private final Account account;
+
+    /* 권한 리스트 */
     private final List<GrantedAuthority> authorities;
 
     @Builder

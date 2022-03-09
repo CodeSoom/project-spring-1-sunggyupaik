@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * 인터뷰 크롤링, 조회, 리스트 조회를 한다.
+ */
 @Service
 @Transactional
 public class InterviewService {
@@ -30,6 +33,12 @@ public class InterviewService {
         this.interviewRepository = interviewRepository;
     }
 
+    /**
+     * 모든 인터뷰를 크롤링해서 반환한다.
+     * 교보문고 인터뷰를 크롤링한다.
+     *
+     * @return 크롤링한 인터뷰 리스트
+     */
     public List<Interview> crawlAllInterviews() {
         List<Interview> list = new ArrayList<>();
         boolean isLastPage = false;
@@ -82,6 +91,12 @@ public class InterviewService {
         return list;
     }
 
+    /**
+     * 23시 50분마다 새로운 인터뷰를 크롤링하고 반환한다.
+     * 교보문고 인터뷰를 크롤링한다.
+     *
+     * @return 크롤링한 인터뷰
+     */
     @Scheduled(cron = "0 50 23 * * *")
     public Interview crawlInterview() {
         Interview interview = null;
@@ -120,10 +135,23 @@ public class InterviewService {
         return interview;
     }
 
+    /**
+     * 주어진 검색어와 페이징 정보로 인터뷰 정보를 조회하고 반환한다.
+     *
+     * @param search 검색어 식별자
+     * @param pageable 페이징 정보
+     * @return 조회된 인터뷰 페이징 리스트 정보
+     */
     public Page<InterviewResultDto> getInterviews(String search, Pageable pageable) {
         return interviewRepository.findAllContainsTileOrContent(search, pageable);
     }
 
+    /**
+     * 주어진 페이징 정보로 인터뷰 리스트를 조회하고 반환한다.
+     *
+     * @param pageable 페이징 정보
+     * @return 조회된 인터뷰 페이징 리스트 정보
+     */
     public Page<InterviewResultDto> getAllInterviews(Pageable pageable) {
         return interviewRepository.findAll(pageable);
     }
