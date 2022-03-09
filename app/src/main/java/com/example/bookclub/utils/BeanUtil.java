@@ -5,6 +5,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
+/**
+ * 직접 빈을 조회한다.
+ */
 @Component
 public class BeanUtil implements ApplicationContextAware {
 	private static ApplicationContext applicationContext;
