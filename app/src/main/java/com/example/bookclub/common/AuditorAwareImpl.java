@@ -7,6 +7,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Optional;
 
+/**
+ * 시큐리티에서 인증정보를 반환한다.
+ */
 public class AuditorAwareImpl implements AuditorAware<String> {
 	@Override
 	public Optional<String> getCurrentAuditor() {

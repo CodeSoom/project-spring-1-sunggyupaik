@@ -15,7 +15,6 @@ import javax.mail.internet.MimeMessage;
 
 /**
  * 인증번호 전송, 메세지 생성, 인증번호 생성을 한다.
- *
  */
 @Service
 public class EmailService {

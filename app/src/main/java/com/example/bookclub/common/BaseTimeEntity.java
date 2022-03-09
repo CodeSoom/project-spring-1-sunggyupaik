@@ -11,6 +11,9 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import java.time.LocalDateTime;
 
+/**
+ * 생성시간, 수저시간을 생성한다.
+ */
 @EntityListeners(value = AuditingEntityListener.class)
 @MappedSuperclass
 @Getter
