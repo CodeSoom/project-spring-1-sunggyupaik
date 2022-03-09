@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 로그인이 안되어있으면 로그인 페이지로 이동한다.
+ */
 @Component
 public class CustomEntryPoint implements AuthenticationEntryPoint {
 	@Override
