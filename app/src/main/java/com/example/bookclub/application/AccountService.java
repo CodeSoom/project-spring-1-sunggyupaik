@@ -49,11 +49,11 @@ public class AccountService {
     }
 
     /**
-     * 주어진 사용자 아이디에 해당하는 계정을 반환한다.
+     * 주어진 사용자 식별자에 해당하는 사용자를 반환한다.
      *
-     * @param id 사용자 아이디 식별자
-     * @return 조회한 사용자
-     * @throws AccountNotFoundException 주어진 아이디에 해당하는 사용자가 없는 경우
+     * @param id 사용자 식별자
+     * @return 주어진 사용자 식별자에 해당하는 사용자
+     * @throws AccountNotFoundException 주어진 사용자 식별자에 해당하는 사용자가 없는 경우
      */
     public Account findAccount(Long id) {
         return accountRepository.findById(id)
@@ -61,11 +61,11 @@ public class AccountService {
     }
 
     /**
-     * 주어진 사용자 이메일에 해당하는 계정을 반환한다.
+     * 주어진 사용자 이메일에 해당하는 사용자을 반환한다.
      *
-     * @param email 사용자 이메일 식별자
-     * @return 조회한 사용자
-     * @throws AccountEmailNotFoundException 주어진 이메일에 해당하는 사용자가 없는 경우
+     * @param email 사용자 이메일
+     * @return 조회한 사용자 정보
+     * @throws AccountEmailNotFoundException 주어진 사용자 이메일에 해당하는 사용자가 없는 경우
      */
     public Account findAccountByEmail(String email) {
         return accountRepository.findByEmail(email)
@@ -73,11 +73,11 @@ public class AccountService {
     }
 
     /**
-     * 주어진 사용자 아이디에 해당하는 계정을 반환한다.
+     * 주어진 사용자 식별자에 해당하는 사용자을 반환한다.
      *
-     * @param id 사용자 아이디 식별자
+     * @param id 사용자 식별자
      * @return 조회한 사용자 정보
-     * @throws AccountNotFoundException 주어진 아이디에 해당하는 사용자가 없는 경우
+     * @throws AccountNotFoundException 주어진 사용자 식별자에 해당하는 사용자가 없는 경우
      * */
     public AccountResultDto getAccount(Long id) {
         return accountRepository.findById(id)
@@ -86,7 +86,7 @@ public class AccountService {
     }
 
     /**
-     * 주어진 사용자와 사진 정보로 사용자를 생성하고 반환한다.
+     * 주어진 사진 정보로 사용자를 생성하고 생성된 사용자 정보를 반환한다.
      * 인증이 완료되면 인증번호를 삭제한다.
      *
      * @param accountCreateDto 사용자 정보
@@ -133,13 +133,13 @@ public class AccountService {
     }
 
     /**
-     * 주어진 아이디와 수정할 사용자정보, 사진정보로 사용자를 수정하고 반환한다.
+     * 주어진 사용자 식별자와 수정할 사용자정보, 사진정보로 사용자를 수정하고 반환한다.
      *
-     * @param id 사용자 아이디 식별자
+     * @param id 사용자 식별자
      * @param accountUpdateDto 수정할 사용자 정보
      * @param uploadFile 수정할 사진 정보
      * @return 사용자 정보
-     * @throws AccountPasswordBadRequestException 저장된 사용자 비밀번호와 입력한 비밀번호가 다른 경우
+     * @throws AccountPasswordBadRequestException 저장된 사용자 비밀번호와 주어진 비밀번호가 다른 경우
      * @throws AccountNicknameDuplicatedException 수정할 사용자 닉네임이 이미 존재하는 경우
      */
     public AccountResultDto updateUser(Long id, AccountUpdateDto accountUpdateDto,
@@ -166,11 +166,11 @@ public class AccountService {
     }
 
     /**
-     * 주어진 이메일로 인증번호를 반환한다.
+     * 주어진 사용자 이메일로 인증번호를 반환한다.
      *
-     * @param email 사용자 이메일 식별자
+     * @param email 사용자 이메일
      * @return 조회한 인증번호
-     * @throws EmailNotAuthenticatedException 주어진 이메일에 해당하는 인증번호가 없는 경우
+     * @throws EmailNotAuthenticatedException 주어진 사용자 이메일에 해당하는 인증번호가 없는 경우
      */
     public EmailAuthentication getAuthenticationNumber(String email) {
         return emailAuthenticationRepository.findByEmail(email)
@@ -178,9 +178,9 @@ public class AccountService {
     }
 
     /**
-     * 주어진 이메일에 해당하는 인증번호를 삭제하고 반환한다.
+     * 주어진 사용자 이메일에 해당하는 인증번호를 삭제하고 반환한다.
      *
-     * @param email 사용자 이메일 식별자
+     * @param email 사용자 이메일
      * @return 삭제한 인증번호
      */
     public EmailAuthentication deleteEmailAuthentication(String email) {
@@ -190,9 +190,9 @@ public class AccountService {
     }
 
     /**
-     * 주어진 아이디에 해당하는 계정을 삭제하고 반환한다.
+     * 주어진 사용자 식별자에 해당하는 사용자를 삭제하고 반환한다.
      *
-     * @param id 사용자 아이디 식별자
+     * @param id 사용자 식별자
      * @return 삭제한 사용자 정보
      */
     public AccountResultDto deleteAccount(Long id) {
@@ -203,10 +203,10 @@ public class AccountService {
     }
 
     /**
-     * 주어진 아이디와 닉네임으로 닉네임 중복검사를 하고 여부를 반환한다.
+     * 주어진 사용자 식별자와 닉네임으로 닉네임 중복검사를 하고 여부를 반환한다.
      *
-     * @param id 사용자 아이디 식별자
-     * @param nickname 사용자 닉네임 식별자
+     * @param id 사용자 식별자
+     * @param nickname 수정할 사용자 닉네임
      * @return 닉네임 중복 여부
      */
     public boolean isNicknameDuplicated(Long id, String nickname) {
@@ -214,13 +214,13 @@ public class AccountService {
     }
 
     /**
-     * 주어진 아이디와 수정할 비밀번호로 비밀번호를 수정하고 사용자 정보를 반환한다.
+     * 주어진 사용자 식별자와 수정할 비밀번호로 비밀번호를 수정하고 사용자 정보를 반환한다.
      *
-     * @param id 사용자 아이디 식별자
-     * @param accountUpdatePasswordDto 사용자 수정 정보
+     * @param id 사용자 식별자
+     * @param accountUpdatePasswordDto 수정할 사용자 정보
      * @return 수정된 사용자 정보
-     * @throws AccountPasswordBadRequestException 저장된 비밀번호와 입력한 비밀번호가 다른 경우
-     * @throws AccountNewPasswordNotMatchedException 입력한 비밀번호와 비밀번호 확인이 다른 경우
+     * @throws AccountPasswordBadRequestException 저장된 비밀번호와 주어진 비밀번호가 다른 경우
+     * @throws AccountNewPasswordNotMatchedException 주어진 비밀번호와 비밀번호 확인이 다른 경우
      */
     public AccountResultDto updatePassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
         Account account = findAccount(id);

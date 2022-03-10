@@ -1,7 +1,6 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.repository.account.AccountRepositoryCustom;
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.domain.RoleRepository;
@@ -19,6 +18,7 @@ import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
+import com.example.bookclub.repository.account.JpaAccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -80,7 +80,7 @@ class AccountServiceTest {
     private UploadFileService uploadFileService;
     private RoleRepository roleRepository;
     private AccountService accountService;
-    private AccountRepositoryCustom accountRepository;
+    private JpaAccountRepository accountRepository;
     private EmailAuthenticationRepository emailAuthenticationRepository;
 
     private UploadFile uploadFile;
@@ -107,7 +107,7 @@ class AccountServiceTest {
 
     @BeforeEach
     void setUp() {
-        accountRepository = mock(AccountRepositoryCustom.class);
+        accountRepository = mock(JpaAccountRepository.class);
         emailAuthenticationRepository = mock(EmailAuthenticationRepository.class);
         passwordEncoder = new BCryptPasswordEncoder();
         uploadFileService = mock(UploadFileService.class);
