@@ -1,6 +1,11 @@
 package com.example.bookclub.controller.api;
 
+import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.application.AccountService;
+import com.example.bookclub.application.StudyCommentLikeService;
+import com.example.bookclub.application.StudyCommentService;
+import com.example.bookclub.application.StudyFavoriteService;
+import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Day;
@@ -20,9 +25,9 @@ import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
-import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
+import com.example.bookclub.security.PersistTokenRepository;
 import com.example.bookclub.security.UserAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
@@ -35,7 +40,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -118,6 +122,18 @@ class StudyApiControllerTest {
     private StudyService studyService;
 
     @MockBean
+    private StudyLikeService studyLikeService;
+
+    @MockBean
+    private StudyCommentService studyCommentService;
+
+    @MockBean
+    private StudyCommentLikeService studyCommentLikeService;
+
+    @MockBean
+    private StudyFavoriteService studyFavoriteService;
+
+    @MockBean
     private AccountService accountService;
 
     @MockBean
@@ -136,7 +152,7 @@ class StudyApiControllerTest {
     private CustomDeniedHandler customDeniedHandler;
 
     @MockBean
-    private PersistentTokenRepository tokenRepository;
+    private PersistTokenRepository tokenRepository;
 
     private Account accountWithoutStudy;
     private Account accountWithSetupStudy;
@@ -680,4 +696,18 @@ class StudyApiControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void likeStudyWithExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.like(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willReturn(STUDY_SETUP_EXISTED_ID);
+
+        mockMvc.perform(
+                    post("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
 }
