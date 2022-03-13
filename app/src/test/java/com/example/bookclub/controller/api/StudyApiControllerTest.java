@@ -123,6 +123,9 @@ class StudyApiControllerTest {
     private static final Long STUDY_COMMENT_NOT_EXISTED_ID = 8L;
     private static final String STUDY_COMMENT_CONTENT = "studyCommentContent";
 
+    private static final Long STUDY_LIKE_CREATE_ID = 9L;
+    private static final Long STUDY_COMMENT_LIKE_CREATE_ID = 10L;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -728,7 +731,7 @@ class StudyApiControllerTest {
     void createLikeStudyWithExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.like(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
-                .willReturn(STUDY_SETUP_EXISTED_ID);
+                .willReturn(STUDY_LIKE_CREATE_ID);
 
         mockMvc.perform(
                     post("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
@@ -767,7 +770,7 @@ class StudyApiControllerTest {
     void deleteLikeStudyWithExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.unLike(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
-                .willReturn(STUDY_SETUP_EXISTED_ID);
+                .willReturn(STUDY_LIKE_CREATE_ID);
 
         mockMvc.perform(
                     delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
@@ -872,5 +875,19 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createLikeCommentWithValidAttribute() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.likeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
+                .willReturn(STUDY_COMMENT_LIKE_CREATE_ID);
+
+        mockMvc.perform(
+                        post("/api/study/comment/{commentId}/like", STUDY_COMMENT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().string(String.valueOf(STUDY_COMMENT_LIKE_CREATE_ID)));
     }
 }
