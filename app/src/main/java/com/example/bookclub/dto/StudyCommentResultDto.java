@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class StudyCommentResultDto {
 	private Long id;
 	private String content;

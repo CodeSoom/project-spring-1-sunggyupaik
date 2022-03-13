@@ -12,6 +12,8 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.dto.StudyCommentCreateDto;
+import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
@@ -114,6 +116,8 @@ class StudyApiControllerTest {
     private static final Long ACCOUNT_CLOSED_STUDY_ID = 6L;
     private static final LocalDate CREATE_START_DATE_PAST = LocalDate.now().minusDays(1);
 
+    private static final String STUDY_COMMENT_CONTENT = "studyCommentContent";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -180,6 +184,9 @@ class StudyApiControllerTest {
 
     private StudyResultDto studyResultDto;
     private StudyResultDto updatedStudyResultDto;
+
+    private StudyCommentCreateDto studyCommentCreateDto;
+    private StudyCommentResultDto studyCommentResultDto;
 
     private List<Study> list;
 
@@ -329,6 +336,14 @@ class StudyApiControllerTest {
         updatedStudyResultDto = StudyResultDto.of(updatedStudy);
 
         list = List.of(setUpStudy, updatedStudy);
+
+        studyCommentCreateDto = StudyCommentCreateDto.builder()
+                .content(STUDY_COMMENT_CONTENT)
+                .build();
+
+        studyCommentResultDto = StudyCommentResultDto.builder()
+                .content(STUDY_COMMENT_CONTENT)
+                .build();
     }
 
     @Test
@@ -775,5 +790,22 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createStudyComment() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentService.createStudyComment(any(UserAccount.class),
+                eq(STUDY_SETUP_EXISTED_ID), any(StudyCommentCreateDto.class)))
+                .willReturn(studyCommentResultDto);
+
+        mockMvc.perform(
+                        post("/api/study/{studyId}/comment", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(studyCommentCreateDto))
+                )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("content").value(studyCommentResultDto.getContent()));
     }
 }
