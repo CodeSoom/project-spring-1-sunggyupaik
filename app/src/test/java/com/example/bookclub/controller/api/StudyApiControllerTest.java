@@ -699,7 +699,7 @@ class StudyApiControllerTest {
     }
 
     @Test
-    void likeStudyWithExistedId() throws Exception {
+    void createLikeStudyWithExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.like(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
                 .willReturn(STUDY_SETUP_EXISTED_ID);
@@ -712,7 +712,7 @@ class StudyApiControllerTest {
     }
 
     @Test
-    void likeStudyWithNotExistedId() throws Exception {
+    void createLikeStudyWithNotExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.like(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
                 .willThrow(StudyNotFoundException.class);
@@ -725,7 +725,7 @@ class StudyApiControllerTest {
     }
 
     @Test
-    void likeStudyWithAlreadyExistedId() throws Exception {
+    void createLikeStudyWithAlreadyExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.like(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
                 .willThrow(StudyLikeAlreadyExistedException.class);
@@ -735,5 +735,18 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteLikeStudyWithExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.unLike(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willReturn(STUDY_SETUP_EXISTED_ID);
+
+        mockMvc.perform(
+                    delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
     }
 }
