@@ -23,6 +23,7 @@ import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
 import com.example.bookclub.errors.StudyCommentContentNotExistedException;
 import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
+import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;
@@ -921,7 +922,6 @@ class StudyApiControllerTest {
     @Test
     void deleteStudyCommentLikeWithExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-
         given(studyCommentLikeService.unlikeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
                 .willReturn(STUDY_COMMENT_LIKE_CREATE_ID);
 
@@ -930,5 +930,18 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteStudyCommentLikeWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.unlikeComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
+                .willThrow(StudyCommentNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }

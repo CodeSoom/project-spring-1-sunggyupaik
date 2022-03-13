@@ -228,7 +228,7 @@ public class ControllerErrorAdvice {
     }
 
     @ExceptionHandler(StudyCommentLikeNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleStudyCommentLikeNotFoundException(StudyCommentLikeNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
@@ -252,7 +252,7 @@ public class ControllerErrorAdvice {
     }
 
     @ExceptionHandler(StudyCommentContentNotExistedException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleStudyCommentContentNotExistedException(StudyCommentContentNotExistedException e) {
         return new ErrorResponse(e.getMessage());
     }
