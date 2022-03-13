@@ -22,6 +22,7 @@ import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
 import com.example.bookclub.errors.StudyCommentContentNotExistedException;
 import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
+import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;
@@ -878,7 +879,7 @@ class StudyApiControllerTest {
     }
 
     @Test
-    void createLikeCommentWithValidAttribute() throws Exception {
+    void createStudyCommentLikeWithValidAttribute() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentLikeService.likeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
                 .willReturn(STUDY_COMMENT_LIKE_CREATE_ID);
@@ -889,5 +890,18 @@ class StudyApiControllerTest {
                 .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(content().string(String.valueOf(STUDY_COMMENT_LIKE_CREATE_ID)));
+    }
+
+    @Test
+    void createStudyCommentLikeAlreadyExisted() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.likeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
+                .willThrow(StudyCommentLikeAlreadyExistedException.class);
+
+        mockMvc.perform(
+                        post("/api/study/comment/{commentId}/like", STUDY_COMMENT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }
