@@ -710,4 +710,16 @@ class StudyApiControllerTest {
                 .andExpect(status().isCreated());
     }
 
+    @Test
+    void likeStudyWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.like(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
+                .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        post("/api/study/like/{studyId}", STUDY_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
