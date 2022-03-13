@@ -21,6 +21,7 @@ import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
 import com.example.bookclub.errors.StudyCommentContentNotExistedException;
+import com.example.bookclub.errors.StudyCommentNotFoundException;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
@@ -844,5 +845,18 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteStudyCommentWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentService.deleteStudyComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
+                .willThrow(StudyCommentNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/comment/{studyCommentId}", STUDY_COMMENT_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
