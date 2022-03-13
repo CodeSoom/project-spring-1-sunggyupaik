@@ -117,6 +117,8 @@ class StudyApiControllerTest {
     private static final Long ACCOUNT_CLOSED_STUDY_ID = 6L;
     private static final LocalDate CREATE_START_DATE_PAST = LocalDate.now().minusDays(1);
 
+    private static final Long STUDY_COMMENT_EXISTED_ID = 7L;
+    private static final Long STUDY_COMMENT_NOT_EXISTED_ID = 8L;
     private static final String STUDY_COMMENT_CONTENT = "studyCommentContent";
 
     @Autowired
@@ -831,4 +833,16 @@ class StudyApiControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
+    @Test
+    void deleteStudyCommentWithExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentService.deleteStudyComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
+                .willReturn(STUDY_COMMENT_EXISTED_ID);
+
+        mockMvc.perform(
+                        delete("/api/study/comment/{studyCommentId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
 }
