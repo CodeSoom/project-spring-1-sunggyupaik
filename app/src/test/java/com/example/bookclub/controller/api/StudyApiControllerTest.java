@@ -20,6 +20,7 @@ import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
+import com.example.bookclub.errors.StudyCommentContentNotExistedException;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
@@ -186,6 +187,7 @@ class StudyApiControllerTest {
     private StudyResultDto updatedStudyResultDto;
 
     private StudyCommentCreateDto studyCommentCreateDto;
+    private StudyCommentCreateDto studyCommentCreateWithoutContentDto;
     private StudyCommentResultDto studyCommentResultDto;
 
     private List<Study> list;
@@ -339,6 +341,10 @@ class StudyApiControllerTest {
 
         studyCommentCreateDto = StudyCommentCreateDto.builder()
                 .content(STUDY_COMMENT_CONTENT)
+                .build();
+
+        studyCommentCreateWithoutContentDto = StudyCommentCreateDto.builder()
+                .content("")
                 .build();
 
         studyCommentResultDto = StudyCommentResultDto.builder()
@@ -808,4 +814,21 @@ class StudyApiControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("content").value(studyCommentResultDto.getContent()));
     }
+
+    @Test
+    void createStudyCommentWithoutContent() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentService.createStudyComment(any(UserAccount.class),
+                eq(STUDY_SETUP_EXISTED_ID), any(StudyCommentCreateDto.class)))
+                .willThrow(StudyCommentContentNotExistedException.class);
+
+        mockMvc.perform(
+                        post("/api/study/{studyId}/comment", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(studyCommentCreateWithoutContentDto))
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
 }

@@ -5,6 +5,7 @@ import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentRepository;
 import com.example.bookclub.dto.StudyCommentCreateDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
+import com.example.bookclub.errors.StudyCommentContentNotExistedException;
 import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
 import com.example.bookclub.security.UserAccount;
@@ -33,11 +34,16 @@ public class StudyCommentService {
 	 * @param studyId 스터디 식별자
 	 * @param studyCommentCreateDto 생성할 댓글 정보
 	 * @return 생성된 댓글 정보
+	 * @throws StudyCommentContentNotExistedException 생성할 댓글 정보가 비어있는 경우
 	 */
 	@Transactional
 	public StudyCommentResultDto createStudyComment(UserAccount userAccount, Long studyId,
 													StudyCommentCreateDto studyCommentCreateDto) {
 		Study study = studyService.getStudy(studyId);
+		if(studyCommentCreateDto.getContent().isBlank()) {
+			throw new StudyCommentContentNotExistedException();
+		}
+
 		StudyComment studyComment = studyCommentCreateDto.toEntity(userAccount.getAccount(), study);
 
 		StudyComment savedStudyComment = studyCommentRepository.save(studyComment);
