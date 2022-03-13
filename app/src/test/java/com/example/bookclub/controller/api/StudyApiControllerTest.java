@@ -19,6 +19,7 @@ import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
+import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyNotInOpenStateException;
@@ -751,10 +752,23 @@ class StudyApiControllerTest {
     }
 
     @Test
-    void deleteLikedStudyWithNotExistedId() throws Exception {
+    void deleteLikeStudyWithNotExistedStudyId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.unLike(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
                 .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteLikeStudyLikeWithNotExistedStudyLikeId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.unLike(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyLikeNotExistedException.class);
 
         mockMvc.perform(
                         delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
