@@ -933,13 +933,26 @@ class StudyApiControllerTest {
     }
 
     @Test
-    void deleteStudyCommentLikeWithNotExistedId() throws Exception {
+    void deleteStudyCommentLikeWithNotExistedStudyCommentId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentLikeService.unlikeComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
                 .willThrow(StudyCommentNotFoundException.class);
 
         mockMvc.perform(
                         delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteStudyCommentLikeWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.unlikeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
+                .willThrow(StudyCommentLikeNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_EXISTED_ID)
                 )
                 .andDo(print())
                 .andExpect(status().isNotFound());
