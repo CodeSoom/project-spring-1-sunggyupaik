@@ -904,4 +904,17 @@ class StudyApiControllerTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void createStudyCommentLikeWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.likeComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
+                .willThrow(StudyCommentNotFoundException.class);
+
+        mockMvc.perform(
+                        post("/api/study/comment/{commentId}/like", STUDY_COMMENT_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
