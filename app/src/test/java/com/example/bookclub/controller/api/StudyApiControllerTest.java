@@ -963,7 +963,7 @@ class StudyApiControllerTest {
     }
 
     @Test
-    void createFavoriteStudyWithValidAttribute() throws Exception {
+    void createFavoriteStudyWithExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
                 .willReturn(STUDY_FAVORITE_CREATE_ID);
@@ -986,5 +986,18 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createFavoriteStudyWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        post("/api/study/{id}/favorite", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
