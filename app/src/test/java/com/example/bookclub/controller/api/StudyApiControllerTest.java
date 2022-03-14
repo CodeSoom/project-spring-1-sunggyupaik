@@ -25,6 +25,7 @@ import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
+import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
@@ -972,5 +973,18 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createFavoriteStudyAlreadyExisted() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyFavoriteAlreadyExistedException.class);
+
+        mockMvc.perform(
+                        post("/api/study/{id}/favorite", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
     }
 }
