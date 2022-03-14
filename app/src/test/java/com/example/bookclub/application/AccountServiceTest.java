@@ -248,14 +248,14 @@ class AccountServiceTest {
     }
 
     @Test
-    public void findWithNotExistedId() {
+    public void findAccountWithNotExistedId() {
         given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> accountService.findAccount(ACCOUNT_NOT_EXISTED_ID))
                 .isInstanceOf(AccountNotFoundException.class);
     }
 
-    @Test void findUserByExistedEmail() {
+    @Test void findAccountByExistedEmail() {
         given(accountRepository.findByEmail(ACCOUNT_SETUP_EMAIL)).willReturn(Optional.of(setUpAccount));
 
         Account account = accountService.findAccountByEmail(ACCOUNT_SETUP_EMAIL);
@@ -265,14 +265,14 @@ class AccountServiceTest {
         assertThat(account.getStudy().getId()).isEqualTo(STUDY_SETUP_ID);
     }
 
-    @Test void findUserByNotExistedEmail() {
+    @Test void findAccountByNotExistedEmail() {
         given(accountRepository.findByEmail(ACCOUNT_NOT_EXISTED_EMAIL)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> accountService.findAccountByEmail(ACCOUNT_NOT_EXISTED_EMAIL))
                 .isInstanceOf(AccountEmailNotFoundException.class);
     }
 
-    @Test void getUserByExistedId() {
+    @Test void getAccountByExistedId() {
         given(accountRepository.findById(ACCOUNT_SETUP_ID)).willReturn(Optional.of(setUpAccount));
 
         AccountResultDto accountResultDto = accountService.getAccount(ACCOUNT_SETUP_ID);
@@ -282,7 +282,7 @@ class AccountServiceTest {
         assertThat(accountResultDto.getStudyResultDto().getId()).isEqualTo(STUDY_SETUP_ID);
     }
 
-    @Test void getUserByNotExistedId() {
+    @Test void getAccountByNotExistedId() {
         given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
 
         assertThatThrownBy(() -> accountService.getAccount(ACCOUNT_NOT_EXISTED_ID))
@@ -372,7 +372,7 @@ class AccountServiceTest {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
 
         AccountResultDto accountResultDto =
-                accountService.updateUser(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
+                accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
 
         assertThat(accountResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
         assertThat(passwordEncoder.matches(accountUpdateDto.getPassword(), accountResultDto.getPassword())).isTrue();
@@ -389,7 +389,7 @@ class AccountServiceTest {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithoutUploadFile));
 
         AccountResultDto accountResultDto =
-                accountService.updateUser(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
+                accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
 
         UploadFileResultDto updatedUploadFileResultDto = accountResultDto.getUploadFileResultDto();
         assertThat(updatedUploadFileResultDto.getId()).isEqualTo(updateUploadFile.getId());
@@ -403,7 +403,7 @@ class AccountServiceTest {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
 
         AccountResultDto accountResultDto =
-                accountService.updateUser(ACCOUNT_CREATED_ID, accountUpdateDto, null);
+                accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, null);
 
         UploadFileResultDto updatedUploadFileResultDto = accountResultDto.getUploadFileResultDto();
         UploadFile savedUpdatedUploadFile = createdAccountWithUploadFile.getUploadFile();
@@ -418,7 +418,7 @@ class AccountServiceTest {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithoutUploadFile));
 
         AccountResultDto accountResultDto =
-                accountService.updateUser(ACCOUNT_CREATED_ID, accountUpdateDto, null);
+                accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, null);
 
         assertThat(accountResultDto.getUploadFileResultDto().getId()).isNull();
     }
@@ -429,7 +429,7 @@ class AccountServiceTest {
         given(accountRepository.existsByIdNotAndNickname(ACCOUNT_CREATED_ID, ACCOUNT_DUPLICATED_NICKNAME)).willReturn(true);
 
         assertThatThrownBy(
-                () -> accountService.updateUser(ACCOUNT_CREATED_ID, nicknameDuplicatedAccountUpdateDto, null)
+                () -> accountService.updateAccount(ACCOUNT_CREATED_ID, nicknameDuplicatedAccountUpdateDto, null)
         )
                 .isInstanceOf(AccountNicknameDuplicatedException.class);
     }
@@ -439,7 +439,7 @@ class AccountServiceTest {
         given(accountRepository.findById(ACCOUNT_NOT_EXISTED_ID)).willReturn(Optional.empty());
 
         assertThatThrownBy(
-                () -> accountService.updateUser(ACCOUNT_NOT_EXISTED_ID, accountUpdateDto, null)
+                () -> accountService.updateAccount(ACCOUNT_NOT_EXISTED_ID, accountUpdateDto, null)
         )
                 .isInstanceOf(AccountNotFoundException.class);
     }
@@ -449,7 +449,7 @@ class AccountServiceTest {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
 
         assertThatThrownBy(
-                () -> accountService.updateUser(ACCOUNT_CREATED_ID, passwordNotValidAccountUpdateDto, null)
+                () -> accountService.updateAccount(ACCOUNT_CREATED_ID, passwordNotValidAccountUpdateDto, null)
         )
                 .isInstanceOf(AccountPasswordBadRequestException.class);
     }

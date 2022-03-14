@@ -88,11 +88,11 @@ public class AccountApiController {
                                    @RequestPart(required = false) MultipartFile uploadFile,
                                    AccountUpdateDto accountUpdateDto) {
     if (uploadFile == null) {
-            return accountService.updateUser(id, accountUpdateDto, null);
+            return accountService.updateAccount(id, accountUpdateDto, null);
         }
 
         UploadFile accountFile = uploadFileService.upload(uploadFile);
-        return accountService.updateUser(id, accountUpdateDto, accountFile);
+        return accountService.updateAccount(id, accountUpdateDto, accountFile);
     }
 
     /**

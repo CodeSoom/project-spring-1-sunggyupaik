@@ -142,8 +142,8 @@ public class AccountService {
      * @throws AccountPasswordBadRequestException 저장된 사용자 비밀번호와 주어진 비밀번호가 다른 경우
      * @throws AccountNicknameDuplicatedException 수정할 사용자 닉네임이 이미 존재하는 경우
      */
-    public AccountResultDto updateUser(Long id, AccountUpdateDto accountUpdateDto,
-                                       UploadFile uploadFile) {
+    public AccountResultDto updateAccount(Long id, AccountUpdateDto accountUpdateDto,
+                                          UploadFile uploadFile) {
         Account account = findAccount(id);
 
         String password = accountUpdateDto.getPassword();

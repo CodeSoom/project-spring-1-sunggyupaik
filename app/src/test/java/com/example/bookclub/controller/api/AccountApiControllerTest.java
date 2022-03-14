@@ -550,7 +550,7 @@ class AccountApiControllerTest {
     void updateWithAllValidAttributesAlreadyHasUploadFile() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithUploadFileToken);
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(updatedUploadFile);
-		given(accountService.updateUser(eq(ACCOUNT_FILE_EXISTED_ID), any(AccountUpdateDto.class), any(UploadFile.class)))
+		given(accountService.updateAccount(eq(ACCOUNT_FILE_EXISTED_ID), any(AccountUpdateDto.class), any(UploadFile.class)))
 				.willReturn(accountUpdatedWithUploadFileResultDto);
 
         mockMvc.perform(
@@ -579,7 +579,7 @@ class AccountApiControllerTest {
 	@Test
 	void updateWithoutUploadFileAlreadyHasUploadFile() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithUploadFileToken);
-		given(accountService.updateUser(eq(ACCOUNT_FILE_EXISTED_ID), any(AccountUpdateDto.class), eq(null)))
+		given(accountService.updateAccount(eq(ACCOUNT_FILE_EXISTED_ID), any(AccountUpdateDto.class), eq(null)))
 				.willReturn(accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto);
 
 		mockMvc.perform(
@@ -606,7 +606,7 @@ class AccountApiControllerTest {
 	void updateWithUploadFileBeforeNotHasUploadFile() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(updatedUploadFile);
-		given(accountService.updateUser(eq(ACCOUNT_ID), any(AccountUpdateDto.class), any(UploadFile.class)))
+		given(accountService.updateAccount(eq(ACCOUNT_ID), any(AccountUpdateDto.class), any(UploadFile.class)))
 				.willReturn(accountUpdatedWithUploadBeforeNotHasUploadFileResultDto);
 
 		mockMvc.perform(
@@ -633,7 +633,7 @@ class AccountApiControllerTest {
 	@Test
 	void updateWithoutUploadFileBeforeNotHasUploadFile() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
-		given(accountService.updateUser(eq(ACCOUNT_ID), any(AccountUpdateDto.class), eq(null)))
+		given(accountService.updateAccount(eq(ACCOUNT_ID), any(AccountUpdateDto.class), eq(null)))
 				.willReturn(accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto);
 
 		mockMvc.perform(
