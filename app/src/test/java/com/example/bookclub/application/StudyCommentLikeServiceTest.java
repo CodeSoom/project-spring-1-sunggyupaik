@@ -113,7 +113,7 @@ class StudyCommentLikeServiceTest {
 	}
 
 	@Test
-	void deleteLikeCommentWithExistedId() {
+	void deleteLikeCommentWithExistedCommentId() {
 		given(studyCommentService.getStudyComment(STUDY_COMMENT_EXISTED_ID))
 				.willReturn(setUpStudyComment);
 		given(accountService.findAccount(ACCOUNT_EXISTED_ID)).willReturn(account);
@@ -123,5 +123,16 @@ class StudyCommentLikeServiceTest {
 		Long deletedLikeCommentId = studyCommentLikeService.unlikeComment(userAccount, STUDY_COMMENT_EXISTED_ID);
 
 		assertThat(deletedLikeCommentId).isEqualTo(STUDY_COMMENT_LIKE_CREATE_ID);
+	}
+
+	@Test
+	void deleteLikeCommentWithNotExistedCommentId() {
+		given(studyCommentService.getStudyComment(STUDY_COMMENT_NOT_EXISTED_ID))
+				.willThrow(StudyCommentNotFoundException.class);
+
+		assertThatThrownBy(
+				() -> studyCommentLikeService.unlikeComment(userAccount, STUDY_COMMENT_NOT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyCommentNotFoundException.class);
 	}
 }
