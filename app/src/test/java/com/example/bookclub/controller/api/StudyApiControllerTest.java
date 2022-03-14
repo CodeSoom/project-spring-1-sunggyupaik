@@ -1027,4 +1027,17 @@ class StudyApiControllerTest {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void deleteFavoriteStudyWithNotExistedStudyId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.unFavoriteStudy(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
+                .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/{id}/favorite", STUDY_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
 }
