@@ -6,6 +6,7 @@ import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentLike;
 import com.example.bookclub.domain.StudyCommentLikeRepository;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
+import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
@@ -134,5 +135,19 @@ class StudyCommentLikeServiceTest {
 				() -> studyCommentLikeService.unlikeComment(userAccount, STUDY_COMMENT_NOT_EXISTED_ID)
 		)
 				.isInstanceOf(StudyCommentNotFoundException.class);
+	}
+
+	@Test
+	void deleteLikeCommentWithNotExistedId() {
+		given(studyCommentService.getStudyComment(STUDY_COMMENT_EXISTED_ID))
+				.willReturn(setUpStudyComment);
+		given(accountService.findAccount(ACCOUNT_EXISTED_ID)).willReturn(account);
+		given(studyCommentLikeRepository.findByStudyCommentAndAccount(eq(setUpStudyComment), eq(account)))
+				.willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyCommentLikeService.unlikeComment(userAccount, STUDY_COMMENT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyCommentLikeNotFoundException.class);
 	}
 }
