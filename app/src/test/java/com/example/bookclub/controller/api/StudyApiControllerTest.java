@@ -26,6 +26,7 @@ import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
 import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
+import com.example.bookclub.errors.StudyFavoriteNotExistedException;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
@@ -130,7 +131,7 @@ class StudyApiControllerTest {
     private static final Long STUDY_COMMENT_LIKE_CREATE_ID = 10L;
 
     private static final Long STUDY_FAVORITE_CREATE_ID = 11L;
-    private static final Long STUDY_FAVORITE_NOT_CREATE_ID = 12L;
+    private static final Long STUDY_FAVORITE_NOT_EXISTED_ID = 12L;
 
     @Autowired
     private MockMvc mockMvc;
@@ -1012,5 +1013,18 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteFavoriteStudyWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.unFavoriteStudy(any(UserAccount.class), eq(STUDY_FAVORITE_NOT_EXISTED_ID)))
+                .willThrow(StudyFavoriteNotExistedException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/{id}/favorite", STUDY_FAVORITE_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }
