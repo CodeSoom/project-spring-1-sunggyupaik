@@ -18,9 +18,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,17 +76,17 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(accountAuthenticationService);
     }
 
-    @Bean
-    PersistentTokenRepository tokenRepository(){
-        JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
-        repository.setDataSource(dataSource);
-        try{
-            repository.removeUserTokens("junk");
-        } catch (Exception ex){
-            repository.setCreateTableOnStartup(true);
-        }
-        return repository;
-    }
+//    @Bean
+//    PersistentTokenRepository tokenRepository(){
+//        JdbcTokenRepositoryImpl repository = new JdbcTokenRepositoryImpl();
+//        repository.setDataSource(dataSource);
+//        try{
+//            repository.removeUserTokens("junk");
+//        } catch (Exception ex){
+//            repository.setCreateTableOnStartup(true);
+//        }
+//        return repository;
+//    }
 
     @Bean
     PersistentTokenBasedRememberMeServices rememberMeServices(){

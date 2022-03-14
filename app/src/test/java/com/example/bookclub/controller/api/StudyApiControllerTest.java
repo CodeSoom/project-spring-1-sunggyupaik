@@ -1,18 +1,34 @@
 package com.example.bookclub.controller.api;
 
+import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.application.AccountService;
+import com.example.bookclub.application.StudyCommentLikeService;
+import com.example.bookclub.application.StudyCommentService;
+import com.example.bookclub.application.StudyFavoriteService;
+import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.dto.StudyCommentCreateDto;
+import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
+import com.example.bookclub.errors.StudyCommentContentNotExistedException;
+import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
+import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
+import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
+import com.example.bookclub.errors.StudyCommentNotFoundException;
+import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
+import com.example.bookclub.errors.StudyFavoriteNotExistedException;
+import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
+import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.errors.StudyNotAppliedBefore;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.errors.StudyNotInOpenStateException;
@@ -20,9 +36,9 @@ import com.example.bookclub.errors.StudySizeFullException;
 import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.errors.StudyStartDateInThePastException;
-import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
+import com.example.bookclub.security.PersistTokenRepository;
 import com.example.bookclub.security.UserAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.core.StringContains;
@@ -35,7 +51,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -108,6 +123,16 @@ class StudyApiControllerTest {
     private static final Long ACCOUNT_CLOSED_STUDY_ID = 6L;
     private static final LocalDate CREATE_START_DATE_PAST = LocalDate.now().minusDays(1);
 
+    private static final Long STUDY_COMMENT_EXISTED_ID = 7L;
+    private static final Long STUDY_COMMENT_NOT_EXISTED_ID = 8L;
+    private static final String STUDY_COMMENT_CONTENT = "studyCommentContent";
+
+    private static final Long STUDY_LIKE_CREATE_ID = 9L;
+    private static final Long STUDY_COMMENT_LIKE_CREATE_ID = 10L;
+
+    private static final Long STUDY_FAVORITE_CREATE_ID = 11L;
+    private static final Long STUDY_FAVORITE_NOT_EXISTED_ID = 12L;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -116,6 +141,18 @@ class StudyApiControllerTest {
 
     @MockBean
     private StudyService studyService;
+
+    @MockBean
+    private StudyLikeService studyLikeService;
+
+    @MockBean
+    private StudyCommentService studyCommentService;
+
+    @MockBean
+    private StudyCommentLikeService studyCommentLikeService;
+
+    @MockBean
+    private StudyFavoriteService studyFavoriteService;
 
     @MockBean
     private AccountService accountService;
@@ -136,7 +173,7 @@ class StudyApiControllerTest {
     private CustomDeniedHandler customDeniedHandler;
 
     @MockBean
-    private PersistentTokenRepository tokenRepository;
+    private PersistTokenRepository tokenRepository;
 
     private Account accountWithoutStudy;
     private Account accountWithSetupStudy;
@@ -162,6 +199,10 @@ class StudyApiControllerTest {
 
     private StudyResultDto studyResultDto;
     private StudyResultDto updatedStudyResultDto;
+
+    private StudyCommentCreateDto studyCommentCreateDto;
+    private StudyCommentCreateDto studyCommentCreateWithoutContentDto;
+    private StudyCommentResultDto studyCommentResultDto;
 
     private List<Study> list;
 
@@ -311,6 +352,18 @@ class StudyApiControllerTest {
         updatedStudyResultDto = StudyResultDto.of(updatedStudy);
 
         list = List.of(setUpStudy, updatedStudy);
+
+        studyCommentCreateDto = StudyCommentCreateDto.builder()
+                .content(STUDY_COMMENT_CONTENT)
+                .build();
+
+        studyCommentCreateWithoutContentDto = StudyCommentCreateDto.builder()
+                .content("")
+                .build();
+
+        studyCommentResultDto = StudyCommentResultDto.builder()
+                .content(STUDY_COMMENT_CONTENT)
+                .build();
     }
 
     @Test
@@ -679,5 +732,312 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createLikeStudyWithExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.like(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willReturn(STUDY_LIKE_CREATE_ID);
+
+        mockMvc.perform(
+                    post("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createLikeStudyWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.like(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
+                .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        post("/api/study/like/{studyId}", STUDY_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createLikeStudyWithAlreadyExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.like(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyLikeAlreadyExistedException.class);
+
+        mockMvc.perform(
+                        post("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteLikeStudyWithExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.unLike(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willReturn(STUDY_LIKE_CREATE_ID);
+
+        mockMvc.perform(
+                    delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void deleteLikeStudyWithNotExistedStudyId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.unLike(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteLikeStudyLikeWithNotExistedStudyLikeId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyLikeService.unLike(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyLikeNotExistedException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createStudyComment() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentService.createStudyComment(any(UserAccount.class),
+                eq(STUDY_SETUP_EXISTED_ID), any(StudyCommentCreateDto.class)))
+                .willReturn(studyCommentResultDto);
+
+        mockMvc.perform(
+                        post("/api/study/{studyId}/comment", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(studyCommentCreateDto))
+                )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("content").value(studyCommentResultDto.getContent()));
+    }
+
+    @Test
+    void createStudyCommentWithoutContent() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentService.createStudyComment(any(UserAccount.class),
+                eq(STUDY_SETUP_EXISTED_ID), any(StudyCommentCreateDto.class)))
+                .willThrow(StudyCommentContentNotExistedException.class);
+
+        mockMvc.perform(
+                        post("/api/study/{studyId}/comment", STUDY_SETUP_EXISTED_ID)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(studyCommentCreateWithoutContentDto))
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void deleteStudyCommentWithExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentService.deleteStudyComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
+                .willReturn(STUDY_COMMENT_EXISTED_ID);
+
+        mockMvc.perform(
+                        delete("/api/study/comment/{studyCommentId}", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteStudyCommentWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentService.deleteStudyComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
+                .willThrow(StudyCommentNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/comment/{studyCommentId}", STUDY_COMMENT_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteStudyCommentWithNotAccountId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentService.deleteStudyComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
+                .willThrow(StudyCommentDeleteBadRequest.class);
+
+        mockMvc.perform(
+                delete("/api/study/comment/{studyCommentId}", STUDY_COMMENT_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createStudyCommentLikeWithValidAttribute() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.likeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
+                .willReturn(STUDY_COMMENT_LIKE_CREATE_ID);
+
+        mockMvc.perform(
+                        post("/api/study/comment/{commentId}/like", STUDY_COMMENT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isCreated())
+                .andExpect(content().string(String.valueOf(STUDY_COMMENT_LIKE_CREATE_ID)));
+    }
+
+    @Test
+    void createStudyCommentLikeAlreadyExisted() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.likeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
+                .willThrow(StudyCommentLikeAlreadyExistedException.class);
+
+        mockMvc.perform(
+                        post("/api/study/comment/{commentId}/like", STUDY_COMMENT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createStudyCommentLikeWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.likeComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
+                .willThrow(StudyCommentNotFoundException.class);
+
+        mockMvc.perform(
+                        post("/api/study/comment/{commentId}/like", STUDY_COMMENT_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteStudyCommentLikeWithExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.unlikeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
+                .willReturn(STUDY_COMMENT_LIKE_CREATE_ID);
+
+        mockMvc.perform(
+                        delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteStudyCommentLikeWithNotExistedStudyCommentId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.unlikeComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
+                .willThrow(StudyCommentNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteStudyCommentLikeWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyCommentLikeService.unlikeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
+                .willThrow(StudyCommentLikeNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createFavoriteStudyWithExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willReturn(STUDY_FAVORITE_CREATE_ID);
+
+        mockMvc.perform(
+                        post("/api/study/{id}/favorite", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void createFavoriteStudyAlreadyExisted() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyFavoriteAlreadyExistedException.class);
+
+        mockMvc.perform(
+                        post("/api/study/{id}/favorite", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void createFavoriteStudyWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        post("/api/study/{id}/favorite", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteFavoriteStudyWithExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.unFavoriteStudy(any(UserAccount.class), eq(STUDY_FAVORITE_CREATE_ID)))
+                .willReturn(STUDY_FAVORITE_CREATE_ID);
+
+        mockMvc.perform(
+                        delete("/api/study/{id}/favorite", STUDY_FAVORITE_CREATE_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteFavoriteStudyWithNotExistedId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.unFavoriteStudy(any(UserAccount.class), eq(STUDY_FAVORITE_NOT_EXISTED_ID)))
+                .willThrow(StudyFavoriteNotExistedException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/{id}/favorite", STUDY_FAVORITE_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteFavoriteStudyWithNotExistedStudyId() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.unFavoriteStudy(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
+                .willThrow(StudyNotFoundException.class);
+
+        mockMvc.perform(
+                        delete("/api/study/{id}/favorite", STUDY_NOT_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isNotFound());
     }
 }

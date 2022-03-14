@@ -1,12 +1,12 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.repository.account.AccountRepositoryCustom;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
+import com.example.bookclub.repository.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,13 +42,13 @@ class AccountAuthenticationServiceTest {
 	private UploadFile setupUploadFile;
 	private List<Role> roles;
 
-	private AccountRepositoryCustom accountRepository;
+	private JpaAccountRepository accountRepository;
 	private RoleRepository roleRepository;
 	private AccountAuthenticationService accountAuthenticationService;
 
 	@BeforeEach
 	void setup() {
-		accountRepository = mock(AccountRepositoryCustom.class);
+		accountRepository = mock(JpaAccountRepository.class);
 		roleRepository = mock(RoleRepository.class);
 		accountAuthenticationService = new AccountAuthenticationService(
 				roleRepository, accountRepository);

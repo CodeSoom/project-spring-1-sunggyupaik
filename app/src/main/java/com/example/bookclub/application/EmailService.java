@@ -31,7 +31,7 @@ public class EmailService {
     /**
      * 주어진 이메일 정보로 인증번호를 전송하고 이메일을 반환한다.
      *
-     * @param emailRequestDto 이메일 정보 식별자
+     * @param emailRequestDto 이메일 정보
      * @return 인증번호를 전송한 이메일
      * @throws EmailBadRequestException 메일 전송 요청이 잘못된 경우
      */
@@ -61,7 +61,7 @@ public class EmailService {
     /**
      * 주어진 사용자 이메일과 인증번호로 전송할 메세지를 생성하고 반환한다.
      *
-     * @param email 사용자 이메일 식별자
+     * @param email 사용자 이메일
      * @param authenticationNumber 인증번호
      * @return 전송할 메세지
      * @throws MessageCreateBadRequestException 전송할 메세지 만들기가 안되는 경우

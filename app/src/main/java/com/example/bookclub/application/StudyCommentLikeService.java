@@ -29,12 +29,12 @@ public class StudyCommentLikeService {
 	}
 
 	/**
-	 * 로그인한 사용자와 댓글 아이디로 스터디 좋아요를 생성하고 댓글 아이디를 반환한다.
+	 * 주어진 댓글 식별자에 해당하는 스터디 댓글 좋아요를 생성하고 스터디 댓글 식별자를 반환한다.
 	 *
 	 * @param userAccount 로그인한 사용자
-	 * @param commentId 댓글 아이디 식별자
+	 * @param commentId 스터디 댓글 식별자
 	 * @return 좋아요 누른 스터디 댓글 아이디
-	 * @throws StudyCommentLikeAlreadyExistedException 댓글을 이미 좋아요를 생성한 경우
+	 * @throws StudyCommentLikeAlreadyExistedException 로그인한 사용자의 스터디 댓글 식별자에 이미 좋아요가 존재하는 경우
 	 */
 	@Transactional
 	public Long likeComment(UserAccount userAccount, Long commentId) {
@@ -60,12 +60,12 @@ public class StudyCommentLikeService {
 	}
 
 	/**
-	 * 로그인한 사용자와 댓글 아이디로 스터디 좋아요를 추가하고 댓글 아이디를 반환한다.
+	 * 주어진 스터디 댓글 식별자에 해당하는 스터디 댓글 좋아요를 삭제하고 댓글 아이디를 반환한다.
 	 *
 	 * @param userAccount 로그인한 사용자
-	 * @param  commentId 아이디 식별자
-	 * @return 좋아요 누른 스터디 댓글 아이디
-	 * @throws StudyCommentLikeNotFoundException 댓글을 이미 좋아요를 삭제한 경우
+	 * @param  commentId 스터디 댓글 식별자
+	 * @return 좋아요를 삭제한 스터디 댓글 아이디
+	 * @throws StudyCommentLikeNotFoundException 로그인한 사용자의 스터디 댓글 식별자에 좋아요가 존재하지 않는 경우
 	 */
 	@Transactional
 	public Long unlikeComment(UserAccount userAccount, Long commentId) {

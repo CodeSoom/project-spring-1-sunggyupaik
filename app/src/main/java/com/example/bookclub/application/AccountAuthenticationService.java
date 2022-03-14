@@ -1,7 +1,6 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.repository.account.AccountRepositoryCustom;
 import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class AccountAuthenticationService implements UserDetailsService {
     private final RoleRepository roleRepository;
-    private final AccountRepositoryCustom accountRepository;
+    private final JpaAccountRepository accountRepository;
 
     public AccountAuthenticationService(RoleRepository roleRepository,
                                         JpaAccountRepository accountRepository) {

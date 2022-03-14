@@ -1,5 +1,6 @@
 package com.example.bookclub.controller.api;
 
+import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.UploadFileService;
 import com.example.bookclub.domain.Account;
@@ -18,9 +19,9 @@ import com.example.bookclub.errors.AccountNicknameDuplicatedException;
 import com.example.bookclub.errors.AccountNotFoundException;
 import com.example.bookclub.errors.AccountPasswordBadRequestException;
 import com.example.bookclub.errors.EmailNotAuthenticatedException;
-import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
+import com.example.bookclub.security.PersistTokenRepository;
 import com.example.bookclub.security.UserAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,7 +35,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -168,7 +168,7 @@ class AccountApiControllerTest {
 	private CustomDeniedHandler customDeniedHandler;
 
 	@MockBean
-	private PersistentTokenRepository tokenRepository;
+	private PersistTokenRepository persistTokenRepository;
 
     @BeforeEach
     void setUp() {
