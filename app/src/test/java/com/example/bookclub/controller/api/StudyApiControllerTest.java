@@ -128,6 +128,9 @@ class StudyApiControllerTest {
     private static final Long STUDY_LIKE_CREATE_ID = 9L;
     private static final Long STUDY_COMMENT_LIKE_CREATE_ID = 10L;
 
+    private static final Long STUDY_FAVORITE_CREATE_ID = 11L;
+    private static final Long STUDY_FAVORITE_NOT_CREATE_ID = 12L;
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -956,5 +959,18 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void createFavoriteStudyWithValidAttribute() throws Exception {
+        SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
+        given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
+                .willReturn(STUDY_FAVORITE_CREATE_ID);
+
+        mockMvc.perform(
+                        post("/api/study/{id}/favorite", STUDY_SETUP_EXISTED_ID)
+                )
+                .andDo(print())
+                .andExpect(status().isCreated());
     }
 }
