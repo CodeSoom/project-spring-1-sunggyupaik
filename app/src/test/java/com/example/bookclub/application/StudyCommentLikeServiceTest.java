@@ -111,4 +111,17 @@ class StudyCommentLikeServiceTest {
 		)
 				.isInstanceOf(StudyCommentLikeAlreadyExistedException.class);
 	}
+
+	@Test
+	void deleteLikeCommentWithExistedId() {
+		given(studyCommentService.getStudyComment(STUDY_COMMENT_EXISTED_ID))
+				.willReturn(setUpStudyComment);
+		given(accountService.findAccount(ACCOUNT_EXISTED_ID)).willReturn(account);
+		given(studyCommentLikeRepository.findByStudyCommentAndAccount(eq(setUpStudyComment), eq(account)))
+				.willReturn(Optional.of(createdStudyCommentLike));
+
+		Long deletedLikeCommentId = studyCommentLikeService.unlikeComment(userAccount, STUDY_COMMENT_EXISTED_ID);
+
+		assertThat(deletedLikeCommentId).isEqualTo(STUDY_COMMENT_LIKE_CREATE_ID);
+	}
 }
