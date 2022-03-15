@@ -130,4 +130,13 @@ public class StudyCommentServiceTest {
 		)
 				.isInstanceOf(StudyCommentContentNotExistedException.class);
 	}
+
+	@Test
+	void deleteStudyCommentWithExistedId() {
+		given(studyCommentRepository.findById(STUDY_COMMENT_EXISTED_ID)).willReturn(Optional.of(studyComment));
+
+		Long deletedStudyCommentId = studyCommentService.deleteStudyComment(userAccount, STUDY_COMMENT_EXISTED_ID);
+
+		assertThat(deletedStudyCommentId).isEqualTo(STUDY_COMMENT_EXISTED_ID);
+	}
 }
