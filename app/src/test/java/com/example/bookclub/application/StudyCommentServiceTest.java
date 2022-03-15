@@ -7,6 +7,7 @@ import com.example.bookclub.domain.StudyCommentRepository;
 import com.example.bookclub.dto.StudyCommentCreateDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.errors.StudyCommentContentNotExistedException;
+import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,14 +32,19 @@ public class StudyCommentServiceTest {
 	private static final LocalDateTime STUDY_COMMENT_UPDATED_TIME = LocalDateTime.now();
 
 	private static final Long ACCOUNT_SETUP_ID = 2L;
+	private static final Long ACCOUNT_OTHER_ID = 5L;
 
 	private static final Long STUDY_SETUP_ID = 3L;
+
+	private static final Long STUDY_COMMENT_OTHERS_ID = 4L;
 
 	private static final Long STUDY_COMMENT_NOT_EXISTED_ID = 999L;
 
 	private Account account;
+	private Account otherAccount;
 	private Study study;
 	private StudyComment studyComment;
+	private StudyComment othersStudyComment;
 
 	private UserAccount userAccount;
 	private StudyCommentCreateDto studyCommentCreateDto;
@@ -64,10 +70,21 @@ public class StudyCommentServiceTest {
 				.id(STUDY_SETUP_ID)
 				.build();
 
+		otherAccount = Account.builder()
+				.id(ACCOUNT_OTHER_ID)
+				.build();
+
 		studyComment = StudyComment.builder()
 				.id(STUDY_COMMENT_EXISTED_ID)
 				.content(STUDY_COMMENT_CONTENT)
 				.account(account)
+				.study(study)
+				.build();
+
+		othersStudyComment = StudyComment.builder()
+				.id(STUDY_COMMENT_OTHERS_ID)
+				.content(STUDY_COMMENT_CONTENT)
+				.account(otherAccount)
 				.study(study)
 				.build();
 
@@ -138,5 +155,15 @@ public class StudyCommentServiceTest {
 		Long deletedStudyCommentId = studyCommentService.deleteStudyComment(userAccount, STUDY_COMMENT_EXISTED_ID);
 
 		assertThat(deletedStudyCommentId).isEqualTo(STUDY_COMMENT_EXISTED_ID);
+	}
+
+	@Test
+	void deleteStudyCommentWithNotMine() {
+		given(studyCommentRepository.findById(STUDY_COMMENT_OTHERS_ID)).willReturn(Optional.of(othersStudyComment));
+
+		assertThatThrownBy(
+				() -> studyCommentService.deleteStudyComment(userAccount, STUDY_COMMENT_OTHERS_ID)
+		)
+				.isInstanceOf(StudyCommentDeleteBadRequest.class);
 	}
 }
