@@ -102,6 +102,17 @@ class StudyFavoriteServiceTest {
 	}
 
 	@Test
+	void createFavoriteStudyWithNotExistedStudyId() {
+		given(accountService.findAccount(ACCOUNT_EXISTED_ID)).willReturn(account);
+		given(studyService.getStudy(STUDY_NOT_EXISTED_ID)).willThrow(StudyNotFoundException.class);
+
+		assertThatThrownBy(
+				() -> studyFavoriteService.favoriteStudy(userAccount, STUDY_NOT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyNotFoundException.class);
+	}
+
+	@Test
 	void deleteFavoriteStudyWithExistedId() {
 		given(accountService.findAccount(ACCOUNT_EXISTED_ID)).willReturn(account);
 		given(studyService.getStudy(STUDY_EXISTED_ID)).willReturn(study);
