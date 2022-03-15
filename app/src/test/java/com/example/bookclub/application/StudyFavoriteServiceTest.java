@@ -97,4 +97,16 @@ class StudyFavoriteServiceTest {
 		)
 				.isInstanceOf(StudyFavoriteAlreadyExistedException.class);
 	}
+
+	@Test
+	void deleteUnFavoriteStudyWithExistedId() {
+		given(accountService.findAccount(ACCOUNT_EXISTED_ID)).willReturn(account);
+		given(studyService.getStudy(STUDY_EXISTED_ID)).willReturn(study);
+		given(favoriteRepository.findByStudyAndAccount(any(Study.class), any(Account.class)))
+				.willReturn(Optional.of(createdFavorite));
+
+		Long deletedFavoriteStudy = studyFavoriteService.unFavoriteStudy(userAccount, STUDY_EXISTED_ID);
+
+		assertThat(deletedFavoriteStudy).isEqualTo(STUDY_FAVORITE_CREATE_ID);
+	}
 }
