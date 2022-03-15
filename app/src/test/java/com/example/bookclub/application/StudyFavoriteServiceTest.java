@@ -5,6 +5,7 @@ import com.example.bookclub.domain.Favorite;
 import com.example.bookclub.domain.FavoriteRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
+import com.example.bookclub.errors.StudyFavoriteNotExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
@@ -122,5 +123,19 @@ class StudyFavoriteServiceTest {
 						userAccount, STUDY_NOT_EXISTED_ID)
 		)
 				.isInstanceOf(StudyNotFoundException.class);
+	}
+
+	@Test
+	void deleteFavoritesStudyWithNotExistedFavoritesStudy() {
+		given(accountService.findAccount(ACCOUNT_EXISTED_ID)).willReturn(account);
+		given(studyService.getStudy(STUDY_EXISTED_ID)).willReturn(study);
+		given(favoriteRepository.findByStudyAndAccount(any(Study.class), any(Account.class)))
+				.willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyFavoriteService.unFavoriteStudy(
+						userAccount, STUDY_EXISTED_ID)
+		)
+				.isInstanceOf(StudyFavoriteNotExistedException.class);
 	}
 }
