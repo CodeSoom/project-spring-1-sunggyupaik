@@ -27,12 +27,12 @@ public class StudyFavoriteService {
 	}
 
 	/**
-	 * 로그인한 사용자와 스터디 아이디로 스터디 즐겨찾기를 생성하고 아이디를 반환한다.
+	 * 주어진 스터디 식별자로 스터디 즐겨찾기를 생성하고 즐겨찾기 식별자를 반환한다.
 	 *
 	 * @param userAccount 로그인한 사용자
-	 * @param studyId 스터디 아이디 식별자
-	 * @return 생성된 스터디 즐겨찾기 아이디
-	 * @throws StudyFavoriteAlreadyExistedException 주어진 스터디 아이디에 해당하는 즐겨찾기가 존재하는 경우
+	 * @param studyId 스터디 식별자
+	 * @return 생성된 스터디 즐겨찾기 식별자
+	 * @throws StudyFavoriteAlreadyExistedException 주어진 스터디 식별자에 해당하는 즐겨찾기가 존재하는 경우
 	 */
 	public Long favoriteStudy(UserAccount userAccount, Long studyId) {
 		Long accountId = userAccount.getAccount().getId();
@@ -51,18 +51,18 @@ public class StudyFavoriteService {
 				});
 
 		favorite.addStudyAndAccount(study, account);
-		favoriteRepository.save(favorite);
+		Favorite createdFavorite = favoriteRepository.save(favorite);
 
-		return studyId;
+		return createdFavorite.getId();
 	}
 
 	/**
-	 *
+	 * 주어진 스터디 식별자로 스터디 즐겨찾기를 삭제하고 삭제된 즐겨찾기 식별자를 반환한다.
 	 *
 	 * @param userAccount 로그인한 사용자
-	 * @param studyId 스터디 아이디 식별자
+	 * @param studyId 스터디 식별자
 	 * @return 삭제된 스터디 즐겨찾기 아이디
-	 * @throws StudyFavoriteNotExistedException 주어진 스터디 아이디에 해당하는 즐겨찾기 없는 경우
+	 * @throws StudyFavoriteNotExistedException 주어진 스터디 식별자에 해당하는 즐겨찾기가 없는 경우
 	 */
 	public Long unFavoriteStudy(UserAccount userAccount, Long studyId) {
 		Long accountId = userAccount.getAccount().getId();
