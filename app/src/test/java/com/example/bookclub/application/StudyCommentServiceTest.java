@@ -166,4 +166,14 @@ public class StudyCommentServiceTest {
 		)
 				.isInstanceOf(StudyCommentDeleteBadRequest.class);
 	}
+
+	@Test
+	void deleteStudyCommentWithNotExistedId() {
+		given(studyCommentRepository.findById(STUDY_COMMENT_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyCommentService.deleteStudyComment(userAccount, STUDY_COMMENT_NOT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyCommentNotFoundException.class);
+	}
 }
