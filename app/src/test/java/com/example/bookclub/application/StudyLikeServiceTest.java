@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyLike;
 import com.example.bookclub.domain.StudyLikeRepository;
+import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -90,5 +92,18 @@ public class StudyLikeServiceTest {
 				() -> studyLikeService.like(userAccount, STUDY_NOT_EXISTED_ID)
 		)
 				.isInstanceOf(StudyNotFoundException.class);
+	}
+
+	@Test
+	void createStudyLikeWithAlreadyExistedStudyId() {
+		given(studyService.getStudy(STUDY_EXISTED_ID)).willReturn(study);
+		given(accountService.findAccount(ACCOUNT_ID)).willReturn(account);
+		given(studyLikeRepository.findByStudyAndAccount(study, account))
+				.willReturn(Optional.of(createdStudyLike));
+
+		assertThatThrownBy(
+				() -> studyLikeService.like(userAccount, STUDY_EXISTED_ID)
+		)
+				.isInstanceOf(StudyLikeAlreadyExistedException.class);
 	}
 }
