@@ -5,6 +5,7 @@ import com.example.bookclub.domain.Favorite;
 import com.example.bookclub.domain.FavoriteRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
+import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ class StudyFavoriteServiceTest {
 	private final static Long STUDY_EXISTED_ID = 2L;
 
 	private final static Long STUDY_FAVORITE_CREATE_ID = 3L;
+	private final static Long STUDY_NOT_EXISTED_ID = 999L;
 
 	private Account account;
 	private Study study;
@@ -99,7 +101,7 @@ class StudyFavoriteServiceTest {
 	}
 
 	@Test
-	void deleteUnFavoriteStudyWithExistedId() {
+	void deleteFavoriteStudyWithExistedId() {
 		given(accountService.findAccount(ACCOUNT_EXISTED_ID)).willReturn(account);
 		given(studyService.getStudy(STUDY_EXISTED_ID)).willReturn(study);
 		given(favoriteRepository.findByStudyAndAccount(any(Study.class), any(Account.class)))
@@ -108,5 +110,17 @@ class StudyFavoriteServiceTest {
 		Long deletedFavoriteStudy = studyFavoriteService.unFavoriteStudy(userAccount, STUDY_EXISTED_ID);
 
 		assertThat(deletedFavoriteStudy).isEqualTo(STUDY_FAVORITE_CREATE_ID);
+	}
+
+	@Test
+	void deleteFavoritesStudyWithNotExistedStudyId() {
+		given(accountService.findAccount(ACCOUNT_EXISTED_ID)).willReturn(account);
+		given(studyService.getStudy(STUDY_NOT_EXISTED_ID)).willThrow(StudyNotFoundException.class);
+
+		assertThatThrownBy(
+				() -> studyFavoriteService.unFavoriteStudy(
+						userAccount, STUDY_NOT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyNotFoundException.class);
 	}
 }
