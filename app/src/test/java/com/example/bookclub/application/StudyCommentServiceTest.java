@@ -4,12 +4,14 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentRepository;
+import com.example.bookclub.errors.StudyCommentNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -20,6 +22,8 @@ public class StudyCommentServiceTest {
 	private static final Long ACCOUNT_SETUP_ID = 2L;
 
 	private static final Long STUDY_SETUP_ID = 3L;
+
+	private static final Long STUDY_COMMENT_NOT_EXISTED_ID = 999L;
 
 	private Account account;
 	private Study study;
@@ -47,6 +51,7 @@ public class StudyCommentServiceTest {
 
 		studyComment = StudyComment.builder()
 				.id(STUDY_COMMENT_EXISTED_ID)
+				.content(STUDY_COMMENT_CONTENT)
 				.account(account)
 				.study(study)
 				.build();
@@ -59,5 +64,15 @@ public class StudyCommentServiceTest {
 		StudyComment getStudyComment = studyCommentService.getStudyComment(STUDY_COMMENT_EXISTED_ID);
 
 		assertThat(getStudyComment.getId()).isEqualTo(STUDY_COMMENT_EXISTED_ID);
+	}
+
+	@Test
+	void getStudyCommentWithNotExistedId() {
+		given(studyCommentRepository.findById(STUDY_COMMENT_NOT_EXISTED_ID)).willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyCommentService.getStudyComment(STUDY_COMMENT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyCommentNotFoundException.class);
 	}
 }
