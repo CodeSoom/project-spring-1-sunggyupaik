@@ -6,6 +6,7 @@ import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentRepository;
 import com.example.bookclub.dto.StudyCommentCreateDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
+import com.example.bookclub.errors.StudyCommentContentNotExistedException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,6 +42,7 @@ public class StudyCommentServiceTest {
 
 	private UserAccount userAccount;
 	private StudyCommentCreateDto studyCommentCreateDto;
+	private StudyCommentCreateDto studyCommentCreateDtoWithoutContent;
 
 	private StudyCommentService studyCommentService;
 	private StudyCommentRepository studyCommentRepository;
@@ -68,7 +70,7 @@ public class StudyCommentServiceTest {
 				.account(account)
 				.study(study)
 				.build();
-		
+
 		studyComment.setUpdatedDate(STUDY_COMMENT_UPDATED_TIME);
 
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
@@ -81,6 +83,10 @@ public class StudyCommentServiceTest {
 
 		studyCommentCreateDto = StudyCommentCreateDto.builder()
 				.content(STUDY_COMMENT_CONTENT)
+				.build();
+
+		studyCommentCreateDtoWithoutContent = StudyCommentCreateDto.builder()
+				.content("")
 				.build();
 	}
 
@@ -112,5 +118,16 @@ public class StudyCommentServiceTest {
 				userAccount, STUDY_SETUP_ID, studyCommentCreateDto);
 
 		assertThat(studyCommentResultDto.getContent()).isEqualTo(STUDY_COMMENT_CONTENT);
+	}
+
+	@Test
+	void createStudyCommentWithNotExistedContent() {
+		given(studyService.getStudy(STUDY_SETUP_ID)).willReturn(study);
+
+		assertThatThrownBy(
+				() -> studyCommentService.createStudyComment(
+						userAccount, STUDY_SETUP_ID, studyCommentCreateDtoWithoutContent)
+		)
+				.isInstanceOf(StudyCommentContentNotExistedException.class);
 	}
 }
