@@ -106,4 +106,16 @@ public class StudyLikeServiceTest {
 		)
 				.isInstanceOf(StudyLikeAlreadyExistedException.class);
 	}
+
+	@Test
+	void deleteStudyLikeWithExistedId() {
+		given(studyService.getStudy(STUDY_EXISTED_ID)).willReturn(study);
+		given(accountService.findAccount(ACCOUNT_ID)).willReturn(account);
+		given(studyLikeRepository.findByStudyAndAccount(study, account))
+				.willReturn(Optional.of(createdStudyLike));
+
+		Long deletedStudyLikeId = studyLikeService.unLike(userAccount, STUDY_EXISTED_ID);
+
+		assertThat(deletedStudyLikeId).isEqualTo(deletedStudyLikeId);
+	}
 }
