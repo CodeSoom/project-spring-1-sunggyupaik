@@ -118,4 +118,15 @@ public class StudyLikeServiceTest {
 
 		assertThat(deletedStudyLikeId).isEqualTo(deletedStudyLikeId);
 	}
+
+	@Test
+	void deleteStudyLikeWithNotExistedStudyId() {
+		given(studyService.getStudy(STUDY_NOT_EXISTED_ID)).willThrow(StudyNotFoundException.class);
+		given(accountService.findAccount(ACCOUNT_ID)).willReturn(account);
+
+		assertThatThrownBy(
+				() -> studyLikeService.unLike(userAccount, STUDY_NOT_EXISTED_ID)
+		)
+				.isInstanceOf(StudyNotFoundException.class);
+	}
 }
