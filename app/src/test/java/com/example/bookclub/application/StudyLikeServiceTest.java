@@ -5,6 +5,7 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyLike;
 import com.example.bookclub.domain.StudyLikeRepository;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
+import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
@@ -128,5 +129,18 @@ public class StudyLikeServiceTest {
 				() -> studyLikeService.unLike(userAccount, STUDY_NOT_EXISTED_ID)
 		)
 				.isInstanceOf(StudyNotFoundException.class);
+	}
+
+	@Test
+	void deleteStudyLikeWithNotMine() {
+		given(studyService.getStudy(STUDY_EXISTED_ID)).willReturn(study);
+		given(accountService.findAccount(ACCOUNT_ID)).willReturn(account);
+		given(studyLikeRepository.findByStudyAndAccount(study, account))
+				.willReturn(Optional.empty());
+
+		assertThatThrownBy(
+				() -> studyLikeService.unLike(userAccount, STUDY_EXISTED_ID)
+		)
+				.isInstanceOf(StudyLikeNotExistedException.class);
 	}
 }
