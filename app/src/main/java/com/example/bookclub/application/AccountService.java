@@ -7,9 +7,13 @@ import com.example.bookclub.domain.Role;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
+import com.example.bookclub.dto.AccountCreateResultDto;
+import com.example.bookclub.dto.AccountDeleteResultDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
+import com.example.bookclub.dto.AccountUpdatePasswordResultDto;
+import com.example.bookclub.dto.AccountUpdateResultDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
@@ -95,7 +99,7 @@ public class AccountService {
      * @throws EmailNotAuthenticatedException 주어진 이메일에 해당하는 인증번호가 없는 경우
      * @throws AccountNicknameDuplicatedException 주어진 사용자 닉네임이 이미 존재하는 경우
      */
-    public AccountResultDto createAccount(AccountCreateDto accountCreateDto, UploadFile uploadFile) {
+    public AccountCreateResultDto createAccount(AccountCreateDto accountCreateDto, UploadFile uploadFile) {
         String email = accountCreateDto.getEmail();
         if (accountRepository.existsByEmail(email)) {
             throw new AccountEmailDuplicatedException(email);
@@ -129,7 +133,7 @@ public class AccountService {
 
         deleteEmailAuthentication(emailAuthentication.getEmail());
 
-        return AccountResultDto.of(createdAccount);
+        return AccountCreateResultDto.of(createdAccount);
     }
 
     /**
@@ -142,8 +146,8 @@ public class AccountService {
      * @throws AccountPasswordBadRequestException 저장된 사용자 비밀번호와 주어진 비밀번호가 다른 경우
      * @throws AccountNicknameDuplicatedException 수정할 사용자 닉네임이 이미 존재하는 경우
      */
-    public AccountResultDto updateAccount(Long id, AccountUpdateDto accountUpdateDto,
-                                          UploadFile uploadFile) {
+    public AccountUpdateResultDto updateAccount(Long id, AccountUpdateDto accountUpdateDto,
+                                                UploadFile uploadFile) {
         Account account = findAccount(id);
 
         String password = accountUpdateDto.getPassword();
@@ -162,7 +166,7 @@ public class AccountService {
             account.addUploadFile(uploadFile);
         }
 
-        return AccountResultDto.of(account);
+        return AccountUpdateResultDto.of(account);
     }
 
     /**
@@ -195,11 +199,11 @@ public class AccountService {
      * @param id 사용자 식별자
      * @return 삭제한 사용자 정보
      */
-    public AccountResultDto deleteAccount(Long id) {
+    public AccountDeleteResultDto deleteAccount(Long id) {
         Account account = findAccount(id);
         account.delete();
 
-        return AccountResultDto.of(account);
+        return AccountDeleteResultDto.of(account);
     }
 
     /**
@@ -222,7 +226,7 @@ public class AccountService {
      * @throws AccountPasswordBadRequestException 저장된 비밀번호와 주어진 비밀번호가 다른 경우
      * @throws AccountNewPasswordNotMatchedException 주어진 비밀번호와 비밀번호 확인이 다른 경우
      */
-    public AccountResultDto updatePassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
+    public AccountUpdatePasswordResultDto updatePassword(Long id, AccountUpdatePasswordDto accountUpdatePasswordDto) {
         Account account = findAccount(id);
 
         String password = accountUpdatePasswordDto.getPassword();
@@ -238,7 +242,7 @@ public class AccountService {
 
         account.updatePassword(accountUpdatePasswordDto.getNewPassword(), passwordEncoder);
 
-        return AccountResultDto.of(account);
+        return AccountUpdatePasswordResultDto.of(account);
     }
 
     /**

@@ -44,7 +44,7 @@ public class Study extends BaseEntity {
     /* 책 제목 */
     private String bookName;
 
-    /* 챍 사진 */
+    /* 책 사진 */
     private String bookImage;
 
     /* 이메일 */

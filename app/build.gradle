@@ -36,10 +36,21 @@ bootJar {
 	}
 }
 
+task copyDocument(type: Copy) {
+	dependsOn asciidoctor
+
+	from file("build/asciidoc/html5/")
+	into file("src/main/resources/static/docs")
+}
+
+build {
+	dependsOn copyDocument
+}
+
 configurations {
 	all {
 		compile.exclude module: 'spring-boot-starter-logging'
-//		exclude group: 'org.springframework.boot', modlue: 'spring-boot-starter-logging'
+//		exclude group: 'org.springframework.boot', modulue: 'spring-boot-starter-logging'
 	}
 
 	compileOnly {
