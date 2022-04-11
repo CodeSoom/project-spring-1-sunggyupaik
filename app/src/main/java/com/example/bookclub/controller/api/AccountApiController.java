@@ -5,9 +5,13 @@ import com.example.bookclub.application.UploadFileService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
+import com.example.bookclub.dto.AccountCreateResultDto;
+import com.example.bookclub.dto.AccountDeleteResultDto;
 import com.example.bookclub.dto.AccountResultDto;
 import com.example.bookclub.dto.AccountUpdateDto;
 import com.example.bookclub.dto.AccountUpdatePasswordDto;
+import com.example.bookclub.dto.AccountUpdatePasswordResultDto;
+import com.example.bookclub.dto.AccountUpdateResultDto;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -61,8 +65,8 @@ public class AccountApiController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountResultDto create(@RequestPart(required = false) MultipartFile uploadFile,
-                                   AccountCreateDto accountCreateDto) {
+    public AccountCreateResultDto create(@RequestPart(required = false) MultipartFile uploadFile,
+                                         AccountCreateDto accountCreateDto) {
         if (uploadFile == null) {
             return accountService.createAccount(accountCreateDto, null);
         }
@@ -83,16 +87,16 @@ public class AccountApiController {
      */
     @PreAuthorize("#account.id == #id")
     @PostMapping("/{id}")
-    public AccountResultDto update(@CurrentAccount Account account,
-                                   @PathVariable Long id,
-                                   @RequestPart(required = false) MultipartFile uploadFile,
-                                   AccountUpdateDto accountUpdateDto) {
+    public AccountUpdateResultDto update(@CurrentAccount Account account,
+                                         @PathVariable Long id,
+                                         @RequestPart(required = false) MultipartFile uploadFile,
+                                         AccountUpdateDto accountUpdateDto) {
     if (uploadFile == null) {
-            return accountService.updateUser(id, accountUpdateDto, null);
+            return accountService.updateAccount(id, accountUpdateDto, null);
         }
 
         UploadFile accountFile = uploadFileService.upload(uploadFile);
-        return accountService.updateUser(id, accountUpdateDto, accountFile);
+        return accountService.updateAccount(id, accountUpdateDto, accountFile);
     }
 
     /**
@@ -105,9 +109,9 @@ public class AccountApiController {
      */
     @PreAuthorize("#account.id == #id")
     @PatchMapping("/{id}/password")
-    public AccountResultDto updatePassword(@CurrentAccount Account account,
-                                           @PathVariable Long id,
-                                           @Valid @RequestBody AccountUpdatePasswordDto accountUpdatePasswordDto) {
+    public AccountUpdatePasswordResultDto updatePassword(@CurrentAccount Account account,
+                                                         @PathVariable Long id,
+                                                         @Valid @RequestBody AccountUpdatePasswordDto accountUpdatePasswordDto) {
         return accountService.updatePassword(id, accountUpdatePasswordDto);
     }
 
@@ -121,8 +125,8 @@ public class AccountApiController {
     @PreAuthorize("#account.id == #id")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public AccountResultDto delete(@CurrentAccount Account account,
-                                   @PathVariable Long id) {
+    public AccountDeleteResultDto delete(@CurrentAccount Account account,
+                                         @PathVariable Long id) {
         return accountService.deleteAccount(id);
     }
 }

@@ -163,7 +163,6 @@ public class StudyServiceTest {
 	private RoleRepository roleRepository;
 	private AmazonS3 amazonS3;
 	private UploadFileService uploadFileService;
-
 	private AccountService accountService;
 
     @BeforeEach

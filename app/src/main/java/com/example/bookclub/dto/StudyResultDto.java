@@ -61,11 +61,11 @@ public class StudyResultDto {
                 String contact, int size, int applyCount, LocalDate startDate, LocalDate endDate, String startTime,
                 String endTime, Day day, StudyState studyState, Zone zone, int likesCount, boolean liked,
         int commentsCount, boolean isFavorite) {
-            this.id = id;
-            this.name = name;
-            this.bookName = bookName;
-            this.bookImage = bookImage;
-            this.email = email;
+        this.id = id;
+        this.name = name;
+        this.bookName = bookName;
+        this.bookImage = bookImage;
+        this.email = email;
         this.description = description;
         this.contact = contact;
         this.size = size;
