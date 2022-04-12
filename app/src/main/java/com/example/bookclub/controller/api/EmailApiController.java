@@ -2,9 +2,12 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.dto.EmailRequestDto;
+import com.example.bookclub.dto.EmailSendResultDto;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -23,10 +26,15 @@ public class EmailApiController {
      * 주어진 이메일 정보로 인증번호를 전송한다
      *
      * @param emailRequestDto 발송할 이메일
-     * @return 인증번호
+     * @return 인증번호를 전송한 이메일
      */
     @PostMapping("/authentication")
-    public String sendAuthenticationNumber(@RequestBody EmailRequestDto emailRequestDto) {
-        return emailService.sendAuthenticationNumber(emailRequestDto);
+    @ResponseStatus(HttpStatus.CREATED)
+    public EmailSendResultDto sendAuthenticationNumber(@RequestBody EmailRequestDto emailRequestDto) {
+        EmailSendResultDto emailSendResultDto = emailService.sendAuthenticationNumber(emailRequestDto);
+
+        System.out.println(emailSendResultDto+"=emailSendResultDto");
+
+        return emailSendResultDto;
     }
 }
