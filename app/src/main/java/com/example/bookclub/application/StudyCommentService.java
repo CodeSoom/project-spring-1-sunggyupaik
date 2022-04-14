@@ -60,7 +60,7 @@ public class StudyCommentService {
 	 * @throws StudyCommentDeleteBadRequest 스터디 댓글이 로그인한 사용자의 댓글이 아닌 경우
 	 */
 	@Transactional
-	public Long deleteStudyComment(UserAccount userAccount, long studyCommentId) {
+	public StudyCommentResultDto deleteStudyComment(UserAccount userAccount, long studyCommentId) {
 		StudyComment studyComment = getStudyComment(studyCommentId);
 		if(!studyComment.getAccount().getId().equals(userAccount.getAccount().getId())) {
 			throw new StudyCommentDeleteBadRequest();
@@ -68,7 +68,7 @@ public class StudyCommentService {
 
 		studyCommentRepository.delete(studyComment);
 
-		return studyCommentId;
+		return StudyCommentResultDto.of(studyComment, userAccount.getAccount());
 	}
 
 	/**

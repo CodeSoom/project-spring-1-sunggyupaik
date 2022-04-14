@@ -152,9 +152,9 @@ public class StudyCommentServiceTest {
 	void deleteStudyCommentWithExistedId() {
 		given(studyCommentRepository.findById(STUDY_COMMENT_EXISTED_ID)).willReturn(Optional.of(studyComment));
 
-		Long deletedStudyCommentId = studyCommentService.deleteStudyComment(userAccount, STUDY_COMMENT_EXISTED_ID);
+		StudyCommentResultDto studyCommentResultDto = studyCommentService.deleteStudyComment(userAccount, STUDY_COMMENT_EXISTED_ID);
 
-		assertThat(deletedStudyCommentId).isEqualTo(STUDY_COMMENT_EXISTED_ID);
+		assertThat(studyCommentResultDto.getId()).isEqualTo(STUDY_COMMENT_EXISTED_ID);
 	}
 
 	@Test

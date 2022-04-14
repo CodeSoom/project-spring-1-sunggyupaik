@@ -7,16 +7,16 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class StudyFavoriteResultDto {
+public class StudyApplyResultDto {
 	private Long id;
 
 	@Builder
-	public StudyFavoriteResultDto(Long id) {
+	public StudyApplyResultDto(Long id) {
 		this.id = id;
 	}
 
-	public static StudyFavoriteResultDto of(Long id) {
-		return StudyFavoriteResultDto.builder()
+	public static StudyApplyResultDto of(Long id) {
+		return StudyApplyResultDto.builder()
 				.id(id)
 				.build();
 	}

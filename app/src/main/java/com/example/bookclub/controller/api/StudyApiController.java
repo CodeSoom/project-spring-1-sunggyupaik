@@ -7,9 +7,13 @@ import com.example.bookclub.application.StudyLikeService;
 import com.example.bookclub.application.StudyService;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.dto.StudyApplyResultDto;
 import com.example.bookclub.dto.StudyCommentCreateDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
+import com.example.bookclub.dto.StudyFavoriteResultDto;
+import com.example.bookclub.dto.StudyLikeResultDto;
+import com.example.bookclub.dto.StudyLikesCommentResultDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.security.CurrentAccount;
@@ -84,26 +88,26 @@ public class StudyApiController {
     }
 
     @PostMapping("/apply/{id}")
-    public Long apply(@AuthenticationPrincipal UserAccount userAccount,
-                      @PathVariable Long id) {
+    public StudyApplyResultDto apply(@AuthenticationPrincipal UserAccount userAccount,
+                                     @PathVariable Long id) {
         return studyService.applyStudy(userAccount, id);
     }
 
     @PostMapping("/cancel/{id}")
-    public Long cancel(@AuthenticationPrincipal UserAccount userAccount,
+    public StudyApplyResultDto cancel(@AuthenticationPrincipal UserAccount userAccount,
                        @PathVariable Long id) {
         return studyService.cancelStudy(userAccount, id);
     }
 
     @PostMapping("/like/{studyId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long like(@AuthenticationPrincipal UserAccount userAccount,
-                     @PathVariable Long studyId) {
+    public StudyLikeResultDto like(@AuthenticationPrincipal UserAccount userAccount,
+                                   @PathVariable Long studyId) {
         return studyLikeService.like(userAccount, studyId);
     }
 
     @DeleteMapping("/like/{studyId}")
-    public Long unLike(@AuthenticationPrincipal UserAccount userAccount,
+    public StudyLikeResultDto unLike(@AuthenticationPrincipal UserAccount userAccount,
                        @PathVariable Long studyId) {
         return studyLikeService.unLike(userAccount, studyId);
     }
@@ -118,35 +122,35 @@ public class StudyApiController {
 
     @DeleteMapping("/comment/{studyCommentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Long deleteStudyComment(@AuthenticationPrincipal UserAccount userAccount,
+    public StudyCommentResultDto deleteStudyComment(@AuthenticationPrincipal UserAccount userAccount,
                                    @PathVariable Long studyCommentId) {
         return studyCommentService.deleteStudyComment(userAccount, studyCommentId);
     }
 
     @PostMapping("/comment/{commentId}/like")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long likeComment(@AuthenticationPrincipal UserAccount userAccount,
-                            @PathVariable Long commentId) {
+    public StudyLikesCommentResultDto likeComment(@AuthenticationPrincipal UserAccount userAccount,
+                                                  @PathVariable Long commentId) {
         return studyCommentLikeService.likeComment(userAccount, commentId);
     }
 
     @DeleteMapping("/comment/{commentId}/unlike")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Long unLikeComment(@AuthenticationPrincipal UserAccount userAccount,
+    public StudyLikesCommentResultDto unLikeComment(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long commentId) {
         return studyCommentLikeService.unlikeComment(userAccount, commentId);
     }
 
     @PostMapping("/{id}/favorite")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long favoriteStudy(@AuthenticationPrincipal UserAccount userAccount,
-                              @PathVariable Long id) {
+    public StudyFavoriteResultDto favoriteStudy(@AuthenticationPrincipal UserAccount userAccount,
+                                                @PathVariable Long id) {
         return studyFavoriteService.favoriteStudy(userAccount, id);
     }
 
     @DeleteMapping("/{id}/favorite")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public Long unFavoriteStudy(@AuthenticationPrincipal UserAccount userAccount,
+    public StudyFavoriteResultDto unFavoriteStudy(@AuthenticationPrincipal UserAccount userAccount,
                                 @PathVariable Long id) {
         return studyFavoriteService.unFavoriteStudy(userAccount, id);
     }

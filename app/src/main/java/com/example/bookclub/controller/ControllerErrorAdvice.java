@@ -240,7 +240,7 @@ public class ControllerErrorAdvice {
     }
 
     @ExceptionHandler(StudyFavoriteNotExistedException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleStudyFavoriteNotExistedException(StudyFavoriteNotExistedException e) {
         return new ErrorResponse(e.getMessage());
     }
@@ -252,7 +252,7 @@ public class ControllerErrorAdvice {
     }
 
     @ExceptionHandler(StudyCommentContentNotExistedException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleStudyCommentContentNotExistedException(StudyCommentContentNotExistedException e) {
         return new ErrorResponse(e.getMessage());
     }

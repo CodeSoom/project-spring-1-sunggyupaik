@@ -8,6 +8,7 @@ import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.example.bookclub.dto.StudyApplyResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
@@ -696,13 +697,13 @@ public class StudyServiceTest {
 
         Study study = studyService.getStudy(STUDY_SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
-        Long canceledStudyId = studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
+		StudyApplyResultDto studyApplyResultDto = studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
         int afterApplyCount = study.getApplyCount();
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);
         assertThat(setUpStudy.getAccounts()).doesNotContain(applierOfSetUpStudyOne);
         assertThat(applierOfSetUpStudyOne.getStudy()).isNull();
-		assertThat(canceledStudyId).isEqualTo(setUpStudy.getId());
+		assertThat(studyApplyResultDto.getId()).isEqualTo(setUpStudy.getId());
     }
 
 	@Test

@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyLike;
 import com.example.bookclub.domain.StudyLikeRepository;
+import com.example.bookclub.dto.StudyLikeResultDto;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
@@ -79,9 +80,9 @@ public class StudyLikeServiceTest {
 		given(accountService.findAccount(ACCOUNT_ID)).willReturn(account);
 		given(studyLikeRepository.save(any(StudyLike.class))).willReturn(createdStudyLike);
 
-		Long createdStudyLikeId = studyLikeService.like(userAccount, STUDY_EXISTED_ID);
+		StudyLikeResultDto studyLikeResultDto = studyLikeService.like(userAccount, STUDY_EXISTED_ID);
 
-		assertThat(createdStudyLikeId).isEqualTo(STUDY_EXISTED_ID);
+		assertThat(studyLikeResultDto.getId()).isEqualTo(STUDY_EXISTED_ID);
 	}
 
 	@Test
@@ -115,9 +116,9 @@ public class StudyLikeServiceTest {
 		given(studyLikeRepository.findByStudyAndAccount(study, account))
 				.willReturn(Optional.of(createdStudyLike));
 
-		Long deletedStudyLikeId = studyLikeService.unLike(userAccount, STUDY_EXISTED_ID);
+		StudyLikeResultDto studyLikeResultDto = studyLikeService.unLike(userAccount, STUDY_EXISTED_ID);
 
-		assertThat(deletedStudyLikeId).isEqualTo(deletedStudyLikeId);
+		assertThat(studyLikeResultDto.getId()).isEqualTo(STUDY_EXISTED_ID);
 	}
 
 	@Test
