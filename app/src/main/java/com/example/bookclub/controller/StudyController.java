@@ -45,10 +45,10 @@ public class StudyController {
     }
 
     /**
-     * 스터디 조회 페이지로 이동한다
+     * 주어진 로그인한 사용자와 스터디 식별자에 해당하는 스터디 조회 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
-     * @param id 스터디 아이디
+     * @param id 스터디 식별자
      * @param model 모델
      * @return 스터디 조회 페이지
      */
@@ -69,7 +69,7 @@ public class StudyController {
     }
 
     /**
-     * 스터디 생성 페이지로 이동한다
+     * 주어진 로그인한 사용자와 책이름, 책사진에 해당하는 스터디 생성 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
      * @param bookName 책이름
@@ -94,10 +94,10 @@ public class StudyController {
     }
 
     /**
-     * 스터디 수정 페이지로 이동한다
+     * 주어진 로그인한 사용자와, 스터디 식별자에 해당하는 스터디의 수정 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
-     * @param id 로그인한 사용자의 생성 스터디 아이디
+     * @param id 스터디 식별자
      * @param model 모델
      * @return 스터디 수정 페이지
      * @throws AccessDeniedException 경로 아이디와 로그인한 사용자의 생성 스터디 아이디가 다른 경우
@@ -117,7 +117,7 @@ public class StudyController {
     }
 
     /**
-     * 모집중 스터디 조회 페이지로 이동한다
+     * 주어진 로그인한 사용자, 페이징 정보에 해당하는 모집중 스터디 조회 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
      * @param model 모델
@@ -135,7 +135,7 @@ public class StudyController {
     }
 
     /**
-     * 진행중 스터디 조회 페이지로 이동한다
+     * 주어진 로그인한 사용자, 페이징 정보에 해당하는 진행중 스터디 조회 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
      * @param model 모델
@@ -153,7 +153,7 @@ public class StudyController {
     }
 
     /**
-     *  종료 스터디 조회 페이지로 이동한다
+     *  주어진 로그인한 사용자, 페이징 정보에 해당하는 종료 스터디 조회 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
      * @param model 모델
@@ -171,10 +171,10 @@ public class StudyController {
     }
 
     /**
-     * 스터디 지원현황 페이지로 이동한다
+     * 주어진 로그인한 사용자, 스터디 식별자에 해당하는 스터디 지원현황 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
-     * @param id 로그인한 사용자가 생성한 스터디 아이디
+     * @param id 스터디 식별자
      * @param model 모델
      * @return 스터디 지원현황 페이지
      */
@@ -190,7 +190,7 @@ public class StudyController {
     }
 
     /**
-     * 주어진 페이징, 검색어, 스터디 상태로 스터디를 검색한다
+     * 주어진 로그인한 사용자, 페이징 정보, 제목, 스터디 상태에 해당하는 스터디 검색 페이지로 이동한다
      *
      * @param account 로그인한 사용자
      * @param pageable 페이징
