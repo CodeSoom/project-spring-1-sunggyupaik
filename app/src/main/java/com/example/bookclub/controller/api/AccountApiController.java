@@ -46,10 +46,10 @@ public class AccountApiController {
     }
 
     /**
-     * 주어진 아이디에 해당하는 사용자를 조회한다
+     * 주어진 사용자 식별자에 해당하는 사용자를 조회한다
      *
-     * @param id 사용자 아이디
-     * @return 사용자
+     * @param id 사용자 식별자
+     * @return 조회한 사용자 정보
      */
     @GetMapping("/{id}")
     public AccountResultDto get(@PathVariable Long id) {
@@ -57,11 +57,11 @@ public class AccountApiController {
     }
 
     /**
-     * 주어진 사진, 가입정보로 사용자를 생성한다
+     * 주어진 사용자 사진, 회원가입 정보로 사용자를 생성한다
      *
      * @param uploadFile 사용자 사진
      * @param accountCreateDto 회원가입 정보
-     * @return 사용자
+     * @return 생성된 사용자 정보
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -76,13 +76,13 @@ public class AccountApiController {
     }
 
     /**
-     * 주어진 아이디, 사진, 수정내용으로 사용자를 수정한다
+     * 주어진 로그인한 사용자, 사용자 식별자, 사용자 사진, 변경할 사용자 정보로 사용자를 수정한다
      *
      * @param account 로그인한 사용자
-     * @param id 사용자 아이디
+     * @param id 사용자 식별자
      * @param uploadFile 사용자 사진
      * @param accountUpdateDto 변경 할 사용자 정보
-     * @return 사용자
+     * @return 수정된 사용자 정보
      * @throws AccessDeniedException 경로 아이디와 로그인한 사용자의 아이디가 다른 경우
      */
     @PreAuthorize("#account.id == #id")
@@ -100,12 +100,12 @@ public class AccountApiController {
     }
 
     /**
-     * 주어진 아이디, 변경 할 비밀번호로 사용자 비밀번호를 변경한다
+     * 주어진 로그인한 사용자, 사용자 식별자, 변경 할 비밀번호로 사용자 비밀번호를 변경한다
      *
      * @param account 로그인한 사용자
-     * @param id 사용자 아이디
+     * @param id 사용자 식별자
      * @param accountUpdatePasswordDto 변경 할 사용자 비밀번호
-     * @return 사용자
+     * @return 비밀번호가 수정된 사용자 정보
      */
     @PreAuthorize("#account.id == #id")
     @PatchMapping("/{id}/password")
@@ -116,11 +116,11 @@ public class AccountApiController {
     }
 
     /**
-     * 주어진 아이디로 사용자를 삭제한다
+     * 주어진 로그인한 사용자, 사용자 식별자로 사용자를 삭제한다
      *
      * @param account 로그인한 사용자
      * @param id 사용자 아이디
-     * @return 사용자
+     * @return 삭제한 사용자 정보
      */
     @PreAuthorize("#account.id == #id")
     @DeleteMapping("/{id}")

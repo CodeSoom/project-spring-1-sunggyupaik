@@ -63,7 +63,7 @@ public class StudyApiController {
         Study study = studyService.getStudy(id);
         return StudyResultDto.of(study);
     }
-
+    
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public StudyResultDto create(@CurrentAccount Account account,
