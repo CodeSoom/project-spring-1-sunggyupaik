@@ -25,7 +25,7 @@ public class BookController {
     }
 
     /**
-     * 베스트셀러 도서 조회 페이지로 이동한다
+     * 주어진 로그인한 사용자의 정보를 가지고 베스트셀러 도서 조회 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
      * @param model 모델
@@ -39,7 +39,7 @@ public class BookController {
     }
 
     /**
-     * 추천도서 조회 페이지로 이동한다
+     * 주어진 로그인한사용자 정보를 가지고 추천도서 조회 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
      * @param model 모델
@@ -53,7 +53,7 @@ public class BookController {
     }
 
     /**
-     * 신간도서 조회 페이지로 이동한다
+     * 주어진 로그인한사용자 정보를 가지고 신간도서 조회 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
      * @param model 모델
@@ -67,7 +67,7 @@ public class BookController {
     }
 
     /**
-     * 검색한 책 조회 페이지로 이동한다
+     * 주어진 로그인한사용자 정보와 검색에 해당하는 책 조회 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
      * @param model 모델
@@ -82,7 +82,7 @@ public class BookController {
     }
 
     /**
-     * 책 분류와 검색어에 따라 책을 조회한다
+     * 주어진 로그인한사용자 정보를 가지고 검색어와 책 분류에 해당하는 책을 조회한다
      *
      * @param model 모델
      * @param bookType 검색 분류(베스트셀러, 추천, 신간)
