@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyState;
+import com.example.bookclub.dto.StudyApplyResultDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyCreateDto;
 import com.example.bookclub.dto.StudyDetailResultDto;
@@ -206,7 +207,7 @@ public class StudyService {
      * @throws StudyAlreadyExistedException 스터디 식별자에 해당하는 스터디 지원이 이미 존재하는 경우
      * @throws StudySizeFullException 스터디 식별자에 해당하는 스터디 정원이 다 찬 경우
      */
-    public Long applyStudy(UserAccount userAccount, Long id) {
+    public StudyApplyResultDto applyStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
 
@@ -224,7 +225,7 @@ public class StudyService {
 
         study.addAccount(account);
 
-        return id;
+        return StudyApplyResultDto.of(id);
     }
 
     /**
@@ -236,7 +237,7 @@ public class StudyService {
      * @throws StudyNotInOpenStateException 스터디 식별자에 해당하는 스터디가 모집중이 아닌 경우
      * @throws StudyNotAppliedBefore 스터디 식별자에 해당하는 스터디 신청이 존재하지 않는 경우
      */
-    public Long cancelStudy(UserAccount userAccount, Long id) {
+    public StudyApplyResultDto cancelStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
 
@@ -250,7 +251,7 @@ public class StudyService {
 
         study.cancelAccount(account);
 
-        return id;
+        return StudyApplyResultDto.of(id);
     }
 
     /**

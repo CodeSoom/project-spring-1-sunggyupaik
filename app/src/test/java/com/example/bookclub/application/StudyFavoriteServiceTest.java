@@ -4,6 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Favorite;
 import com.example.bookclub.domain.FavoriteRepository;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.dto.StudyFavoriteResultDto;
 import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
 import com.example.bookclub.errors.StudyFavoriteNotExistedException;
 import com.example.bookclub.errors.StudyNotFoundException;
@@ -83,9 +84,9 @@ class StudyFavoriteServiceTest {
 		given(studyService.getStudy(STUDY_EXISTED_ID)).willReturn(study);
 		given(favoriteRepository.save(any(Favorite.class))).willReturn(createdFavorite);
 
-		Long savedStudyFavoriteId = studyFavoriteService.favoriteStudy(userAccount, STUDY_EXISTED_ID);
+		StudyFavoriteResultDto studyFavoriteResultDto = studyFavoriteService.favoriteStudy(userAccount, STUDY_EXISTED_ID);
 
-		assertThat(savedStudyFavoriteId).isEqualTo(STUDY_FAVORITE_CREATE_ID);
+		assertThat(studyFavoriteResultDto.getId()).isEqualTo(STUDY_FAVORITE_CREATE_ID);
 	}
 
 	@Test
@@ -119,9 +120,9 @@ class StudyFavoriteServiceTest {
 		given(favoriteRepository.findByStudyAndAccount(any(Study.class), any(Account.class)))
 				.willReturn(Optional.of(createdFavorite));
 
-		Long deletedFavoriteStudy = studyFavoriteService.unFavoriteStudy(userAccount, STUDY_EXISTED_ID);
+		StudyFavoriteResultDto studyFavoriteResultDto = studyFavoriteService.unFavoriteStudy(userAccount, STUDY_EXISTED_ID);
 
-		assertThat(deletedFavoriteStudy).isEqualTo(STUDY_FAVORITE_CREATE_ID);
+		assertThat(studyFavoriteResultDto.getId()).isEqualTo(STUDY_FAVORITE_CREATE_ID);
 	}
 
 	@Test
