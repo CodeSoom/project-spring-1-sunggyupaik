@@ -46,13 +46,13 @@ public class AccountController {
     }
 
     /**
-     * 스터디 즐겨찾기 페이지로 이동한다
+     * 주어진 로그인한 사용자, 사용자 식별자에 해당하는 스터디 즐겨찾기 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
-     * @param id 로그인한 사용자 번호
+     * @param id 사용자 식별자
      * @param model 모델
      * @return 스터디 즐겨찾기 페이지
-     * @throws AccessDeniedException 경로 아이디가 로그인한 사용자의 아이디가 아닌 경우
+     * @throws AccessDeniedException 경로에 있는 사용자 식별자가 로그인한 사용자의 식별자가 아닌 경우
      */
     @PreAuthorize("#userAccount.account.id == #id")
     @GetMapping("/{id}/favorite")
@@ -73,13 +73,13 @@ public class AccountController {
     }
 
     /**
-     * 사용자 수정 페이지로 이동한다
+     * 주어진 로그인한 사용자, 사용자 식별자에 해당하는 사용자 수정 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
-     * @param id 로그인한 사용자 아이디
+     * @param id 사용자 식별자
      * @param model 모델
      * @return 사용자 수정 페이지
-     * @throws AccessDeniedException 경로 아이디가 로그인한 사용자의 아이디가 아닌 경우
+     * @throws AccessDeniedException 경로 사용자 식별자가 로그인한 사용자의 식별자가 아닌 경우
      */
     @PreAuthorize("#userAccount.account.id == #id")
     @GetMapping("/update/{id}")
@@ -91,13 +91,13 @@ public class AccountController {
     }
 
     /**
-     * 사용자 비밀번호 수정 페이지로 이동한다
+     * 주어진 로그인한 사용자, 사용자 식별자에 해당하는 사용자 비밀번호 수정 페이지로 이동한다
      *
      * @param userAccount 로그인한 사용자
-     * @param id 그인한 사용자 아이디
+     * @param id 사용자 식별자
      * @param model 모델
      * @return 사용자 비밀번호 수정 페이지
-     * @throws AccessDeniedException 경로 아이디가 로그인한 사용자의 아이디가 아닌 경우
+     * @throws AccessDeniedException 경로 사용자 식별자가 로그인한 사용자의 식별자가 아닌 경우
      */
     @PreAuthorize("#userAccount.account.id == #id")
     @GetMapping("/update/password/{id}")
