@@ -118,7 +118,7 @@ public class StudyLikeServiceTest {
 
 		StudyLikeResultDto studyLikeResultDto = studyLikeService.unLike(userAccount, STUDY_EXISTED_ID);
 
-		assertThat(studyLikeResultDto.getId()).isEqualTo(STUDY_EXISTED_ID);
+		assertThat(studyLikeResultDto.getId()).isEqualTo(STUDY_LIKE_CREATE_ID);
 	}
 
 	@Test
