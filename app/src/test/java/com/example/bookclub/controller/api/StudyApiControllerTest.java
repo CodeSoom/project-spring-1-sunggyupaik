@@ -78,6 +78,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.JsonFieldType.BOOLEAN;
@@ -89,7 +92,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -549,11 +551,21 @@ class StudyApiControllerTest {
         given(studyService.getStudy(STUDY_NOT_EXISTED_ID)).willThrow(new StudyNotFoundException(STUDY_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                get("/api/study/{id}", STUDY_NOT_EXISTED_ID)
+                RestDocumentationRequestBuilders.get("/api/study/{id}", STUDY_NOT_EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(content().string(containsString("Study not found")))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-detail-not-existed-id",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("오류 메세지")
+                        )
+                ));
 
         verify(studyService).getStudy(STUDY_NOT_EXISTED_ID);
     }
@@ -577,6 +589,9 @@ class StudyApiControllerTest {
                 .andDo(document("study-create",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName(CONTENT_TYPE).description("Content-Type 헤더")
+                        ),
                         requestFields(
                                 fieldWithPath("name").description("이름"),
                                 fieldWithPath("email").description("이메일"),

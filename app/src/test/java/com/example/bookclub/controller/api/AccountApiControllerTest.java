@@ -80,8 +80,6 @@ import static org.springframework.restdocs.request.RequestDocumentation.partWith
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -382,6 +380,7 @@ class AccountApiControllerTest {
 				.build();
 
 		accountCreatedWithoutUploadFileResultDto = AccountCreateResultDto.of(accountWithoutUploadFile);
+		accountCreatedWithoutUploadFileResultDto.setUploadFileResultDto(null);
 
 		accountWithUploadFileResultDto = AccountResultDto.builder()
 				.id(ACCOUNT_FILE_EXISTED_ID)
@@ -427,8 +426,9 @@ class AccountApiControllerTest {
 				.email(ACCOUNT_EMAIL)
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_PASSWORD)
-				.uploadFileResultDto(UploadFileResultDto.of(null))
 				.build();
+
+		accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto.setUploadFileResultDto(null);
 
 		accountUpdatedWithNewPasswordResultDto = AccountUpdatePasswordResultDto.builder()
 				.id(ACCOUNT_ID)
@@ -521,14 +521,25 @@ class AccountApiControllerTest {
 
 	@Test
 	void detailWithNotExisted() throws Exception {
-		given(accountService.getAccount(ACCOUNT_NOT_EXISTED_ID)).willThrow(AccountNotFoundException.class);
+		given(accountService.getAccount(ACCOUNT_NOT_EXISTED_ID))
+				.willThrow(new AccountNotFoundException(ACCOUNT_NOT_EXISTED_ID));
 
 		mockMvc.perform(
-				get("/api/user/{id}", ACCOUNT_NOT_EXISTED_ID)
+				RestDocumentationRequestBuilders.get("/api/users/{id}", ACCOUNT_NOT_EXISTED_ID)
 		)
 				.andDo(print())
 //				.andExpect(content().string(containsString("User not found")))
-				.andExpect(status().isNotFound());
+				.andExpect(status().isNotFound())
+				.andDo(document("user-detail-not-existed-id",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						pathParameters(
+								parameterWithName("id").description("사용자 식별자")
+						),
+						responseFields(
+								fieldWithPath("message").type(STRING).description("예외 메세지")
+						)
+				));
 	}
 
 	@Test
@@ -606,7 +617,7 @@ class AccountApiControllerTest {
 				.willReturn(accountCreatedWithoutUploadFileResultDto);
 
 		mockMvc.perform(
-				multipart("/api/users")
+				RestDocumentationRequestBuilders.fileUpload("/api/users")
 						.param("name", ACCOUNT_CREATED_NAME)
 						.param("email", ACCOUNT_CREATED_EMAIL)
 						.param("nickname", ACCOUNT_CREATED_NICKNAME)
@@ -617,17 +628,37 @@ class AccountApiControllerTest {
 		.andExpect(jsonPath("id").value(ACCOUNT_ID))
 		.andExpect(jsonPath("email").value(accountCreatedWithoutUploadFileResultDto.getEmail()))
 		.andExpect(jsonPath("name").value(accountCreatedWithoutUploadFileResultDto.getName()))
-		.andExpect(status().isCreated());
+		.andExpect(status().isCreated())
+		.andDo(document("user-create-without-upload-file",
+				getDocumentRequest(),
+				getDocumentResponse(),
+				requestParameters(
+						parameterWithName("name").description("이름"),
+						parameterWithName("email").description("이메일"),
+						parameterWithName("nickname").description("닉네임"),
+						parameterWithName("password").description("비밀번호"),
+						parameterWithName("authenticationNumber").description("인증번호")
+				),
+				responseFields(
+						fieldWithPath("id").type(NUMBER).description("사용자 식별자"),
+						fieldWithPath("name").type(STRING).description("이름"),
+						fieldWithPath("email").type(STRING).description("이메일"),
+						fieldWithPath("nickname").type(STRING).description("닉네임"),
+						fieldWithPath("password").type(STRING).description("비밀번호"),
+						fieldWithPath("deleted").type(BOOLEAN).description("삭제 여부"),
+						fieldWithPath("uploadFileResultDto").description("업로드 사진")
+				)
+		));
 	}
 
     @Test
     void createWithDuplicatedEmail() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
 		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
-				.willThrow(AccountEmailDuplicatedException.class);
+				.willThrow(new AccountEmailDuplicatedException(ACCOUNT_DUPLICATED_EMAIL));
 
 		mockMvc.perform(
-				multipart("/api/users")
+				RestDocumentationRequestBuilders.fileUpload("/api/users")
 						.file(mockCreatedMultipartFile)
 						.param("name", ACCOUNT_CREATED_NAME)
 						.param("email", ACCOUNT_DUPLICATED_EMAIL)
@@ -636,17 +667,31 @@ class AccountApiControllerTest {
 						.param("authenticationNumber", ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
 		)
 		.andDo(print())
-		.andExpect(status().isBadRequest());
+		.andExpect(status().isBadRequest())
+		.andDo(document("user-create-duplicated-email",
+				getDocumentRequest(),
+				getDocumentResponse(),
+				requestParameters(
+						parameterWithName("name").description("이름"),
+						parameterWithName("email").description("이메일"),
+						parameterWithName("nickname").description("닉네임"),
+						parameterWithName("password").description("비밀번호"),
+						parameterWithName("authenticationNumber").description("인증번호")
+				),
+				responseFields(
+						fieldWithPath("message").type(STRING).description("예외 메세지")
+				)
+		));
     }
 
 	@Test
 	void createWithInvalidAuthenticationNumber() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
 		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
-				.willThrow(EmailNotAuthenticatedException.class);
+				.willThrow(new EmailNotAuthenticatedException(ACCOUNT_INVALID_AUTHENTICATION_NUMBER));
 
 		mockMvc.perform(
-				multipart("/api/users")
+				RestDocumentationRequestBuilders.fileUpload("/api/users")
 						.file(mockCreatedMultipartFile)
 						.param("name", ACCOUNT_CREATED_NAME)
 						.param("email", ACCOUNT_CREATED_EMAIL)
@@ -655,17 +700,31 @@ class AccountApiControllerTest {
 						.param("authenticationNumber", ACCOUNT_INVALID_AUTHENTICATION_NUMBER)
 		)
 		.andDo(print())
-		.andExpect(status().isBadRequest());
+		.andExpect(status().isBadRequest())
+		.andDo(document("user-create-invalid-authentication-number",
+				getDocumentRequest(),
+				getDocumentResponse(),
+				requestParameters(
+						parameterWithName("name").description("이름"),
+						parameterWithName("email").description("이메일"),
+						parameterWithName("nickname").description("닉네임"),
+						parameterWithName("password").description("비밀번호"),
+						parameterWithName("authenticationNumber").description("인증번호")
+				),
+				responseFields(
+						fieldWithPath("message").type(STRING).description("예외 메세지")
+				)
+		));
 	}
 
     @Test
     void createWithDuplicatedNickname() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
 		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
-				.willThrow(AccountNicknameDuplicatedException.class);
+				.willThrow(new AccountNicknameDuplicatedException(ACCOUNT_DUPLICATED_NICKNAME));
 
 		mockMvc.perform(
-				multipart("/api/users")
+				RestDocumentationRequestBuilders.fileUpload("/api/users")
 						.file(mockCreatedMultipartFile)
 						.param("name", ACCOUNT_CREATED_NAME)
 						.param("email", ACCOUNT_CREATED_EMAIL)
@@ -674,27 +733,22 @@ class AccountApiControllerTest {
 						.param("authenticationNumber", ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
 		)
 		.andDo(print())
-		.andExpect(status().isBadRequest());
+		.andExpect(status().isBadRequest())
+		.andDo(document("user-create-duplicated-nickname",
+				getDocumentRequest(),
+				getDocumentResponse(),
+				requestParameters(
+						parameterWithName("name").description("이름"),
+						parameterWithName("email").description("이메일"),
+						parameterWithName("nickname").description("닉네임"),
+						parameterWithName("password").description("비밀번호"),
+						parameterWithName("authenticationNumber").description("인증번호")
+				),
+				responseFields(
+						fieldWithPath("message").type(STRING).description("예외 메세지")
+				)
+		));
     }
-
-	@Test
-	void createWithNotAuthenticatedEmailAuthenticationNumber() throws Exception {
-		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
-				.willThrow(EmailNotAuthenticatedException.class);
-
-		mockMvc.perform(
-				multipart("/api/users")
-						.file(mockCreatedMultipartFile)
-						.param("name", ACCOUNT_CREATED_NAME)
-						.param("email", ACCOUNT_CREATED_EMAIL)
-						.param("nickname", ACCOUNT_CREATED_NICKNAME)
-						.param("password", ACCOUNT_CREATED_PASSWORD)
-						.param("authenticationNumber", ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
-		)
-		.andDo(print())
-		.andExpect(status().isBadRequest());
-	}
 
 	@Test
 	void updateNotAuthorizedAccount() throws Exception {
@@ -774,7 +828,7 @@ class AccountApiControllerTest {
 				.willReturn(accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto);
 
 		mockMvc.perform(
-						multipart("/api/users/{id}", ACCOUNT_FILE_EXISTED_ID)
+						RestDocumentationRequestBuilders.fileUpload("/api/users/{id}", ACCOUNT_FILE_EXISTED_ID)
 								.param("nickname", ACCOUNT_UPDATED_NICKNAME)
 								.param("password", ACCOUNT_FILE_PASSWORD)
 				)
@@ -789,7 +843,30 @@ class AccountApiControllerTest {
 				)
 				.andExpect(jsonPath(
 						"$.uploadFileResultDto.fileUrl", is(createdUploadFile.getFileUrl()))
-				);
+				)
+				.andDo(document("user-update-without-upload-file",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						pathParameters(
+								parameterWithName("id").description("사용자 식별자")
+						),
+						requestParameters(
+								parameterWithName("nickname").description("닉네임"),
+								parameterWithName("password").description("비밀번호")
+						),
+						responseFields(
+								fieldWithPath("id").type(NUMBER).description("사용자 식별자"),
+								fieldWithPath("name").type(STRING).description("이름"),
+								fieldWithPath("email").type(STRING).description("이메일"),
+								fieldWithPath("nickname").type(STRING).description("닉네임"),
+								fieldWithPath("password").type(STRING).description("비밀번호"),
+								fieldWithPath("deleted").type(BOOLEAN).description("삭제 여부"),
+								fieldWithPath("uploadFileResultDto.id").type(NUMBER).description("파일 식별자"),
+								fieldWithPath("uploadFileResultDto.fileName").type(STRING).description("파일명"),
+								fieldWithPath("uploadFileResultDto.fileOriginalName").type(STRING).description("파일 원본명"),
+								fieldWithPath("uploadFileResultDto.fileUrl").type(STRING).description("파일 URL")
+						)
+				));
 	}
 
 	//사진 x -> 새로운 사진 업로드
@@ -801,7 +878,7 @@ class AccountApiControllerTest {
 				.willReturn(accountUpdatedWithUploadBeforeNotHasUploadFileResultDto);
 
 		mockMvc.perform(
-						multipart("/api/users/{id}", ACCOUNT_ID)
+						RestDocumentationRequestBuilders.fileUpload("/api/users/{id}", ACCOUNT_ID)
 								.file(mockUpdatedMultipartFile)
 								.param("nickname", ACCOUNT_UPDATED_NICKNAME)
 								.param("password", ACCOUNT_PASSWORD)
@@ -817,7 +894,33 @@ class AccountApiControllerTest {
 				)
 				.andExpect(jsonPath(
 						"$.uploadFileResultDto.fileUrl", is(updatedUploadFile.getFileUrl()))
-				);
+				)
+				.andDo(document("user-update-with-first-upload-file",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						pathParameters(
+								parameterWithName("id").description("사용자 식별자")
+						),
+						requestParts(
+								partWithName("uploadFile").description("업로드 파일")
+						),
+						requestParameters(
+								parameterWithName("nickname").description("닉네임"),
+								parameterWithName("password").description("비밀번호")
+						),
+						responseFields(
+								fieldWithPath("id").type(NUMBER).description("사용자 식별자"),
+								fieldWithPath("name").type(STRING).description("이름"),
+								fieldWithPath("email").type(STRING).description("이메일"),
+								fieldWithPath("nickname").type(STRING).description("닉네임"),
+								fieldWithPath("password").type(STRING).description("비밀번호"),
+								fieldWithPath("deleted").type(BOOLEAN).description("삭제 여부"),
+								fieldWithPath("uploadFileResultDto.id").type(NUMBER).description("파일 식별자"),
+								fieldWithPath("uploadFileResultDto.fileName").type(STRING).description("파일명"),
+								fieldWithPath("uploadFileResultDto.fileOriginalName").type(STRING).description("파일 원본명"),
+								fieldWithPath("uploadFileResultDto.fileUrl").type(STRING).description("파일 URL")
+						)
+				));
 	}
 
 	// 사진 x -> 사진 업로드x
@@ -828,7 +931,7 @@ class AccountApiControllerTest {
 				.willReturn(accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto);
 
 		mockMvc.perform(
-						multipart("/api/users/{id}", ACCOUNT_ID)
+						RestDocumentationRequestBuilders.fileUpload("/api/users/{id}", ACCOUNT_ID)
 								.file(mockUpdatedMultipartFile)
 								.param("nickname", ACCOUNT_UPDATED_NICKNAME)
 								.param("password", ACCOUNT_PASSWORD)
@@ -838,13 +941,26 @@ class AccountApiControllerTest {
 				.andExpect(jsonPath("id").value(ACCOUNT_ID))
 				.andExpect(jsonPath("email").value(ACCOUNT_EMAIL))
 				.andExpect(jsonPath("nickname").value(accountUpdateDto.getNickname()))
-				.andExpect(jsonPath("$.uploadFileResultDto.fileName", is("")))
-				.andExpect(jsonPath(
-						"$.uploadFileResultDto.fileOriginalName", is(""))
-				)
-				.andExpect(jsonPath(
-						"$.uploadFileResultDto.fileUrl", is(""))
-				);
+				.andDo(document("user-update-never-upload-file",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						pathParameters(
+								parameterWithName("id").description("사용자 식별자")
+						),
+						requestParameters(
+								parameterWithName("nickname").description("닉네임"),
+								parameterWithName("password").description("비밀번호")
+						),
+						responseFields(
+								fieldWithPath("id").type(NUMBER).description("사용자 식별자"),
+								fieldWithPath("name").type(STRING).description("이름"),
+								fieldWithPath("email").type(STRING).description("이메일"),
+								fieldWithPath("nickname").type(STRING).description("닉네임"),
+								fieldWithPath("password").type(STRING).description("비밀번호"),
+								fieldWithPath("deleted").type(BOOLEAN).description("삭제 여부"),
+								fieldWithPath("uploadFileResultDto").description("업로드 사진")
+						)
+				));
 	}
 
 	@Test
@@ -854,7 +970,7 @@ class AccountApiControllerTest {
 				.willReturn(accountUpdatedWithNewPasswordResultDto);
 
 		mockMvc.perform(
-						RestDocumentationRequestBuilders.patch("/api/users/{id}/password", ACCOUNT_ID)
+				RestDocumentationRequestBuilders.patch("/api/users/{id}/password", ACCOUNT_ID)
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(accountUpdatePasswordDto))
 		)
@@ -887,15 +1003,30 @@ class AccountApiControllerTest {
 	void updateWithInValidPassword() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
 		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
-				.willThrow(AccountPasswordBadRequestException.class);
+				.willThrow(new AccountPasswordBadRequestException());
 
 		mockMvc.perform(
-						patch("/api/users/{id}/password", ACCOUNT_ID)
+						RestDocumentationRequestBuilders.patch("/api/users/{id}/password", ACCOUNT_ID)
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(accountUpdatePasswordDto))
 				)
 				.andDo(print())
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andDo(document("user-password-update-invalid",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						pathParameters(
+								parameterWithName("id").description("사용자 식별자")
+						),
+						requestFields(
+								fieldWithPath("password").type(STRING).description("비밀번호"),
+								fieldWithPath("newPassword").type(STRING).description("새로운 비밀번호"),
+								fieldWithPath("newPasswordConfirmed").type(STRING).description("새로운 비밀번호 확인")
+						),
+						responseFields(
+								fieldWithPath("message").type(STRING).description("예외 메세지")
+						)
+				));
 	}
 
 	@Test
@@ -905,13 +1036,30 @@ class AccountApiControllerTest {
 				.willThrow(new AccountNewPasswordNotMatchedException());
 
 		mockMvc.perform(
-						patch("/api/users/{id}/password", ACCOUNT_ID)
+						RestDocumentationRequestBuilders.patch("/api/users/{id}/password", ACCOUNT_ID)
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(accountUpdatePasswordDto))
 				)
 				.andDo(print())
 				.andExpect(content().string(containsString("NewPassword not matched")))
-				.andExpect(status().isBadRequest());
+				.andExpect(status().isBadRequest())
+				.andDo(print())
+				.andExpect(status().isBadRequest())
+				.andDo(document("user-password-update-not-matched",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						pathParameters(
+								parameterWithName("id").description("사용자 식별자")
+						),
+						requestFields(
+								fieldWithPath("password").type(STRING).description("비밀번호"),
+								fieldWithPath("newPassword").type(STRING).description("새로운 비밀번호"),
+								fieldWithPath("newPasswordConfirmed").type(STRING).description("새로운 비밀번호 확인")
+						),
+						responseFields(
+								fieldWithPath("message").type(STRING).description("예외 메세지")
+						)
+				));
 	}
 
 	@Test
@@ -966,14 +1114,23 @@ class AccountApiControllerTest {
 	@Test
 	void deleteNotAuthorizedAccount() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(deletedAccountToken);
+		given(accountService.deleteAccount(ACCOUNT_DELETED_ID))
+				.willThrow(new AccessDeniedException("Access is denied"));
 
-		assertThatThrownBy(
-				() -> mockMvc.perform(
-								delete("/api/users/{id}", ACCOUNT_ID)
+		mockMvc.perform(
+						RestDocumentationRequestBuilders.delete("/api/users/{id}", ACCOUNT_ID)
+				)
+				.andDo(print())
+				.andExpect(status().isNoContent())
+				.andDo(document("user-delete-not-existed-id",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						pathParameters(
+								parameterWithName("id").description("사용자 식별자")
+						),
+						responseFields(
+								fieldWithPath("message").type(NUMBER).description("예외 메세지")
 						)
-						.andDo(print())
-						.andExpect(status().isNoContent())
-		)
-				.hasCause(new AccessDeniedException("Access is denied"));
-	}
+				));
+		}
 }

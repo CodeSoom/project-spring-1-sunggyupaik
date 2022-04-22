@@ -48,4 +48,8 @@ public class AccountUpdateResultDto {
 				.uploadFileResultDto(UploadFileResultDto.of(account.getUploadFile()))
 				.build();
 	}
+
+	public void setUploadFileResultDto(UploadFileResultDto uploadFileResultDto) {
+		if(uploadFileResultDto == null) this.uploadFileResultDto = null;
+	}
 }

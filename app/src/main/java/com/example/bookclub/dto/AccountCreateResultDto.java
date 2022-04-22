@@ -1,6 +1,7 @@
 package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.UploadFile;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,5 +48,9 @@ public class AccountCreateResultDto {
 				.deleted(account.isDeleted())
 				.uploadFileResultDto(UploadFileResultDto.of(account.getUploadFile()))
 				.build();
+	}
+
+	public void setUploadFileResultDto(UploadFile uploadFile) {
+		if(uploadFile == null) this.uploadFileResultDto = null;
 	}
 }
