@@ -92,7 +92,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -639,13 +638,38 @@ class StudyApiControllerTest {
                 .willThrow(new StudyStartDateInThePastException());
 
         mockMvc.perform(
-            post("/api/study")
+                RestDocumentationRequestBuilders.post("/api/study")
                     .contentType(MediaType.APPLICATION_JSON)
                     .content(objectMapper.writeValueAsString(studyStartDateIsPastCreateDto))
             )
                 .andDo(print())
                 .andExpect(content().string(containsString("Study startDate in the past")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-create-invalid-start-date",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName(CONTENT_TYPE).description("Content-Type 헤더")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("이름"),
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("bookName").description("책 제목"),
+                                fieldWithPath("bookImage").description("책 사진"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("size").description("정원 수"),
+                                fieldWithPath("startDate").description("시작날짜"),
+                                fieldWithPath("endDate").description("종료날짜"),
+                                fieldWithPath("startTime").description("시작시간"),
+                                fieldWithPath("endTime").description("종료시간"),
+                                fieldWithPath("day").description("요일"),
+                                fieldWithPath("zone").description("지역")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -655,13 +679,38 @@ class StudyApiControllerTest {
                 .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
-                post("/api/study")
+                        RestDocumentationRequestBuilders.post("/api/study")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(studyStartDateIsAfterEndDateCreateDto))
                 )
                     .andDo(print())
                     .andExpect(content().string(containsString("Study StartDate and EndDate not valid")))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isBadRequest())
+                    .andDo(document("study-create-late-start-date",
+                            getDocumentRequest(),
+                            getDocumentResponse(),
+                            requestHeaders(
+                                    headerWithName(CONTENT_TYPE).description("Content-Type 헤더")
+                            ),
+                            requestFields(
+                                    fieldWithPath("name").description("이름"),
+                                    fieldWithPath("email").description("이메일"),
+                                    fieldWithPath("bookName").description("책 제목"),
+                                    fieldWithPath("bookImage").description("책 사진"),
+                                    fieldWithPath("description").description("설명"),
+                                    fieldWithPath("contact").description("연락처"),
+                                    fieldWithPath("size").description("정원 수"),
+                                    fieldWithPath("startDate").description("시작날짜"),
+                                    fieldWithPath("endDate").description("종료날짜"),
+                                    fieldWithPath("startTime").description("시작시간"),
+                                    fieldWithPath("endTime").description("종료시간"),
+                                    fieldWithPath("day").description("요일"),
+                                    fieldWithPath("zone").description("지역")
+                            ),
+                            responseFields(
+                                    fieldWithPath("message").type(STRING).description("예외 메세지")
+                            )
+                    ));
     }
 
     @Test
@@ -671,13 +720,38 @@ class StudyApiControllerTest {
                 .willThrow(new StudyStartAndEndTimeNotValidException());
 
         mockMvc.perform(
-                        post("/api/study")
+                        RestDocumentationRequestBuilders.post("/api/study")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(studyStartTimeIsAfterEndTimeCreateDto))
                 )
                 .andDo(print())
                 .andExpect(content().string(containsString("Study StartTime and EndTime not valid")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-create-late-start-time",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName(CONTENT_TYPE).description("Content-Type 헤더")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("이름"),
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("bookName").description("책 제목"),
+                                fieldWithPath("bookImage").description("책 사진"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("size").description("정원 수"),
+                                fieldWithPath("startDate").description("시작날짜"),
+                                fieldWithPath("endDate").description("종료날짜"),
+                                fieldWithPath("startTime").description("시작시간"),
+                                fieldWithPath("endTime").description("종료시간"),
+                                fieldWithPath("day").description("요일"),
+                                fieldWithPath("zone").description("지역")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -687,13 +761,38 @@ class StudyApiControllerTest {
                 .willThrow(new StudyAlreadyInOpenOrCloseException());
 
         mockMvc.perform(
-                        post("/api/study")
+                        RestDocumentationRequestBuilders.post("/api/study")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(studyCreateDto))
                 )
                 .andDo(print())
                 .andExpect(content().string(containsString("account already has study in open or close")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-create-already-has-study",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName(CONTENT_TYPE).description("Content-Type 헤더")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("이름"),
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("bookName").description("책 제목"),
+                                fieldWithPath("bookImage").description("책 사진"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("size").description("정원 수"),
+                                fieldWithPath("startDate").description("시작날짜"),
+                                fieldWithPath("endDate").description("종료날짜"),
+                                fieldWithPath("startTime").description("시작시간"),
+                                fieldWithPath("endTime").description("종료시간"),
+                                fieldWithPath("day").description("요일"),
+                                fieldWithPath("zone").description("지역")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -760,64 +859,156 @@ class StudyApiControllerTest {
     void updateWithNotManager() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.updateStudy(eq(ACCOUNT_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
-                .willThrow(AccountNotManagerOfStudyException.class);
+                .willThrow(new AccountNotManagerOfStudyException());
 
         mockMvc.perform(
-                        patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
+                    RestDocumentationRequestBuilders.patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(studyUpdateDto))
                 )
                 .andDo(print())
 //                .andExpect(content().string(containsString("Not Manager Of Study")))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isForbidden())
+                .andDo(document("study-update-with-not-manager",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("이름"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("size").description("정원 수"),
+                                fieldWithPath("startDate").description("시작날짜"),
+                                fieldWithPath("endDate").description("종료날짜"),
+                                fieldWithPath("startTime").description("시작시간"),
+                                fieldWithPath("endTime").description("종료시간"),
+                                fieldWithPath("day").description("요일"),
+                                fieldWithPath("studyState").description("스터디 상태"),
+                                fieldWithPath("zone").description("지역")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
     void updateWithStartDateInPastInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
-                .willThrow(StudyStartDateInThePastException.class);
+                .willThrow(new StudyStartDateInThePastException());
 
         mockMvc.perform(
-                        patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(studyStartDateIsPastUpdateDto))
                 )
                 .andDo(print())
                 //.andExpect(content().string(containsString("Study startDate in the past")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-update-start-date-past",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("이름"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("size").description("정원 수"),
+                                fieldWithPath("startDate").description("시작날짜"),
+                                fieldWithPath("endDate").description("종료날짜"),
+                                fieldWithPath("startTime").description("시작시간"),
+                                fieldWithPath("endTime").description("종료시간"),
+                                fieldWithPath("day").description("요일"),
+                                fieldWithPath("studyState").description("스터디 상태"),
+                                fieldWithPath("zone").description("지역")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
     void updateWithStartDateIsAfterEndDateInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
-                .willThrow(StudyStartAndEndDateNotValidException.class);
+                .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
-                        patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(studyStartDateIsPastUpdateDto))
                 )
                 .andDo(print())
 //                .andExpect(content().string(containsString("Study StartDate and EndDate not valid")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-update-start-date-late",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("이름"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("size").description("정원 수"),
+                                fieldWithPath("startDate").description("시작날짜"),
+                                fieldWithPath("endDate").description("종료날짜"),
+                                fieldWithPath("startTime").description("시작시간"),
+                                fieldWithPath("endTime").description("종료시간"),
+                                fieldWithPath("day").description("요일"),
+                                fieldWithPath("studyState").description("스터디 상태"),
+                                fieldWithPath("zone").description("지역")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
     void updateWithStartTimeIsAfterEndTimeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
-                .willThrow(StudyStartAndEndDateNotValidException.class);
+                .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
-                        patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.patch("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(studyStartDateIsPastUpdateDto))
                 )
                 .andDo(print())
                 //.andExpect(content().string(containsString("Study StartDate and EndDate not valid")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-update-start-time-late",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("name").description("이름"),
+                                fieldWithPath("description").description("설명"),
+                                fieldWithPath("contact").description("연락처"),
+                                fieldWithPath("size").description("정원 수"),
+                                fieldWithPath("startDate").description("시작날짜"),
+                                fieldWithPath("endDate").description("종료날짜"),
+                                fieldWithPath("startTime").description("시작시간"),
+                                fieldWithPath("endTime").description("종료시간"),
+                                fieldWithPath("day").description("요일"),
+                                fieldWithPath("studyState").description("스터디 상태"),
+                                fieldWithPath("zone").description("지역")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -883,13 +1074,23 @@ class StudyApiControllerTest {
     void deleteByNotExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyService.deleteStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_NOT_EXISTED_ID)))
-                .willThrow(StudyNotFoundException.class);
+                .willThrow(new StudyNotFoundException(STUDY_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        delete("/api/study/{id}", STUDY_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.delete("/api/study/{id}", STUDY_NOT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-delete-not-existed-id",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -920,56 +1121,96 @@ class StudyApiControllerTest {
     void applyStudyByNotExistedStudy() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
-                .willThrow(StudyNotFoundException.class);
+                .willThrow(new StudyNotFoundException(STUDY_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        post("/api/study/apply/{id}", STUDY_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/apply/{id}", STUDY_NOT_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-apply-not-existed-study",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                        )
+                ));
     }
 
     @Test
     void applyStudyNotInOpenState() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithClosedStudyToken);
         given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_CLOSED_ID)))
-                .willThrow(StudyNotInOpenStateException.class);
+                .willThrow(new StudyNotInOpenStateException());
 
         mockMvc.perform(
-                        post("/api/study/apply/{id}", STUDY_CLOSED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/apply/{id}", STUDY_CLOSED_ID)
                             .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-apply-not-opened",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                        )
+                ));
     }
 
     @Test
     void applyStudyWithAlreadyHasStudy() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
-                .willThrow(StudyAlreadyExistedException.class);
+                .willThrow(new StudyAlreadyExistedException());
 
         mockMvc.perform(
-                        post("/api/study/apply/{id}", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/apply/{id}", STUDY_SETUP_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-apply-already-has-study",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                        )
+                ));
     }
 
     @Test
     void applyStudyWithFullSize() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.applyStudy(any(UserAccount.class), eq(STUDY_FULL_SIZE_ID)))
-                .willThrow(StudySizeFullException.class);
+                .willThrow(new StudySizeFullException());
 
         mockMvc.perform(
-                        post("/api/study/apply/{id}", STUDY_FULL_SIZE_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/apply/{id}", STUDY_FULL_SIZE_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-apply-size-full",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                        )
+                ));
     }
 
     @Test
@@ -999,40 +1240,70 @@ class StudyApiControllerTest {
     void cancelStudyNotOpenedStudy() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithClosedStudyToken);
         given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_CLOSED_ID)))
-                .willThrow(StudyNotInOpenStateException.class);
+                .willThrow(new StudyNotInOpenStateException());
 
         mockMvc.perform(
-                post("/api/study/cancel/{id}", STUDY_CLOSED_ID)
+                RestDocumentationRequestBuilders.post("/api/study/cancel/{id}", STUDY_CLOSED_ID)
         )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-cancel-not-opened",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                        )
+                ));
     }
 
     @Test
     void cancelStudyByNotExistedStudy() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
-                .willThrow(StudyNotFoundException.class);
+                .willThrow(new StudyNotFoundException(STUDY_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        post("/api/study/cancel/{id}", STUDY_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/cancel/{id}", STUDY_NOT_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-cancel-not-existed-study",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                        )
+                ));
     }
 
     @Test
     void cancelStudyByNotAppliedStudy() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
         given(studyService.cancelStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
-                .willThrow(StudyNotAppliedBefore.class);
+                .willThrow(new StudyNotAppliedBefore());
 
         mockMvc.perform(
-                        post("/api/study/cancel/{id}", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/cancel/{id}", STUDY_SETUP_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-cancel-not-applied",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                        )
+                ));
     }
 
     @Test
@@ -1062,26 +1333,46 @@ class StudyApiControllerTest {
     void createLikeStudyWithNotExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.like(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
-                .willThrow(StudyNotFoundException.class);
+                .willThrow(new StudyNotFoundException(STUDY_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        post("/api/study/like/{studyId}", STUDY_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/like/{studyId}", STUDY_NOT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-like-not-existed-study",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("studyId").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
     void createLikeStudyWithAlreadyExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.like(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
-                .willThrow(StudyLikeAlreadyExistedException.class);
+                .willThrow(new StudyLikeAlreadyExistedException());
 
         mockMvc.perform(
-                        post("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-like-already-existed",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("studyId").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -1111,26 +1402,46 @@ class StudyApiControllerTest {
     void deleteLikeStudyWithNotExistedStudyId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.unLike(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
-                .willThrow(StudyNotFoundException.class);
+                .willThrow(new StudyNotFoundException(STUDY_SETUP_EXISTED_ID));
 
         mockMvc.perform(
-                        delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-unlike-not-existed-study",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("studyId").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
     void deleteLikeStudyLikeWithNotExistedStudyLikeId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyLikeService.unLike(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
-                .willThrow(StudyLikeNotExistedException.class);
+                .willThrow(new StudyLikeNotExistedException());
 
         mockMvc.perform(
-                        delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.delete("/api/study/like/{studyId}", STUDY_SETUP_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-unlike-not-existed-study-like",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("studyId").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -1176,15 +1487,28 @@ class StudyApiControllerTest {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentService.createStudyComment(any(UserAccount.class),
                 eq(STUDY_SETUP_EXISTED_ID), any(StudyCommentCreateDto.class)))
-                .willThrow(StudyCommentContentNotExistedException.class);
+                .willThrow(new StudyCommentContentNotExistedException());
 
         mockMvc.perform(
-                        post("/api/study/{studyId}/comment", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/{studyId}/comment", STUDY_SETUP_EXISTED_ID)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(studyCommentCreateWithoutContentDto))
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-comment-create-without-content",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("studyId").description("스터디 식별자")
+                        ),
+                        requestFields(
+                                fieldWithPath("content").type(STRING).description("내용")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -1222,26 +1546,46 @@ class StudyApiControllerTest {
     void deleteStudyCommentWithNotExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentService.deleteStudyComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
-                .willThrow(StudyCommentNotFoundException.class);
+                .willThrow(new StudyCommentNotFoundException(STUDY_COMMENT_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        delete("/api/study/comment/{studyCommentId}", STUDY_COMMENT_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.delete("/api/study/comment/{studyCommentId}", STUDY_COMMENT_NOT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-comment-delete-not-existed-id",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("studyCommentId").description("스터디 댓글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
     void deleteStudyCommentWithNotAccountId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentService.deleteStudyComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
-                .willThrow(StudyCommentDeleteBadRequest.class);
+                .willThrow(new StudyCommentDeleteBadRequest());
 
         mockMvc.perform(
-                delete("/api/study/comment/{studyCommentId}", STUDY_COMMENT_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.delete("/api/study/comment/{studyCommentId}", STUDY_COMMENT_NOT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-comment-delete-not-account",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("studyCommentId").description("스터디 댓글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
