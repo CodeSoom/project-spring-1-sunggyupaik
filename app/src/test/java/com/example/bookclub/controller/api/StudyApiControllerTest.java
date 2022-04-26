@@ -1629,13 +1629,23 @@ class StudyApiControllerTest {
     void createStudyCommentLikeWithNotExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentLikeService.likeComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
-                .willThrow(StudyCommentNotFoundException.class);
+                .willThrow(new StudyCommentNotFoundException(STUDY_COMMENT_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        post("/api/study/comment/{commentId}/like", STUDY_COMMENT_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/comment/{commentId}/like", STUDY_COMMENT_NOT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-comment-like-not-existed-id",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("commentId").description("스터디 댓글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -1665,26 +1675,46 @@ class StudyApiControllerTest {
     void deleteStudyCommentLikeWithNotExistedStudyCommentId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentLikeService.unlikeComment(any(UserAccount.class), eq(STUDY_COMMENT_NOT_EXISTED_ID)))
-                .willThrow(StudyCommentNotFoundException.class);
+                .willThrow(new StudyCommentNotFoundException(STUDY_COMMENT_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_NOT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-comment-unlike-not-existed-id",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("commentId").description("스터디 댓글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
     void deleteStudyCommentLikeWithNotExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentLikeService.unlikeComment(any(UserAccount.class), eq(STUDY_COMMENT_EXISTED_ID)))
-                .willThrow(StudyCommentLikeNotFoundException.class);
+                .willThrow(new StudyCommentLikeNotFoundException(STUDY_COMMENT_EXISTED_ID));
 
         mockMvc.perform(
-                        delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.delete("/api/study/comment/{commentId}/unlike", STUDY_COMMENT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-comment-like-not-existed-like",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("commentId").description("스터디 댓글 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -1714,26 +1744,46 @@ class StudyApiControllerTest {
     void createFavoriteStudyAlreadyExisted() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
-                .willThrow(StudyFavoriteAlreadyExistedException.class);
+                .willThrow(new StudyFavoriteAlreadyExistedException(STUDY_SETUP_EXISTED_ID));
 
         mockMvc.perform(
-                        post("/api/study/{id}/favorite", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/{id}/favorite", STUDY_SETUP_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("study-favorite-already-existed",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
     void createFavoriteStudyWithNotExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_SETUP_EXISTED_ID)))
-                .willThrow(StudyNotFoundException.class);
+        given(studyFavoriteService.favoriteStudy(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
+                .willThrow(new StudyNotFoundException(STUDY_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        post("/api/study/{id}/favorite", STUDY_SETUP_EXISTED_ID)
+                        RestDocumentationRequestBuilders.post("/api/study/{id}/favorite", STUDY_NOT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-favorite-not-existed-id",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
@@ -1763,13 +1813,23 @@ class StudyApiControllerTest {
     void deleteFavoriteStudyWithNotExistedId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyFavoriteService.unFavoriteStudy(any(UserAccount.class), eq(STUDY_FAVORITE_NOT_EXISTED_ID)))
-                .willThrow(StudyFavoriteNotExistedException.class);
+                .willThrow(new StudyFavoriteNotExistedException(STUDY_FAVORITE_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        delete("/api/study/{id}/favorite", STUDY_FAVORITE_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.delete("/api/study/{id}/favorite", STUDY_FAVORITE_NOT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-unfavorite-not-existed-id",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 
     @Test
