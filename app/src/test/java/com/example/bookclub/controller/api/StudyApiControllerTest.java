@@ -1820,7 +1820,7 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isNotFound())
-                .andDo(document("study-unfavorite-not-existed-id",
+                .andDo(document("study-unfavorite-not-existed-like",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
@@ -1836,12 +1836,22 @@ class StudyApiControllerTest {
     void deleteFavoriteStudyWithNotExistedStudyId() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyFavoriteService.unFavoriteStudy(any(UserAccount.class), eq(STUDY_NOT_EXISTED_ID)))
-                .willThrow(StudyNotFoundException.class);
+                .willThrow(new StudyNotFoundException(STUDY_NOT_EXISTED_ID));
 
         mockMvc.perform(
-                        delete("/api/study/{id}/favorite", STUDY_NOT_EXISTED_ID)
+                        RestDocumentationRequestBuilders.delete("/api/study/{id}/favorite", STUDY_NOT_EXISTED_ID)
                 )
                 .andDo(print())
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound())
+                .andDo(document("study-unfavorite-not-existed-study",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("스터디 식별자")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 }
