@@ -38,7 +38,6 @@ import static org.springframework.restdocs.payload.JsonFieldType.STRING;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -129,15 +128,25 @@ class EmailApiControllerTest {
     @Test
     void sendAuthenticationNumberWithInValidEmail() throws Exception {
         given(emailService.sendAuthenticationNumber(any(EmailRequestDto.class)))
-                .willThrow(EmailBadRequestException.class);
+                .willThrow(new EmailBadRequestException(INVALID_EMAIL));
 
         mockMvc.perform(
-                        post("/api/email/authentication")
+                        RestDocumentationRequestBuilders.post("/api/email/authentication")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(emailBadRequestDto))
                 )
                 .andDo(print())
 //                .andExpect(content().string(containsString("Email bad request")))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isBadRequest())
+                .andDo(document("email-authenticationNumber-create-invalid",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("email").type(STRING).description("이메일")
+                        ),
+                        responseFields(
+                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                        )
+                ));
     }
 }

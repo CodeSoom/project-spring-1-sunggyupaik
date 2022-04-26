@@ -810,3 +810,16 @@ include::{snippets}/study-unfavorite-not-existed-study/http-request.adoc[]
 include::{snippets}/study-unfavorite-not-existed-study/response-fields.adoc[]
 ===== Response Example
 include::{snippets}/study-unfavorite-not-existed-study/http-response.adoc[]
+
+=== 3. 이메일
+=== 이메일 인증번호 전송 실패
+==== - 주어진 이메일에 인증번호가 전송되지 않은 경우
+===== Request Body
+include::{snippets}/email-authenticationNumber-create-invalid/request-body.adoc[]
+===== Request Example
+include::{snippets}/email-authenticationNumber-create-invalid/http-request.adoc[]
+
+===== Response
+include::{snippets}/email-authenticationNumber-create-invalid/response-fields.adoc[]
+===== Response Example
+include::{snippets}/email-authenticationNumber-create-invalid/http-response.adoc[]
