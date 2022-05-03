@@ -295,7 +295,7 @@ public class StudyServiceTest {
         fullSizeStudy = Study.builder()
                 .size(STUDY_SETUP_SIZE)
                 .applyCount(STUDY_SETUP_SIZE)
-                .studyState(StudyState.CLOSE)
+                .studyState(StudyState.OPEN)
                 .build();
 
 		startTodayOpenedStudyOne = Study.builder()

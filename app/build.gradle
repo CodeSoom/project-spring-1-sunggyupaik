@@ -22,6 +22,9 @@ ext {
 
 test {
 	outputs.dir snippetsDir
+
+	// Use junit platform for unit tests.
+	useJUnitPlatform()
 }
 
 asciidoctor {
@@ -178,11 +181,6 @@ dependencies {
 application {
 	// Define the main class for the application.
 	mainClass = 'com.example.bookclub.App'
-}
-
-test {
-	// Use junit platform for unit tests.
-	useJUnitPlatform()
 }
 
 def querydslDir = "$buildDir/generated/querydsl"

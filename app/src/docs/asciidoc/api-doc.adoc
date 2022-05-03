@@ -1,0 +1,812 @@
+== REST API
+:toc: left
+:toclevels: 3
+:source-highlighter: highlightjs
+
+== 개요
+REST API를 정의한다
+
+[[overview-http-verbs]]
+== HTTP verbs
+
+RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
+use of HTTP verbs.
+
+|===
+| Verb | Usage
+
+| `GET`
+| Used to retrieve a resource
+
+| `POST`
+| Used to create a new resource
+
+| `PATCH`
+| Used to update an existing resource, including partial updates
+
+| `DELETE`
+| Used to delete an existing resource
+|===
+
+RESTful notes tries to adhere as closely as possible to standard HTTP and REST conventions in its
+use of HTTP status codes.
+
+|===
+| Status code | Usage
+
+| `200 OK`
+| The request completed successfully
+
+| `201 Created`
+| A new resource has been created successfully. The resource's URI is available from the response's
+`Location` header
+
+| `204 No Content`
+| An update to an existing resource has been applied successfully
+
+| `400 Bad Request`
+| The request was malformed. The response body will include an error providing further information
+
+| `404 Not Found`
+| The requested resource did not exist
+|===
+
+== REST API 성공
+
+== 1. 사용자
+=== 사용자 조회
+===== Request Path Parameters
+include::{snippets}/user-detail/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-detail/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-detail/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-detail/http-response.adoc[]
+
+=== 사용자 생성
+==== - 업로드 사진이 있는 경우
+===== Request Parameters
+include::{snippets}/user-create/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-create/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-create/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-create/http-response.adoc[]
+
+==== - 업로드 사진이 없는 경우
+===== Request Parameters
+include::{snippets}/user-create-without-upload-file/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-create-without-upload-file/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-create-without-upload-file/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-create-without-upload-file/http-response.adoc[]
+
+=== 사용자 수정
+=== - 기존에 업로드 사진이 있고 업로드 사진이 주어진 경우
+===== Request Path Parameters
+include::{snippets}/user-update/path-parameters.adoc[]
+===== Request Parameters
+include::{snippets}/user-update/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-update/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-update/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-update/http-response.adoc[]
+
+=== - 기존에 업로드 사진이 존재하고 주어진 업로드 사진이 없는 경우
+include::{snippets}/user-update-without-upload-file/path-parameters.adoc[]
+===== Request Parameters
+include::{snippets}/user-update-without-upload-file/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-update-without-upload-file/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-update-without-upload-file/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-update-without-upload-file/http-response.adoc[]
+
+=== - 기존에 업로드 사진이 존재하지 않고 업로드 사진이 주어진 경우
+include::{snippets}/user-update-with-first-upload-file/path-parameters.adoc[]
+===== Request Parameters
+include::{snippets}/user-update-with-first-upload-file/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-update-with-first-upload-file/http-request.adoc[]
+
+=== - 기존에 업로드 사진이 존재하지 않고 업로드 사진이 없는 경우
+include::{snippets}/user-update-never-upload-file/path-parameters.adoc[]
+===== Request Parameters
+include::{snippets}/user-update-never-upload-file/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-update-never-upload-file/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-update-never-upload-file/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-update-never-upload-file/http-response.adoc[]
+
+=== 사용자 삭제
+===== Request Path Parameters
+include::{snippets}/user-delete/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-delete/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-delete/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-delete/http-response.adoc[]
+
+=== 사용자 비밀번호 수정
+===== Request Path Parameters
+include::{snippets}/user-password-update/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/user-update/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-password-update/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-password-update/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-password-update/http-response.adoc[]
+
+== 2. 스터디
+=== 2-1. 스터디 리스트 조회
+===== Request Example
+include::{snippets}/study-list/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-list/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-list/http-response.adoc[]
+
+=== 2-2. 스터디 조회
+===== Request Path Parameters
+include::{snippets}/study-detail/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-detail/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-detail/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-detail/http-response.adoc[]
+
+=== 2-3. 스터디 생성
+===== Request Header
+include::{snippets}/study-create/request-headers.adoc[]
+===== Request Body
+include::{snippets}/study-create/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-create/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-create/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-create/http-response.adoc[]
+
+=== 2-4. 스터디 수정
+===== Request Path Parameters
+include::{snippets}/study-update/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/study-update/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-update/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-update/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-update/http-response.adoc[]
+
+=== 2-5. 스터디 삭제
+===== Request Path Parameters
+include::{snippets}/study-delete/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-delete/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-delete/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-delete/http-response.adoc[]
+
+=== 2-6. 스터디 지원 생성
+===== Request Path Parameters
+include::{snippets}/study-apply/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-apply/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-apply/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-apply/http-response.adoc[]
+
+=== 2-7. 스터디 지원 취소
+===== Request Path Parameters
+include::{snippets}/study-cancel/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-cancel/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-cancel/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-cancel/http-response.adoc[]
+
+=== 2-8. 스터디 좋아요 생성
+===== Request Path Parameters
+include::{snippets}/study-like/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-like/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-like/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-like/http-response.adoc[]
+
+=== 2-9. 스터디 좋아요 취소
+===== Request Path Parameters
+include::{snippets}/study-unlike/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-unlike/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-unlike/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-unlike/http-response.adoc[]
+
+=== 2-10. 스터디 댓글 생성
+===== Request Body
+include::{snippets}/study-comment-create/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-comment-create/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-comment-create/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-create/http-response.adoc[]
+
+=== 2-11. 스터디 댓글 삭제
+===== Request Body
+include::{snippets}/study-comment-delete/request-body.adoc[]
+
+===== Response
+include::{snippets}/study-comment-delete/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-delete/http-response.adoc[]
+
+=== 2-12. 스터디 댓글 좋아요 생성
+===== Request Path Parameters
+include::{snippets}/study-comment-like/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-comment-like/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-comment-like/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-like/http-response.adoc[]
+
+=== 2-13. 스터디 댓글 좋아요 취소
+===== Request Path Parameters
+include::{snippets}/study-comment-unlike/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-comment-unlike/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-comment-unlike/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-unlike/http-response.adoc[]
+
+=== 2-14. 스터디 즐겨찾기 생성
+===== Request Path Parameters
+include::{snippets}/study-favorite/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-favorite/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-favorite/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-favorite/http-response.adoc[]
+
+=== 2-15. 스터디 즐겨찾기 취소
+===== Request Path Parameters
+include::{snippets}/study-unFavorite/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-unFavorite/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-unFavorite/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-unFavorite/http-response.adoc[]
+
+== 3. 이메일
+=== 3-1. 인증번호 전송
+===== Request Example
+include::{snippets}/email-authenticationNumber-create/http-request.adoc[]
+
+===== Request Body
+include::{snippets}/email-authenticationNumber-create/request-body.adoc[]
+
+===== Response
+include::{snippets}/email-authenticationNumber-create/response-fields.adoc[]
+===== Response Example
+include::{snippets}/email-authenticationNumber-create/http-response.adoc[]
+
+== 4. 인터뷰
+=== 4-1. 인터뷰 크롤링 생성
+===== Request Example
+include::{snippets}/interview-create/http-request.adoc[]
+
+===== Response
+include::{snippets}/interview-create/response-fields.adoc[]
+===== Response Example
+include::{snippets}/interview-create/http-response.adoc[]
+
+== REST API 실패
+
+== 1. 사용자
+=== 사용자 조회 실패
+==== - 존재하지 않는 사용자 식별자로 조회하는 경우
+===== Request Path Parameters
+include::{snippets}/user-detail-not-existed-id/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-detail-not-existed-id/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-detail-not-existed-id/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-detail-not-existed-id/http-response.adoc[]
+
+=== 사용자 생성 실패
+==== - 주어진 이메일이 중복되는 경우
+===== Request Path Parameters
+include::{snippets}/user-create-duplicated-email/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-create-duplicated-email/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-create-duplicated-email/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-create-duplicated-email/http-response.adoc[]
+
+==== - 인증번호가 틀린 경우
+===== Request Path Parameters
+include::{snippets}/user-create-invalid-authentication-number/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-create-invalid-authentication-number/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-create-invalid-authentication-number/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-create-invalid-authentication-number/http-response.adoc[]
+
+==== - 닉네임이 중복된 경우
+===== Request Path Parameters
+include::{snippets}/user-create-duplicated-nickname/request-parameters.adoc[]
+===== Request Example
+include::{snippets}/user-create-duplicated-nickname/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-create-duplicated-nickname/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-create-duplicated-nickname/http-response.adoc[]
+
+=== 사용자 비밀번호 수정 실패
+==== -주어진 비밀번호가 잘못된 경우
+===== Request Path Parameters
+include::{snippets}/user-password-update-invalid/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/user-password-update-invalid/request-body.adoc[]
+===== Request Example
+include::{snippets}/user-password-update-invalid/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-password-update-invalid/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-password-update-invalid/http-response.adoc[]
+
+==== -주어진 비밀번호와 확인이 다른 경우
+===== Request Path Parameters
+include::{snippets}/user-password-update-not-matched/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/user-password-update-not-matched/request-body.adoc[]
+===== Request Example
+include::{snippets}/user-password-update-not-matched/http-request.adoc[]
+
+===== Response
+include::{snippets}/user-password-update-not-matched/response-fields.adoc[]
+===== Response Example
+include::{snippets}/user-password-update-not-matched/http-response.adoc[]
+
+== 2. 스터디
+=== 스터디 조회 실패
+==== - 존재하지 않는 스터디 식별자로 조회하는 경우
+===== Request Path Parameters
+include::{snippets}/study-detail-not-existed-id/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-detail-not-existed-id/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-detail-not-existed-id/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-detail-not-existed-id/http-response.adoc[]
+
+=== 스터디 생성 실패
+==== - 스터디 시작날짜가 오늘이거나 과거인 경우
+===== Request Body
+include::{snippets}/study-create-invalid-start-date/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-create-invalid-start-date/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-create-invalid-start-date/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-create-invalid-start-date/http-response.adoc[]
+
+==== - 스터디 시작날짜가 오늘이거나 과거인 경우
+===== Request Example
+include::{snippets}/study-create-invalid-start-date/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-create-invalid-start-date/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-create-invalid-start-date/http-response.adoc[]
+
+==== - 스터디 시작날짜가 종료날짜보다 늦은 경우
+===== Request Body
+include::{snippets}/study-create-late-start-date/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-create-late-start-date/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-create-late-start-date/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-create-late-start-date/http-response.adoc[]
+
+==== - 스터디 시작시간이 종료시간보다 늦은 경우
+===== Request Body
+include::{snippets}/study-create-late-start-time/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-create-late-start-time/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-create-late-start-time/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-create-late-start-time/http-response.adoc[]
+
+==== - 사용자가 이미 모집중 혹은 참여중 스터디가 있는 경우
+===== Request Body
+include::{snippets}/study-create-already-has-study/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-create-already-has-study/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-create-already-has-study/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-create-already-has-study/http-response.adoc[]
+
+=== 스터디 수정 실패
+==== - 스터디의 방장이 아닌 경우
+===== Request Path Parameters
+include::{snippets}/study-update-with-not-manager/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/study-update-with-not-manager/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-update-with-not-manager/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-update-with-not-manager/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-update-with-not-manager/http-response.adoc[]
+
+==== - 스터디의 방장이 아닌 경우
+===== Request Path Parameters
+include::{snippets}/study-update-with-not-manager/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/study-update-with-not-manager/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-update-with-not-manager/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-update-with-not-manager/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-update-with-not-manager/http-response.adoc[]
+
+==== - 스터디 시작날짜가 과거인 경우
+===== Request Path Parameters
+include::{snippets}/study-update-start-date-past/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/study-update-start-date-past/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-update-start-date-past/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-update-start-date-past/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-update-start-date-past/http-response.adoc[]
+
+==== - 스터디 시작날짜가 종료날짜보다 늦는 경우
+===== Request Path Parameters
+include::{snippets}/study-update-start-date-late/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/study-update-start-date-late/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-update-start-date-late/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-update-start-date-late/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-update-start-date-late/http-response.adoc[]
+
+==== - 스터디 시작시간이 종료시간보다 늦는 경우
+===== Request Path Parameters
+include::{snippets}/study-update-start-time-late/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/study-update-start-time-late/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-update-start-time-late/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-update-start-time-late/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-update-start-time-late/http-response.adoc[]
+
+=== 스터디 삭제 실패
+==== - 존재하지 않는 스터디 식별자가 주어진 경우
+===== Request Path Parameters
+include::{snippets}/study-delete-not-existed-id/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-delete-not-existed-id/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-delete-not-existed-id/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-delete-not-existed-id/http-response.adoc[]
+
+=== 스터디 지원 실패
+==== - 존재하지 않는 스터디 식별자가 주어진 경우
+===== Request Path Parameters
+include::{snippets}/study-apply-not-existed-study/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-apply-not-existed-study/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-apply-not-existed-study/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-apply-not-existed-study/http-response.adoc[]
+
+==== - 스터디가 모집중이 아닌 경우
+===== Request Path Parameters
+include::{snippets}/study-apply-not-opened/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-apply-not-opened/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-apply-not-opened/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-apply-not-opened/http-response.adoc[]
+
+==== - 스터디 정원이 다 찬 경우
+===== Request Path Parameters
+include::{snippets}/study-apply-size-full/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-apply-size-full/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-apply-size-full/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-apply-size-full/http-response.adoc[]
+
+=== 스터디 지원 취소
+==== - 스터디가 모집중이 아닌 경우
+===== Request Path Parameters
+include::{snippets}/study-cancel-not-opened/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-cancel-not-opened/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-cancel-not-opened/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-cancel-not-opened/http-response.adoc[]
+
+==== - 주어진 스터디 식별자에 해당하는 스터디 없는 경우
+===== Request Path Parameters
+include::{snippets}/study-cancel-not-existed-study/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-cancel-not-existed-study/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-cancel-not-existed-study/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-cancel-not-existed-study/http-response.adoc[]
+
+==== - 지원하지 않은 스터디 지원을 취소하는 경우
+===== Request Path Parameters
+include::{snippets}/study-cancel-not-applied/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-cancel-not-applied/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-cancel-not-applied/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-cancel-not-applied/http-response.adoc[]
+
+=== 스터디 좋아요 생성
+==== - 주어진 스터디 식별자에 해당하는 스터디가 없는 경우
+===== Request Path Parameters
+include::{snippets}/study-like-not-existed-study/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-like-not-existed-study/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-like-not-existed-study/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-like-not-existed-study/http-response.adoc[]
+
+==== - 주어진 식별자에 해당하는 스터디 좋아요가 이미 존재하는 경우
+===== Request Path Parameters
+include::{snippets}/study-like-already-existed/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-like-already-existed/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-like-already-existed/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-like-already-existed/http-response.adoc[]
+
+=== 스터디 좋아요 삭제
+==== - 주어진 스터디 식별자에 해당하는 좋아요가 없는 경우
+===== Request Path Parameters
+include::{snippets}/study-like-not-existed-study/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-like-not-existed-study/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-like-not-existed-study/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-like-not-existed-study/http-response.adoc[]
+
+==== - 주어진 스터디 식별자에 해당하는 스터디가 없는 경우
+===== Request Path Parameters
+include::{snippets}/study-unlike-not-existed-study/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-unlike-not-existed-study/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-unlike-not-existed-study/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-unlike-not-existed-study/http-response.adoc[]
+
+==== - 주어진 스터디 식별자에 해당하는 좋아요가 없는 경우
+===== Request Path Parameters
+include::{snippets}/study-unlike-not-existed-study/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-unlike-not-existed-study/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-unlike-not-existed-study/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-unlike-not-existed-study/http-response.adoc[]
+
+=== 스터디 댓글 생성
+==== - 스터디 댓글 내용 입력을 안한 경우
+===== Request Path Parameters
+include::{snippets}/study-comment-create-without-content/path-parameters.adoc[]
+===== Request Body
+include::{snippets}/study-comment-create-without-content/request-fields.adoc[]
+===== Request Example
+include::{snippets}/study-comment-create-without-content/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-comment-create-without-content/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-create-without-content/http-response.adoc[]
+
+=== 스터디 댓글 삭제
+==== - 주어진 스터디 댓글 식별자에 해당하는 댓글이 없는 경우
+===== Request Path Parameters
+include::{snippets}/study-comment-delete-not-existed-id/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-comment-delete-not-existed-id/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-comment-delete-not-existed-id/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-delete-not-existed-id/http-response.adoc[]
+
+==== - 주어진 스터디 댓글 식별자의 주인이 아닌 경우
+===== Request Path Parameters
+include::{snippets}/study-comment-delete-not-account/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-comment-delete-not-account/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-comment-delete-not-account/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-delete-not-account/http-response.adoc[]
+
+=== 스터디 댓글 좋아요 생성
+==== - 주어진 스터디 댓글 식별자에 해당하는 댓글이 없는 경우
+===== Request Path Parameters
+include::{snippets}/study-comment-like-not-existed-id/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-comment-like-not-existed-id/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-comment-like-not-existed-id/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-like-not-existed-id/http-response.adoc[]
+
+=== 스터디 댓글 좋아요 삭제
+==== - 주어진 스터디 댓글 식별자에 해당하는 댓글이 없는 경우
+===== Request Path Parameters
+include::{snippets}/study-comment-unlike-not-existed-id/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-comment-delete-not-existed-id/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-comment-delete-not-existed-id/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-delete-not-existed-id/http-response.adoc[]
+
+=== 스터디 댓글 좋아요 삭제
+==== - 주어진 스터디 댓글 식별자에 해당하는 좋아요 댓글이 없는 경우
+===== Request Path Parameters
+include::{snippets}/study-comment-like-not-existed-like/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-comment-like-not-existed-like/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-comment-like-not-existed-like/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-comment-like-not-existed-like/http-response.adoc[]
+
+=== 스터디 즐겨찾기 생성
+==== - 주어진 스터디 식별자에 해당하는 즐겨찾기가 존재하는 경우
+===== Request Path Parameters
+include::{snippets}/study-favorite-already-existed/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-favorite-already-existed/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-favorite-already-existed/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-favorite-already-existed/http-response.adoc[]
+
+==== - 주어진 스터디 식별자에 해당하는 스터디가 존재하지 않는 경우
+===== Request Path Parameters
+include::{snippets}/study-favorite-not-existed-id/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-favorite-not-existed-id/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-favorite-not-existed-id/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-favorite-not-existed-id/http-response.adoc[]
+
+=== 스터디 즐겨찾기 삭제
+==== - 주어진 스터디 식별자에 해당하는 스터디 좋아요 존재하지 않는 경우
+===== Request Path Parameters
+include::{snippets}/study-unfavorite-not-existed-like/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-unfavorite-not-existed-like/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-unfavorite-not-existed-like/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-unfavorite-not-existed-like/http-response.adoc[]
+
+==== - 주어진 스터디 식별자에 해당하는 스터디가 존재하지 않는 경우
+===== Request Path Parameters
+include::{snippets}/study-unfavorite-not-existed-study/path-parameters.adoc[]
+===== Request Example
+include::{snippets}/study-unfavorite-not-existed-study/http-request.adoc[]
+
+===== Response
+include::{snippets}/study-unfavorite-not-existed-study/response-fields.adoc[]
+===== Response Example
+include::{snippets}/study-unfavorite-not-existed-study/http-response.adoc[]
