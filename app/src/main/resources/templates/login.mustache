@@ -28,11 +28,11 @@
                     height="70"
             />
         </a>
-<!--        <li onclick="kakaoLogout();">-->
-<!--            <a href="javascript:void(0)">-->
-<!--                <span>카카오 로그아웃</span>-->
-<!--            </a>-->
-<!--        </li>-->
+        <li onclick="kakaoLogout();">
+            <a href="javascript:void(0)">
+                <span>카카오 로그아웃</span>
+            </a>
+        </li>
         {{#loginError}}
             <div class="error-message">
                 <span> 아이디나 패스워드가 올바르지 않습니다. </span>
@@ -51,20 +51,21 @@
     console.log(Kakao.isInitialized()); // sdk초기화여부판단
     //카카오로그인
     function loginWithKakao() {
-        Kakao.API.request({
-            url: '/v2/user/me',
-            success: function(response) {
-                console.log(response);
-                var id = response.id;
-                var email = response.kaccount_email;
-                var nickname = response.properties.nickname;
-
-
+        Kakao.Auth.login({
+            success: function (response) {
+                Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function (response) {
+                        console.log(response);
+                        var email = response.kakao_account.email;
+                    }
+                })
             },
-            fail: function(error) {
+            fail: function (error) {
                 console.log(error);
+                window.location.herf = '/login-required';
             }
-        });
+        })
     }
 
     //카카오로그아웃
@@ -73,13 +74,13 @@
             Kakao.API.request({
                 url: '/v1/user/unlink',
                 success: function (response) {
-                    console.log(response)
+                    console.log(response);
                 },
                 fail: function (error) {
                     console.log(error)
                 },
             })
-            Kakao.Auth.setAccessToken(undefined)
+            Kakao.Auth.setAccessToken(undefined);
         }
     }
 </script>
