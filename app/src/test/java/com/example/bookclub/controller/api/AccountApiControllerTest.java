@@ -1117,20 +1117,22 @@ class AccountApiControllerTest {
 		given(accountService.deleteAccount(ACCOUNT_DELETED_ID))
 				.willThrow(new AccessDeniedException("Access is denied"));
 
-		mockMvc.perform(
-						RestDocumentationRequestBuilders.delete("/api/users/{id}", ACCOUNT_ID)
-				)
-				.andDo(print())
-				.andExpect(status().isNoContent())
-				.andDo(document("user-delete-not-existed-id",
-						getDocumentRequest(),
-						getDocumentResponse(),
-						pathParameters(
-								parameterWithName("id").description("사용자 식별자")
-						),
-						responseFields(
-								fieldWithPath("message").type(NUMBER).description("예외 메세지")
+		assertThatThrownBy(
+				() -> mockMvc.perform(
+								RestDocumentationRequestBuilders.delete("/api/users/{id}", ACCOUNT_ID)
 						)
-				));
-		}
+						.andDo(print())
+						.andExpect(status().isNoContent())
+						.andDo(document("user-delete-not-existed-id",
+								getDocumentRequest(),
+								getDocumentResponse(),
+								pathParameters(
+										parameterWithName("id").description("사용자 식별자")
+								),
+								responseFields(
+										fieldWithPath("message").type(NUMBER).description("예외 메세지")
+								)
+						))
+		);
+	}
 }

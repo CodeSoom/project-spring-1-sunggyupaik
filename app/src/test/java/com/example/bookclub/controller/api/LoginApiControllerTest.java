@@ -28,7 +28,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(InterviewApiController.class)
+@WebMvcTest(LoginApiControllerTest.class)
 @AutoConfigureRestDocs(uriScheme = "https", uriHost = "docs.api.com")
 @ExtendWith({RestDocumentationExtension.class})
 public class LoginApiControllerTest {
