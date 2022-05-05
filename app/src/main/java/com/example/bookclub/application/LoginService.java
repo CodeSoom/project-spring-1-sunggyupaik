@@ -2,6 +2,7 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.dto.KakaoLoginRequest;
+import com.example.bookclub.repository.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,10 +14,13 @@ import java.util.List;
 @Service
 @Transactional
 public class LoginService {
-	private AccountAuthenticationService accountAuthenticationService;
+	private final AccountAuthenticationService accountAuthenticationService;
+	private final JpaAccountRepository accountRepository;
 
-	public LoginService(AccountAuthenticationService accountAuthenticationService) {
+	public LoginService(AccountAuthenticationService accountAuthenticationService,
+						JpaAccountRepository accountRepository) {
 		this.accountAuthenticationService = accountAuthenticationService;
+		this.accountRepository = accountRepository;
 	}
 
 	public boolean checkAlreadyExistedEmail(KakaoLoginRequest kakaoLoginRequest) {
@@ -35,5 +39,13 @@ public class LoginService {
 						List.of(new SimpleGrantedAuthority("KAKAO-USER")));
 
 		return accountToken;
+	}
+
+	public void saveNewAccount(KakaoLoginRequest kakaoLoginRequest) {
+		String email = kakaoLoginRequest.getEmail();
+		Account account = Account.builder()
+				.email(email)
+				.build();
+		accountRepository.save(account);
 	}
 }

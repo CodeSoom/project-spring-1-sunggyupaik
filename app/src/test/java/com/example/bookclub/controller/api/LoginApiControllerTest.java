@@ -76,7 +76,7 @@ public class LoginApiControllerTest {
 	@Test
 	void loginWithKakao() throws Exception {
 		mockMvc.perform(
-				RestDocumentationRequestBuilders.post("/kakao-login")
+				RestDocumentationRequestBuilders.post("/api/kakao-login")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(kakaoLoginRequest))
 		)

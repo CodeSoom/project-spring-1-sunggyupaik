@@ -6,11 +6,13 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api")
 public class LoginApiController {
-	private LoginService loginService;
+	private final LoginService loginService;
 
 	public LoginApiController(LoginService loginService) {
 		this.loginService = loginService;
@@ -18,17 +20,13 @@ public class LoginApiController {
 
 	@PostMapping("/kakao-login")
 	public String kakaoLogin(@RequestBody KakaoLoginRequest kakaoLoginRequest) {
-		//1.기존에 이메일이 존재하는 경우
 		if(loginService.checkAlreadyExistedEmail(kakaoLoginRequest)) {
 			UsernamePasswordAuthenticationToken authenticationToken
 					= loginService.makeKakaoAuthenticationToken(kakaoLoginRequest);
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 			return kakaoLoginRequest.getEmail();
 		}
-
-		//2.기존에 이메일이 존재하지 않는 경우
-		else {
-			return null;
-		}
+		
+		return null;
 	}
 }

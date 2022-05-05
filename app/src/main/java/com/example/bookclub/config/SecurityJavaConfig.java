@@ -117,6 +117,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                                 .antMatchers("/users/save").permitAll()
                                 .antMatchers("/api/email/authentication").permitAll()
                                 .antMatchers("/api/users").permitAll()
+                                .antMatchers("/api/kakao-login").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )

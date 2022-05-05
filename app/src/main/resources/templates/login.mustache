@@ -56,8 +56,18 @@
                 Kakao.API.request({
                     url: '/v2/user/me',
                     success: function (response) {
-                        console.log(response);
                         var email = response.kakao_account.email;
+                        var data = {email : email};
+                        $.ajax({
+                            type: 'POST',
+                            url: '/api/kakao-login',
+                            dataType: 'json',
+                            async: false,
+                            contentType: 'application/json; charset=utf-8',
+                            data: JSON.stringify(data)
+                        })
+
+                        window.location.href = '/';
                     }
                 })
             },
