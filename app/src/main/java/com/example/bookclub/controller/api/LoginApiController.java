@@ -24,9 +24,9 @@ public class LoginApiController {
 			UsernamePasswordAuthenticationToken authenticationToken
 					= loginService.makeKakaoAuthenticationToken(kakaoLoginRequest);
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-			return kakaoLoginRequest.getEmail();
+			return "Y";
 		}
-		
-		return null;
+
+		return "N";
 	}
 }

@@ -53,23 +53,35 @@
     function loginWithKakao() {
         Kakao.Auth.login({
             success: function (response) {
+                new Promise((resolve, reject)=>{
                 Kakao.API.request({
                     url: '/v2/user/me',
                     success: function (response) {
-                        var email = response.kakao_account.email;
-                        var data = {email : email};
-                        $.ajax({
-                            type: 'POST',
-                            url: '/api/kakao-login',
-                            dataType: 'json',
-                            async: false,
-                            contentType: 'application/json; charset=utf-8',
-                            data: JSON.stringify(data)
-                        })
-
-                        window.location.href = '/';
+                        resolve(response);
                     }
-                })
+                });
+                }).then((response) => {
+                    var email = response.kakao_account.email;
+                    var data = {email : email};
+                    var isLogined = false;
+                    $.ajax({
+                        type: 'POST',
+                        url: '/api/kakao-login',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(data),
+                        async: false,
+                        complete: function(response) {
+                            alert(response.responseText);
+                            if(response.responseText === "Y") {
+                                window.location.href='/';
+                            } else {
+                                window.location.href='/users/save&email=' + data.email;
+                            }
+                            resolve(response);
+                        }
+                    });
+                });
             },
             fail: function (error) {
                 console.log(error);
