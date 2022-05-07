@@ -18,6 +18,7 @@ import static org.mockito.Mockito.mock;
 
 class LoginServiceTest {
 	private final static String ACCOUNT_EXISTED_EMAIL = "accountExistedEmail";
+	private final static String ACCOUNT_NOT_EXISTED_EMAIL = "accountNotExistedEmail";
 
 	private LoginService loginService;
 	private AccountAuthenticationService accountAuthenticationService;
@@ -26,6 +27,7 @@ class LoginServiceTest {
 	private Account account;
 	private UsernamePasswordAuthenticationToken accountToken;
 	private KakaoLoginRequest kakaoLoginRequest;
+	private KakaoLoginRequest kakaoLoginNotExistedEmailRequest;
 
 	@BeforeEach
 	void setUp() {
@@ -50,6 +52,10 @@ class LoginServiceTest {
 		kakaoLoginRequest = KakaoLoginRequest.builder()
 				.email(ACCOUNT_EXISTED_EMAIL)
 				.build();
+
+		kakaoLoginNotExistedEmailRequest = KakaoLoginRequest.builder()
+				.email(ACCOUNT_NOT_EXISTED_EMAIL)
+				.build();
 	}
 
 	@Test
@@ -60,5 +66,15 @@ class LoginServiceTest {
 		boolean emailExisted = loginService.checkAlreadyExistedEmail(kakaoLoginRequest);
 
 		assertThat(emailExisted).isTrue();
+	}
+
+	@Test
+	void checkAlreadyExistedEmailFalse() {
+		given(accountAuthenticationService.loadUserByUsername(eq(ACCOUNT_NOT_EXISTED_EMAIL)))
+				.willReturn(null);
+
+		boolean emailExisted = loginService.checkAlreadyExistedEmail(kakaoLoginNotExistedEmailRequest);
+
+		assertThat(emailExisted).isFalse();
 	}
 }
