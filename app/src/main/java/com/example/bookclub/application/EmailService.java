@@ -56,7 +56,7 @@ public class EmailService {
                         .build()
         );
 
-        return EmailSendResultDto.of(email);
+        return EmailSendResultDto.of(email, authenticationNumber);
     }
 
     /**
@@ -81,6 +81,20 @@ public class EmailService {
         }
 
         return message;
+    }
+
+    public EmailSendResultDto saveAuthenticationNumber(EmailRequestDto emailRequestDto) {
+        String authenticationNumber = createAuthenticationNumber();
+        String email = emailRequestDto.getEmail();
+
+        emailAuthenticationRepository.save(
+                EmailAuthentication.builder()
+                        .email(email)
+                        .authenticationNumber(authenticationNumber)
+                        .build()
+        );
+
+        return EmailSendResultDto.of(email, authenticationNumber);
     }
 
     /**

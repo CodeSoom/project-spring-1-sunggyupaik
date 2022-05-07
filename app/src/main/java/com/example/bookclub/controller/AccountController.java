@@ -37,10 +37,12 @@ public class AccountController {
      * @return 회원가입 페이지
      */
     @GetMapping("/save")
-    public String accountSave(@CurrentAccount Account account) {
+    public String accountSave(@CurrentAccount Account account, String email, Model model) {
         if(account != null) {
             return "redirect:/";
         }
+
+        model.addAttribute("email", email);
 
         return "users/users-save";
     }
