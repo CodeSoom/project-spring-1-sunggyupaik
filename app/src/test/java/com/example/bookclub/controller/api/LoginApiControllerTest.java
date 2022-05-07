@@ -4,6 +4,8 @@ import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.application.LoginService;
 import com.example.bookclub.domain.Account;
+import com.example.bookclub.dto.EmailRequestDto;
+import com.example.bookclub.dto.EmailSendResultDto;
 import com.example.bookclub.dto.KakaoLoginRequest;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
@@ -43,10 +45,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({RestDocumentationExtension.class})
 public class LoginApiControllerTest {
 	private final static String KAKAO_LOGIN_EMAIL = "kakaoLoginEmail";
+	private final static String KAKAO_LOGIN_EMAIL_NOT_EXISTED = "kakaoLoginEmailNotExisted";
+	private final static String AUTHENTICATION_NUMBER = "authenticationNumber";
 
 	private KakaoLoginRequest kakaoLoginRequest;
+	private KakaoLoginRequest kakaoLoginNotExistedEmailRequest;
 	private Account account;
 	private UsernamePasswordAuthenticationToken accountToken;
+	private EmailSendResultDto emailSendResultDto;
 
 	@MockBean
 	private LoginService loginService;
@@ -90,6 +96,10 @@ public class LoginApiControllerTest {
 				.email(KAKAO_LOGIN_EMAIL)
 				.build();
 
+		kakaoLoginNotExistedEmailRequest = KakaoLoginRequest.builder()
+				.email(KAKAO_LOGIN_EMAIL_NOT_EXISTED)
+				.build();
+
 		account = Account.builder()
 				.email(KAKAO_LOGIN_EMAIL)
 				.build();
@@ -99,6 +109,11 @@ public class LoginApiControllerTest {
 						new UserAccount(account, List.of(new SimpleGrantedAuthority("KAKAO-USER"))),
 						null,
 						List.of(new SimpleGrantedAuthority("KAKAO-USER")));
+
+		emailSendResultDto = EmailSendResultDto.builder()
+				.email(KAKAO_LOGIN_EMAIL_NOT_EXISTED)
+				.authenticationNumber(AUTHENTICATION_NUMBER)
+				.build();
 	}
 
 	@Test
@@ -115,5 +130,21 @@ public class LoginApiControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("email").value(KAKAO_LOGIN_EMAIL))
 				.andExpect(jsonPath("authenticationNumber").isEmpty());
+	}
+
+	@Test
+	void loginKakaoWithNotExistedEmail() throws Exception {
+		given(loginService.checkAlreadyExistedEmail(any(KakaoLoginRequest.class))).willReturn(false);
+		given(emailService.saveAuthenticationNumber(any(EmailRequestDto.class))).willReturn(emailSendResultDto);
+
+		mockMvc.perform(
+						RestDocumentationRequestBuilders.post("/api/kakao-login")
+								.contentType(MediaType.APPLICATION_JSON)
+								.content(objectMapper.writeValueAsString(kakaoLoginNotExistedEmailRequest))
+				)
+				.andDo(print())
+				.andExpect(status().isOk())
+				.andExpect(jsonPath("email").value(KAKAO_LOGIN_EMAIL_NOT_EXISTED))
+				.andExpect(jsonPath("authenticationNumber").value(AUTHENTICATION_NUMBER));
 	}
 }
