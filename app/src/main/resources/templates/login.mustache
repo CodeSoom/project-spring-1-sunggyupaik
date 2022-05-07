@@ -63,7 +63,6 @@
                 }).then((response) => {
                     var email = response.kakao_account.email;
                     var data = {email : email};
-                    var isLogined = false;
                     $.ajax({
                         type: 'POST',
                         url: '/api/kakao-login',
@@ -72,11 +71,11 @@
                         data: JSON.stringify(data),
                         async: false,
                         complete: function(response) {
-                            alert(response.responseText);
-                            if(response.responseText === "Y") {
+                            if(response.responseJSON.authenticationNumber === null) {
                                 window.location.href='/';
                             } else {
-                                window.location.href='/users/save&email=' + data.email;
+                                window.location.href='/users/save&email=' + data.email
+                                        + '&authenticationNumber=' + response.responseJSON.authenticationNumber;
                             }
                             resolve(response);
                         }
