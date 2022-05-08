@@ -45,9 +45,9 @@ class LoginServiceTest {
 				.build();
 
 		accountToken = new UsernamePasswordAuthenticationToken(
-				new UserAccount(account, List.of(new SimpleGrantedAuthority("USER"))),
+				new UserAccount(account, List.of(new SimpleGrantedAuthority("KAKAO-USER"))),
 				account.getPassword(),
-				List.of(new SimpleGrantedAuthority("USER")));
+				List.of(new SimpleGrantedAuthority("KAKAO-USER")));
 
 		kakaoLoginRequest = KakaoLoginRequest.builder()
 				.email(ACCOUNT_EXISTED_EMAIL)
@@ -76,5 +76,14 @@ class LoginServiceTest {
 		boolean emailExisted = loginService.checkAlreadyExistedEmail(kakaoLoginNotExistedEmailRequest);
 
 		assertThat(emailExisted).isFalse();
+	}
+
+	@Test
+	void makeKakaoAuthenticationTokenWithExistedEmail() {
+		given(accountAuthenticationService.getAccountByEmail(ACCOUNT_EXISTED_EMAIL)).willReturn(account);
+
+		UsernamePasswordAuthenticationToken kakaoToken = loginService.makeKakaoAuthenticationToken(kakaoLoginRequest);
+
+		assertThat(kakaoToken.getName()).isEqualTo(ACCOUNT_EXISTED_EMAIL);
 	}
 }

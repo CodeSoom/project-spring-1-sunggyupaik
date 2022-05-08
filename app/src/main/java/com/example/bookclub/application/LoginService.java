@@ -35,7 +35,7 @@ public class LoginService {
 		UsernamePasswordAuthenticationToken accountToken =
 				new UsernamePasswordAuthenticationToken(
 						new UserAccount(account, List.of(new SimpleGrantedAuthority("KAKAO-USER"))),
-						null,
+						account.getPassword(),
 						List.of(new SimpleGrantedAuthority("KAKAO-USER")));
 
 		return accountToken;
