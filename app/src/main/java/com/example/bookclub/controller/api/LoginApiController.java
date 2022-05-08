@@ -29,6 +29,7 @@ public class LoginApiController {
 		if(loginService.checkAlreadyExistedEmail(kakaoLoginRequest)) {
 			UsernamePasswordAuthenticationToken authenticationToken
 					= loginService.makeKakaoAuthenticationToken(kakaoLoginRequest);
+			System.out.println(authenticationToken+"=authenticationToken");
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
 			return EmailSendResultDto.of(kakaoLoginRequest.getEmail(), null);
@@ -37,6 +38,8 @@ public class LoginApiController {
 		EmailRequestDto emailRequestDto = EmailRequestDto.builder()
 				.email(kakaoLoginRequest.getEmail())
 				.build();
+
+		System.out.println("업성요 없어요");
 
 		return emailService.saveAuthenticationNumber(emailRequestDto);
 	}

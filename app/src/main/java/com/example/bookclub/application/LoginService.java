@@ -25,7 +25,7 @@ public class LoginService {
 
 	public boolean checkAlreadyExistedEmail(KakaoLoginRequest kakaoLoginRequest) {
 		String email = kakaoLoginRequest.getEmail();
-		return accountAuthenticationService.loadUserByUsername(email) != null;
+		return accountRepository.existsByEmail(email);
 	}
 
 	public UsernamePasswordAuthenticationToken makeKakaoAuthenticationToken(KakaoLoginRequest kakaoLoginRequest) {
@@ -39,13 +39,5 @@ public class LoginService {
 						List.of(new SimpleGrantedAuthority("KAKAO-USER")));
 
 		return accountToken;
-	}
-
-	public void saveNewAccount(KakaoLoginRequest kakaoLoginRequest) {
-		String email = kakaoLoginRequest.getEmail();
-		Account account = Account.builder()
-				.email(email)
-				.build();
-		accountRepository.save(account);
 	}
 }

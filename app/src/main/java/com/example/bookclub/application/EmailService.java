@@ -86,6 +86,7 @@ public class EmailService {
     public EmailSendResultDto saveAuthenticationNumber(EmailRequestDto emailRequestDto) {
         String authenticationNumber = createAuthenticationNumber();
         String email = emailRequestDto.getEmail();
+        System.out.println(authenticationNumber+"=authenticationNumber");
 
         emailAuthenticationRepository.save(
                 EmailAuthentication.builder()
@@ -102,7 +103,7 @@ public class EmailService {
      *
      * @return 생성된 인증번호
      */
-    public static String createAuthenticationNumber() {
+    public String createAuthenticationNumber() {
         double dValue = Math.random();
         int iValue = (int)(dValue * 100000);
         return Integer.toString(iValue);

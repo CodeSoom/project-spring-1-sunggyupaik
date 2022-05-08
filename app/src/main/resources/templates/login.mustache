@@ -44,6 +44,10 @@
             </div>
         {{/loginRequired}}
     </form>
+    <form style="display:none;" id="userSave" action="/users/save" method="get">
+        <input type="hidden" name="email" id="email"/>
+        <input type="hidden" name="authenticationNumber" id="authenticationNumber"/>
+    </form>
 </div>
 <script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
 <script>
@@ -74,8 +78,9 @@
                             if(response.responseJSON.authenticationNumber === null) {
                                 window.location.href='/';
                             } else {
-                                window.location.href='/users/save&email=' + data.email
-                                        + '&authenticationNumber=' + response.responseJSON.authenticationNumber;
+                                $('#email').val(data.email);
+                                $('#authenticationNumber').val(response.responseJSON.authenticationNumber);
+                                $('#userSave').submit();
                             }
                             resolve(response);
                         }
