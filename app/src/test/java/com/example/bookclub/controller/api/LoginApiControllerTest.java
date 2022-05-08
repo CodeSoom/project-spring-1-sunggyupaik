@@ -33,9 +33,16 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import javax.sql.DataSource;
 import java.util.List;
 
+import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentRequest;
+import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentResponse;
+import static com.fasterxml.jackson.databind.node.JsonNodeType.STRING;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
+import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -129,7 +136,19 @@ public class LoginApiControllerTest {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("email").value(KAKAO_LOGIN_EMAIL))
-				.andExpect(jsonPath("authenticationNumber").isEmpty());
+				.andExpect(jsonPath("authenticationNumber").isEmpty())
+				.andDo(document("kakao-login-existed-email",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						requestFields
+						(
+								fieldWithPath("email").type(STRING).description("사용자 이메일")
+						),
+						responseFields(
+								fieldWithPath("email").type(STRING).description("사용자 식별자"),
+								fieldWithPath("authenticationNumber").description("사용자 인증번호")
+						)
+				));
 	}
 
 	@Test
@@ -145,6 +164,18 @@ public class LoginApiControllerTest {
 				.andDo(print())
 				.andExpect(status().isOk())
 				.andExpect(jsonPath("email").value(KAKAO_LOGIN_EMAIL_NOT_EXISTED))
-				.andExpect(jsonPath("authenticationNumber").value(AUTHENTICATION_NUMBER));
+				.andExpect(jsonPath("authenticationNumber").value(AUTHENTICATION_NUMBER))
+				.andDo(document("kakao-login-not-existed-email",
+						getDocumentRequest(),
+						getDocumentResponse(),
+						requestFields
+								(
+										fieldWithPath("email").type(STRING).description("사용자 이메일")
+								),
+						responseFields(
+								fieldWithPath("email").type(STRING).description("사용자 식별자"),
+								fieldWithPath("authenticationNumber").type(STRING).description("사용자 인증번호")
+						)
+				));
 	}
 }
