@@ -23,11 +23,23 @@ public class LoginService {
 		this.accountRepository = accountRepository;
 	}
 
+	/**
+	 * 주어진 이메일에 해당하는 사용자가 존재하는지 검사하여 반환한다
+	 *
+	 * @param kakaoLoginRequest 카카오 로그인에 성공한 이메일 정보
+	 * @return 사용자가 기존에 존재하는지 여부
+	 */
 	public boolean checkAlreadyExistedEmail(KakaoLoginRequest kakaoLoginRequest) {
 		String email = kakaoLoginRequest.getEmail();
 		return accountRepository.existsByEmail(email);
 	}
 
+	/**
+	 * 주어진 이메일에 해당하는 사용자 인증토큰을 반환한다
+	 *
+	 * @param kakaoLoginRequest 카카오 로그인에 성공한 이메일 정보
+	 * @return 주어진 이메일에 해당하는 사용자 인증토큰
+	 */
 	public UsernamePasswordAuthenticationToken makeKakaoAuthenticationToken(KakaoLoginRequest kakaoLoginRequest) {
 		String email = kakaoLoginRequest.getEmail();
 		Account account = accountAuthenticationService.getAccountByEmail(email);
