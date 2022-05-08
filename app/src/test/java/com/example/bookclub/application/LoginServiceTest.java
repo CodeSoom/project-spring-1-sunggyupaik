@@ -2,6 +2,7 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.dto.KakaoLoginRequest;
+import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.repository.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -85,5 +87,16 @@ class LoginServiceTest {
 		UsernamePasswordAuthenticationToken kakaoToken = loginService.makeKakaoAuthenticationToken(kakaoLoginRequest);
 
 		assertThat(kakaoToken.getName()).isEqualTo(ACCOUNT_EXISTED_EMAIL);
+	}
+
+	@Test
+	void makeKakaoAuthenticationTokenWithNotExistedEmail() {
+		given(accountAuthenticationService.getAccountByEmail(ACCOUNT_NOT_EXISTED_EMAIL))
+				.willThrow(AccountEmailNotFoundException.class);
+
+ 		assertThatThrownBy(
+				() -> loginService.makeKakaoAuthenticationToken(kakaoLoginNotExistedEmailRequest)
+		)
+						.isInstanceOf(AccountEmailNotFoundException.class);
 	}
 }
