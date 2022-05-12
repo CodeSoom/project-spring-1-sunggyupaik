@@ -120,7 +120,8 @@ class EmailApiControllerTest {
                                 fieldWithPath("email").type(STRING).description("이메일")
                         ),
                         responseFields(
-                                fieldWithPath("email").type(STRING).description("이메일")
+                                fieldWithPath("email").type(STRING).description("이메일"),
+                                fieldWithPath("authenticationNumber").description("인증번호")
                         )
                 ));
     }
