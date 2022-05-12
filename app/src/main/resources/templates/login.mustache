@@ -1,6 +1,5 @@
 {{>layout/header}}
 <link rel="stylesheet" type="text/css" href="/js/app/login.css">
-
 <div class="login">
     <form method="POST" action="/loginprocess">
         <label for="username"><span>이메일</span></label>
@@ -21,6 +20,19 @@
             </label>
         </div>
         <button type="submit">로그인</button>
+        <a id="custom-login-btn" href="javascript:loginWithKakao()">
+            <img
+                    src="//k.kakaocdn.net/14/dn/btroDszwNrM/I6efHub1SN5KCJqLm1Ovx1/o.jpg"
+                    alt="카카오 로그인 버튼"
+                    width="300"
+                    height="70"
+            />
+        </a>
+<!--        <li onclick="kakaoLogout();">-->
+<!--            <a href="javascript:void(0)">-->
+<!--                <span>카카오 로그아웃</span>-->
+<!--            </a>-->
+<!--        </li>-->
         {{#loginError}}
             <div class="error-message">
                 <span> 아이디나 패스워드가 올바르지 않습니다. </span>
@@ -32,5 +44,70 @@
             </div>
         {{/loginRequired}}
     </form>
+    <form style="display:none;" id="userSave" action="/users/save" method="get">
+        <input type="hidden" name="email" id="email"/>
+        <input type="hidden" name="authenticationNumber" id="authenticationNumber"/>
+    </form>
 </div>
+<script src="https://developers.kakao.com/sdk/js/kakao.js"></script>
+<script>
+    Kakao.init('aaeec1db77858a24cf1b55310ebabaf1'); //발급받은 키 중 javascript키를 사용해준다.
+    console.log(Kakao.isInitialized()); // sdk초기화여부판단
+    //카카오로그인
+    function loginWithKakao() {
+        Kakao.Auth.login({
+            success: function (response) {
+                new Promise((resolve, reject)=>{
+                Kakao.API.request({
+                    url: '/v2/user/me',
+                    success: function (response) {
+                        resolve(response);
+                    }
+                });
+                }).then((response) => {
+                    var email = response.kakao_account.email;
+                    var data = {email : email};
+                    $.ajax({
+                        type: 'POST',
+                        url: '/api/kakao-login',
+                        dataType: 'json',
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(data),
+                        async: false,
+                        complete: function(response) {
+                            if(response.responseJSON.authenticationNumber === null) {
+                                window.location.href='/';
+                            } else {
+                                $('#email').val(data.email);
+                                $('#authenticationNumber').val(response.responseJSON.authenticationNumber);
+                                $('#userSave').submit();
+                            }
+                            resolve(response);
+                        }
+                    });
+                });
+            },
+            fail: function (error) {
+                console.log(error);
+                window.location.herf = '/login-required';
+            }
+        })
+    }
+
+    //카카오로그아웃
+    function kakaoLogout() {
+        if (Kakao.Auth.getAccessToken()) {
+            Kakao.API.request({
+                url: '/v1/user/unlink',
+                success: function (response) {
+                    console.log(response);
+                },
+                fail: function (error) {
+                    console.log(error)
+                },
+            })
+            Kakao.Auth.setAccessToken(undefined);
+        }
+    }
+</script>
 {{>layout/footer}}

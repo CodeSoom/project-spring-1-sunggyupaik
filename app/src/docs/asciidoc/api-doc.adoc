@@ -346,6 +346,26 @@ include::{snippets}/interview-create/response-fields.adoc[]
 ===== Response Example
 include::{snippets}/interview-create/http-response.adoc[]
 
+== 5. 로그인
+=== 5-1. 카카오 로그인
+==== - 카카오 로그인한 이메일이 이미 존재하는 경우
+===== Request Example
+include::{snippets}/kakao-login-existed-email/http-request.adoc[]
+
+===== Response
+include::{snippets}/kakao-login-existed-email/response-fields.adoc[]
+===== Response Example
+include::{snippets}/kakao-login-existed-email/http-response.adoc[]
+
+==== - 카카오 로그인한 이메일이 존재하지 않는 경우
+===== Request Example
+include::{snippets}/kakao-login-existed-email/http-request.adoc[]
+
+===== Response
+include::{snippets}/kakao-login-not-existed-email/response-fields.adoc[]
+===== Response Example
+include::{snippets}/kakao-login-not-existed-email/http-response.adoc[]
+
 == REST API 실패
 
 == 1. 사용자
@@ -810,3 +830,16 @@ include::{snippets}/study-unfavorite-not-existed-study/http-request.adoc[]
 include::{snippets}/study-unfavorite-not-existed-study/response-fields.adoc[]
 ===== Response Example
 include::{snippets}/study-unfavorite-not-existed-study/http-response.adoc[]
+
+=== 3. 이메일
+=== 이메일 인증번호 전송 실패
+==== - 주어진 이메일에 인증번호가 전송되지 않은 경우
+===== Request Body
+include::{snippets}/email-authenticationNumber-create-invalid/request-body.adoc[]
+===== Request Example
+include::{snippets}/email-authenticationNumber-create-invalid/http-request.adoc[]
+
+===== Response
+include::{snippets}/email-authenticationNumber-create-invalid/response-fields.adoc[]
+===== Response Example
+include::{snippets}/email-authenticationNumber-create-invalid/http-response.adoc[]

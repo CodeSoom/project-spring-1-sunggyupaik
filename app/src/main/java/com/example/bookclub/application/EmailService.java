@@ -56,7 +56,7 @@ public class EmailService {
                         .build()
         );
 
-        return EmailSendResultDto.of(email);
+        return EmailSendResultDto.of(email, authenticationNumber);
     }
 
     /**
@@ -83,12 +83,27 @@ public class EmailService {
         return message;
     }
 
+    public EmailSendResultDto saveAuthenticationNumber(EmailRequestDto emailRequestDto) {
+        String authenticationNumber = createAuthenticationNumber();
+        String email = emailRequestDto.getEmail();
+        System.out.println(authenticationNumber+"=authenticationNumber");
+
+        emailAuthenticationRepository.save(
+                EmailAuthentication.builder()
+                        .email(email)
+                        .authenticationNumber(authenticationNumber)
+                        .build()
+        );
+
+        return EmailSendResultDto.of(email, authenticationNumber);
+    }
+
     /**
      * 인증번호를 생성하고 반환한다.
      *
      * @return 생성된 인증번호
      */
-    public static String createAuthenticationNumber() {
+    public String createAuthenticationNumber() {
         double dValue = Math.random();
         int iValue = (int)(dValue * 100000);
         return Integer.toString(iValue);

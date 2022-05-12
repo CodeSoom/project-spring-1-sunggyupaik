@@ -11,15 +11,24 @@ import lombok.ToString;
 @ToString
 public class EmailSendResultDto {
 	private String email;
+	private String authenticationNumber;
+
+	@Builder
+	public EmailSendResultDto(String email, String authenticationNumber) {
+		this.email = email;
+		this.authenticationNumber = authenticationNumber;
+	}
 
 	@Builder
 	public EmailSendResultDto(String email) {
 		this.email = email;
 	}
 
-	public static EmailSendResultDto of(String email) {
+
+	public static EmailSendResultDto of(String email, String authenticationNumber) {
 		return EmailSendResultDto.builder()
 				.email(email)
+				.authenticationNumber(authenticationNumber)
 				.build();
 	}
 }
