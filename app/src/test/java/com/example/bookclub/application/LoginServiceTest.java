@@ -62,8 +62,8 @@ class LoginServiceTest {
 
 	@Test
 	void checkAlreadyExistedEmailTrue() {
-		given(accountAuthenticationService.loadUserByUsername(eq(ACCOUNT_EXISTED_EMAIL)))
-				.willReturn(userAccount);
+		given(accountRepository.existsByEmail(eq(ACCOUNT_EXISTED_EMAIL)))
+				.willReturn(true);
 
 		boolean emailExisted = loginService.checkAlreadyExistedEmail(kakaoLoginRequest);
 
