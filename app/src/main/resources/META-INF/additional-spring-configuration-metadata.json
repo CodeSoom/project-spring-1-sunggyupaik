@@ -4,6 +4,51 @@
       "name": "interpark.apikey",
       "type": "java.lang.String",
       "description": "Description for interpark.apikey."
+    },
+    {
+      "name": "image.path",
+      "type": "java.lang.String",
+      "description": "Description for image.path."
+    },
+    {
+      "name": "resources.location",
+      "type": "java.lang.String",
+      "description": "Description for resources.location."
+    },
+    {
+      "name": "resources.uri_path",
+      "type": "java.lang.String",
+      "description": "Description for resources.uri_path."
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Description for jwt.secret."
+    },
+    {
+      "name": "cloud.aws.credentials.accessKey",
+      "type": "java.lang.String",
+      "description": "Description for cloud.aws.credentials.accessKey."
+    },
+    {
+      "name": "cloud.aws.credentials.secretKey",
+      "type": "java.lang.String",
+      "description": "Description for cloud.aws.credentials.secretKey."
+    },
+    {
+      "name": "cloud.aws.region.static",
+      "type": "java.lang.String",
+      "description": "Description for cloud.aws.region.static."
+    },
+    {
+      "name": "cloud.aws.s3.bucket",
+      "type": "java.lang.String",
+      "description": "Description for cloud.aws.s3.bucket."
+    },
+    {
+      "name": "spring.datasource.jdbc-url",
+      "type": "java.lang.String",
+      "description": "Description for spring.datasource.jdbc-url."
     }
   ]
 }
