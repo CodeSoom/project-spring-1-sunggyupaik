@@ -1,0 +1,101 @@
+server:
+  port: 9059
+  servlet:
+    session:
+      timeout: 30s
+
+spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  redis:
+    host: localhost
+    port: 6379
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+
+  datasource:
+        url: ENC(IhYGjH3UF1ZDiKd2auLe+7ceDyrdg2UtHdvekWZrV5B+8YEF7aMw6OHjMIV+M7VcVBBJTT4C9oEqrnvVs8+VZK7mm+wlnYsHvYjzVFKpFNr9wUHA6SZx40DcEjxP+TDneazWu9a8ni9NB8okRJ7j5A==)
+        jdbc-url: ENC(4tmDzevwjd/ZuA/GQIDtHwro59ggYIxok/fLEKOubcpxJxnuEDBxcC9eiFx3Q9cINLlHeN/o6tXqya3yRkAuuDn8ExkZv231YTbOCpGGS8tvmh4vSVMa/oEXPfmGEgf01AYUAXxO4clPk2Y3sOHmSsm8L/0hjoBN0qXPiD1lGkAqzWI/LlRfCA==)
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: ENC(zuNFykPTMKRsOAwjahsIcg==)
+        password: ENC(2JWfpVnJYUhB01mCISW3s8RPUNktgC3q)
+#    url: jdbc:h2:file:~/dev/temp/h2db/bookclub
+#    driverClassName: org.h2.Driver
+#    username: sa
+#    password:
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    #database-platform: org.hibernate.dialect.H2Dialect
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+
+    # Query show
+    show-sql: true
+
+    # Query pretty print
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    web:
+      pageable:
+        default-page-size: 10
+        max-page-size: 2000
+
+  mail:
+    username: ENC(/qNjHfAouomFQW84ddaVlwSyuuBwMnqvIQdsY5EHeCs=)
+    password: ENC(108QkIuAdhSx2x4QIBI8A9GuNVwmxSh7)
+    host: smtp.gmail.com
+    port: 587
+    properties:
+      mail:
+        debug: true
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        transport:
+          protocol: smtp
+
+#  jackson:
+#    serialization:
+#      FAIL_ON_EMPTY_BEANS: false
+
+cloud:
+  aws:
+    credentials:
+      accessKey: ENC(t85euNlMYc+msQ4pEKHLzk5YCX9YLHJw8N4mkJikTxM=)
+      secretKey: ENC(ikC4S1IPrVoyLKo+qj2NbqeIrUvuU9uDVZnuvcAZ5mI49RyimDFVcYM/9pq6bTnqI6X2FQTgm/Q=)
+    region:
+      static: ENC(L/MEm2i3lEQDO2T9uUqbsaSghj4x/B8j)
+    s3:
+      bucket: ENC(hvQDB7YyZ6K1iDilh2Q0916cVdvwphrtphgowzmOSfo=)
+
+jwt:
+  secret: ENC(rNVZq1LVNtYJdp77CTD6odf0ycDO1NaT3wUzM54cdFoFytdo+30M4m3zV8kvCT/P)
+
+interpark:
+  apikey: ENC(csr4tYBLs+JB0ufHJ7jJuR55ekmN/HyY02kvOtnGHTOORTPKARjLUuqjVX28W8szbsPy43k5qeikNA4Ud/1yczTxrBOOkMS8xgtKtD3as8Y=)
+
+resources:
+  uri_path: /upload
+  location: /opt/upload/
+
+image:
+  path: ENC(lY4tnO32eKTp0P0ExJaHeQFAU+6tfUq7nsBdtWOUHkMICPMky+JIQZ6wmpxhzfDa)
+
+logging:
+  config: classpath:log4j2.xml
+
+jasypt:
+  key: ENC(Ma5/uTJf8gChwHgjSmo9HemMwEJfQqxq)
+  encryptor:
+    bean: jasyptStringEncryptor
