@@ -182,6 +182,9 @@ dependencies {
 
 	//Spring Boot Starter Jdbc
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+	//Jasypt Spring Boot Starter
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
 }
 
 application {
