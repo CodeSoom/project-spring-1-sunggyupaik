@@ -149,7 +149,9 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                                 .maxSessionsPreventsLogin(true)
                                 .expiredUrl("/")
                                 .sessionRegistry(sessionRegistry())
-                );
+                )
+                .requiresChannel()
+                    .antMatchers("/loginprocess").requiresSecure();
 
         http
                 .cors()
