@@ -6,7 +6,7 @@
         <Property name="logFileName">bookclubLog</Property>
         <Property name="consolePatternLayout">%style{%d{ISO8601}}{black} %highlight{%-5level }[%style{%t}{bright,blue}] %style{%C{1.}}{bright,yellow}: %msg%n%throwable</Property>
         <Property name="filePatternLayout">%d{yyyy-MMM-dd HH:mm:ss a} [%t] %-5level %logger{36} - %msg%n</Property>
-        <Property name="basePath">~/logs</Property>
+        <Property name="basePath">/logs</Property>
     </Properties>
 
     <!-- 로그 찍는 방법과 file 생성 정책(RollingFile) -->
