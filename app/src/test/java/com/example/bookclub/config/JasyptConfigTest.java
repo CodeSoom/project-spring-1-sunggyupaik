@@ -12,7 +12,6 @@ class JasyptConfigTest {
 
 	@Test
 	void jasypt() {
-
 	}
 
 	public String jasyptEncoding(String value) {

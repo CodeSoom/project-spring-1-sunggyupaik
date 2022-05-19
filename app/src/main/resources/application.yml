@@ -10,7 +10,7 @@ spring:
       filter:
         enabled: true
   redis:
-    host: localhost
+    host: ENC(PlSoR8yb+rdbXX712zEbpxHkDt0x4X9zjM6wHkViyMMQpipIYjZFoBTfi7oouRK7QWDho6zRBUM=)
     port: 6379
   devtools:
     livereload:
@@ -19,8 +19,8 @@ spring:
       enabled: true
 
   datasource:
-        url: ENC(IhYGjH3UF1ZDiKd2auLe+7ceDyrdg2UtHdvekWZrV5B+8YEF7aMw6OHjMIV+M7VcVBBJTT4C9oEqrnvVs8+VZK7mm+wlnYsHvYjzVFKpFNr9wUHA6SZx40DcEjxP+TDneazWu9a8ni9NB8okRJ7j5A==)
-        jdbc-url: ENC(4tmDzevwjd/ZuA/GQIDtHwro59ggYIxok/fLEKOubcpxJxnuEDBxcC9eiFx3Q9cINLlHeN/o6tXqya3yRkAuuDn8ExkZv231YTbOCpGGS8tvmh4vSVMa/oEXPfmGEgf01AYUAXxO4clPk2Y3sOHmSsm8L/0hjoBN0qXPiD1lGkAqzWI/LlRfCA==)
+        url: ENC(UhF92Os3ZVe+9Hm1mNENnweWRmgkrty/iWcSyQRVm4liJErpfHK9v594PY687n1skaJ+u3wvUQ0bGVgt89/nomAipcB+KGl0wD/8kbC0wG5NjspEzb8TbmIjeNULueUCmcN20iW/mks=)
+        jdbc-url: ENC(22yXNiZ07pEukQbWeBl++wue0+RVk8PitR0RJ9oqVdMI7X7DBwDJVW8QOYeOLzDc0KUzHotgn0dvlvjtrD+TAkxE5jy4hpHNy3Qu4vbF1u4MdFwxtTQEtyr6H/nmf1EVW+IIglq47Qt5enr6yyliDBMuhnR+pGcT0qJgpd9zDiM=)
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: ENC(zuNFykPTMKRsOAwjahsIcg==)
         password: ENC(2JWfpVnJYUhB01mCISW3s8RPUNktgC3q)
@@ -34,7 +34,7 @@ spring:
     #database-platform: org.hibernate.dialect.H2Dialect
     generate-ddl: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 
     # Query show
     show-sql: true
