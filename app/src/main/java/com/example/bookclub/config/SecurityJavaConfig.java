@@ -162,9 +162,8 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .frameOptions()
                 .disable();
 
-        http
-                .requiresChannel()
-                .antMatchers("/login*").requiresSecure();
+        http.requiresChannel()
+                .anyRequest().requiresInsecure();
     }
 
     @Override
