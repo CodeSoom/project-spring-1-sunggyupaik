@@ -176,6 +176,15 @@ dependencies {
 
 	//Rest Docs Mockmvc
 	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+
+	// MySQL
+	implementation 'mysql:mysql-connector-java:8.0.16'
+
+	//Spring Boot Starter Jdbc
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+
+	//Jasypt Spring Boot Starter
+	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
 }
 
 application {

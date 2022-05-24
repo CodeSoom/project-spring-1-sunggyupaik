@@ -151,6 +151,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                                 .sessionRegistry(sessionRegistry())
                 );
 
+
         http
                 .cors()
                 .disable()
@@ -160,14 +161,17 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                 .headers()
                 .frameOptions()
                 .disable();
+
+        http.requiresChannel()
+                .anyRequest().requiresInsecure();
     }
 
     @Override
     public void configure(WebSecurity web) {
         web.ignoring()
                 .requestMatchers(
-                        PathRequest.toStaticResources().atCommonLocations(),
-                        PathRequest.toH2Console()
+                        PathRequest.toStaticResources().atCommonLocations()
+                        //PathRequest.toH2Console()
                 )
                 .antMatchers("/resources/images/**")
         ;
