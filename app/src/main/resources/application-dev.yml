@@ -50,6 +50,12 @@ spring:
       hosts: localhost
       port: 9200
 
+  rebbitmq:
+    host: localhost
+    username: guest
+    password: guest
+    port:15672
+
   mail:
     username: ENC(/qNjHfAouomFQW84ddaVlwSyuuBwMnqvIQdsY5EHeCs=)
     password: ENC(108QkIuAdhSx2x4QIBI8A9GuNVwmxSh7)
