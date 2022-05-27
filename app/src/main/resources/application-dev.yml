@@ -46,6 +46,10 @@ spring:
         default-page-size: 10
         max-page-size: 2000
 
+    elasticsearch:
+      hosts: localhost
+      port: 9200
+
   mail:
     username: ENC(/qNjHfAouomFQW84ddaVlwSyuuBwMnqvIQdsY5EHeCs=)
     password: ENC(108QkIuAdhSx2x4QIBI8A9GuNVwmxSh7)
