@@ -2,6 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.domain.Post;
 import com.example.bookclub.repository.post.JpaPostRepository;
+import com.example.bookclub.utils.Producer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.PostMapping;
