@@ -31,10 +31,6 @@ public class EmailApiController {
     @PostMapping("/authentication")
     @ResponseStatus(HttpStatus.CREATED)
     public EmailSendResultDto sendAuthenticationNumber(@RequestBody EmailRequestDto emailRequestDto) {
-        EmailSendResultDto emailSendResultDto = emailService.sendAuthenticationNumber(emailRequestDto);
-
-        System.out.println(emailSendResultDto+"=emailSendResultDto");
-
-        return emailSendResultDto;
+        return emailService.sendAuthenticationNumber(emailRequestDto);
     }
 }

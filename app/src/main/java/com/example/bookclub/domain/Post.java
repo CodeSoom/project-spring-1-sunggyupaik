@@ -5,21 +5,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.data.elasticsearch.annotations.Document;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+@Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString
-@Document(indexName = "post")
 public class Post {
-	@Id
-	private String id;
+	@Id @GeneratedValue
+	@Column(name = "POST_ID")
+	private Long id;
+
 	private String content;
 
 	@Builder
-	public Post(String id) {
+	public Post(Long id, String content) {
 		this.id = id;
+		this.content = content;
 	}
 }

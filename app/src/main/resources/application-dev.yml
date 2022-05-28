@@ -54,7 +54,7 @@ spring:
     host: localhost
     username: guest
     password: guest
-    port:15672
+    port: 5672
 
   mail:
     username: ENC(/qNjHfAouomFQW84ddaVlwSyuuBwMnqvIQdsY5EHeCs=)

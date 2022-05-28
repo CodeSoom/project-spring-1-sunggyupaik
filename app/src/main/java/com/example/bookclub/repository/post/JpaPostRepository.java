@@ -1,11 +1,10 @@
 package com.example.bookclub.repository.post;
 
 import com.example.bookclub.domain.Post;
-import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
 
-public interface JpaPostRepository
-		extends PostRepositoryCustom, ElasticsearchRepository<Post, String> {
+public interface JpaPostRepository extends CrudRepository<Post, Long> {
 	List<Post> findByContent(String content);
 }
