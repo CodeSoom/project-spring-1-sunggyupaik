@@ -185,6 +185,12 @@ dependencies {
 
 	//Jasypt Spring Boot Starter
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3'
+
+	// Elastic Search Starter
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+
+	// AMQP & RabbitMQ Starter
+	implementation 'org.springframework.boot:spring-boot-starter-amqp'
 }
 
 application {
