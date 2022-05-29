@@ -12,6 +12,6 @@ public interface ElasticPostRepository extends ElasticsearchRepository<Post, Str
 
 	Post save(Post post);
 
-	@Query("{ \"query\" : { \"match_all\" : {} } }")
+	@Query("{ \"query\" : { \"match_all\" : {} }, \"sort\": { \"createdDate\": \"asc\" } }")
 	List<Post> findAll();
 }

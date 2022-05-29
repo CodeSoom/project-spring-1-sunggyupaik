@@ -1,5 +1,36 @@
 {{>layout/header}}
+<style>
+    .search {
+        position: relative;
+        width: 300px;
+    }
+
+    #search-input {
+        width: 100%;
+        border: 1px solid #bbb;
+        border-radius: 8px;
+        padding: 10px 12px;
+        font-size: 14px;
+    }
+
+    img {
+        position : absolute;
+        width: 17px;
+        height: 17px;
+        right: 13px;
+        bottom: 10px;
+        margin: 0;
+    }
+</style>
 <div class="container-fluid" style="margin-top: 100px">
+    <div class="row d-flex justify-content-center">
+        <div class="search">
+            <label for="search-input"></label>
+            <input type="text" id="search-input" placeholder="검색어 입력">
+            <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png"
+                 onclick="searchPost()" style="cursor:pointer;" alt="">
+        </div>
+    </div>
     <div class="container mt-5">
         <div class="row d-flex justify-content-center">
             <div class="col-md-8">
@@ -49,4 +80,16 @@
         </div>
     </div>
 </div>
+<script>
+    function searchPost() {
+        location.href='/posts?content=' + $('#search-input').val();
+    }
+
+    $("#search-input").keypress(function(e) {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            location.href='/posts?content=' + $('#search-input').val();
+        }
+    });
+</script>
 {{>layout/footer}}
