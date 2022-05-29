@@ -23,4 +23,8 @@ public class PostService {
 	public List<Post> findByContent(String content) {
 		return elasticPostRepository.findByContent(content);
 	}
+
+	public List<Post> listAll() {
+		return elasticPostRepository.findAll();
+	}
 }

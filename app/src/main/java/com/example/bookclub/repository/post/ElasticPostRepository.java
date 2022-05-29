@@ -13,4 +13,7 @@ public interface ElasticPostRepository extends ElasticsearchRepository<Post, Str
 	List<Post> findByContent(String content);
 
 	Post save(Post post);
+
+	@Query("{ \"query\" : { \"match_all\" : {} } }")
+	List<Post> findAll();
 }
