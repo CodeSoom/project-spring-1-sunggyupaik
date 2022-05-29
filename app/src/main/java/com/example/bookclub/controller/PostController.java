@@ -5,6 +5,7 @@ import com.example.bookclub.domain.Post;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -17,8 +18,15 @@ public class PostController {
 	}
 
 	@GetMapping("/posts")
-	public String Post(Model model) {
-		List<Post> posts = postService.listAll();
+	public String Post(Model model, @RequestParam(required = false) String content) {
+		List<Post> posts = null;
+
+		if(content.equals("")) {
+			posts = postService.listAll();
+
+		} else {
+			posts = postService.findByContent(content);
+		}
 		model.addAttribute("posts", posts);
 		model.addAttribute("counts", posts.size());
 
