@@ -5,6 +5,7 @@ import com.example.bookclub.repository.post.ElasticPostRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 @Transactional
@@ -17,5 +18,9 @@ public class PostService {
 
 	public void create(Post post) {
 		elasticPostRepository.save(post);
+	}
+
+	public List<Post> lists(String content) {
+		return elasticPostRepository.findByContent(content);
 	}
 }
