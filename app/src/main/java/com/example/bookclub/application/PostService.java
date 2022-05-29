@@ -20,7 +20,7 @@ public class PostService {
 		elasticPostRepository.save(post);
 	}
 
-	public List<Post> lists(String content) {
+	public List<Post> findByContent(String content) {
 		return elasticPostRepository.findByContent(content);
 	}
 }
