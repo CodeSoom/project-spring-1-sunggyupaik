@@ -349,6 +349,11 @@ const main = {
     },
 
     savePost : function() {
+        if($('#post').val() === '') {
+            alert('내용을 입력하세요');
+            return;
+        }
+
         let data = {
             content : $('#post').val()
         };
