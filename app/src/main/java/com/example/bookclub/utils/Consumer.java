@@ -1,7 +1,7 @@
 package com.example.bookclub.utils;
 
 import com.example.bookclub.domain.Post;
-import com.example.bookclub.repository.post.JpaPostRepository;
+import com.example.bookclub.repository.post.ElasticPostRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -9,10 +9,10 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Consumer {
-	private final JpaPostRepository postRepository;
+	private final ElasticPostRepository postRepository;
 	private final ObjectMapper objectMapper;
 
-	public Consumer(JpaPostRepository postRepository, ObjectMapper objectMapper) {
+	public Consumer(ElasticPostRepository postRepository, ObjectMapper objectMapper) {
 		this.postRepository = postRepository;
 		this.objectMapper = objectMapper;
 	}

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface JpaPostRepository extends ElasticsearchRepository<Post, String> {
+public interface ElasticPostRepository extends ElasticsearchRepository<Post, String> {
 	@Query("{ \"bool\" : { \"must\" : [ { \"query_string\" : { \"query\" : \"*?0*\", \"fields\" : [ \"content\" ] } } ] } }")
 	List<Post> findByContent(String content);
 

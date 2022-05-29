@@ -1,7 +1,7 @@
 package com.example.bookclub.controller.api;
 
 import com.example.bookclub.domain.Post;
-import com.example.bookclub.repository.post.JpaPostRepository;
+import com.example.bookclub.repository.post.ElasticPostRepository;
 import com.example.bookclub.utils.Producer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,11 +19,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class PostApiController {
-	private final JpaPostRepository postRepository;
+	private final ElasticPostRepository postRepository;
 	private final Producer producer;
 	private final ObjectMapper objectMapper;
 
-	public PostApiController(JpaPostRepository postRepository, Producer producer, ObjectMapper objectMapper) {
+	public PostApiController(ElasticPostRepository postRepository, Producer producer, ObjectMapper objectMapper) {
 		this.postRepository = postRepository;
 		this.producer = producer;
 		this.objectMapper = objectMapper;
