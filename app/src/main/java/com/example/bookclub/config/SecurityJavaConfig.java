@@ -118,7 +118,6 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                                 .antMatchers("/api/email/authentication").permitAll()
                                 .antMatchers("/api/users").permitAll()
                                 .antMatchers("/api/kakao-login").permitAll()
-                                .antMatchers("/api/post").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -171,8 +170,8 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     public void configure(WebSecurity web) {
         web.ignoring()
                 .requestMatchers(
-                        PathRequest.toStaticResources().atCommonLocations()
-                        //PathRequest.toH2Console()
+                        PathRequest.toStaticResources().atCommonLocations(),
+                        PathRequest.toH2Console()
                 )
                 .antMatchers("/resources/images/**")
         ;
