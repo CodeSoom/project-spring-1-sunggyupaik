@@ -40,6 +40,14 @@ public class CommonResponse<T> {
 				.build();
 	}
 
+	public static CommonResponse fail(String message, int errorCode) {
+		return CommonResponse.builder()
+				.result(Result.FAIL)
+				.message(message)
+				.errorCode(Integer.toString(errorCode))
+				.build();
+	}
+
 	public enum Result {
 		SUCCESS, FAIL
 	}

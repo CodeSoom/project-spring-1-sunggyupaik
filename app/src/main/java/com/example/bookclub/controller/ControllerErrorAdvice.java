@@ -1,6 +1,6 @@
 package com.example.bookclub.controller;
 
-import com.example.bookclub.dto.ErrorResponse;
+import com.example.bookclub.common.CommonResponse;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
@@ -46,121 +46,121 @@ import java.util.Objects;
 public class ControllerErrorAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyStartDateInThePastException.class)
-    public ErrorResponse handleStudyStartDateInThePast(StudyStartDateInThePastException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyStartDateInThePast(StudyStartDateInThePastException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyStartAndEndDateNotValidException.class)
-    public ErrorResponse handleStudyStartAndEndDateNotValidException(StudyStartAndEndDateNotValidException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyStartAndEndDateNotValidException(StudyStartAndEndDateNotValidException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AccountNewPasswordNotMatchedException.class)
-    public ErrorResponse handleAccountNewPasswordNotMatched(AccountNewPasswordNotMatchedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleAccountNewPasswordNotMatched(AccountNewPasswordNotMatchedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyAlreadyStartedException.class)
-    public ErrorResponse handleStudyAlreadyStarted(StudyAlreadyStartedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyAlreadyStarted(StudyAlreadyStartedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyAlreadyExistedException.class)
-    public ErrorResponse handleStudyAlreadyExisted(StudyAlreadyExistedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyAlreadyExisted(StudyAlreadyExistedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudySizeFullException.class)
-    public ErrorResponse handleStudySizeFull(StudySizeFullException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudySizeFull(StudySizeFullException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AccountEmailNotFoundException.class)
-    public ErrorResponse handleUserEmailNotFound(AccountEmailNotFoundException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleUserEmailNotFound(AccountEmailNotFoundException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
   
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyStartAndEndTimeNotValidException.class)
-    public ErrorResponse handleStudyStartAndEndTimeNotValid(StudyStartAndEndTimeNotValidException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyStartAndEndTimeNotValid(StudyStartAndEndTimeNotValidException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyAlreadyInOpenOrCloseException.class)
-    public ErrorResponse handleStudyAlreadyInOpenOrClose(StudyAlreadyInOpenOrCloseException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyAlreadyInOpenOrClose(StudyAlreadyInOpenOrCloseException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ExceptionHandler(AccountNotManagerOfStudyException.class)
-    public ErrorResponse handleAccountNotManagerException(AccountNotManagerOfStudyException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleAccountNotManagerException(AccountNotManagerOfStudyException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.FORBIDDEN.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidTokenException.class)
-    public ErrorResponse handleInvalidToken(InvalidTokenException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleInvalidToken(InvalidTokenException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AuthenticationBadRequestException.class)
-    public ErrorResponse handleAuthenticationBadRequest(AuthenticationBadRequestException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleAuthenticationBadRequest(AuthenticationBadRequestException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(AccountNotFoundException.class)
-    public ErrorResponse handleUserNotFound(AccountNotFoundException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleUserNotFound(AccountNotFoundException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AccountEmailDuplicatedException.class)
-    public ErrorResponse handleUserEmailDuplicated(AccountEmailDuplicatedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleUserEmailDuplicated(AccountEmailDuplicatedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AccountNicknameDuplicatedException.class)
-    public ErrorResponse UserNicknameDuplicated(AccountNicknameDuplicatedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse UserNicknameDuplicated(AccountNicknameDuplicatedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EmailBadRequestException.class)
-    public ErrorResponse handleEmailBadRequest(EmailBadRequestException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleEmailBadRequest(EmailBadRequestException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(EmailNotAuthenticatedException.class)
-    public ErrorResponse handleEmailNotAuthenticated(EmailNotAuthenticatedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleEmailNotAuthenticated(EmailNotAuthenticatedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(AccountPasswordBadRequestException.class)
-    public ErrorResponse handlePasswordBadRequest(AccountPasswordBadRequestException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handlePasswordBadRequest(AccountPasswordBadRequestException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(StudyNotFoundException.class)
-    public ErrorResponse handleStudyNotFound(StudyNotFoundException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyNotFound(StudyNotFoundException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ErrorResponse handleProductMethodArgumentNotValid(MethodArgumentNotValidException e) {
+    public CommonResponse handleProductMethodArgumentNotValid(MethodArgumentNotValidException e) {
         String field = Objects.requireNonNull(e.getBindingResult()
                 .getFieldError())
                 .getField();
@@ -170,90 +170,90 @@ public class ControllerErrorAdvice {
                 .get(0)
                 .getDefaultMessage();
 
-        return new ErrorResponse(field + ": " + message);
+        return CommonResponse.fail(field + ": " + message, HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(FileUploadBadRequestException.class)
-    public ErrorResponse handleFileUploadBadRequest(FileUploadBadRequestException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleFileUploadBadRequest(FileUploadBadRequestException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ParseTimeException.class)
-    public ErrorResponse handleParseTimeException(ParseTimeException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleParseTimeException(ParseTimeException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MessageCreateBadRequestException.class)
-    public ErrorResponse handleMessageCreateBadRequestException(MessageCreateBadRequestException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleMessageCreateBadRequestException(MessageCreateBadRequestException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyNotAppliedBefore.class)
-    public ErrorResponse handleStudyNotAppliedBeforeException(StudyNotAppliedBefore e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyNotAppliedBeforeException(StudyNotAppliedBefore e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(StudyNotInOpenStateException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleStudyNotInOpenStateException(StudyNotInOpenStateException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyNotInOpenStateException(StudyNotInOpenStateException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(StudyLikeAlreadyExistedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleStudyLikeAlreadyExistedException(StudyLikeAlreadyExistedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyLikeAlreadyExistedException(StudyLikeAlreadyExistedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(StudyLikeNotExistedException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleStudyLikeNotExistedException(StudyLikeNotExistedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyLikeNotExistedException(StudyLikeNotExistedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
     @ExceptionHandler(StudyCommentNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleStudyCommentNotFoundException(StudyCommentNotFoundException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyCommentNotFoundException(StudyCommentNotFoundException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
     @ExceptionHandler(StudyCommentLikeAlreadyExistedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleStudyCommentLikeAlreadyExistedException(StudyCommentLikeAlreadyExistedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyCommentLikeAlreadyExistedException(StudyCommentLikeAlreadyExistedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(StudyCommentLikeNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleStudyCommentLikeNotFoundException(StudyCommentLikeNotFoundException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyCommentLikeNotFoundException(StudyCommentLikeNotFoundException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
     @ExceptionHandler(StudyFavoriteAlreadyExistedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleStudyFavoriteAlreadyExistedException(StudyFavoriteAlreadyExistedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyFavoriteAlreadyExistedException(StudyFavoriteAlreadyExistedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(StudyFavoriteNotExistedException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleStudyFavoriteNotExistedException(StudyFavoriteNotExistedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyFavoriteNotExistedException(StudyFavoriteNotExistedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 
     @ExceptionHandler(StudyCommentDeleteBadRequest.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleStudyCommentDeleteBadRequest(StudyCommentDeleteBadRequest e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyCommentDeleteBadRequest(StudyCommentDeleteBadRequest e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(StudyCommentContentNotExistedException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleStudyCommentContentNotExistedException(StudyCommentContentNotExistedException e) {
-        return new ErrorResponse(e.getMessage());
+    public CommonResponse handleStudyCommentContentNotExistedException(StudyCommentContentNotExistedException e) {
+        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 }
