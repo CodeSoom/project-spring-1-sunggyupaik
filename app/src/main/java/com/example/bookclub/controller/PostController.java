@@ -18,7 +18,9 @@ public class PostController {
 	}
 
 	@GetMapping("/posts")
-	public String Post(Model model, @RequestParam(required = false) String content) {
+	public String Post(Model model,
+					   @RequestParam(required = false, defaultValue = "") String content
+	) {
 		List<Post> posts = null;
 
 		if(content.equals("")) {
