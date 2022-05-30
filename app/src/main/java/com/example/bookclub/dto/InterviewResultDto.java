@@ -1,6 +1,8 @@
 package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.Interview;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +21,7 @@ public class InterviewResultDto {
 
 	private String title;
 
+	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate date;
 
 	private String content;
