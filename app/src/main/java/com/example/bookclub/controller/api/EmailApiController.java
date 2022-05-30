@@ -2,8 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.common.CommonResponse;
-import com.example.bookclub.dto.EmailRequestDto;
-import com.example.bookclub.dto.EmailSendResultDto;
+import com.example.bookclub.dto.EmailDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,10 +30,10 @@ public class EmailApiController {
      */
     @PostMapping("/authentication")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommonResponse<EmailSendResultDto> sendAuthenticationNumber(
-            @RequestBody EmailRequestDto emailRequestDto
+    public CommonResponse<EmailDto.EmailSendResultDto> sendAuthenticationNumber(
+            @RequestBody EmailDto.EmailRequestDto emailRequestDto
     ) {
-        EmailSendResultDto response = emailService.sendAuthenticationNumber(emailRequestDto);
+        EmailDto.EmailSendResultDto response = emailService.sendAuthenticationNumber(emailRequestDto);
         return CommonResponse.success(response);
     }
 }
