@@ -1,7 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Interview;
-import com.example.bookclub.dto.InterviewResultDto;
+import com.example.bookclub.dto.InterviewDto;
 import com.example.bookclub.repository.interview.JpaInterviewRepository;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -142,7 +142,7 @@ public class InterviewService {
      * @param pageable 페이징 정보
      * @return 조회된 인터뷰 페이징 리스트 정보
      */
-    public Page<InterviewResultDto> getInterviews(String search, Pageable pageable) {
+    public Page<InterviewDto.InterviewResultDto> getInterviews(String search, Pageable pageable) {
         return interviewRepository.findAllContainsTileOrContent(search, pageable);
     }
 
@@ -152,7 +152,7 @@ public class InterviewService {
      * @param pageable 페이징 정보
      * @return 조회된 인터뷰 페이징 리스트 정보
      */
-    public Page<InterviewResultDto> getAllInterviews(Pageable pageable) {
+    public Page<InterviewDto.InterviewResultDto> getAllInterviews(Pageable pageable) {
         return interviewRepository.findAll(pageable);
     }
 }
