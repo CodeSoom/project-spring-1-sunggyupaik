@@ -2,7 +2,7 @@ server:
   port: 9059
   servlet:
     session:
-      timeout: 30s
+      timeout: 180s
 
 spring:
   profiles: dev

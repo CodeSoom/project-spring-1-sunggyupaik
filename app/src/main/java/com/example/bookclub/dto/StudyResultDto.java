@@ -4,6 +4,8 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -33,8 +35,10 @@ public class StudyResultDto {
 
     private int applyCount;
 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate startDate;
 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
 
     private String startTime;

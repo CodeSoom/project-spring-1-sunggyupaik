@@ -2,6 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.application.LoginService;
+import com.example.bookclub.common.CommonResponse;
 import com.example.bookclub.dto.EmailRequestDto;
 import com.example.bookclub.dto.EmailSendResultDto;
 import com.example.bookclub.dto.KakaoLoginRequest;
@@ -34,19 +35,23 @@ public class LoginApiController {
 	 * @return 생성된 이메일, 인증번호
 	 */
 	@PostMapping("/kakao-login")
-	public EmailSendResultDto kakaoLogin(@RequestBody KakaoLoginRequest kakaoLoginRequest) {
+	public CommonResponse<EmailSendResultDto> kakaoLogin(
+			@RequestBody KakaoLoginRequest kakaoLoginRequest
+	) {
 		if(loginService.checkAlreadyExistedEmail(kakaoLoginRequest)) {
 			UsernamePasswordAuthenticationToken authenticationToken
 					= loginService.makeKakaoAuthenticationToken(kakaoLoginRequest);
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-			return EmailSendResultDto.of(kakaoLoginRequest.getEmail(), null);
+			EmailSendResultDto response = EmailSendResultDto.of(kakaoLoginRequest.getEmail(), null);
+			return CommonResponse.success(response);
 		}
 
 		EmailRequestDto emailRequestDto = EmailRequestDto.builder()
 				.email(kakaoLoginRequest.getEmail())
 				.build();
 
-		return emailService.saveAuthenticationNumber(emailRequestDto);
+		EmailSendResultDto response = emailService.saveAuthenticationNumber(emailRequestDto);
+		return CommonResponse.success(response);
 	}
 }

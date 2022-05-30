@@ -1220,7 +1220,7 @@ class StudyApiControllerTest {
                 .willReturn(studyApplyResultDto);
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/study/cancel/{id}", STUDY_SETUP_EXISTED_ID)
+                RestDocumentationRequestBuilders.delete("/api/study/cancel/{id}", STUDY_SETUP_EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isOk())

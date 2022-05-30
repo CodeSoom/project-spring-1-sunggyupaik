@@ -1,6 +1,7 @@
 package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.PostService;
+import com.example.bookclub.common.CommonResponse;
 import com.example.bookclub.domain.Post;
 import com.example.bookclub.utils.Producer;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,14 +32,15 @@ public class PostApiController {
 
 	@PostMapping("/post")
 	@ResponseStatus(HttpStatus.CREATED)
-	public Post create(@RequestBody Post post) throws JsonProcessingException {
+	public CommonResponse<Post> create(@RequestBody Post post) throws JsonProcessingException {
 		String jsonPost = objectMapper.writeValueAsString(post);
 		producer.sendTo(jsonPost);
-		return post;
+		return CommonResponse.success(post);
 	}
 
 	@GetMapping("/search")
-	public List<Post> lists(@RequestParam String content) {
-		return postService.findByContent(content);
+	public CommonResponse<List<Post>> lists(@RequestParam String content) {
+		List<Post> response = postService.findByContent(content);
+		return CommonResponse.success(response);
 	}
 }

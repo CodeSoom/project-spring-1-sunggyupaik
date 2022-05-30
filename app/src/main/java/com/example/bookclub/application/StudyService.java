@@ -209,7 +209,7 @@ public class StudyService {
      */
     public StudyApplyResultDto applyStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
-        Account account = userAccount.getAccount();
+        Account account = accountService.findAccountByEmail(userAccount.getAccount().getEmail());
 
         if(!study.getStudyState().equals(StudyState.OPEN)) {
             throw new StudyNotInOpenStateException();
@@ -239,7 +239,7 @@ public class StudyService {
      */
     public StudyApplyResultDto cancelStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
-        Account account = userAccount.getAccount();
+        Account account = accountService.findAccountByEmail(userAccount.getAccount().getEmail());
 
         if(!study.getStudyState().equals(StudyState.OPEN)) {
             throw new StudyNotInOpenStateException();

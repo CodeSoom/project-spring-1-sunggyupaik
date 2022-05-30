@@ -1,6 +1,8 @@
 package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.Day;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.ToString;
@@ -21,8 +23,10 @@ public class StudyInfoResultDto {
 
 	private String contact;
 
+	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate startDate;
 
+	@JsonDeserialize(using = LocalDateDeserializer.class)
 	private LocalDate endDate;
 
 	private String startTime;

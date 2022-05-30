@@ -2,6 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.UploadFileService;
+import com.example.bookclub.common.CommonResponse;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountCreateDto;
@@ -52,8 +53,9 @@ public class AccountApiController {
      * @return 조회한 사용자 정보
      */
     @GetMapping("/{id}")
-    public AccountResultDto get(@PathVariable Long id) {
-        return accountService.getAccount(id);
+    public CommonResponse<AccountResultDto> get(@PathVariable Long id) {
+        AccountResultDto response = accountService.getAccount(id);
+        return CommonResponse.success(response);
     }
 
     /**
@@ -65,14 +67,18 @@ public class AccountApiController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AccountCreateResultDto create(@RequestPart(required = false) MultipartFile uploadFile,
-                                         AccountCreateDto accountCreateDto) {
+    public CommonResponse<AccountCreateResultDto> create(
+            @RequestPart(required = false) MultipartFile uploadFile,
+            AccountCreateDto accountCreateDto
+    ) {
         if (uploadFile == null) {
-            return accountService.createAccount(accountCreateDto, null);
+            AccountCreateResultDto response = accountService.createAccount(accountCreateDto, null);
+            return CommonResponse.success(response);
         }
 
         UploadFile accountFile = uploadFileService.upload(uploadFile);
-        return accountService.createAccount(accountCreateDto, accountFile);
+        AccountCreateResultDto response = accountService.createAccount(accountCreateDto, accountFile);
+        return CommonResponse.success(response);
     }
 
     /**
@@ -87,16 +93,20 @@ public class AccountApiController {
      */
     @PreAuthorize("#account.id == #id")
     @PostMapping("/{id}")
-    public AccountUpdateResultDto update(@CurrentAccount Account account,
-                                         @PathVariable Long id,
-                                         @RequestPart(required = false) MultipartFile uploadFile,
-                                         AccountUpdateDto accountUpdateDto) {
+    public CommonResponse<AccountUpdateResultDto> update(
+            @CurrentAccount Account account,
+            @PathVariable Long id,
+            @RequestPart(required = false) MultipartFile uploadFile,
+            AccountUpdateDto accountUpdateDto
+    ) {
     if (uploadFile == null) {
-            return accountService.updateAccount(id, accountUpdateDto, null);
+        AccountUpdateResultDto response = accountService.updateAccount(id, accountUpdateDto, null);
+        return CommonResponse.success(response);
         }
 
         UploadFile accountFile = uploadFileService.upload(uploadFile);
-        return accountService.updateAccount(id, accountUpdateDto, accountFile);
+        AccountUpdateResultDto response = accountService.updateAccount(id, accountUpdateDto, accountFile);
+        return CommonResponse.success(response);
     }
 
     /**
@@ -109,10 +119,13 @@ public class AccountApiController {
      */
     @PreAuthorize("#account.id == #id")
     @PatchMapping("/{id}/password")
-    public AccountUpdatePasswordResultDto updatePassword(@CurrentAccount Account account,
-                                                         @PathVariable Long id,
-                                                         @Valid @RequestBody AccountUpdatePasswordDto accountUpdatePasswordDto) {
-        return accountService.updatePassword(id, accountUpdatePasswordDto);
+    public CommonResponse<AccountUpdatePasswordResultDto> updatePassword(
+            @CurrentAccount Account account,
+            @PathVariable Long id,
+            @Valid @RequestBody AccountUpdatePasswordDto accountUpdatePasswordDto
+    ) {
+        AccountUpdatePasswordResultDto response = accountService.updatePassword(id, accountUpdatePasswordDto);
+        return CommonResponse.success(response);
     }
 
     /**
@@ -125,8 +138,11 @@ public class AccountApiController {
     @PreAuthorize("#account.id == #id")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public AccountDeleteResultDto delete(@CurrentAccount Account account,
-                                         @PathVariable Long id) {
-        return accountService.deleteAccount(id);
+    public CommonResponse<AccountDeleteResultDto> delete(
+            @CurrentAccount Account account,
+            @PathVariable Long id
+    ) {
+        AccountDeleteResultDto response = accountService.deleteAccount(id);
+        return CommonResponse.success(response);
     }
 }
