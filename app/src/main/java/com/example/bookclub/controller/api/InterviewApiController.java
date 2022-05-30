@@ -1,6 +1,7 @@
 package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.InterviewService;
+import com.example.bookclub.common.CommonResponse;
 import com.example.bookclub.domain.Interview;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
@@ -33,7 +34,8 @@ public class InterviewApiController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public List<Interview> create() {
-		return interviewService.crawlAllInterviews();
+	public CommonResponse<List<Interview>> create() {
+		List<Interview> response = interviewService.crawlAllInterviews();
+		return CommonResponse.success(response);
 	}
 }
