@@ -6,14 +6,7 @@ import com.example.bookclub.domain.EmailAuthenticationRepository;
 import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.UploadFile;
-import com.example.bookclub.dto.AccountCreateDto;
-import com.example.bookclub.dto.AccountCreateResultDto;
-import com.example.bookclub.dto.AccountDeleteResultDto;
-import com.example.bookclub.dto.AccountResultDto;
-import com.example.bookclub.dto.AccountUpdateDto;
-import com.example.bookclub.dto.AccountUpdatePasswordDto;
-import com.example.bookclub.dto.AccountUpdatePasswordResultDto;
-import com.example.bookclub.dto.AccountUpdateResultDto;
+import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.dto.UploadFileResultDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
@@ -96,17 +89,17 @@ class AccountServiceTest {
     private Account createdAccountWithUploadFile;
     private PasswordEncoder passwordEncoder;
 
-    private AccountCreateDto accountCreateDto;
-    private AccountCreateDto emailExistedAccountCreateDto;
-    private AccountCreateDto nicknameExistedAccountCreateDto;
-    private AccountCreateDto emailNotReceivedAuthenticationNumberAccountCreateDto;
-    private AccountCreateDto authenticationNumberNotMatchedAccountCreateDto;
-    private AccountUpdateDto accountUpdateDto;
-    private AccountUpdateDto nicknameDuplicatedAccountUpdateDto;
-    private AccountUpdateDto passwordNotValidAccountUpdateDto;
-    private AccountUpdatePasswordDto accountUpdatePasswordDto;
-    private AccountUpdatePasswordDto newPasswordNotMatchedUpdateDto;
-    private AccountUpdatePasswordDto passwordNotMatchedDto;
+    private AccountDto.AccountCreateDto accountCreateDto;
+    private AccountDto.AccountCreateDto emailExistedAccountCreateDto;
+    private AccountDto.AccountCreateDto nicknameExistedAccountCreateDto;
+    private AccountDto.AccountCreateDto emailNotReceivedAuthenticationNumberAccountCreateDto;
+    private AccountDto.AccountCreateDto authenticationNumberNotMatchedAccountCreateDto;
+    private AccountDto.AccountUpdateDto accountUpdateDto;
+    private AccountDto.AccountUpdateDto nicknameDuplicatedAccountUpdateDto;
+    private AccountDto.AccountUpdateDto passwordNotValidAccountUpdateDto;
+    private AccountDto.AccountUpdatePasswordDto accountUpdatePasswordDto;
+    private AccountDto.AccountUpdatePasswordDto newPasswordNotMatchedUpdateDto;
+    private AccountDto.AccountUpdatePasswordDto passwordNotMatchedDto;
     private EmailAuthentication emailAuthentication;
 
     @BeforeEach
@@ -176,7 +169,7 @@ class AccountServiceTest {
                 .password(passwordEncoder.encode(ACCOUNT_CREATED_PASSWORD))
                 .build();
 
-        accountCreateDto = AccountCreateDto.builder()
+        accountCreateDto = AccountDto.AccountCreateDto.builder()
                 .name(ACCOUNT_CREATED_NAME)
                 .email(ACCOUNT_CREATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
@@ -184,50 +177,50 @@ class AccountServiceTest {
                 .authenticationNumber(ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
                 .build();
 
-        authenticationNumberNotMatchedAccountCreateDto = AccountCreateDto.builder()
+        authenticationNumberNotMatchedAccountCreateDto = AccountDto.AccountCreateDto.builder()
                 .authenticationNumber(AUTHENTICATION_NUMBER_NOT_MATCHED)
                 .build();
 
-        accountUpdateDto = AccountUpdateDto.builder()
+        accountUpdateDto = AccountDto.AccountUpdateDto.builder()
                 .nickname(ACCOUNT_UPDATED_NICKNAME)
                 .password(ACCOUNT_CREATED_PASSWORD)
                 .build();
 
-        emailExistedAccountCreateDto = AccountCreateDto.builder()
+        emailExistedAccountCreateDto = AccountDto.AccountCreateDto.builder()
                 .name(ACCOUNT_CREATED_NAME)
                 .email(ACCOUNT_DUPLICATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
                 .password(ACCOUNT_CREATED_PASSWORD)
                 .build();
 
-        emailNotReceivedAuthenticationNumberAccountCreateDto = AccountCreateDto.builder()
+        emailNotReceivedAuthenticationNumberAccountCreateDto = AccountDto.AccountCreateDto.builder()
                 .email(ACCOUNT_NOT_EXISTED_EMAIL)
                 .build();
 
-        nicknameExistedAccountCreateDto = AccountCreateDto.builder()
+        nicknameExistedAccountCreateDto = AccountDto.AccountCreateDto.builder()
                 .name(ACCOUNT_CREATED_NAME)
                 .email(ACCOUNT_CREATED_EMAIL)
                 .nickname(ACCOUNT_DUPLICATED_NICKNAME)
                 .password(ACCOUNT_CREATED_PASSWORD)
                 .build();
 
-        nicknameDuplicatedAccountUpdateDto = AccountUpdateDto.builder()
+        nicknameDuplicatedAccountUpdateDto = AccountDto.AccountUpdateDto.builder()
                 .nickname(ACCOUNT_DUPLICATED_NICKNAME)
                 .password(ACCOUNT_CREATED_PASSWORD)
                 .build();
 
-        passwordNotValidAccountUpdateDto = AccountUpdateDto.builder()
+        passwordNotValidAccountUpdateDto = AccountDto.AccountUpdateDto.builder()
                 .nickname(ACCOUNT_SETUP_NICKNAME)
                 .password(ACCOUNT_NOT_VALID_PASSWORD)
                 .build();
 
-        accountUpdatePasswordDto = AccountUpdatePasswordDto.builder()
+        accountUpdatePasswordDto = AccountDto.AccountUpdatePasswordDto.builder()
                 .password(ACCOUNT_CREATED_PASSWORD)
                 .newPassword(ACCOUNT_UPDATED_PASSWORD)
                 .newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
                 .build();
 
-        newPasswordNotMatchedUpdateDto = AccountUpdatePasswordDto.builder()
+        newPasswordNotMatchedUpdateDto = AccountDto.AccountUpdatePasswordDto.builder()
                 .password(ACCOUNT_CREATED_PASSWORD)
                 .newPassword(ACCOUNT_UPDATED_PASSWORD)
                 .newPasswordConfirmed(ACCOUNT_SETUP_PASSWORD)
@@ -279,7 +272,7 @@ class AccountServiceTest {
     @Test void getAccountByExistedId() {
         given(accountRepository.findById(ACCOUNT_SETUP_ID)).willReturn(Optional.of(setUpAccount));
 
-        AccountResultDto accountResultDto = accountService.getAccount(ACCOUNT_SETUP_ID);
+        AccountDto.AccountResultDto accountResultDto = accountService.getAccount(ACCOUNT_SETUP_ID);
 
         assertThat(accountResultDto.getId()).isEqualTo(ACCOUNT_SETUP_ID);
         assertThat(accountResultDto.getUploadFileResultDto().getId()).isEqualTo(UPLOAD_FILE_ID);
@@ -299,7 +292,7 @@ class AccountServiceTest {
         given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
                 .willReturn(Optional.of(emailAuthentication));
 
-        AccountCreateResultDto accountCreateResultDto = accountService.createAccount(accountCreateDto, createdUploadFile);
+        AccountDto.AccountCreateResultDto accountCreateResultDto = accountService.createAccount(accountCreateDto, createdUploadFile);
 
         assertThat(accountCreateResultDto.getId()).isEqualTo(ACCOUNT_CREATED_ID);
         assertThat(accountCreateResultDto.getName()).isEqualTo(accountCreateDto.getName());
@@ -318,7 +311,7 @@ class AccountServiceTest {
         given(emailAuthenticationRepository.findByEmail(ACCOUNT_CREATED_EMAIL))
                 .willReturn(Optional.of(emailAuthentication));
 
-        AccountCreateResultDto accountCreateResultDto = accountService.createAccount(accountCreateDto, null);
+        AccountDto.AccountCreateResultDto accountCreateResultDto = accountService.createAccount(accountCreateDto, null);
 
         assertThat(accountCreateResultDto.getId()).isEqualTo(ACCOUNT_CREATED_ID);
         assertThat(accountCreateResultDto.getName()).isEqualTo(accountCreateDto.getName());
@@ -375,7 +368,7 @@ class AccountServiceTest {
     public void updateWithUploadFileAlreadyHasUploadFile() {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
 
-        AccountUpdateResultDto accountUpdateResultDto =
+        AccountDto.AccountUpdateResultDto accountUpdateResultDto =
                 accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
 
         assertThat(accountUpdateResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
@@ -392,7 +385,7 @@ class AccountServiceTest {
     void updateWithUploadFileBeforeNotHasUploadFile() {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithoutUploadFile));
 
-        AccountUpdateResultDto accountUpdateResultDto =
+        AccountDto.AccountUpdateResultDto accountUpdateResultDto =
                 accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
 
         UploadFileResultDto updatedUploadFileResultDto = accountUpdateResultDto.getUploadFileResultDto();
@@ -406,7 +399,7 @@ class AccountServiceTest {
     void updateWithoutUploadFileAlreadyHasUploadFile() {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
 
-        AccountUpdateResultDto accountUpdateResultDto =
+        AccountDto.AccountUpdateResultDto accountUpdateResultDto =
                 accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, null);
 
         UploadFileResultDto updatedUploadFileResultDto = accountUpdateResultDto.getUploadFileResultDto();
@@ -421,7 +414,7 @@ class AccountServiceTest {
     void updateWithoutUploadFileBeforeNotHasUploadFile() {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithoutUploadFile));
 
-        AccountUpdateResultDto accountUpdateResultDto =
+        AccountDto.AccountUpdateResultDto accountUpdateResultDto =
                 accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, null);
 
         assertThat(accountUpdateResultDto.getUploadFileResultDto().getId()).isNull();
@@ -462,7 +455,7 @@ class AccountServiceTest {
     public void updatePasswordWithValidAttribute() {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
 
-        AccountUpdatePasswordResultDto accountUpdatePasswordResultDto =
+        AccountDto.AccountUpdatePasswordResultDto accountUpdatePasswordResultDto =
                 accountService.updatePassword(ACCOUNT_CREATED_ID, accountUpdatePasswordDto);
 
         assertThat(
@@ -496,7 +489,7 @@ class AccountServiceTest {
     public void deleteWithExistedId() {
         given(accountRepository.findById(ACCOUNT_CREATED_ID)).willReturn(Optional.of(createdAccountWithUploadFile));
 
-        AccountDeleteResultDto accountDeleteResultDto = accountService.deleteAccount(ACCOUNT_CREATED_ID);
+        AccountDto.AccountDeleteResultDto accountDeleteResultDto = accountService.deleteAccount(ACCOUNT_CREATED_ID);
 
         assertThat(accountDeleteResultDto.getId()).isEqualTo(ACCOUNT_CREATED_ID);
         assertThat(accountDeleteResultDto.isDeleted()).isTrue();
