@@ -3,6 +3,8 @@ package com.example.bookclub.dto;
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,8 +23,10 @@ public class StudyUpdateDto {
 
     private int size;
 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate startDate;
 
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate endDate;
 
     private String startTime;

@@ -191,6 +191,9 @@ dependencies {
 
 	// AMQP & RabbitMQ Starter
 	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+	// Jackson DataType
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
 }
 
 application {

@@ -57,8 +57,8 @@ const main = {
     cancelStudy: function () {
         const id = $('#id').val();
         $.ajax({
-            type: 'DELETE',
-            url: '/api/study/apply/' + id,
+            type: 'POST',
+            url: '/api/study/cancel/' + id,
             dataType: 'json',
             contentType: 'application/json;',
         }).done(function (data) {
