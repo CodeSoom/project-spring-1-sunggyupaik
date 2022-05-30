@@ -11,8 +11,7 @@ import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.dto.StudyResultDto;
-import com.example.bookclub.dto.UploadFileCreateDto;
-import com.example.bookclub.dto.UploadFileResultDto;
+import com.example.bookclub.dto.UploadFileDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
@@ -153,8 +152,8 @@ class AccountApiControllerTest {
 
 	private Study study;
 
-	private UploadFileCreateDto uploadFileCreateDto;
-	private UploadFileResultDto uploadFileResultDto;
+	private UploadFileDto.UploadFileCreateDto uploadFileCreateDto;
+	private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
     private Account accountWithoutUploadFile;
 	private Account accountWithUploadFile;
@@ -262,13 +261,13 @@ class AccountApiControllerTest {
 				.isFavorite(STUDY_IS_FAVORITE)
 				.build();
 
-		uploadFileCreateDto = UploadFileCreateDto.builder()
+		uploadFileCreateDto = UploadFileDto.UploadFileCreateDto.builder()
 				.fileName(FILE_CREATED_NAME)
 				.fileOriginalName(FILE_CREATED_ORIGINAL_NAME)
 				.fileUrl(FILE_CREATED_URL)
 				.build();
 
-		uploadFileResultDto = UploadFileResultDto.builder()
+		uploadFileResultDto = UploadFileDto.UploadFileResultDto.builder()
 				.fileName(FILE_CREATED_NAME)
 				.fileOriginalName(FILE_CREATED_ORIGINAL_NAME)
 				.fileUrl(FILE_CREATED_URL)
@@ -306,7 +305,7 @@ class AccountApiControllerTest {
 				.email(ACCOUNT_FILE_EMAIL)
 				.nickname(ACCOUNT_FILE_NICKNAME)
 				.password(ACCOUNT_FILE_PASSWORD)
-				.uploadFileResultDto(UploadFileResultDto.of(createdUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(createdUploadFile))
 				.build();
 
 		updatedAccount = Account.builder()
@@ -380,7 +379,7 @@ class AccountApiControllerTest {
 				.nickname(ACCOUNT_FILE_NICKNAME)
 				.password(ACCOUNT_FILE_PASSWORD)
 				.deleted(ACCOUNT_FILE_DELETED)
-				.uploadFileResultDto(UploadFileResultDto.of(createdUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(createdUploadFile))
 				.studyResultDto(StudyResultDto.of(study))
 				.build();
 
@@ -390,7 +389,7 @@ class AccountApiControllerTest {
 				.email(ACCOUNT_FILE_EMAIL)
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_FILE_PASSWORD)
-				.uploadFileResultDto(UploadFileResultDto.of(updatedUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(updatedUploadFile))
 				.build();
 
 		accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto = AccountDto.AccountUpdateResultDto.builder()
@@ -399,7 +398,7 @@ class AccountApiControllerTest {
 				.email(ACCOUNT_FILE_EMAIL)
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_FILE_PASSWORD)
-				.uploadFileResultDto(UploadFileResultDto.of(createdUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(createdUploadFile))
 				.build();
 
 		accountUpdatedWithUploadBeforeNotHasUploadFileResultDto = AccountDto.AccountUpdateResultDto.builder()
@@ -408,7 +407,7 @@ class AccountApiControllerTest {
 				.email(ACCOUNT_EMAIL)
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_PASSWORD)
-				.uploadFileResultDto(UploadFileResultDto.of(updatedUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(updatedUploadFile))
 				.build();
 
 		accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto = AccountDto.AccountUpdateResultDto.builder()
@@ -437,7 +436,7 @@ class AccountApiControllerTest {
 				.nickname(ACCOUNT_NICKNAME)
 				.password(ACCOUNT_UPDATED_PASSWORD)
 				.deleted(true)
-				.uploadFileResultDto(UploadFileResultDto.of(createdUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(createdUploadFile))
 				.build();
 
 		mockCreatedMultipartFile = new MockMultipartFile(
@@ -553,7 +552,7 @@ class AccountApiControllerTest {
 							.email(accountWithUploadFile.getEmail())
 							.nickname(accountWithUploadFile.getNickname())
 							.password(accountWithUploadFile.getPassword())
-							.uploadFileResultDto(UploadFileResultDto.of(uploadFile))
+							.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(uploadFile))
 							.build();
 				});
 

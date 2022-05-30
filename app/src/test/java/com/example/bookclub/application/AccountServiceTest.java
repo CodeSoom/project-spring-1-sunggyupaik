@@ -7,7 +7,7 @@ import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.dto.AccountDto;
-import com.example.bookclub.dto.UploadFileResultDto;
+import com.example.bookclub.dto.UploadFileDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
@@ -374,7 +374,7 @@ class AccountServiceTest {
         assertThat(accountUpdateResultDto.getNickname()).isEqualTo(accountUpdateDto.getNickname());
         assertThat(passwordEncoder.matches(accountUpdateDto.getPassword(), accountUpdateResultDto.getPassword())).isTrue();
 
-        UploadFileResultDto updatedUploadFileResultDto = accountUpdateResultDto.getUploadFileResultDto();
+        UploadFileDto.UploadFileResultDto updatedUploadFileResultDto = accountUpdateResultDto.getUploadFileResultDto();
         assertThat(updatedUploadFileResultDto.getId()).isEqualTo(updateUploadFile.getId());
         assertThat(updatedUploadFileResultDto.getFileName()).isEqualTo(updateUploadFile.getFileName());
         assertThat(updatedUploadFileResultDto.getFileOriginalName()).isEqualTo(updateUploadFile.getFileOriginalName());
@@ -388,7 +388,7 @@ class AccountServiceTest {
         AccountDto.AccountUpdateResultDto accountUpdateResultDto =
                 accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, updateUploadFile);
 
-        UploadFileResultDto updatedUploadFileResultDto = accountUpdateResultDto.getUploadFileResultDto();
+        UploadFileDto.UploadFileResultDto updatedUploadFileResultDto = accountUpdateResultDto.getUploadFileResultDto();
         assertThat(updatedUploadFileResultDto.getId()).isEqualTo(updateUploadFile.getId());
         assertThat(updatedUploadFileResultDto.getFileName()).isEqualTo(updateUploadFile.getFileName());
         assertThat(updatedUploadFileResultDto.getFileOriginalName()).isEqualTo(updateUploadFile.getFileOriginalName());
@@ -402,7 +402,7 @@ class AccountServiceTest {
         AccountDto.AccountUpdateResultDto accountUpdateResultDto =
                 accountService.updateAccount(ACCOUNT_CREATED_ID, accountUpdateDto, null);
 
-        UploadFileResultDto updatedUploadFileResultDto = accountUpdateResultDto.getUploadFileResultDto();
+        UploadFileDto.UploadFileResultDto updatedUploadFileResultDto = accountUpdateResultDto.getUploadFileResultDto();
         UploadFile savedUpdatedUploadFile = createdAccountWithUploadFile.getUploadFile();
         assertThat(updatedUploadFileResultDto.getId()).isEqualTo(savedUpdatedUploadFile.getId());
         assertThat(updatedUploadFileResultDto.getFileName()).isEqualTo(savedUpdatedUploadFile.getFileName());

@@ -21,7 +21,7 @@ import com.example.bookclub.dto.StudyLikeResultDto;
 import com.example.bookclub.dto.StudyLikesCommentResultDto;
 import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateDto;
-import com.example.bookclub.dto.UploadFileResultDto;
+import com.example.bookclub.dto.UploadFileDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
@@ -248,7 +248,7 @@ class StudyApiControllerTest {
     private StudyLikesCommentResultDto studyLikesCommentResultDto;
     private StudyFavoriteResultDto studyFavoriteResultDto;
 
-    private UploadFileResultDto uploadFileResultDto;
+    private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
     private List<Study> list;
 
@@ -450,7 +450,7 @@ class StudyApiControllerTest {
                 .id(STUDY_FAVORITE_CREATE_ID)
                 .build();
 
-        uploadFileResultDto = UploadFileResultDto.builder()
+        uploadFileResultDto = UploadFileDto.UploadFileResultDto.builder()
                 .id(FILE_CREATED_ID)
                 .fileName(FILE_CREATED_NAME)
                 .fileOriginalName(FILE_CREATED_ORIGINAL_NAME)

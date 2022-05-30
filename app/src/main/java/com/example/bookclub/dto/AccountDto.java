@@ -67,11 +67,11 @@ public class AccountDto {
 
 		private boolean deleted;
 
-		private UploadFileResultDto uploadFileResultDto;
+		private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
 		@Builder
 		public AccountCreateResultDto(Long id, String name, String email, String nickname, String password,
-									  boolean deleted, UploadFileResultDto uploadFileResultDto) {
+									  boolean deleted, UploadFileDto.UploadFileResultDto uploadFileResultDto) {
 			this.id = id;
 			this.name = name;
 			this.email = email;
@@ -89,7 +89,7 @@ public class AccountDto {
 					.nickname(account.getNickname())
 					.password(account.getPassword())
 					.deleted(account.isDeleted())
-					.uploadFileResultDto(UploadFileResultDto.of(account.getUploadFile()))
+					.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(account.getUploadFile()))
 					.build();
 		}
 
@@ -114,11 +114,11 @@ public class AccountDto {
 
 		private boolean deleted;
 
-		private UploadFileResultDto uploadFileResultDto;
+		private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
 		@Builder
 		public AccountDeleteResultDto(Long id, String name, String email, String nickname, String password,
-									  boolean deleted, UploadFileResultDto uploadFileResultDto) {
+									  boolean deleted, UploadFileDto.UploadFileResultDto uploadFileResultDto) {
 			this.id = id;
 			this.name = name;
 			this.email = email;
@@ -136,7 +136,7 @@ public class AccountDto {
 					.nickname(account.getNickname())
 					.password(account.getPassword())
 					.deleted(account.isDeleted())
-					.uploadFileResultDto(UploadFileResultDto.of(account.getUploadFile()))
+					.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(account.getUploadFile()))
 					.build();
 		}
 	}
@@ -157,13 +157,13 @@ public class AccountDto {
 
 		private boolean deleted;
 
-		private UploadFileResultDto uploadFileResultDto;
+		private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
 		private StudyResultDto studyResultDto;
 
 		@Builder
 		public AccountResultDto(Long id, String name, String email, String nickname, String password,
-								boolean deleted, UploadFileResultDto uploadFileResultDto, StudyResultDto studyResultDto) {
+								boolean deleted, UploadFileDto.UploadFileResultDto uploadFileResultDto, StudyResultDto studyResultDto) {
 			this.id = id;
 			this.name = name;
 			this.email = email;
@@ -182,7 +182,7 @@ public class AccountDto {
 					.nickname(account.getNickname())
 					.password(account.getPassword())
 					.deleted(account.isDeleted())
-					.uploadFileResultDto(UploadFileResultDto.of(account.getUploadFile()))
+					.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(account.getUploadFile()))
 					.studyResultDto(StudyResultDto.of(account.getStudy()))
 					.build();
 		}
@@ -285,11 +285,11 @@ public class AccountDto {
 
 		private boolean deleted;
 
-		private UploadFileResultDto uploadFileResultDto;
+		private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
 		@Builder
 		public AccountUpdateResultDto(Long id, String name, String email, String nickname, String password,
-									  boolean deleted, UploadFileResultDto uploadFileResultDto) {
+									  boolean deleted, UploadFileDto.UploadFileResultDto uploadFileResultDto) {
 			this.id = id;
 			this.name = name;
 			this.email = email;
@@ -307,11 +307,11 @@ public class AccountDto {
 					.nickname(account.getNickname())
 					.password(account.getPassword())
 					.deleted(account.isDeleted())
-					.uploadFileResultDto(UploadFileResultDto.of(account.getUploadFile()))
+					.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(account.getUploadFile()))
 					.build();
 		}
 
-		public void setUploadFileResultDto(UploadFileResultDto uploadFileResultDto) {
+		public void setUploadFileResultDto(UploadFileDto.UploadFileResultDto uploadFileResultDto) {
 			if(uploadFileResultDto == null) this.uploadFileResultDto = null;
 		}
 	}
