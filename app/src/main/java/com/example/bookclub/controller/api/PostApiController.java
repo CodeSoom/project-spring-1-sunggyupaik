@@ -1,7 +1,7 @@
 package com.example.bookclub.controller.api;
 
+import com.example.bookclub.application.PostService;
 import com.example.bookclub.domain.Post;
-import com.example.bookclub.repository.post.JpaPostRepository;
 import com.example.bookclub.utils.Producer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,12 +19,12 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class PostApiController {
-	private final JpaPostRepository postRepository;
+	private final PostService postService;
 	private final Producer producer;
 	private final ObjectMapper objectMapper;
 
-	public PostApiController(JpaPostRepository postRepository, Producer producer, ObjectMapper objectMapper) {
-		this.postRepository = postRepository;
+	public PostApiController(PostService postService, Producer producer, ObjectMapper objectMapper) {
+		this.postService = postService;
 		this.producer = producer;
 		this.objectMapper = objectMapper;
 	}
@@ -38,7 +38,7 @@ public class PostApiController {
 	}
 
 	@GetMapping("/search")
-	public List<Post> findPostsByContent(@RequestParam String content) {
-		return postRepository.findByContent(content);
+	public List<Post> lists(@RequestParam String content) {
+		return postService.findByContent(content);
 	}
 }

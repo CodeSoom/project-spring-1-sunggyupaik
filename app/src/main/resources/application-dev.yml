@@ -56,6 +56,9 @@ spring:
     password: guest
     port: 5672
 
+  main:
+    allow-bean-definition-overriding: true
+
   mail:
     username: ENC(/qNjHfAouomFQW84ddaVlwSyuuBwMnqvIQdsY5EHeCs=)
     password: ENC(108QkIuAdhSx2x4QIBI8A9GuNVwmxSh7)

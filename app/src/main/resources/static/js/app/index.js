@@ -48,6 +48,10 @@ const main = {
         $('#btn-save-studyComment').on('click', function () {
             _this.saveStudyComment();
         })
+
+        $('#btn-save-post').on('click', function () {
+            _this.savePost();
+        })
     },
 
     cancelStudy: function () {
@@ -343,6 +347,30 @@ const main = {
             alert(request.responseText);
         })
     },
+
+    savePost : function() {
+        if($('#post').val() === '') {
+            alert('내용을 입력하세요');
+            return;
+        }
+
+        let data = {
+            content : $('#post').val()
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/api/post',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            contentType: 'application/json;',
+        }).done(function (data) {
+            alert('게시글 등록이 완료되었습니다');
+            window.location.href = '/posts';
+        }).fail(function (request) {
+            alert(request.responseText);
+        });
+    }
 };
 
 main.init();
