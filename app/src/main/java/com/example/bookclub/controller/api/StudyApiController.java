@@ -8,13 +8,7 @@ import com.example.bookclub.application.StudyService;
 import com.example.bookclub.common.CommonResponse;
 import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
-import com.example.bookclub.dto.StudyApplyResultDto;
-import com.example.bookclub.dto.StudyCommentCreateDto;
-import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyDto;
-import com.example.bookclub.dto.StudyFavoriteResultDto;
-import com.example.bookclub.dto.StudyLikeResultDto;
-import com.example.bookclub.dto.StudyLikesCommentResultDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.http.HttpStatus;
@@ -139,11 +133,11 @@ public class StudyApiController {
      * @return 스터디 식별자 정보
      */
     @PostMapping("/apply/{id}")
-    public CommonResponse<StudyApplyResultDto> apply(
+    public CommonResponse<StudyDto.StudyApplyResultDto> apply(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long id
     ) {
-        StudyApplyResultDto response = studyService.applyStudy(userAccount, id);
+        StudyDto.StudyApplyResultDto response = studyService.applyStudy(userAccount, id);
         return CommonResponse.success(response);
     }
 
@@ -155,11 +149,11 @@ public class StudyApiController {
      * @return 스터디 식별자 정보
      */
     @PostMapping("/cancel/{id}")
-    public CommonResponse<StudyApplyResultDto> cancel(
+    public CommonResponse<StudyDto.StudyApplyResultDto> cancel(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long id
     ) {
-        StudyApplyResultDto response = studyService.cancelStudy(userAccount, id);
+        StudyDto.StudyApplyResultDto response = studyService.cancelStudy(userAccount, id);
         return CommonResponse.success(response);
     }
 
@@ -172,11 +166,11 @@ public class StudyApiController {
      */
     @PostMapping("/like/{studyId}")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommonResponse<StudyLikeResultDto> like(
+    public CommonResponse<StudyDto.StudyLikeResultDto> like(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long studyId
     ) {
-        StudyLikeResultDto response = studyLikeService.like(userAccount, studyId);
+        StudyDto.StudyLikeResultDto response = studyLikeService.like(userAccount, studyId);
         return CommonResponse.success(response);
     }
 
@@ -188,11 +182,11 @@ public class StudyApiController {
      * @return 스터디 식별자 정보
      */
     @DeleteMapping("/like/{studyId}")
-    public CommonResponse<StudyLikeResultDto> unLike(
+    public CommonResponse<StudyDto.StudyLikeResultDto> unLike(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long studyId
     ) {
-        StudyLikeResultDto response = studyLikeService.unLike(userAccount, studyId);
+        StudyDto.StudyLikeResultDto response = studyLikeService.unLike(userAccount, studyId);
         return CommonResponse.success(response);
     }
 
@@ -206,12 +200,12 @@ public class StudyApiController {
      */
     @PostMapping("/{studyId}/comment")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommonResponse<StudyCommentResultDto> createStudyComment(
+    public CommonResponse<StudyDto.StudyCommentResultDto> createStudyComment(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long studyId,
-            @RequestBody StudyCommentCreateDto studyCommentCreateDto
+            @RequestBody StudyDto.StudyCommentCreateDto studyCommentCreateDto
     ) {
-        StudyCommentResultDto response = studyCommentService
+        StudyDto.StudyCommentResultDto response = studyCommentService
                 .createStudyComment(userAccount, studyId, studyCommentCreateDto);
         return CommonResponse.success(response);
     }
@@ -225,11 +219,11 @@ public class StudyApiController {
      */
     @DeleteMapping("/comment/{studyCommentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public CommonResponse<StudyCommentResultDto> deleteStudyComment(
+    public CommonResponse<StudyDto.StudyCommentResultDto> deleteStudyComment(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long studyCommentId
     ) {
-        StudyCommentResultDto response = studyCommentService.deleteStudyComment(userAccount, studyCommentId);
+        StudyDto.StudyCommentResultDto response = studyCommentService.deleteStudyComment(userAccount, studyCommentId);
         return CommonResponse.success(response);
     }
 
@@ -243,11 +237,11 @@ public class StudyApiController {
      */
     @PostMapping("/comment/{commentId}/like")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommonResponse<StudyLikesCommentResultDto> likeComment(
+    public CommonResponse<StudyDto.StudyLikesCommentResultDto> likeComment(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long commentId
     ) {
-        StudyLikesCommentResultDto response = studyCommentLikeService.likeComment(userAccount, commentId);
+        StudyDto.StudyLikesCommentResultDto response = studyCommentLikeService.likeComment(userAccount, commentId);
         return CommonResponse.success(response);
     }
 
@@ -261,11 +255,11 @@ public class StudyApiController {
      */
     @DeleteMapping("/comment/{commentId}/unlike")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public CommonResponse<StudyLikesCommentResultDto> unLikeComment(
+    public CommonResponse<StudyDto.StudyLikesCommentResultDto> unLikeComment(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long commentId
     ) {
-        StudyLikesCommentResultDto response = studyCommentLikeService.unlikeComment(userAccount, commentId);
+        StudyDto.StudyLikesCommentResultDto response = studyCommentLikeService.unlikeComment(userAccount, commentId);
         return CommonResponse.success(response);
     }
 
@@ -278,11 +272,11 @@ public class StudyApiController {
      */
     @PostMapping("/{id}/favorite")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommonResponse<StudyFavoriteResultDto> favoriteStudy(
+    public CommonResponse<StudyDto.StudyFavoriteResultDto> favoriteStudy(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long id
     ) {
-        StudyFavoriteResultDto response = studyFavoriteService.favoriteStudy(userAccount, id);
+        StudyDto.StudyFavoriteResultDto response = studyFavoriteService.favoriteStudy(userAccount, id);
         return CommonResponse.success(response);
     }
 
@@ -295,11 +289,11 @@ public class StudyApiController {
      */
     @DeleteMapping("/{id}/favorite")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public CommonResponse<StudyFavoriteResultDto> unFavoriteStudy(
+    public CommonResponse<StudyDto.StudyFavoriteResultDto> unFavoriteStudy(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long id
     ) {
-        StudyFavoriteResultDto response = studyFavoriteService.unFavoriteStudy(userAccount, id);
+        StudyDto.StudyFavoriteResultDto response = studyFavoriteService.unFavoriteStudy(userAccount, id);
         return CommonResponse.success(response);
     }
 }

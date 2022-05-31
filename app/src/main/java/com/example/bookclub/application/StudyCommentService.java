@@ -3,8 +3,7 @@ package com.example.bookclub.application;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentRepository;
-import com.example.bookclub.dto.StudyCommentCreateDto;
-import com.example.bookclub.dto.StudyCommentResultDto;
+import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.errors.StudyCommentContentNotExistedException;
 import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
@@ -37,8 +36,8 @@ public class StudyCommentService {
 	 * @throws StudyCommentContentNotExistedException 생성할 댓글 정보가 비어있는 경우
 	 */
 	@Transactional
-	public StudyCommentResultDto createStudyComment(UserAccount userAccount, Long studyId,
-													StudyCommentCreateDto studyCommentCreateDto) {
+	public StudyDto.StudyCommentResultDto createStudyComment(UserAccount userAccount, Long studyId,
+															 StudyDto.StudyCommentCreateDto studyCommentCreateDto) {
 		Study study = studyService.getStudy(studyId);
 		if(studyCommentCreateDto.getContent().isBlank()) {
 			throw new StudyCommentContentNotExistedException();
@@ -48,7 +47,7 @@ public class StudyCommentService {
 
 		StudyComment savedStudyComment = studyCommentRepository.save(studyComment);
 
-		return StudyCommentResultDto.of(savedStudyComment, userAccount.getAccount());
+		return StudyDto.StudyCommentResultDto.of(savedStudyComment, userAccount.getAccount());
 	}
 
 	/**
@@ -60,7 +59,7 @@ public class StudyCommentService {
 	 * @throws StudyCommentDeleteBadRequest 스터디 댓글이 로그인한 사용자의 댓글이 아닌 경우
 	 */
 	@Transactional
-	public StudyCommentResultDto deleteStudyComment(UserAccount userAccount, long studyCommentId) {
+	public StudyDto.StudyCommentResultDto deleteStudyComment(UserAccount userAccount, long studyCommentId) {
 		StudyComment studyComment = getStudyComment(studyCommentId);
 		if(!studyComment.getAccount().getId().equals(userAccount.getAccount().getId())) {
 			throw new StudyCommentDeleteBadRequest();
@@ -68,7 +67,7 @@ public class StudyCommentService {
 
 		studyCommentRepository.delete(studyComment);
 
-		return StudyCommentResultDto.of(studyComment, userAccount.getAccount());
+		return StudyDto.StudyCommentResultDto.of(studyComment, userAccount.getAccount());
 	}
 
 	/**

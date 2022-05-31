@@ -12,13 +12,7 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
-import com.example.bookclub.dto.StudyApplyResultDto;
-import com.example.bookclub.dto.StudyCommentCreateDto;
-import com.example.bookclub.dto.StudyCommentResultDto;
 import com.example.bookclub.dto.StudyDto;
-import com.example.bookclub.dto.StudyFavoriteResultDto;
-import com.example.bookclub.dto.StudyLikeResultDto;
-import com.example.bookclub.dto.StudyLikesCommentResultDto;
 import com.example.bookclub.dto.UploadFileDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
@@ -237,14 +231,14 @@ class StudyApiControllerTest {
     private StudyDto.StudyResultDto studyResultDto;
     private StudyDto.StudyResultDto updatedStudyResultDto;
 
-    private StudyCommentCreateDto studyCommentCreateDto;
-    private StudyCommentCreateDto studyCommentCreateWithoutContentDto;
-    private StudyCommentResultDto studyCommentResultDto;
+    private StudyDto.StudyCommentCreateDto studyCommentCreateDto;
+    private StudyDto.StudyCommentCreateDto studyCommentCreateWithoutContentDto;
+    private StudyDto.StudyCommentResultDto studyCommentResultDto;
 
-    private StudyApplyResultDto studyApplyResultDto;
-    private StudyLikeResultDto studyLikeResultDto;
-    private StudyLikesCommentResultDto studyLikesCommentResultDto;
-    private StudyFavoriteResultDto studyFavoriteResultDto;
+    private StudyDto.StudyApplyResultDto studyApplyResultDto;
+    private StudyDto.StudyLikeResultDto studyLikeResultDto;
+    private StudyDto.StudyLikesCommentResultDto studyLikesCommentResultDto;
+    private StudyDto.StudyFavoriteResultDto studyFavoriteResultDto;
 
     private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
@@ -412,15 +406,15 @@ class StudyApiControllerTest {
 
         list = List.of(setUpStudy, updatedStudy);
 
-        studyCommentCreateDto = StudyCommentCreateDto.builder()
+        studyCommentCreateDto = StudyDto.StudyCommentCreateDto.builder()
                 .content(STUDY_COMMENT_CONTENT)
                 .build();
 
-        studyCommentCreateWithoutContentDto = StudyCommentCreateDto.builder()
+        studyCommentCreateWithoutContentDto = StudyDto.StudyCommentCreateDto.builder()
                 .content("")
                 .build();
 
-        studyCommentResultDto = StudyCommentResultDto.builder()
+        studyCommentResultDto = StudyDto.StudyCommentResultDto.builder()
                 .id(STUDY_COMMENT_EXISTED_ID)
                 .content(STUDY_COMMENT_CONTENT)
                 .studyId(STUDY_SETUP_EXISTED_ID)
@@ -432,19 +426,19 @@ class StudyApiControllerTest {
                 .updatedDate(STUDY_UPDATED_DATE)
                 .build();
 
-        studyApplyResultDto = StudyApplyResultDto.builder()
+        studyApplyResultDto = StudyDto.StudyApplyResultDto.builder()
                 .id(STUDY_SETUP_EXISTED_ID)
                 .build();
 
-        studyLikeResultDto = StudyLikeResultDto.builder()
+        studyLikeResultDto = StudyDto.StudyLikeResultDto.builder()
                 .id(STUDY_LIKE_CREATE_ID)
                 .build();
 
-        studyLikesCommentResultDto = StudyLikesCommentResultDto.builder()
+        studyLikesCommentResultDto = StudyDto.StudyLikesCommentResultDto.builder()
                 .id(STUDY_COMMENT_EXISTED_ID)
                 .build();
 
-        studyFavoriteResultDto = StudyFavoriteResultDto.builder()
+        studyFavoriteResultDto = StudyDto.StudyFavoriteResultDto.builder()
                 .id(STUDY_FAVORITE_CREATE_ID)
                 .build();
 
@@ -1456,7 +1450,7 @@ class StudyApiControllerTest {
     void createStudyComment() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentService.createStudyComment(any(UserAccount.class),
-                eq(STUDY_SETUP_EXISTED_ID), any(StudyCommentCreateDto.class)))
+                eq(STUDY_SETUP_EXISTED_ID), any(StudyDto.StudyCommentCreateDto.class)))
                 .willReturn(studyCommentResultDto);
 
         mockMvc.perform(
@@ -1494,7 +1488,7 @@ class StudyApiControllerTest {
     void createStudyCommentWithoutContent() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentService.createStudyComment(any(UserAccount.class),
-                eq(STUDY_SETUP_EXISTED_ID), any(StudyCommentCreateDto.class)))
+                eq(STUDY_SETUP_EXISTED_ID), any(StudyDto.StudyCommentCreateDto.class)))
                 .willThrow(new StudyCommentContentNotExistedException());
 
         mockMvc.perform(

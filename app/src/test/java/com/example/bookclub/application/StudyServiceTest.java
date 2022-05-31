@@ -8,7 +8,6 @@ import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
-import com.example.bookclub.dto.StudyApplyResultDto;
 import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
@@ -695,7 +694,8 @@ public class StudyServiceTest {
 
         Study study = studyService.getStudy(STUDY_SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
-		StudyApplyResultDto studyApplyResultDto = studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
+		StudyDto.StudyApplyResultDto studyApplyResultDto =
+				studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
         int afterApplyCount = study.getApplyCount();
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);

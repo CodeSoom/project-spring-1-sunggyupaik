@@ -1,7 +1,9 @@
 package com.example.bookclub.dto;
 
+import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
+import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -17,6 +19,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class StudyDto {
@@ -286,6 +289,174 @@ public class StudyDto {
 			this.day = day;
 			this.studyState = studyState;
 			this.zone = zone;
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class StudyApplyDto {
+		String email;
+
+		@Builder
+		public StudyApplyDto(String email) {
+			this.email = email;
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class StudyApplyResultDto {
+		private Long id;
+
+		@Builder
+		public StudyApplyResultDto(Long id) {
+			this.id = id;
+		}
+
+		public static StudyApplyResultDto of(Long id) {
+			return StudyApplyResultDto.builder()
+					.id(id)
+					.build();
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class StudyCommentCreateDto {
+		private String content;
+
+		@Builder
+		public StudyCommentCreateDto(String content) {
+			this.content = content;
+		}
+
+		public StudyComment toEntity(Account account, Study study) {
+			return StudyComment.builder()
+					.content(this.content)
+					.account(account)
+					.study(study)
+					.build();
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class StudyCommentResultDto {
+		private Long id;
+		private String content;
+		private Long studyId;
+		private Long accountId;
+		private String nickname;
+		private boolean isWrittenByMe;
+		private String updatedDate;
+		private boolean liked;
+		private int likesCount;
+
+		@Builder
+		public StudyCommentResultDto(Long id, String content, Long studyId, Long accountId, String nickname,
+									 boolean isWrittenByMe, String updatedDate, boolean liked, int likesCount) {
+			this.id = id;
+			this.content = content;
+			this.studyId = studyId;
+			this.accountId = accountId;
+			this.nickname = nickname;
+			this.isWrittenByMe = isWrittenByMe;
+			this.updatedDate = updatedDate;
+			this.liked = liked;
+			this.likesCount = likesCount;
+		}
+
+		public static StudyCommentResultDto of(StudyComment studyComment, Account account) {
+			return StudyCommentResultDto.builder()
+					.id(studyComment.getId())
+					.content(studyComment.getContent())
+					.studyId(studyComment.getStudy().getId())
+					.accountId(studyComment.getAccount().getId())
+					.nickname(account.getNickname())
+					.isWrittenByMe(studyComment.isWrittenByMe())
+					.updatedDate(studyComment.getUpdatedDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
+					.liked(studyComment.isLiked())
+					.likesCount(studyComment.getLikesCount())
+					.build();
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class StudyFavoriteDto {
+		private Long id;
+
+		private String name;
+
+		private String bookName;
+
+		private StudyState studyState;
+
+		@QueryProjection
+		public StudyFavoriteDto(Long id, String name, String bookName, StudyState studyState) {
+			this.id = id;
+			this.name = name;
+			this.bookName = bookName;
+			this.studyState = studyState;
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class StudyFavoriteResultDto {
+		private Long id;
+
+		@Builder
+		public StudyFavoriteResultDto(Long id) {
+			this.id = id;
+		}
+
+		public static StudyFavoriteResultDto of(Long id) {
+			return StudyFavoriteResultDto.builder()
+					.id(id)
+					.build();
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class StudyLikeResultDto {
+		private Long id;
+
+		@Builder
+		public StudyLikeResultDto(Long id) {
+			this.id = id;
+		}
+
+		public static StudyLikeResultDto of(Long id) {
+			return StudyLikeResultDto.builder()
+					.id(id)
+					.build();
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class StudyLikesCommentResultDto {
+		private Long id;
+
+		@Builder
+		public StudyLikesCommentResultDto(Long id) {
+			this.id = id;
+		}
+
+		public static StudyLikesCommentResultDto of(Long id) {
+			return StudyLikesCommentResultDto.builder()
+					.id(id)
+					.build();
 		}
 	}
 

@@ -4,7 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyLike;
 import com.example.bookclub.domain.StudyLikeRepository;
-import com.example.bookclub.dto.StudyLikeResultDto;
+import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;
 import com.example.bookclub.security.UserAccount;
@@ -39,7 +39,7 @@ public class StudyLikeService {
 	 * @throws StudyLikeAlreadyExistedException 주어진 스터디 식별자에 해당하는 좋아요가 존재하는 경우
 	 */
 	@Transactional
-	public StudyLikeResultDto like(UserAccount userAccount, Long studyId) {
+	public StudyDto.StudyLikeResultDto like(UserAccount userAccount, Long studyId) {
 		Long accountId = userAccount.getAccount().getId();
 
 		Study study = studyService.getStudy(studyId);
@@ -57,7 +57,7 @@ public class StudyLikeService {
 		studyLike.addStudyAndAccount(study, account);
 		studyLikeRepository.save(studyLike);
 
-		return StudyLikeResultDto.of(studyId);
+		return StudyDto.StudyLikeResultDto.of(studyId);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class StudyLikeService {
 	 * @throws StudyLikeNotExistedException 주어진 스터디 식별자에 해당하는 좋아요가 없는 경우
 	 */
 	@Transactional
-	public StudyLikeResultDto unLike(UserAccount userAccount, Long studyId) {
+	public StudyDto.StudyLikeResultDto unLike(UserAccount userAccount, Long studyId) {
 		Long accountId = userAccount.getAccount().getId();
 
 		Study study = studyService.getStudy(studyId);
@@ -79,6 +79,6 @@ public class StudyLikeService {
 
 		studyLikeRepository.delete(savedStudyLike);
 
-		return StudyLikeResultDto.of(savedStudyLike.getId());
+		return StudyDto.StudyLikeResultDto.of(savedStudyLike.getId());
 	}
 }
