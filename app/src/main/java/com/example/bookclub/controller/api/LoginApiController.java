@@ -2,7 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.account.EmailService;
 import com.example.bookclub.application.account.LoginService;
-import com.example.bookclub.common.CommonResponse;
+import com.example.bookclub.common.response.CommonResponse;
 import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.dto.EmailDto;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

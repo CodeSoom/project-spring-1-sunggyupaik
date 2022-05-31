@@ -4,9 +4,9 @@ import com.example.bookclub.domain.study.Study;
 import com.example.bookclub.domain.study.studycomment.StudyComment;
 import com.example.bookclub.domain.study.studycomment.StudyCommentRepository;
 import com.example.bookclub.dto.StudyApiDto;
-import com.example.bookclub.errors.study.studycomment.StudyCommentContentNotExistedException;
-import com.example.bookclub.errors.study.studycomment.StudyCommentDeleteBadRequest;
-import com.example.bookclub.errors.study.studycomment.StudyCommentNotFoundException;
+import com.example.bookclub.common.exception.study.studycomment.StudyCommentContentNotExistedException;
+import com.example.bookclub.common.exception.study.studycomment.StudyCommentDeleteBadRequest;
+import com.example.bookclub.common.exception.study.studycomment.StudyCommentNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 

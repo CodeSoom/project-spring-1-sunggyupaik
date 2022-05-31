@@ -34,8 +34,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentRequest;
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentResponse;
+import static com.example.bookclub.common.util.ApiDocumentUtils.getDocumentRequest;
+import static com.example.bookclub.common.util.ApiDocumentUtils.getDocumentResponse;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;

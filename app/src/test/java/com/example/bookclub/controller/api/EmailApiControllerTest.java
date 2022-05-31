@@ -3,7 +3,7 @@ package com.example.bookclub.controller.api;
 import com.example.bookclub.application.account.AccountAuthenticationService;
 import com.example.bookclub.application.account.EmailService;
 import com.example.bookclub.dto.EmailDto;
-import com.example.bookclub.errors.account.emailauthentication.EmailBadRequestException;
+import com.example.bookclub.common.exception.account.emailauthentication.EmailBadRequestException;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import com.example.bookclub.security.PersistTokenRepository;
@@ -26,8 +26,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.sql.DataSource;
 
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentRequest;
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentResponse;
+import static com.example.bookclub.common.util.ApiDocumentUtils.getDocumentRequest;
+import static com.example.bookclub.common.util.ApiDocumentUtils.getDocumentResponse;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

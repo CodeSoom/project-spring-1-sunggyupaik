@@ -6,8 +6,8 @@ import com.example.bookclub.domain.study.favorite.Favorite;
 import com.example.bookclub.domain.study.favorite.FavoriteRepository;
 import com.example.bookclub.domain.study.Study;
 import com.example.bookclub.dto.StudyApiDto;
-import com.example.bookclub.errors.study.favorite.StudyFavoriteAlreadyExistedException;
-import com.example.bookclub.errors.study.favorite.StudyFavoriteNotExistedException;
+import com.example.bookclub.common.exception.study.favorite.StudyFavoriteAlreadyExistedException;
+import com.example.bookclub.common.exception.study.favorite.StudyFavoriteNotExistedException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 

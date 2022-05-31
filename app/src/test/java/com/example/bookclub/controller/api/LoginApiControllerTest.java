@@ -32,8 +32,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import javax.sql.DataSource;
 import java.util.List;
 
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentRequest;
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentResponse;
+import static com.example.bookclub.common.util.ApiDocumentUtils.getDocumentRequest;
+import static com.example.bookclub.common.util.ApiDocumentUtils.getDocumentResponse;
 import static com.fasterxml.jackson.databind.node.JsonNodeType.STRING;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
