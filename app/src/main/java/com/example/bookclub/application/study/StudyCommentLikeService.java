@@ -6,8 +6,8 @@ import com.example.bookclub.domain.study.studycomment.StudyComment;
 import com.example.bookclub.domain.study.studycommentlike.StudyCommentLike;
 import com.example.bookclub.domain.study.studycommentlike.StudyCommentLikeRepository;
 import com.example.bookclub.dto.StudyApiDto;
-import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
-import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
+import com.example.bookclub.errors.study.studycommentlike.StudyCommentLikeAlreadyExistedException;
+import com.example.bookclub.errors.study.studycommentlike.StudyCommentLikeNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
 

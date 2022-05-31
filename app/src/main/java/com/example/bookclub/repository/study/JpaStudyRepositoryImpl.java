@@ -7,7 +7,7 @@ import com.example.bookclub.dto.QStudyDto_StudyAccountInfoResultDto;
 import com.example.bookclub.dto.QStudyDto_StudyInfoResultDto;
 import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.dto.StudyDto;
-import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.study.StudyNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Pageable;
