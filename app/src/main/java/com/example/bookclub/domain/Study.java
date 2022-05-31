@@ -1,7 +1,7 @@
 package com.example.bookclub.domain;
 
 import com.example.bookclub.common.BaseEntity;
-import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.dto.StudyApiDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
@@ -166,7 +166,7 @@ public class Study extends BaseEntity {
      *
      * @param studyUpdateDto 수정할 스터디 정보
      */
-    public void updateWith(StudyUpdateDto studyUpdateDto) {
+    public void updateWith(StudyApiDto.StudyUpdateDto studyUpdateDto) {
         this.name = studyUpdateDto.getName();
         this.description = studyUpdateDto.getDescription();
         this.contact = studyUpdateDto.getContact();

@@ -4,9 +4,8 @@ import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.application.LoginService;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.dto.EmailRequestDto;
-import com.example.bookclub.dto.EmailSendResultDto;
-import com.example.bookclub.dto.KakaoLoginRequest;
+import com.example.bookclub.dto.AccountDto;
+import com.example.bookclub.dto.EmailDto;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import com.example.bookclub.security.PersistTokenRepository;
@@ -55,11 +54,11 @@ public class LoginApiControllerTest {
 	private final static String KAKAO_LOGIN_EMAIL_NOT_EXISTED = "kakaoLoginEmailNotExisted";
 	private final static String AUTHENTICATION_NUMBER = "authenticationNumber";
 
-	private KakaoLoginRequest kakaoLoginRequest;
-	private KakaoLoginRequest kakaoLoginNotExistedEmailRequest;
+	private AccountDto.KakaoLoginRequest kakaoLoginRequest;
+	private AccountDto.KakaoLoginRequest kakaoLoginNotExistedEmailRequest;
 	private Account account;
 	private UsernamePasswordAuthenticationToken accountToken;
-	private EmailSendResultDto emailSendResultDto;
+	private EmailDto.EmailSendResultDto emailSendResultDto;
 
 	@MockBean
 	private LoginService loginService;
@@ -99,11 +98,11 @@ public class LoginApiControllerTest {
 				.alwaysDo(print())
 				.build();
 
-		kakaoLoginRequest = KakaoLoginRequest.builder()
+		kakaoLoginRequest = AccountDto.KakaoLoginRequest.builder()
 				.email(KAKAO_LOGIN_EMAIL)
 				.build();
 
-		kakaoLoginNotExistedEmailRequest = KakaoLoginRequest.builder()
+		kakaoLoginNotExistedEmailRequest = AccountDto.KakaoLoginRequest.builder()
 				.email(KAKAO_LOGIN_EMAIL_NOT_EXISTED)
 				.build();
 
@@ -117,7 +116,7 @@ public class LoginApiControllerTest {
 						null,
 						List.of(new SimpleGrantedAuthority("KAKAO-USER")));
 
-		emailSendResultDto = EmailSendResultDto.builder()
+		emailSendResultDto = EmailDto.EmailSendResultDto.builder()
 				.email(KAKAO_LOGIN_EMAIL_NOT_EXISTED)
 				.authenticationNumber(AUTHENTICATION_NUMBER)
 				.build();
@@ -125,8 +124,8 @@ public class LoginApiControllerTest {
 
 	@Test
 	void loginKakaoWithAlreadyExistedEmail() throws Exception {
-		given(loginService.checkAlreadyExistedEmail(any(KakaoLoginRequest.class))).willReturn(true);
-		given(loginService.makeKakaoAuthenticationToken(any(KakaoLoginRequest.class))).willReturn(accountToken);
+		given(loginService.checkAlreadyExistedEmail(any(AccountDto.KakaoLoginRequest.class))).willReturn(true);
+		given(loginService.makeKakaoAuthenticationToken(any(AccountDto.KakaoLoginRequest.class))).willReturn(accountToken);
 
 		mockMvc.perform(
 				RestDocumentationRequestBuilders.post("/api/kakao-login")
@@ -153,8 +152,8 @@ public class LoginApiControllerTest {
 
 	@Test
 	void loginKakaoWithNotExistedEmail() throws Exception {
-		given(loginService.checkAlreadyExistedEmail(any(KakaoLoginRequest.class))).willReturn(false);
-		given(emailService.saveAuthenticationNumber(any(EmailRequestDto.class))).willReturn(emailSendResultDto);
+		given(loginService.checkAlreadyExistedEmail(any(AccountDto.KakaoLoginRequest.class))).willReturn(false);
+		given(emailService.saveAuthenticationNumber(any(EmailDto.EmailRequestDto.class))).willReturn(emailSendResultDto);
 
 		mockMvc.perform(
 						RestDocumentationRequestBuilders.post("/api/kakao-login")

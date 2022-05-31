@@ -9,19 +9,9 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.domain.Zone;
-import com.example.bookclub.dto.AccountCreateDto;
-import com.example.bookclub.dto.AccountCreateResultDto;
-import com.example.bookclub.dto.AccountDeleteResultDto;
-import com.example.bookclub.dto.AccountResultDto;
-import com.example.bookclub.dto.AccountUpdateDto;
-import com.example.bookclub.dto.AccountUpdatePasswordDto;
-import com.example.bookclub.dto.AccountUpdatePasswordResultDto;
-import com.example.bookclub.dto.AccountUpdateResultDto;
-import com.example.bookclub.dto.AccountWithUploadFileCreateDto;
-import com.example.bookclub.dto.AccountWithUploadFileUpdateDto;
-import com.example.bookclub.dto.StudyResultDto;
-import com.example.bookclub.dto.UploadFileCreateDto;
-import com.example.bookclub.dto.UploadFileResultDto;
+import com.example.bookclub.dto.AccountDto;
+import com.example.bookclub.dto.StudyApiDto;
+import com.example.bookclub.dto.UploadFileDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
 import com.example.bookclub.errors.AccountNicknameDuplicatedException;
@@ -162,12 +152,12 @@ class AccountApiControllerTest {
 
 	private Study study;
 
-	private UploadFileCreateDto uploadFileCreateDto;
-	private UploadFileResultDto uploadFileResultDto;
+	private UploadFileDto.UploadFileCreateDto uploadFileCreateDto;
+	private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
     private Account accountWithoutUploadFile;
 	private Account accountWithUploadFile;
-	private AccountResultDto createdAccountWithUploadFile;
+	private AccountDto.AccountResultDto createdAccountWithUploadFile;
     private Account createdAccount;
 	private Account updatedAccount;
 	private Account deletedAccount;
@@ -176,25 +166,25 @@ class AccountApiControllerTest {
 	private UsernamePasswordAuthenticationToken accountWithUploadFileToken;
 	private UsernamePasswordAuthenticationToken deletedAccountToken;
 
-    private AccountCreateDto accountCreateDto;
-    private AccountUpdateDto accountUpdateDto;
-	private AccountUpdatePasswordDto accountUpdatePasswordDto;
-	private AccountUpdatePasswordDto accountUpdateInvalidPasswordDto;
-	private AccountUpdatePasswordDto accountUpdateNotMatchedNewPasswordDto;
+    private AccountDto.AccountCreateDto accountCreateDto;
+    private AccountDto.AccountUpdateDto accountUpdateDto;
+	private AccountDto.AccountUpdatePasswordDto accountUpdatePasswordDto;
+	private AccountDto.AccountUpdatePasswordDto accountUpdateInvalidPasswordDto;
+	private AccountDto.AccountUpdatePasswordDto accountUpdateNotMatchedNewPasswordDto;
 
-	private AccountResultDto accountWithUploadFileResultDto;
-	private AccountCreateResultDto accountCreatedWithoutUploadFileResultDto;
-	private AccountUpdateResultDto accountUpdatedWithUploadFileResultDto;
-	private AccountUpdateResultDto accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto;
-	private AccountUpdateResultDto accountUpdatedWithUploadBeforeNotHasUploadFileResultDto;
-	private AccountUpdateResultDto accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto;
-	private AccountUpdatePasswordResultDto accountUpdatedWithNewPasswordResultDto;
-	private AccountDeleteResultDto deletedAccountResultDto;
+	private AccountDto.AccountResultDto accountWithUploadFileResultDto;
+	private AccountDto.AccountCreateResultDto accountCreatedWithoutUploadFileResultDto;
+	private AccountDto.AccountUpdateResultDto accountUpdatedWithUploadFileResultDto;
+	private AccountDto.AccountUpdateResultDto accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto;
+	private AccountDto.AccountUpdateResultDto accountUpdatedWithUploadBeforeNotHasUploadFileResultDto;
+	private AccountDto.AccountUpdateResultDto accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto;
+	private AccountDto.AccountUpdatePasswordResultDto accountUpdatedWithNewPasswordResultDto;
+	private AccountDto.AccountDeleteResultDto deletedAccountResultDto;
 
 	private MockMultipartFile mockCreatedMultipartFile;
 	private MockMultipartFile mockUpdatedMultipartFile;
-	private AccountWithUploadFileCreateDto accountWithUploadFileCreateDto;
-	private AccountWithUploadFileUpdateDto accountWithUploadFileUpdateDto;
+	private AccountDto.AccountWithUploadFileCreateDto accountWithUploadFileCreateDto;
+	private AccountDto.AccountWithUploadFileUpdateDto accountWithUploadFileUpdateDto;
 
 	@Autowired
 	MockMvc mockMvc;
@@ -271,13 +261,13 @@ class AccountApiControllerTest {
 				.isFavorite(STUDY_IS_FAVORITE)
 				.build();
 
-		uploadFileCreateDto = UploadFileCreateDto.builder()
+		uploadFileCreateDto = UploadFileDto.UploadFileCreateDto.builder()
 				.fileName(FILE_CREATED_NAME)
 				.fileOriginalName(FILE_CREATED_ORIGINAL_NAME)
 				.fileUrl(FILE_CREATED_URL)
 				.build();
 
-		uploadFileResultDto = UploadFileResultDto.builder()
+		uploadFileResultDto = UploadFileDto.UploadFileResultDto.builder()
 				.fileName(FILE_CREATED_NAME)
 				.fileOriginalName(FILE_CREATED_ORIGINAL_NAME)
 				.fileUrl(FILE_CREATED_URL)
@@ -309,13 +299,13 @@ class AccountApiControllerTest {
                 .password(ACCOUNT_CREATED_PASSWORD)
                 .build();
 
-		createdAccountWithUploadFile = AccountResultDto.builder()
+		createdAccountWithUploadFile = AccountDto.AccountResultDto.builder()
 				.id(ACCOUNT_FILE_EXISTED_ID)
 				.name(ACCOUNT_FILE_NAME)
 				.email(ACCOUNT_FILE_EMAIL)
 				.nickname(ACCOUNT_FILE_NICKNAME)
 				.password(ACCOUNT_FILE_PASSWORD)
-				.uploadFileResultDto(UploadFileResultDto.of(createdUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(createdUploadFile))
 				.build();
 
 		updatedAccount = Account.builder()
@@ -349,7 +339,7 @@ class AccountApiControllerTest {
 				deletedAccount.getPassword(),
 				List.of(new SimpleGrantedAuthority("USER")));
 
-        accountCreateDto = AccountCreateDto.builder()
+        accountCreateDto = AccountDto.AccountCreateDto.builder()
                 .name(ACCOUNT_CREATED_NAME)
                 .email(ACCOUNT_CREATED_EMAIL)
                 .nickname(ACCOUNT_CREATED_NICKNAME)
@@ -357,70 +347,70 @@ class AccountApiControllerTest {
 				.authenticationNumber(ACCOUNT_CREATED_AUTHENTICATION_NUMBER)
                 .build();
 
-        accountUpdateDto = AccountUpdateDto.builder()
+        accountUpdateDto = AccountDto.AccountUpdateDto.builder()
                 .nickname(ACCOUNT_UPDATED_NICKNAME)
                 .build();
 
-		accountUpdatePasswordDto = AccountUpdatePasswordDto.builder()
+		accountUpdatePasswordDto = AccountDto.AccountUpdatePasswordDto.builder()
 				.password(ACCOUNT_PASSWORD)
 				.newPassword(ACCOUNT_UPDATED_PASSWORD)
 				.newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
 				.build();
 
-		accountUpdateInvalidPasswordDto = AccountUpdatePasswordDto.builder()
+		accountUpdateInvalidPasswordDto = AccountDto.AccountUpdatePasswordDto.builder()
 				.password(ACCOUNT_INVALID_PASSWORD)
 				.newPassword(ACCOUNT_UPDATED_PASSWORD)
 				.newPasswordConfirmed(ACCOUNT_UPDATED_PASSWORD)
 				.build();
 
-		accountUpdateNotMatchedNewPasswordDto = AccountUpdatePasswordDto.builder()
+		accountUpdateNotMatchedNewPasswordDto = AccountDto.AccountUpdatePasswordDto.builder()
 				.password(ACCOUNT_PASSWORD)
 				.newPassword(ACCOUNT_UPDATED_PASSWORD)
 				.newPasswordConfirmed(ACCOUNT_PASSWORD)
 				.build();
 
-		accountCreatedWithoutUploadFileResultDto = AccountCreateResultDto.of(accountWithoutUploadFile);
+		accountCreatedWithoutUploadFileResultDto = AccountDto.AccountCreateResultDto.of(accountWithoutUploadFile);
 		accountCreatedWithoutUploadFileResultDto.setUploadFileResultDto(null);
 
-		accountWithUploadFileResultDto = AccountResultDto.builder()
+		accountWithUploadFileResultDto = AccountDto.AccountResultDto.builder()
 				.id(ACCOUNT_FILE_EXISTED_ID)
 				.name(ACCOUNT_FILE_NAME)
 				.email(ACCOUNT_FILE_EMAIL)
 				.nickname(ACCOUNT_FILE_NICKNAME)
 				.password(ACCOUNT_FILE_PASSWORD)
 				.deleted(ACCOUNT_FILE_DELETED)
-				.uploadFileResultDto(UploadFileResultDto.of(createdUploadFile))
-				.studyResultDto(StudyResultDto.of(study))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(createdUploadFile))
+				.studyResultDto(StudyApiDto.StudyResultDto.of(study))
 				.build();
 
-		accountUpdatedWithUploadFileResultDto = AccountUpdateResultDto.builder()
+		accountUpdatedWithUploadFileResultDto = AccountDto.AccountUpdateResultDto.builder()
 				.id(ACCOUNT_FILE_EXISTED_ID)
 				.name(ACCOUNT_FILE_NAME)
 				.email(ACCOUNT_FILE_EMAIL)
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_FILE_PASSWORD)
-				.uploadFileResultDto(UploadFileResultDto.of(updatedUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(updatedUploadFile))
 				.build();
 
-		accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto = AccountUpdateResultDto.builder()
+		accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto = AccountDto.AccountUpdateResultDto.builder()
 				.id(ACCOUNT_FILE_EXISTED_ID)
 				.name(ACCOUNT_FILE_NAME)
 				.email(ACCOUNT_FILE_EMAIL)
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_FILE_PASSWORD)
-				.uploadFileResultDto(UploadFileResultDto.of(createdUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(createdUploadFile))
 				.build();
 
-		accountUpdatedWithUploadBeforeNotHasUploadFileResultDto = AccountUpdateResultDto.builder()
+		accountUpdatedWithUploadBeforeNotHasUploadFileResultDto = AccountDto.AccountUpdateResultDto.builder()
 				.id(ACCOUNT_ID)
 				.name(ACCOUNT_NAME)
 				.email(ACCOUNT_EMAIL)
 				.nickname(ACCOUNT_UPDATED_NICKNAME)
 				.password(ACCOUNT_PASSWORD)
-				.uploadFileResultDto(UploadFileResultDto.of(updatedUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(updatedUploadFile))
 				.build();
 
-		accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto = AccountUpdateResultDto.builder()
+		accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto = AccountDto.AccountUpdateResultDto.builder()
 				.id(ACCOUNT_ID)
 				.name(ACCOUNT_NAME)
 				.email(ACCOUNT_EMAIL)
@@ -430,7 +420,7 @@ class AccountApiControllerTest {
 
 		accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto.setUploadFileResultDto(null);
 
-		accountUpdatedWithNewPasswordResultDto = AccountUpdatePasswordResultDto.builder()
+		accountUpdatedWithNewPasswordResultDto = AccountDto.AccountUpdatePasswordResultDto.builder()
 				.id(ACCOUNT_ID)
 				.name(ACCOUNT_NAME)
 				.email(ACCOUNT_EMAIL)
@@ -439,14 +429,14 @@ class AccountApiControllerTest {
 				.deleted(ACCOUNT_DELETED)
 				.build();
 
-		deletedAccountResultDto = AccountDeleteResultDto.builder()
+		deletedAccountResultDto = AccountDto.AccountDeleteResultDto.builder()
 				.id(ACCOUNT_DELETED_ID)
 				.name(ACCOUNT_NAME)
 				.email(ACCOUNT_EMAIL)
 				.nickname(ACCOUNT_NICKNAME)
 				.password(ACCOUNT_UPDATED_PASSWORD)
 				.deleted(true)
-				.uploadFileResultDto(UploadFileResultDto.of(createdUploadFile))
+				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(createdUploadFile))
 				.build();
 
 		mockCreatedMultipartFile = new MockMultipartFile(
@@ -457,12 +447,12 @@ class AccountApiControllerTest {
 				"uploadFile", FILE_UPDATED_ORIGINAL_NAME, IMAGE_CONTENT_TYPE, "test data".getBytes()
 		);
 
-		accountWithUploadFileCreateDto = AccountWithUploadFileCreateDto.builder()
+		accountWithUploadFileCreateDto = AccountDto.AccountWithUploadFileCreateDto.builder()
 				.accountCreateDto(accountCreateDto)
 				.multipartFile(mockCreatedMultipartFile)
 				.build();
 
-		accountWithUploadFileUpdateDto = AccountWithUploadFileUpdateDto.builder()
+		accountWithUploadFileUpdateDto = AccountDto.AccountWithUploadFileUpdateDto.builder()
 				.accountUpdateDto(accountUpdateDto)
 				.multipartFile(mockCreatedMultipartFile)
 				.build();
@@ -545,9 +535,9 @@ class AccountApiControllerTest {
 	@Test
 	void createWithAllValidAttributes() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
+		given(accountService.createAccount(any(AccountDto.AccountCreateDto.class), any(UploadFile.class)))
 				.will(invocation -> {
-					AccountCreateDto accountCreateDto = invocation.getArgument(0);
+					AccountDto.AccountCreateDto accountCreateDto = invocation.getArgument(0);
 					UploadFile uploadFile = invocation.getArgument(1);
 					uploadFile = UploadFile.builder()
 							.id(FILE_CREATED_ID)
@@ -556,13 +546,13 @@ class AccountApiControllerTest {
 							.fileUrl(FILE_CREATED_URL)
 							.build();
 
-					return AccountCreateResultDto.builder()
+					return AccountDto.AccountCreateResultDto.builder()
 							.id(ACCOUNT_CREATED_ACCOUNT_ID)
 							.name(accountWithUploadFile.getName())
 							.email(accountWithUploadFile.getEmail())
 							.nickname(accountWithUploadFile.getNickname())
 							.password(accountWithUploadFile.getPassword())
-							.uploadFileResultDto(UploadFileResultDto.of(uploadFile))
+							.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(uploadFile))
 							.build();
 				});
 
@@ -613,7 +603,7 @@ class AccountApiControllerTest {
 
     @Test
     void createWithoutUploadFile() throws Exception {
-        given(accountService.createAccount(any(AccountCreateDto.class), eq(null)))
+        given(accountService.createAccount(any(AccountDto.AccountCreateDto.class), eq(null)))
 				.willReturn(accountCreatedWithoutUploadFileResultDto);
 
 		mockMvc.perform(
@@ -654,7 +644,7 @@ class AccountApiControllerTest {
     @Test
     void createWithDuplicatedEmail() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
+		given(accountService.createAccount(any(AccountDto.AccountCreateDto.class), any(UploadFile.class)))
 				.willThrow(new AccountEmailDuplicatedException(ACCOUNT_DUPLICATED_EMAIL));
 
 		mockMvc.perform(
@@ -687,7 +677,7 @@ class AccountApiControllerTest {
 	@Test
 	void createWithInvalidAuthenticationNumber() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
+		given(accountService.createAccount(any(AccountDto.AccountCreateDto.class), any(UploadFile.class)))
 				.willThrow(new EmailNotAuthenticatedException(ACCOUNT_INVALID_AUTHENTICATION_NUMBER));
 
 		mockMvc.perform(
@@ -720,7 +710,7 @@ class AccountApiControllerTest {
     @Test
     void createWithDuplicatedNickname() throws Exception {
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(createdUploadFile);
-		given(accountService.createAccount(any(AccountCreateDto.class), any(UploadFile.class)))
+		given(accountService.createAccount(any(AccountDto.AccountCreateDto.class), any(UploadFile.class)))
 				.willThrow(new AccountNicknameDuplicatedException(ACCOUNT_DUPLICATED_NICKNAME));
 
 		mockMvc.perform(
@@ -769,7 +759,7 @@ class AccountApiControllerTest {
     void updateWithAllValidAttributesAlreadyHasUploadFile() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithUploadFileToken);
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(updatedUploadFile);
-		given(accountService.updateAccount(eq(ACCOUNT_FILE_EXISTED_ID), any(AccountUpdateDto.class), any(UploadFile.class)))
+		given(accountService.updateAccount(eq(ACCOUNT_FILE_EXISTED_ID), any(AccountDto.AccountUpdateDto.class), any(UploadFile.class)))
 				.willReturn(accountUpdatedWithUploadFileResultDto);
 
         mockMvc.perform(
@@ -824,7 +814,7 @@ class AccountApiControllerTest {
 	@Test
 	void updateWithoutUploadFileAlreadyHasUploadFile() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithUploadFileToken);
-		given(accountService.updateAccount(eq(ACCOUNT_FILE_EXISTED_ID), any(AccountUpdateDto.class), eq(null)))
+		given(accountService.updateAccount(eq(ACCOUNT_FILE_EXISTED_ID), any(AccountDto.AccountUpdateDto.class), eq(null)))
 				.willReturn(accountUpdatedWithoutUploadAlreadyHasUploadFileResultDto);
 
 		mockMvc.perform(
@@ -874,7 +864,7 @@ class AccountApiControllerTest {
 	void updateWithUploadFileBeforeNotHasUploadFile() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
 		given(uploadFileService.upload(any(MultipartFile.class))).willReturn(updatedUploadFile);
-		given(accountService.updateAccount(eq(ACCOUNT_ID), any(AccountUpdateDto.class), any(UploadFile.class)))
+		given(accountService.updateAccount(eq(ACCOUNT_ID), any(AccountDto.AccountUpdateDto.class), any(UploadFile.class)))
 				.willReturn(accountUpdatedWithUploadBeforeNotHasUploadFileResultDto);
 
 		mockMvc.perform(
@@ -927,7 +917,7 @@ class AccountApiControllerTest {
 	@Test
 	void updateWithoutUploadFileBeforeNotHasUploadFile() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
-		given(accountService.updateAccount(eq(ACCOUNT_ID), any(AccountUpdateDto.class), eq(null)))
+		given(accountService.updateAccount(eq(ACCOUNT_ID), any(AccountDto.AccountUpdateDto.class), eq(null)))
 				.willReturn(accountUpdatedWithoutUploadBeforeNotHasUploadFileResultDto);
 
 		mockMvc.perform(
@@ -966,7 +956,7 @@ class AccountApiControllerTest {
 	@Test
 	void updateWithNewPassword() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
-		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
+		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountDto.AccountUpdatePasswordDto.class)))
 				.willReturn(accountUpdatedWithNewPasswordResultDto);
 
 		mockMvc.perform(
@@ -1002,7 +992,7 @@ class AccountApiControllerTest {
 	@Test
 	void updateWithInValidPassword() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
-		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
+		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountDto.AccountUpdatePasswordDto.class)))
 				.willThrow(new AccountPasswordBadRequestException());
 
 		mockMvc.perform(
@@ -1032,7 +1022,7 @@ class AccountApiControllerTest {
 	@Test
 	void updateWithNotMatchedNewPassword() throws Exception {
 		SecurityContextHolder.getContext().setAuthentication(accountWithoutUploadFileToken);
-		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountUpdatePasswordDto.class)))
+		given(accountService.updatePassword(eq(ACCOUNT_ID), any(AccountDto.AccountUpdatePasswordDto.class)))
 				.willThrow(new AccountNewPasswordNotMatchedException());
 
 		mockMvc.perform(

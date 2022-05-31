@@ -1,7 +1,7 @@
 package com.example.bookclub.repository.interview;
 
-import com.example.bookclub.dto.InterviewResultDto;
-import com.example.bookclub.dto.QInterviewResultDto;
+import com.example.bookclub.dto.InterviewDto;
+import com.example.bookclub.dto.QInterviewDto_InterviewResultDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.data.domain.Page;
@@ -23,9 +23,9 @@ public class JpaInterviewRepositoryImpl implements InterviewRepositoryCustom {
 	}
 
 	@Override
-	public Page<InterviewResultDto> findAllContainsTileOrContent(String search, Pageable pageable) {
-		List<InterviewResultDto> content = queryFactory
-				.select(new QInterviewResultDto(
+	public Page<InterviewDto.InterviewResultDto> findAllContainsTileOrContent(String search, Pageable pageable) {
+		List<InterviewDto.InterviewResultDto> content = queryFactory
+				.select(new QInterviewDto_InterviewResultDto(
 						interview.interviewUrl,
 						interview.imgUrl,
 						interview.author,
@@ -51,9 +51,9 @@ public class JpaInterviewRepositoryImpl implements InterviewRepositoryCustom {
 	}
 
 	@Override
-	public Page<InterviewResultDto> findAll(Pageable pageable) {
-		List<InterviewResultDto> content = queryFactory
-				.select(new QInterviewResultDto(
+	public Page<InterviewDto.InterviewResultDto> findAll(Pageable pageable) {
+		List<InterviewDto.InterviewResultDto> content = queryFactory
+				.select(new QInterviewDto_InterviewResultDto(
 						interview.interviewUrl,
 						interview.imgUrl,
 						interview.author,

@@ -2,7 +2,7 @@ package com.example.bookclub.controller;
 
 import com.example.bookclub.application.InterviewService;
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.dto.InterviewResultDto;
+import com.example.bookclub.dto.InterviewDto;
 import com.example.bookclub.dto.PageResultDto;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.data.domain.Page;
@@ -45,7 +45,7 @@ public class InterviewController {
                                  @RequestParam(defaultValue = "") String search) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        Page<InterviewResultDto> page = null;
+        Page<InterviewDto.InterviewResultDto> page = null;
         if(isEmpty(search)) {
             page = interviewService.getAllInterviews(pageable);
         } else {

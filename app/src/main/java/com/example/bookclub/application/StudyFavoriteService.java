@@ -4,7 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Favorite;
 import com.example.bookclub.domain.FavoriteRepository;
 import com.example.bookclub.domain.Study;
-import com.example.bookclub.dto.StudyFavoriteResultDto;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
 import com.example.bookclub.errors.StudyFavoriteNotExistedException;
 import com.example.bookclub.security.UserAccount;
@@ -35,7 +35,7 @@ public class StudyFavoriteService {
 	 * @return 생성된 스터디 즐겨찾기 식별자
 	 * @throws StudyFavoriteAlreadyExistedException 주어진 스터디 식별자에 해당하는 즐겨찾기가 존재하는 경우
 	 */
-	public StudyFavoriteResultDto favoriteStudy(UserAccount userAccount, Long studyId) {
+	public StudyApiDto.StudyFavoriteResultDto favoriteStudy(UserAccount userAccount, Long studyId) {
 		Long accountId = userAccount.getAccount().getId();
 
 		Account account = accountService.findAccount(accountId);
@@ -54,7 +54,7 @@ public class StudyFavoriteService {
 		favorite.addStudyAndAccount(study, account);
 		Favorite createdFavorite = favoriteRepository.save(favorite);
 
-		return StudyFavoriteResultDto.of(createdFavorite.getId());
+		return StudyApiDto.StudyFavoriteResultDto.of(createdFavorite.getId());
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class StudyFavoriteService {
 	 * @return 삭제된 스터디 즐겨찾기 아이디
 	 * @throws StudyFavoriteNotExistedException 주어진 스터디 식별자에 해당하는 즐겨찾기가 없는 경우
 	 */
-	public StudyFavoriteResultDto unFavoriteStudy(UserAccount userAccount, Long studyId) {
+	public StudyApiDto.StudyFavoriteResultDto unFavoriteStudy(UserAccount userAccount, Long studyId) {
 		Long accountId = userAccount.getAccount().getId();
 
 		Study study = studyService.getStudy(studyId);
@@ -76,6 +76,6 @@ public class StudyFavoriteService {
 
 		favoriteRepository.delete(savedFavorite);
 
-		return StudyFavoriteResultDto.of(savedFavorite.getId());
+		return StudyApiDto.StudyFavoriteResultDto.of(savedFavorite.getId());
 	}
 }

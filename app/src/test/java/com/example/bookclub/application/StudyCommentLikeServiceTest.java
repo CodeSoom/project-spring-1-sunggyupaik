@@ -5,7 +5,7 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentLike;
 import com.example.bookclub.domain.StudyCommentLikeRepository;
-import com.example.bookclub.dto.StudyLikesCommentResultDto;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
@@ -122,7 +122,7 @@ class StudyCommentLikeServiceTest {
 		given(studyCommentLikeRepository.findByStudyCommentAndAccount(eq(setUpStudyComment), eq(account)))
 				.willReturn(Optional.of(createdStudyCommentLike));
 
-		StudyLikesCommentResultDto studyLikesCommentResultDto = studyCommentLikeService.unlikeComment(userAccount, STUDY_COMMENT_EXISTED_ID);
+		StudyApiDto.StudyLikesCommentResultDto studyLikesCommentResultDto = studyCommentLikeService.unlikeComment(userAccount, STUDY_COMMENT_EXISTED_ID);
 
 		assertThat(studyLikesCommentResultDto.getId()).isEqualTo(STUDY_COMMENT_LIKE_CREATE_ID);
 	}

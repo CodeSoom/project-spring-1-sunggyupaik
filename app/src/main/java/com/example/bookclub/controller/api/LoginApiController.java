@@ -3,9 +3,8 @@ package com.example.bookclub.controller.api;
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.application.LoginService;
 import com.example.bookclub.common.CommonResponse;
-import com.example.bookclub.dto.EmailRequestDto;
-import com.example.bookclub.dto.EmailSendResultDto;
-import com.example.bookclub.dto.KakaoLoginRequest;
+import com.example.bookclub.dto.AccountDto;
+import com.example.bookclub.dto.EmailDto;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,23 +34,24 @@ public class LoginApiController {
 	 * @return 생성된 이메일, 인증번호
 	 */
 	@PostMapping("/kakao-login")
-	public CommonResponse<EmailSendResultDto> kakaoLogin(
-			@RequestBody KakaoLoginRequest kakaoLoginRequest
+	public CommonResponse<EmailDto.EmailSendResultDto> kakaoLogin(
+			@RequestBody AccountDto.KakaoLoginRequest kakaoLoginRequest
 	) {
 		if(loginService.checkAlreadyExistedEmail(kakaoLoginRequest)) {
 			UsernamePasswordAuthenticationToken authenticationToken
 					= loginService.makeKakaoAuthenticationToken(kakaoLoginRequest);
 			SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-			EmailSendResultDto response = EmailSendResultDto.of(kakaoLoginRequest.getEmail(), null);
+			EmailDto.EmailSendResultDto response =
+					EmailDto.EmailSendResultDto.of(kakaoLoginRequest.getEmail(), null);
 			return CommonResponse.success(response);
 		}
 
-		EmailRequestDto emailRequestDto = EmailRequestDto.builder()
+		EmailDto.EmailRequestDto emailRequestDto = EmailDto.EmailRequestDto.builder()
 				.email(kakaoLoginRequest.getEmail())
 				.build();
 
-		EmailSendResultDto response = emailService.saveAuthenticationNumber(emailRequestDto);
+		EmailDto.EmailSendResultDto response = emailService.saveAuthenticationNumber(emailRequestDto);
 		return CommonResponse.success(response);
 	}
 }

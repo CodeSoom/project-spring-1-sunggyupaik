@@ -8,12 +8,8 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.PageResultDto;
-import com.example.bookclub.dto.StudyCreateInfoDto;
-import com.example.bookclub.dto.StudyDetailResultDto;
-import com.example.bookclub.dto.StudyInfoResultDto;
-import com.example.bookclub.dto.StudyListInfoDto;
-import com.example.bookclub.dto.StudyResultDto;
-import com.example.bookclub.dto.StudyUpdateInfoDto;
+import com.example.bookclub.dto.StudyApiDto;
+import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,7 +53,7 @@ public class StudyController {
                               @PathVariable Long id, Model model) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        StudyDetailResultDto detailedStudy = studyService.getDetailedStudy(userAccount, id);
+        StudyApiDto.StudyDetailResultDto detailedStudy = studyService.getDetailedStudy(userAccount, id);
         model.addAttribute("detailedStudy", detailedStudy);
 
         Study study = studyService.getStudy(id);
@@ -84,7 +80,7 @@ public class StudyController {
                             Model model) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        StudyCreateInfoDto studyCreateInfoDto = StudyCreateInfoDto.of(
+        StudyDto.StudyCreateInfoDto studyCreateInfoDto = StudyDto.StudyCreateInfoDto.of(
                 bookName, bookImage, Day.getAllDays(), StudyState.getAllStudyStates(), Zone.getAllZones()
         );
 
@@ -110,7 +106,7 @@ public class StudyController {
 
         Study study = studyService.getStudy(id);
 
-        StudyUpdateInfoDto studyUpdateInfoDto = StudyUpdateInfoDto.of(study);
+        StudyDto.StudyUpdateInfoDto studyUpdateInfoDto = StudyDto.StudyUpdateInfoDto.of(study);
         model.addAttribute("StudyUpdateInfoDto", studyUpdateInfoDto);
 
         return "studies/studies-update";
@@ -183,7 +179,7 @@ public class StudyController {
                                      @PathVariable Long id, Model model) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        StudyInfoResultDto studyInfo = studyService.getStudyInfo(id);
+        StudyDto.StudyInfoResultDto studyInfo = studyService.getStudyInfo(id);
         model.addAttribute("StudyInfoResultDto", studyInfo);
 
         return "studies/studies-users-list";
@@ -201,8 +197,9 @@ public class StudyController {
      */
     private String getStudyList(Account account, Pageable pageable,
                                 Model model, String title, StudyState studyState) {
-        Page<StudyResultDto> studyResultDto = studyService.getStudiesBySearch(title, studyState, account.getId(), pageable);
-        StudyListInfoDto studyListInfoDto = StudyListInfoDto.of(studyResultDto, studyState, title);
+        Page<StudyApiDto.StudyResultDto> studyResultDto =
+                studyService.getStudiesBySearch(title, studyState, account.getId(), pageable);
+        StudyDto.StudyListInfoDto studyListInfoDto = StudyDto.StudyListInfoDto.of(studyResultDto, studyState, title);
 
         model.addAttribute("StudyListInfoDto", studyListInfoDto);
         model.addAttribute("page", PageResultDto.of(studyResultDto));

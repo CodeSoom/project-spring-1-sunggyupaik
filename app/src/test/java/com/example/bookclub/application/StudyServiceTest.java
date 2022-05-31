@@ -8,10 +8,7 @@ import com.example.bookclub.domain.RoleRepository;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
-import com.example.bookclub.dto.StudyApplyResultDto;
-import com.example.bookclub.dto.StudyCreateDto;
-import com.example.bookclub.dto.StudyResultDto;
-import com.example.bookclub.dto.StudyUpdateDto;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
@@ -138,16 +135,16 @@ public class StudyServiceTest {
     private Study bookNamePythonStudyTwo;
 	private Study closedStudy;
 
-    private StudyCreateDto studyCreateDto;
-    private StudyCreateDto studyStartDateInThePastCreateDto;
-    private StudyCreateDto studyStartDateTodayCreateDto;
-    private StudyCreateDto endDateIsBeforeStartDateCreateDto;
-    private StudyCreateDto endTimeIsBeforeStartTimeCreateDto;
-    private StudyUpdateDto studyUpdateDto;
-	private StudyUpdateDto studyStartDateInThePastUpdateDto;
-	private StudyUpdateDto studyStartDateTodayUpdateDto;
-	private StudyUpdateDto endDateIsBeforeStartDateUpdateDto;
-	private StudyUpdateDto endTimeIsBeforeStartTimeUpdateDto;
+    private StudyApiDto.StudyCreateDto studyCreateDto;
+    private StudyApiDto.StudyCreateDto studyStartDateInThePastCreateDto;
+    private StudyApiDto.StudyCreateDto studyStartDateTodayCreateDto;
+    private StudyApiDto.StudyCreateDto endDateIsBeforeStartDateCreateDto;
+    private StudyApiDto.StudyCreateDto endTimeIsBeforeStartTimeCreateDto;
+    private StudyApiDto.StudyUpdateDto studyUpdateDto;
+	private StudyApiDto.StudyUpdateDto studyStartDateInThePastUpdateDto;
+	private StudyApiDto.StudyUpdateDto studyStartDateTodayUpdateDto;
+	private StudyApiDto.StudyUpdateDto endDateIsBeforeStartDateUpdateDto;
+	private StudyApiDto.StudyUpdateDto endTimeIsBeforeStartTimeUpdateDto;
 
     private List<Study> listAllStudies;
     private List<Study> listOpenedStudies;
@@ -334,7 +331,7 @@ public class StudyServiceTest {
                 .bookName(BOOK_NAME_PYTHON_TWO)
                 .build();
 
-        studyCreateDto = StudyCreateDto.builder()
+        studyCreateDto = StudyApiDto.StudyCreateDto.builder()
                 .name(STUDY_CREATED_NAME)
                 .bookName(STUDY_CREATED_BOOK_NAME)
                 .bookImage(STUDY_CREATED_BOOK_IMAGE)
@@ -349,20 +346,20 @@ public class StudyServiceTest {
                 .zone(STUDY_CREATED_ZONE)
                 .build();
 
-        studyStartDateInThePastCreateDto = StudyCreateDto.builder()
+        studyStartDateInThePastCreateDto = StudyApiDto.StudyCreateDto.builder()
                 .startDate(STUDY_PAST_START_DATE)
                 .build();
 
-        studyStartDateTodayCreateDto = StudyCreateDto.builder()
+        studyStartDateTodayCreateDto = StudyApiDto.StudyCreateDto.builder()
                 .startDate(STUDY_TODAY_START_DATE)
                 .build();
 
-        endDateIsBeforeStartDateCreateDto = StudyCreateDto.builder()
+        endDateIsBeforeStartDateCreateDto = StudyApiDto.StudyCreateDto.builder()
                 .startDate(STUDY_LATE_START_DATE)
                 .endDate(STUDY_EARLY_END_DATE)
                 .build();
 
-        endTimeIsBeforeStartTimeCreateDto = StudyCreateDto.builder()
+        endTimeIsBeforeStartTimeCreateDto = StudyApiDto.StudyCreateDto.builder()
                 .startDate(STUDY_CREATED_START_DATE)
                 .endDate(STUDY_CREATED_END_DATE)
                 .startTime(STUDY_LATE_START_TIME)
@@ -370,7 +367,7 @@ public class StudyServiceTest {
                 .build();
 
         //CREATED 변수들이 SETUP 변수들로 수정되었다고 가정할 것
-        studyUpdateDto = StudyUpdateDto.builder()
+        studyUpdateDto = StudyApiDto.StudyUpdateDto.builder()
                 .name(STUDY_SETUP_NAME)
                 .description(STUDY_SETUP_DESCRIPTION)
                 .contact(STUDY_SETUP_CONTACT)
@@ -384,20 +381,20 @@ public class StudyServiceTest {
                 .zone(STUDY_SETUP_ZONE)
                 .build();
 
-		studyStartDateInThePastUpdateDto = StudyUpdateDto.builder()
+		studyStartDateInThePastUpdateDto = StudyApiDto.StudyUpdateDto.builder()
 				.startDate(STUDY_PAST_START_DATE)
 				.build();
 
-		studyStartDateTodayUpdateDto = StudyUpdateDto.builder()
+		studyStartDateTodayUpdateDto = StudyApiDto.StudyUpdateDto.builder()
 				.startDate(STUDY_TODAY_START_DATE)
 				.build();
 
-		endDateIsBeforeStartDateUpdateDto = StudyUpdateDto.builder()
+		endDateIsBeforeStartDateUpdateDto = StudyApiDto.StudyUpdateDto.builder()
 				.startDate(STUDY_LATE_START_DATE)
 				.endDate(STUDY_EARLY_END_DATE)
 				.build();
 
-		endTimeIsBeforeStartTimeUpdateDto = StudyUpdateDto.builder()
+		endTimeIsBeforeStartTimeUpdateDto = StudyApiDto.StudyUpdateDto.builder()
 				.startDate(STUDY_CREATED_START_DATE)
 				.endDate(STUDY_CREATED_END_DATE)
 				.startTime(STUDY_LATE_START_TIME)
@@ -476,7 +473,7 @@ public class StudyServiceTest {
 				.willReturn(Optional.of(accountCreatedWithoutStudy));
 		given(studyRepository.save(any(Study.class))).willReturn(createdStudy);
 
-        StudyResultDto studyResultDto = studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyCreateDto);
+		StudyApiDto.StudyResultDto studyResultDto = studyService.createStudy(ACCOUNT_CREATED_STUDY_EMAIL, studyCreateDto);
 
 		assertThat(studyResultDto.getId()).isEqualTo(STUDY_CREATED_ID);
         assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
@@ -543,7 +540,7 @@ public class StudyServiceTest {
 		given(accountRepository.findByEmail(ACCOUNT_CREATED_STUDY_EMAIL))
 				.willReturn(Optional.of(managerOfCreatedStudy));
 
-        StudyResultDto studyResultDto = studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_CREATED_ID, studyUpdateDto);
+		StudyApiDto.StudyResultDto studyResultDto = studyService.updateStudy(ACCOUNT_CREATED_STUDY_EMAIL, STUDY_CREATED_ID, studyUpdateDto);
         assertThat(studyResultDto.getEmail()).isEqualTo(managerOfCreatedStudy.getEmail());
         assertThat(studyResultDto.getName()).isEqualTo(studyUpdateDto.getName());
         assertThat(studyResultDto.getDescription()).isEqualTo(studyUpdateDto.getDescription());
@@ -628,7 +625,7 @@ public class StudyServiceTest {
 
         assertThat(managerOfSetUpStudy.getEmail()).isEqualTo(setUpStudy.getEmail());
 
-        StudyResultDto studyResultDto = studyService.deleteStudy(ACCOUNT_SETUP_MANAGER_EMAIL, STUDY_SETUP_ID);
+		StudyApiDto.StudyResultDto studyResultDto = studyService.deleteStudy(ACCOUNT_SETUP_MANAGER_EMAIL, STUDY_SETUP_ID);
 
         assertThat(studyResultDto.getId()).isEqualTo(setUpStudy.getId());
 
@@ -697,7 +694,8 @@ public class StudyServiceTest {
 
         Study study = studyService.getStudy(STUDY_SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
-		StudyApplyResultDto studyApplyResultDto = studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
+		StudyApiDto.StudyApplyResultDto studyApplyResultDto =
+				studyService.cancelStudy(userAccountApplierOneOfSetUpStudy, STUDY_SETUP_ID);
         int afterApplyCount = study.getApplyCount();
 
         assertThat(beforeApplyCount).isEqualTo(afterApplyCount + 1);

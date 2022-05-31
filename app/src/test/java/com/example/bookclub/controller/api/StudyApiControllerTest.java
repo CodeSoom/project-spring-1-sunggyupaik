@@ -12,16 +12,8 @@ import com.example.bookclub.domain.Day;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
-import com.example.bookclub.dto.StudyApplyResultDto;
-import com.example.bookclub.dto.StudyCommentCreateDto;
-import com.example.bookclub.dto.StudyCommentResultDto;
-import com.example.bookclub.dto.StudyCreateDto;
-import com.example.bookclub.dto.StudyFavoriteResultDto;
-import com.example.bookclub.dto.StudyLikeResultDto;
-import com.example.bookclub.dto.StudyLikesCommentResultDto;
-import com.example.bookclub.dto.StudyResultDto;
-import com.example.bookclub.dto.StudyUpdateDto;
-import com.example.bookclub.dto.UploadFileResultDto;
+import com.example.bookclub.dto.StudyApiDto;
+import com.example.bookclub.dto.UploadFileDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
 import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
@@ -226,29 +218,29 @@ class StudyApiControllerTest {
     private Study fullSizeStudy;
     private Study closedStudy;
 
-    private StudyCreateDto studyCreateDto;
-    private StudyCreateDto studyStartDateIsPastCreateDto;
-    private StudyCreateDto studyStartDateIsAfterEndDateCreateDto;
-    private StudyCreateDto studyStartTimeIsAfterEndTimeCreateDto;
-    private StudyCreateDto studyAlreadyInOpenOrCloseCreateDto;
+    private StudyApiDto.StudyCreateDto studyCreateDto;
+    private StudyApiDto.StudyCreateDto studyStartDateIsPastCreateDto;
+    private StudyApiDto.StudyCreateDto studyStartDateIsAfterEndDateCreateDto;
+    private StudyApiDto.StudyCreateDto studyStartTimeIsAfterEndTimeCreateDto;
+    private StudyApiDto.StudyCreateDto studyAlreadyInOpenOrCloseCreateDto;
 
-    private StudyUpdateDto studyUpdateDto;
-    private StudyUpdateDto studyStartDateIsPastUpdateDto;
-    private StudyUpdateDto studyStartDateIsAfterEndDateUpdateDto;
+    private StudyApiDto.StudyUpdateDto studyUpdateDto;
+    private StudyApiDto.StudyUpdateDto studyStartDateIsPastUpdateDto;
+    private StudyApiDto.StudyUpdateDto studyStartDateIsAfterEndDateUpdateDto;
 
-    private StudyResultDto studyResultDto;
-    private StudyResultDto updatedStudyResultDto;
+    private StudyApiDto.StudyResultDto studyResultDto;
+    private StudyApiDto.StudyResultDto updatedStudyResultDto;
 
-    private StudyCommentCreateDto studyCommentCreateDto;
-    private StudyCommentCreateDto studyCommentCreateWithoutContentDto;
-    private StudyCommentResultDto studyCommentResultDto;
+    private StudyApiDto.StudyCommentCreateDto studyCommentCreateDto;
+    private StudyApiDto.StudyCommentCreateDto studyCommentCreateWithoutContentDto;
+    private StudyApiDto.StudyCommentResultDto studyCommentResultDto;
 
-    private StudyApplyResultDto studyApplyResultDto;
-    private StudyLikeResultDto studyLikeResultDto;
-    private StudyLikesCommentResultDto studyLikesCommentResultDto;
-    private StudyFavoriteResultDto studyFavoriteResultDto;
+    private StudyApiDto.StudyApplyResultDto studyApplyResultDto;
+    private StudyApiDto.StudyLikeResultDto studyLikeResultDto;
+    private StudyApiDto.StudyLikesCommentResultDto studyLikesCommentResultDto;
+    private StudyApiDto.StudyFavoriteResultDto studyFavoriteResultDto;
 
-    private UploadFileResultDto uploadFileResultDto;
+    private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
     private List<Study> list;
 
@@ -357,7 +349,7 @@ class StudyApiControllerTest {
                 accountWithClosedStudy.getPassword(),
                 List.of(new SimpleGrantedAuthority("USER")));
 
-        studyCreateDto = StudyCreateDto.builder()
+        studyCreateDto = StudyApiDto.StudyCreateDto.builder()
                 .name(STUDY_SETUP_NAME)
                 .email(STUDY_SETUP_EMAIL)
                 .description(STUDY_SETUP_DESCRIPTION)
@@ -371,22 +363,22 @@ class StudyApiControllerTest {
                 .zone(STUDY_SETUP_ZONE)
                 .build();
 
-        studyStartDateIsPastCreateDto = StudyCreateDto.builder()
+        studyStartDateIsPastCreateDto = StudyApiDto.StudyCreateDto.builder()
                 .startDate(CREATE_START_DATE_PAST)
                 .endDate(STUDY_SETUP_END_DATE)
                 .build();
 
-        studyStartDateIsAfterEndDateCreateDto = StudyCreateDto.builder()
+        studyStartDateIsAfterEndDateCreateDto = StudyApiDto.StudyCreateDto.builder()
                 .startDate(STUDY_SETUP_END_DATE)
                 .endDate(STUDY_SETUP_START_DATE)
                 .build();
 
-        studyStartTimeIsAfterEndTimeCreateDto = StudyCreateDto.builder()
+        studyStartTimeIsAfterEndTimeCreateDto = StudyApiDto.StudyCreateDto.builder()
                 .startTime(STUDY_SETUP_END_TIME)
                 .endTime(STUDY_SETUP_START_TIME)
                 .build();
 
-        studyUpdateDto = StudyUpdateDto.builder()
+        studyUpdateDto = StudyApiDto.StudyUpdateDto.builder()
                 .name(STUDY_UPDATE_NAME)
                 .description(STUDY_UPDATE_DESCRIPTION)
                 .contact(STUDY_UPDATE_CONTACT)
@@ -399,30 +391,30 @@ class StudyApiControllerTest {
                 .zone(STUDY_UPDATE_ZONE)
                 .build();
 
-        studyStartDateIsPastUpdateDto = StudyUpdateDto.builder()
+        studyStartDateIsPastUpdateDto = StudyApiDto.StudyUpdateDto.builder()
                 .startDate(CREATE_START_DATE_PAST)
                 .endDate(STUDY_SETUP_END_DATE)
                 .build();
 
-        studyStartDateIsAfterEndDateUpdateDto = StudyUpdateDto.builder()
+        studyStartDateIsAfterEndDateUpdateDto = StudyApiDto.StudyUpdateDto.builder()
                 .startDate(STUDY_SETUP_END_DATE)
                 .endDate(STUDY_SETUP_START_DATE)
                 .build();
 
-        studyResultDto = StudyResultDto.of(setUpStudy);
-        updatedStudyResultDto = StudyResultDto.of(updatedStudy);
+        studyResultDto = StudyApiDto.StudyResultDto.of(setUpStudy);
+        updatedStudyResultDto = StudyApiDto.StudyResultDto.of(updatedStudy);
 
         list = List.of(setUpStudy, updatedStudy);
 
-        studyCommentCreateDto = StudyCommentCreateDto.builder()
+        studyCommentCreateDto = StudyApiDto.StudyCommentCreateDto.builder()
                 .content(STUDY_COMMENT_CONTENT)
                 .build();
 
-        studyCommentCreateWithoutContentDto = StudyCommentCreateDto.builder()
+        studyCommentCreateWithoutContentDto = StudyApiDto.StudyCommentCreateDto.builder()
                 .content("")
                 .build();
 
-        studyCommentResultDto = StudyCommentResultDto.builder()
+        studyCommentResultDto = StudyApiDto.StudyCommentResultDto.builder()
                 .id(STUDY_COMMENT_EXISTED_ID)
                 .content(STUDY_COMMENT_CONTENT)
                 .studyId(STUDY_SETUP_EXISTED_ID)
@@ -434,23 +426,23 @@ class StudyApiControllerTest {
                 .updatedDate(STUDY_UPDATED_DATE)
                 .build();
 
-        studyApplyResultDto = StudyApplyResultDto.builder()
+        studyApplyResultDto = StudyApiDto.StudyApplyResultDto.builder()
                 .id(STUDY_SETUP_EXISTED_ID)
                 .build();
 
-        studyLikeResultDto = StudyLikeResultDto.builder()
+        studyLikeResultDto = StudyApiDto.StudyLikeResultDto.builder()
                 .id(STUDY_LIKE_CREATE_ID)
                 .build();
 
-        studyLikesCommentResultDto = StudyLikesCommentResultDto.builder()
+        studyLikesCommentResultDto = StudyApiDto.StudyLikesCommentResultDto.builder()
                 .id(STUDY_COMMENT_EXISTED_ID)
                 .build();
 
-        studyFavoriteResultDto = StudyFavoriteResultDto.builder()
+        studyFavoriteResultDto = StudyApiDto.StudyFavoriteResultDto.builder()
                 .id(STUDY_FAVORITE_CREATE_ID)
                 .build();
 
-        uploadFileResultDto = UploadFileResultDto.builder()
+        uploadFileResultDto = UploadFileDto.UploadFileResultDto.builder()
                 .id(FILE_CREATED_ID)
                 .fileName(FILE_CREATED_NAME)
                 .fileOriginalName(FILE_CREATED_ORIGINAL_NAME)
@@ -572,7 +564,7 @@ class StudyApiControllerTest {
     @Test
     void createWithValidateAttribute() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyApiDto.StudyCreateDto.class)))
                 .willReturn(studyResultDto);
 
         this.mockMvc.perform(
@@ -634,7 +626,7 @@ class StudyApiControllerTest {
     @Test
     void createWithStartDateIsTodayOrBeforeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyApiDto.StudyCreateDto.class)))
                 .willThrow(new StudyStartDateInThePastException());
 
         mockMvc.perform(
@@ -675,7 +667,7 @@ class StudyApiControllerTest {
     @Test
     void createWithStartDateIsAfterEndDateInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyApiDto.StudyCreateDto.class)))
                 .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
@@ -716,7 +708,7 @@ class StudyApiControllerTest {
     @Test
     void createWithStartTimeIsAfterTimeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyApiDto.StudyCreateDto.class)))
                 .willThrow(new StudyStartAndEndTimeNotValidException());
 
         mockMvc.perform(
@@ -757,7 +749,7 @@ class StudyApiControllerTest {
     @Test
     void createWithAccountAlreadyInStudyOpenOrClose() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_SECOND_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_SECOND_EMAIL), any(StudyApiDto.StudyCreateDto.class)))
                 .willThrow(new StudyAlreadyInOpenOrCloseException());
 
         mockMvc.perform(
@@ -798,7 +790,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithValidateAttribute() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyApiDto.StudyUpdateDto.class))
+        )
                 .willReturn(updatedStudyResultDto);
 
         this.mockMvc.perform(
@@ -858,7 +852,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithNotManager() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyApiDto.StudyUpdateDto.class))
+        )
                 .willThrow(new AccountNotManagerOfStudyException());
 
         mockMvc.perform(
@@ -897,7 +893,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithStartDateInPastInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyApiDto.StudyUpdateDto.class))
+        )
                 .willThrow(new StudyStartDateInThePastException());
 
         mockMvc.perform(
@@ -936,7 +934,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithStartDateIsAfterEndDateInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyApiDto.StudyUpdateDto.class))
+        )
                 .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
@@ -975,7 +975,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithStartTimeIsAfterEndTimeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyApiDto.StudyUpdateDto.class))
+        )
                 .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
@@ -1448,7 +1450,7 @@ class StudyApiControllerTest {
     void createStudyComment() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentService.createStudyComment(any(UserAccount.class),
-                eq(STUDY_SETUP_EXISTED_ID), any(StudyCommentCreateDto.class)))
+                eq(STUDY_SETUP_EXISTED_ID), any(StudyApiDto.StudyCommentCreateDto.class)))
                 .willReturn(studyCommentResultDto);
 
         mockMvc.perform(
@@ -1486,7 +1488,7 @@ class StudyApiControllerTest {
     void createStudyCommentWithoutContent() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
         given(studyCommentService.createStudyComment(any(UserAccount.class),
-                eq(STUDY_SETUP_EXISTED_ID), any(StudyCommentCreateDto.class)))
+                eq(STUDY_SETUP_EXISTED_ID), any(StudyApiDto.StudyCommentCreateDto.class)))
                 .willThrow(new StudyCommentContentNotExistedException());
 
         mockMvc.perform(

@@ -1,7 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.dto.KakaoLoginRequest;
+import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.errors.AccountEmailNotFoundException;
 import com.example.bookclub.repository.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
@@ -28,8 +28,8 @@ class LoginServiceTest {
 	private UserAccount userAccount;
 	private Account account;
 	private UsernamePasswordAuthenticationToken accountToken;
-	private KakaoLoginRequest kakaoLoginRequest;
-	private KakaoLoginRequest kakaoLoginNotExistedEmailRequest;
+	private AccountDto.KakaoLoginRequest kakaoLoginRequest;
+	private AccountDto.KakaoLoginRequest kakaoLoginNotExistedEmailRequest;
 
 	@BeforeEach
 	void setUp() {
@@ -51,11 +51,11 @@ class LoginServiceTest {
 				account.getPassword(),
 				List.of(new SimpleGrantedAuthority("KAKAO-USER")));
 
-		kakaoLoginRequest = KakaoLoginRequest.builder()
+		kakaoLoginRequest = AccountDto.KakaoLoginRequest.builder()
 				.email(ACCOUNT_EXISTED_EMAIL)
 				.build();
 
-		kakaoLoginNotExistedEmailRequest = KakaoLoginRequest.builder()
+		kakaoLoginNotExistedEmailRequest = AccountDto.KakaoLoginRequest.builder()
 				.email(ACCOUNT_NOT_EXISTED_EMAIL)
 				.build();
 	}

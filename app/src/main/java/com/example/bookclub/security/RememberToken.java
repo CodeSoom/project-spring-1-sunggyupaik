@@ -1,4 +1,4 @@
-package com.example.bookclub.dto;
+package com.example.bookclub.security;
 
 import lombok.AccessLevel;
 import lombok.Builder;

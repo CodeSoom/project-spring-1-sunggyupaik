@@ -2,8 +2,7 @@ package com.example.bookclub.application;
 
 import com.example.bookclub.domain.EmailAuthentication;
 import com.example.bookclub.domain.EmailAuthenticationRepository;
-import com.example.bookclub.dto.EmailRequestDto;
-import com.example.bookclub.dto.EmailSendResultDto;
+import com.example.bookclub.dto.EmailDto;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.MessageCreateBadRequestException;
 import org.springframework.mail.MailException;
@@ -36,7 +35,7 @@ public class EmailService {
      * @return 인증번호를 전송한 이메일
      * @throws EmailBadRequestException 메일 전송 요청이 잘못된 경우
      */
-    public EmailSendResultDto sendAuthenticationNumber(EmailRequestDto emailRequestDto) {
+    public EmailDto.EmailSendResultDto sendAuthenticationNumber(EmailDto.EmailRequestDto emailRequestDto) {
         String authenticationNumber = createAuthenticationNumber();
         String email = emailRequestDto.getEmail();
         MimeMessage message = null;
@@ -56,7 +55,7 @@ public class EmailService {
                         .build()
         );
 
-        return EmailSendResultDto.of(email, authenticationNumber);
+        return EmailDto.EmailSendResultDto.of(email, authenticationNumber);
     }
 
     /**
@@ -83,7 +82,7 @@ public class EmailService {
         return message;
     }
 
-    public EmailSendResultDto saveAuthenticationNumber(EmailRequestDto emailRequestDto) {
+    public EmailDto.EmailSendResultDto saveAuthenticationNumber(EmailDto.EmailRequestDto emailRequestDto) {
         String authenticationNumber = createAuthenticationNumber();
         String email = emailRequestDto.getEmail();
         System.out.println(authenticationNumber+"=authenticationNumber");
@@ -95,7 +94,7 @@ public class EmailService {
                         .build()
         );
 
-        return EmailSendResultDto.of(email, authenticationNumber);
+        return EmailDto.EmailSendResultDto.of(email, authenticationNumber);
     }
 
     /**

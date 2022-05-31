@@ -2,8 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.AccountAuthenticationService;
 import com.example.bookclub.application.EmailService;
-import com.example.bookclub.dto.EmailRequestDto;
-import com.example.bookclub.dto.EmailSendResultDto;
+import com.example.bookclub.dto.EmailDto;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
@@ -76,9 +75,9 @@ class EmailApiControllerTest {
     @MockBean
     private EmailService emailService;
 
-    EmailRequestDto emailRequestDto;
-    EmailRequestDto emailBadRequestDto;
-    EmailSendResultDto emailSendResultDto;
+    EmailDto.EmailRequestDto emailRequestDto;
+    EmailDto.EmailRequestDto emailBadRequestDto;
+    EmailDto.EmailSendResultDto emailSendResultDto;
 
     @BeforeEach
     void setup(RestDocumentationContextProvider restDocumentationContextProvider) {
@@ -88,22 +87,22 @@ class EmailApiControllerTest {
                 .alwaysDo(print())
                 .build();
 
-        emailRequestDto = EmailRequestDto.builder()
+        emailRequestDto = EmailDto.EmailRequestDto.builder()
                 .email(VALID_EMAIL)
                 .build();
 
-        emailBadRequestDto = EmailRequestDto.builder()
+        emailBadRequestDto = EmailDto.EmailRequestDto.builder()
                 .email(INVALID_EMAIL)
                 .build();
 
-        emailSendResultDto = EmailSendResultDto.builder()
+        emailSendResultDto = EmailDto.EmailSendResultDto.builder()
                 .email(VALID_EMAIL)
                 .build();
     }
 
     @Test
     void sendAuthenticationNumberWithValidEmail() throws Exception {
-        given(emailService.sendAuthenticationNumber(any(EmailRequestDto.class))).willReturn(emailSendResultDto);
+        given(emailService.sendAuthenticationNumber(any(EmailDto.EmailRequestDto.class))).willReturn(emailSendResultDto);
 
         this.mockMvc.perform(
                         RestDocumentationRequestBuilders.post("/api/email/authentication")
@@ -128,7 +127,7 @@ class EmailApiControllerTest {
 
     @Test
     void sendAuthenticationNumberWithInValidEmail() throws Exception {
-        given(emailService.sendAuthenticationNumber(any(EmailRequestDto.class)))
+        given(emailService.sendAuthenticationNumber(any(EmailDto.EmailRequestDto.class)))
                 .willThrow(new EmailBadRequestException(INVALID_EMAIL));
 
         mockMvc.perform(
