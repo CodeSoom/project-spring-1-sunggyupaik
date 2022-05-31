@@ -36,25 +36,41 @@ import com.example.bookclub.errors.study.studylike.StudyLikeAlreadyExistedExcept
 import com.example.bookclub.errors.study.studylike.StudyLikeNotExistedException;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
+import org.springframework.core.NestedExceptionUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.util.Objects;
 
 @Slf4j
 @RestControllerAdvice
 public class ControllerErrorAdvice {
-    @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
     public CommonResponse onException(Exception e) {
         String eventId = MDC.get(CommonHttpRequestInterceptor.HEADER_REQUEST_UUID_KEY);
         log.error("eventId = {} ", eventId, e);
         return CommonResponse.fail(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public CommonResponse methodArgumentNotValidException(MethodArgumentNotValidException e) {
+        String eventId = MDC.get(CommonHttpRequestInterceptor.HEADER_REQUEST_UUID_KEY);
+        log.warn("[BaseException] eventId = {}, errorMsg = {}",
+                eventId, NestedExceptionUtils.getMostSpecificCause(e).getMessage());
+        BindingResult bindingResult = e.getBindingResult();
+        FieldError fe = bindingResult.getFieldError();
+        if (fe != null) {
+            String message = "Request Error" + " " + fe.getField() + "="
+                    + fe.getRejectedValue() + " (" + fe.getDefaultMessage() + ")";
+            return CommonResponse.fail(message, HttpStatus.BAD_REQUEST.value());
+        } else {
+            return CommonResponse.fail("요청한 값이 올바르지 않습니다", HttpStatus.BAD_REQUEST.value());
+        }
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -163,21 +179,6 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(StudyNotFoundException.class)
     public CommonResponse handleStudyNotFound(StudyNotFoundException e) {
         return CommonResponse.fail(e.getMessage(), HttpStatus.NOT_FOUND.value());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse handleProductMethodArgumentNotValid(MethodArgumentNotValidException e) {
-        String field = Objects.requireNonNull(e.getBindingResult()
-                .getFieldError())
-                .getField();
-
-        String message = e.getBindingResult()
-                .getAllErrors()
-                .get(0)
-                .getDefaultMessage();
-
-        return CommonResponse.fail(field + ": " + message, HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
