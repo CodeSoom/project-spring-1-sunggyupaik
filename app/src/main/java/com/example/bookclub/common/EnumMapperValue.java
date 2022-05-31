@@ -1,4 +1,4 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.common;
 
 public class EnumMapperValue {
     private String code;

@@ -1,13 +1,13 @@
 package com.example.bookclub.application;
 
 import com.amazonaws.services.s3.AmazonS3;
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Day;
-import com.example.bookclub.domain.EmailAuthenticationRepository;
-import com.example.bookclub.domain.RoleRepository;
-import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyState;
-import com.example.bookclub.domain.Zone;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Day;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;
+import com.example.bookclub.domain.account.role.RoleRepository;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.StudyState;
+import com.example.bookclub.domain.study.Zone;
 import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;

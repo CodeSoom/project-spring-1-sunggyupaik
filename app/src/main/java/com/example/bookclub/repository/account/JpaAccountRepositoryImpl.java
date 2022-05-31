@@ -1,6 +1,6 @@
 package com.example.bookclub.repository.account;
 
-import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.QFavorite;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;

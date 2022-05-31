@@ -1,7 +1,7 @@
 package com.example.bookclub.repository;
 
-import com.example.bookclub.domain.StudyComment;
-import com.example.bookclub.domain.StudyCommentRepository;
+import com.example.bookclub.domain.study.studycomment.StudyComment;
+import com.example.bookclub.domain.study.studycomment.StudyCommentRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

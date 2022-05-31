@@ -1,4 +1,4 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.account.emailauthentication;
 
 import lombok.AccessLevel;
 import lombok.Builder;

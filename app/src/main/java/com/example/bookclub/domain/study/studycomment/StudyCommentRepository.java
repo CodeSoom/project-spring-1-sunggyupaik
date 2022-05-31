@@ -1,4 +1,4 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.study.studycomment;
 
 import java.util.List;
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package com.example.bookclub.repository;
 
-import com.example.bookclub.domain.AccountHistory;
-import com.example.bookclub.domain.AccountHistoryRepository;
+import com.example.bookclub.domain.account.accounthistory.AccountHistory;
+import com.example.bookclub.domain.account.accounthistory.AccountHistoryRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

@@ -1,4 +1,7 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.study;
+
+import com.example.bookclub.common.EnumMapperType;
+import com.example.bookclub.common.EnumMapperValue;
 
 import java.util.Arrays;
 import java.util.List;

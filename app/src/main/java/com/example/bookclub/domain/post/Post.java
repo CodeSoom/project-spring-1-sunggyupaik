@@ -1,4 +1,4 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.post;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

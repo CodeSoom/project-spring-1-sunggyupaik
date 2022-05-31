@@ -1,6 +1,6 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.BookType;
+import com.example.bookclub.domain.study.BookType;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

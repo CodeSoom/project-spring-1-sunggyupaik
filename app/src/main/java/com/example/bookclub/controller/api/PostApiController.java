@@ -2,7 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.PostService;
 import com.example.bookclub.common.CommonResponse;
-import com.example.bookclub.domain.Post;
+import com.example.bookclub.domain.post.Post;
 import com.example.bookclub.utils.Producer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

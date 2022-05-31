@@ -1,6 +1,7 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.account.accounthistory;
 
 import com.example.bookclub.common.BaseTimeEntity;
+import com.example.bookclub.domain.account.Account;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

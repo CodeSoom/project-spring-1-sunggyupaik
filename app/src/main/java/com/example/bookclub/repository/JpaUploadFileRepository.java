@@ -1,7 +1,7 @@
 package com.example.bookclub.repository;
 
-import com.example.bookclub.domain.UploadFile;
-import com.example.bookclub.domain.UploadFileRepository;
+import com.example.bookclub.domain.uplodfile.UploadFile;
+import com.example.bookclub.domain.uplodfile.UploadFileRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

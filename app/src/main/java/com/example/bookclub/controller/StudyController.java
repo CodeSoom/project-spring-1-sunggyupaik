@@ -2,11 +2,11 @@ package com.example.bookclub.controller;
 
 import com.example.bookclub.application.AccountService;
 import com.example.bookclub.application.StudyService;
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Day;
-import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyState;
-import com.example.bookclub.domain.Zone;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Day;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.StudyState;
+import com.example.bookclub.domain.study.Zone;
 import com.example.bookclub.dto.PageResultDto;
 import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.dto.StudyDto;

@@ -1,6 +1,6 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.repository.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;

@@ -1,4 +1,7 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.study.studycommentlike;
+
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.studycomment.StudyComment;
 
 import java.util.Optional;
 

@@ -1,11 +1,11 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.EmailAuthentication;
-import com.example.bookclub.domain.EmailAuthenticationRepository;
-import com.example.bookclub.domain.Role;
-import com.example.bookclub.domain.RoleRepository;
-import com.example.bookclub.domain.UploadFile;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthentication;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;
+import com.example.bookclub.domain.account.role.Role;
+import com.example.bookclub.domain.account.role.RoleRepository;
+import com.example.bookclub.domain.uplodfile.UploadFile;
 import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountEmailNotFoundException;

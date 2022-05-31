@@ -1,6 +1,6 @@
 package com.example.bookclub.repository.post;
 
-import com.example.bookclub.domain.Post;
+import com.example.bookclub.domain.post.Post;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.example.bookclub.repository.account;
 
-import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.account.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

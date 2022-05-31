@@ -1,4 +1,4 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.account.role;
 
 import com.example.bookclub.common.BaseTimeEntity;
 import lombok.AccessLevel;

@@ -1,7 +1,7 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.EmailAuthentication;
-import com.example.bookclub.domain.EmailAuthenticationRepository;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthentication;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;
 import com.example.bookclub.dto.EmailDto;
 import com.example.bookclub.errors.EmailBadRequestException;
 import com.example.bookclub.errors.MessageCreateBadRequestException;

@@ -1,9 +1,9 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyComment;
-import com.example.bookclub.domain.StudyState;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.studycomment.StudyComment;
+import com.example.bookclub.domain.study.StudyState;
 import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;

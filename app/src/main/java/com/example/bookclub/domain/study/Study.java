@@ -1,6 +1,10 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.study;
 
 import com.example.bookclub.common.BaseEntity;
+import com.example.bookclub.domain.study.favorite.Favorite;
+import com.example.bookclub.domain.study.studycomment.StudyComment;
+import com.example.bookclub.domain.study.studylike.StudyLike;
+import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.StudyApiDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.querydsl.core.annotations.QueryProjection;

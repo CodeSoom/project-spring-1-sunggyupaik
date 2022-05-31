@@ -1,4 +1,4 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.uplodfile;
 
 import java.util.Optional;
 

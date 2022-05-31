@@ -1,6 +1,6 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Post;
+import com.example.bookclub.domain.post.Post;
 import com.example.bookclub.repository.post.ElasticPostRepository;
 import org.springframework.stereotype.Service;
 

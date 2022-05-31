@@ -1,7 +1,14 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.account;
 
 import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseTimeEntity;
+import com.example.bookclub.domain.study.favorite.Favorite;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.studycomment.StudyComment;
+import com.example.bookclub.domain.study.studycommentlike.StudyCommentLike;
+import com.example.bookclub.domain.study.studylike.StudyLike;
+import com.example.bookclub.domain.uplodfile.UploadFile;
+import com.example.bookclub.domain.account.accounthistory.AccountHistory;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package com.example.bookclub.repository;
 
-import com.example.bookclub.domain.EmailAuthentication;
-import com.example.bookclub.domain.EmailAuthenticationRepository;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthentication;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;

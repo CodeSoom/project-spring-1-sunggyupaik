@@ -1,6 +1,9 @@
-package com.example.bookclub.domain;
+package com.example.bookclub.domain.study.studycomment;
 
 import com.example.bookclub.common.BaseEntity;
+import com.example.bookclub.domain.study.studycommentlike.StudyCommentLike;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

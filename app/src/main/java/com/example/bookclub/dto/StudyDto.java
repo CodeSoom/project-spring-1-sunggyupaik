@@ -1,10 +1,10 @@
 package com.example.bookclub.dto;
 
-import com.example.bookclub.domain.Day;
-import com.example.bookclub.domain.EnumMapperValue;
-import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyState;
-import com.example.bookclub.domain.Zone;
+import com.example.bookclub.domain.study.Day;
+import com.example.bookclub.common.EnumMapperValue;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.StudyState;
+import com.example.bookclub.domain.study.Zone;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.querydsl.core.annotations.QueryProjection;

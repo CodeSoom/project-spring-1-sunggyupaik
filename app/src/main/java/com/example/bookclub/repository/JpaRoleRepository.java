@@ -1,7 +1,7 @@
 package com.example.bookclub.repository;
 
-import com.example.bookclub.domain.Role;
-import com.example.bookclub.domain.RoleRepository;
+import com.example.bookclub.domain.account.role.Role;
+import com.example.bookclub.domain.account.role.RoleRepository;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

@@ -1,7 +1,7 @@
 package com.example.bookclub.repository.study;
 
-import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyState;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.StudyState;
 import com.example.bookclub.dto.QStudyApiDto_StudyFavoriteDto;
 import com.example.bookclub.dto.QStudyDto_StudyAccountInfoResultDto;
 import com.example.bookclub.dto.QStudyDto_StudyInfoResultDto;

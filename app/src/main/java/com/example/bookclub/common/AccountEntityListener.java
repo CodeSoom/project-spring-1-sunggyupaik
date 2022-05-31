@@ -1,8 +1,8 @@
 package com.example.bookclub.common;
 
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.AccountHistory;
-import com.example.bookclub.domain.AccountHistoryRepository;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.account.accounthistory.AccountHistory;
+import com.example.bookclub.domain.account.accounthistory.AccountHistoryRepository;
 import com.example.bookclub.utils.BeanUtil;
 
 import javax.persistence.PrePersist;

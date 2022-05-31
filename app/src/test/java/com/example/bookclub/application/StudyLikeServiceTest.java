@@ -1,9 +1,9 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyLike;
-import com.example.bookclub.domain.StudyLikeRepository;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.studylike.StudyLike;
+import com.example.bookclub.domain.study.studylike.StudyLikeRepository;
 import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyLikeNotExistedException;

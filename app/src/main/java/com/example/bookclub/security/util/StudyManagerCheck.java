@@ -1,6 +1,6 @@
 package com.example.bookclub.security.util;
 
-import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.account.Account;
 import org.springframework.stereotype.Component;
 
 /**

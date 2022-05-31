@@ -1,8 +1,8 @@
 package com.example.bookclub.controller;
 
 import com.example.bookclub.application.BookService;
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.BookType;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.BookType;
 import com.example.bookclub.security.UserAccount;
 import org.json.simple.JSONArray;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

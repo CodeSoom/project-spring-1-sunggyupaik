@@ -1,6 +1,6 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Interview;
+import com.example.bookclub.domain.interview.Interview;
 import com.example.bookclub.dto.InterviewDto;
 import com.example.bookclub.repository.interview.JpaInterviewRepository;
 import org.jsoup.Connection;

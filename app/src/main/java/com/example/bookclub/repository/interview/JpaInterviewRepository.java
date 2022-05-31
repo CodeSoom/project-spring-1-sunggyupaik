@@ -1,6 +1,6 @@
 package com.example.bookclub.repository.interview;
 
-import com.example.bookclub.domain.Interview;
+import com.example.bookclub.domain.interview.Interview;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.Optional;
