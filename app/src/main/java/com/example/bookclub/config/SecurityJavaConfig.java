@@ -1,6 +1,6 @@
 package com.example.bookclub.config;
 
-import com.example.bookclub.application.AccountAuthenticationService;
+import com.example.bookclub.application.account.AccountAuthenticationService;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import com.example.bookclub.security.PersistTokenRepository;

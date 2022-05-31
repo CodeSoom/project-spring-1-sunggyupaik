@@ -1,6 +1,6 @@
 package com.example.bookclub.controller.api;
 
-import com.example.bookclub.application.EmailService;
+import com.example.bookclub.application.account.EmailService;
 import com.example.bookclub.common.CommonResponse;
 import com.example.bookclub.dto.EmailDto;
 import org.springframework.http.HttpStatus;

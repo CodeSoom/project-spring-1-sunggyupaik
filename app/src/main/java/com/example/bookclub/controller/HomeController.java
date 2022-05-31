@@ -1,8 +1,8 @@
 package com.example.bookclub.controller;
 
-import com.example.bookclub.application.AccountAuthenticationService;
-import com.example.bookclub.application.AccountService;
-import com.example.bookclub.application.StudyService;
+import com.example.bookclub.application.account.AccountAuthenticationService;
+import com.example.bookclub.application.account.AccountService;
+import com.example.bookclub.application.study.StudyService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.StudyState;
 import com.example.bookclub.security.CurrentAccount;

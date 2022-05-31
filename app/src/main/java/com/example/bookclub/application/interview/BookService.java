@@ -1,4 +1,4 @@
-package com.example.bookclub.application;
+package com.example.bookclub.application.interview;
 
 import com.example.bookclub.domain.study.BookType;
 import org.json.simple.JSONArray;

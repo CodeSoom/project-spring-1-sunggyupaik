@@ -1,4 +1,4 @@
-package com.example.bookclub.application;
+package com.example.bookclub.application.interview;
 
 import com.example.bookclub.domain.interview.Interview;
 import com.example.bookclub.dto.InterviewDto;

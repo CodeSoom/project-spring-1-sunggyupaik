@@ -1,7 +1,7 @@
 package com.example.bookclub.controller.api;
 
-import com.example.bookclub.application.AccountAuthenticationService;
-import com.example.bookclub.application.InterviewService;
+import com.example.bookclub.application.account.AccountAuthenticationService;
+import com.example.bookclub.application.interview.InterviewService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.interview.Interview;
 import com.example.bookclub.security.CustomDeniedHandler;

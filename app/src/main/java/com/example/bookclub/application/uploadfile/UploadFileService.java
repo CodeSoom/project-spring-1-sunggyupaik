@@ -1,4 +1,4 @@
-package com.example.bookclub.application;
+package com.example.bookclub.application.uploadfile;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3;

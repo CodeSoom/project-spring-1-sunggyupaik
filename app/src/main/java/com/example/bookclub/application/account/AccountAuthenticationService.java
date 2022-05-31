@@ -1,4 +1,4 @@
-package com.example.bookclub.application;
+package com.example.bookclub.application.account;
 
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.account.role.Role;

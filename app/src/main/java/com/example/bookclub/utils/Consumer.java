@@ -1,6 +1,6 @@
 package com.example.bookclub.utils;
 
-import com.example.bookclub.application.PostService;
+import com.example.bookclub.application.post.PostService;
 import com.example.bookclub.domain.post.Post;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

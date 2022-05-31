@@ -1,5 +1,6 @@
-package com.example.bookclub.application;
+package com.example.bookclub.application.study;
 
+import com.example.bookclub.application.account.AccountService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.Study;
 import com.example.bookclub.domain.study.studycomment.StudyComment;

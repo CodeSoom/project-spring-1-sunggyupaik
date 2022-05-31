@@ -1,4 +1,4 @@
-package com.example.bookclub.application;
+package com.example.bookclub.application.study;
 
 import com.example.bookclub.domain.study.Study;
 import com.example.bookclub.domain.study.studycomment.StudyComment;

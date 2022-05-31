@@ -1,12 +1,12 @@
 package com.example.bookclub.controller.api;
 
-import com.example.bookclub.application.AccountAuthenticationService;
-import com.example.bookclub.application.AccountService;
-import com.example.bookclub.application.StudyCommentLikeService;
-import com.example.bookclub.application.StudyCommentService;
-import com.example.bookclub.application.StudyFavoriteService;
-import com.example.bookclub.application.StudyLikeService;
-import com.example.bookclub.application.StudyService;
+import com.example.bookclub.application.account.AccountAuthenticationService;
+import com.example.bookclub.application.account.AccountService;
+import com.example.bookclub.application.study.StudyCommentLikeService;
+import com.example.bookclub.application.study.StudyCommentService;
+import com.example.bookclub.application.study.StudyFavoriteService;
+import com.example.bookclub.application.study.StudyLikeService;
+import com.example.bookclub.application.study.StudyService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.Day;
 import com.example.bookclub.domain.study.Study;

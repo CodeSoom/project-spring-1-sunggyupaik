@@ -1,6 +1,6 @@
 package com.example.bookclub.controller.api;
 
-import com.example.bookclub.application.PostService;
+import com.example.bookclub.application.post.PostService;
 import com.example.bookclub.common.CommonResponse;
 import com.example.bookclub.domain.post.Post;
 import com.example.bookclub.utils.Producer;

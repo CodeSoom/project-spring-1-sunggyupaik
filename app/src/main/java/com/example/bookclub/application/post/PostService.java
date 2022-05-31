@@ -1,4 +1,4 @@
-package com.example.bookclub.application;
+package com.example.bookclub.application.post;
 
 import com.example.bookclub.domain.post.Post;
 import com.example.bookclub.repository.post.ElasticPostRepository;

@@ -1,6 +1,6 @@
 package com.example.bookclub.controller;
 
-import com.example.bookclub.application.PostService;
+import com.example.bookclub.application.post.PostService;
 import com.example.bookclub.domain.post.Post;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

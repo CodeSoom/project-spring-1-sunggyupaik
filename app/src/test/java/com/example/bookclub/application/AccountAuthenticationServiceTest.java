@@ -1,5 +1,6 @@
 package com.example.bookclub.application;
 
+import com.example.bookclub.application.account.AccountAuthenticationService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.account.role.Role;
 import com.example.bookclub.domain.account.role.RoleRepository;
