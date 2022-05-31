@@ -1,14 +1,17 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyComment;
-import com.example.bookclub.domain.StudyCommentLike;
-import com.example.bookclub.domain.StudyCommentLikeRepository;
+import com.example.bookclub.application.account.AccountService;
+import com.example.bookclub.application.study.StudyCommentLikeService;
+import com.example.bookclub.application.study.StudyCommentService;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.studycomment.StudyComment;
+import com.example.bookclub.domain.study.studycommentlike.StudyCommentLike;
+import com.example.bookclub.domain.study.studycommentlike.StudyCommentLikeRepository;
 import com.example.bookclub.dto.StudyApiDto;
-import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
-import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
-import com.example.bookclub.errors.StudyCommentNotFoundException;
+import com.example.bookclub.errors.study.studycommentlike.StudyCommentLikeAlreadyExistedException;
+import com.example.bookclub.errors.study.studycommentlike.StudyCommentLikeNotFoundException;
+import com.example.bookclub.errors.study.studycomment.StudyCommentNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

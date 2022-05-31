@@ -1,13 +1,15 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyComment;
-import com.example.bookclub.domain.StudyCommentRepository;
+import com.example.bookclub.application.study.StudyCommentService;
+import com.example.bookclub.application.study.StudyService;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.studycomment.StudyComment;
+import com.example.bookclub.domain.study.studycomment.StudyCommentRepository;
 import com.example.bookclub.dto.StudyApiDto;
-import com.example.bookclub.errors.StudyCommentContentNotExistedException;
-import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
-import com.example.bookclub.errors.StudyCommentNotFoundException;
+import com.example.bookclub.errors.study.studycomment.StudyCommentContentNotExistedException;
+import com.example.bookclub.errors.study.studycomment.StudyCommentDeleteBadRequest;
+import com.example.bookclub.errors.study.studycomment.StudyCommentNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

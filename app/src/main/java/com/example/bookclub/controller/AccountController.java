@@ -1,6 +1,6 @@
 package com.example.bookclub.controller;
 
-import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.repository.study.JpaStudyRepository;
 import com.example.bookclub.security.CurrentAccount;

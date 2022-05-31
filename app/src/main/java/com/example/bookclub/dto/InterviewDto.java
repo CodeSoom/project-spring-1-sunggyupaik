@@ -1,6 +1,6 @@
 package com.example.bookclub.dto;
 
-import com.example.bookclub.domain.Interview;
+import com.example.bookclub.domain.interview.Interview;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.querydsl.core.annotations.QueryProjection;

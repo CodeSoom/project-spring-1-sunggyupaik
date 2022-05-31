@@ -1,7 +1,7 @@
 package com.example.bookclub.utils;
 
-import com.example.bookclub.application.PostService;
-import com.example.bookclub.domain.Post;
+import com.example.bookclub.application.post.PostService;
+import com.example.bookclub.domain.post.Post;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

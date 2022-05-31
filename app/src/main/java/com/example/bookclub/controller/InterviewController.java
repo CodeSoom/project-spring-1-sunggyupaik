@@ -1,7 +1,7 @@
 package com.example.bookclub.controller;
 
-import com.example.bookclub.application.InterviewService;
-import com.example.bookclub.domain.Account;
+import com.example.bookclub.application.interview.InterviewService;
+import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.InterviewDto;
 import com.example.bookclub.dto.PageResultDto;
 import com.example.bookclub.security.UserAccount;

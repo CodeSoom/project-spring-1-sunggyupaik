@@ -1,10 +1,10 @@
 package com.example.bookclub.controller.api;
 
-import com.example.bookclub.application.AccountService;
-import com.example.bookclub.application.UploadFileService;
+import com.example.bookclub.application.account.AccountService;
+import com.example.bookclub.application.uploadfile.UploadFileService;
 import com.example.bookclub.common.CommonResponse;
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.UploadFile;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.uplodfile.UploadFile;
 import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.security.CurrentAccount;
 import org.springframework.http.HttpStatus;

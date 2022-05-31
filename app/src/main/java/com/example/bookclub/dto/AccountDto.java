@@ -1,7 +1,7 @@
 package com.example.bookclub.dto;
 
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.UploadFile;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.uplodfile.UploadFile;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

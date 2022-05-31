@@ -1,39 +1,38 @@
 package com.example.bookclub.controller;
 
 import com.example.bookclub.common.CommonResponse;
-import com.example.bookclub.errors.AccountEmailDuplicatedException;
-import com.example.bookclub.errors.AccountEmailNotFoundException;
-import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
-import com.example.bookclub.errors.AccountNicknameDuplicatedException;
-import com.example.bookclub.errors.AccountNotFoundException;
-import com.example.bookclub.errors.AccountNotManagerOfStudyException;
-import com.example.bookclub.errors.AccountPasswordBadRequestException;
-import com.example.bookclub.errors.AuthenticationBadRequestException;
-import com.example.bookclub.errors.EmailBadRequestException;
-import com.example.bookclub.errors.EmailNotAuthenticatedException;
-import com.example.bookclub.errors.FileUploadBadRequestException;
-import com.example.bookclub.errors.InvalidTokenException;
-import com.example.bookclub.errors.MessageCreateBadRequestException;
-import com.example.bookclub.errors.ParseTimeException;
-import com.example.bookclub.errors.StudyAlreadyExistedException;
-import com.example.bookclub.errors.StudyAlreadyInOpenOrCloseException;
-import com.example.bookclub.errors.StudyAlreadyStartedException;
-import com.example.bookclub.errors.StudyCommentContentNotExistedException;
-import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
-import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
-import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
-import com.example.bookclub.errors.StudyCommentNotFoundException;
-import com.example.bookclub.errors.StudyFavoriteAlreadyExistedException;
-import com.example.bookclub.errors.StudyFavoriteNotExistedException;
-import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
-import com.example.bookclub.errors.StudyLikeNotExistedException;
-import com.example.bookclub.errors.StudyNotAppliedBefore;
-import com.example.bookclub.errors.StudyNotFoundException;
-import com.example.bookclub.errors.StudyNotInOpenStateException;
-import com.example.bookclub.errors.StudySizeFullException;
-import com.example.bookclub.errors.StudyStartAndEndDateNotValidException;
-import com.example.bookclub.errors.StudyStartAndEndTimeNotValidException;
-import com.example.bookclub.errors.StudyStartDateInThePastException;
+import com.example.bookclub.errors.account.AccountEmailDuplicatedException;
+import com.example.bookclub.errors.account.AccountEmailNotFoundException;
+import com.example.bookclub.errors.account.AccountNewPasswordNotMatchedException;
+import com.example.bookclub.errors.account.AccountNicknameDuplicatedException;
+import com.example.bookclub.errors.account.AccountNotFoundException;
+import com.example.bookclub.errors.account.AccountNotManagerOfStudyException;
+import com.example.bookclub.errors.account.AccountPasswordBadRequestException;
+import com.example.bookclub.errors.account.AuthenticationBadRequestException;
+import com.example.bookclub.errors.account.emailauthentication.EmailBadRequestException;
+import com.example.bookclub.errors.account.emailauthentication.EmailNotAuthenticatedException;
+import com.example.bookclub.errors.fileupload.FileUploadBadRequestException;
+import com.example.bookclub.errors.account.emailauthentication.MessageCreateBadRequestException;
+import com.example.bookclub.errors.study.ParseTimeException;
+import com.example.bookclub.errors.study.StudyAlreadyExistedException;
+import com.example.bookclub.errors.study.StudyAlreadyInOpenOrCloseException;
+import com.example.bookclub.errors.study.StudyAlreadyStartedException;
+import com.example.bookclub.errors.study.studycomment.StudyCommentContentNotExistedException;
+import com.example.bookclub.errors.study.studycomment.StudyCommentDeleteBadRequest;
+import com.example.bookclub.errors.study.studycommentlike.StudyCommentLikeAlreadyExistedException;
+import com.example.bookclub.errors.study.studycommentlike.StudyCommentLikeNotFoundException;
+import com.example.bookclub.errors.study.studycomment.StudyCommentNotFoundException;
+import com.example.bookclub.errors.study.favorite.StudyFavoriteAlreadyExistedException;
+import com.example.bookclub.errors.study.favorite.StudyFavoriteNotExistedException;
+import com.example.bookclub.errors.study.studylike.StudyLikeAlreadyExistedException;
+import com.example.bookclub.errors.study.studylike.StudyLikeNotExistedException;
+import com.example.bookclub.errors.study.StudyNotAppliedBefore;
+import com.example.bookclub.errors.study.StudyNotFoundException;
+import com.example.bookclub.errors.study.StudyNotInOpenStateException;
+import com.example.bookclub.errors.study.StudySizeFullException;
+import com.example.bookclub.errors.study.StudyStartAndEndDateNotValidException;
+import com.example.bookclub.errors.study.StudyStartAndEndTimeNotValidException;
+import com.example.bookclub.errors.study.StudyStartDateInThePastException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -102,12 +101,6 @@ public class ControllerErrorAdvice {
     @ExceptionHandler(AccountNotManagerOfStudyException.class)
     public CommonResponse handleAccountNotManagerException(AccountNotManagerOfStudyException e) {
         return CommonResponse.fail(e.getMessage(), HttpStatus.FORBIDDEN.value());
-    }
-
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(InvalidTokenException.class)
-    public CommonResponse handleInvalidToken(InvalidTokenException e) {
-        return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

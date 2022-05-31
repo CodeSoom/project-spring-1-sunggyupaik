@@ -1,13 +1,16 @@
 package com.example.bookclub.application;
 
-import com.example.bookclub.domain.Account;
-import com.example.bookclub.domain.Study;
-import com.example.bookclub.domain.StudyLike;
-import com.example.bookclub.domain.StudyLikeRepository;
+import com.example.bookclub.application.account.AccountService;
+import com.example.bookclub.application.study.StudyLikeService;
+import com.example.bookclub.application.study.StudyService;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.studylike.StudyLike;
+import com.example.bookclub.domain.study.studylike.StudyLikeRepository;
 import com.example.bookclub.dto.StudyApiDto;
-import com.example.bookclub.errors.StudyLikeAlreadyExistedException;
-import com.example.bookclub.errors.StudyLikeNotExistedException;
-import com.example.bookclub.errors.StudyNotFoundException;
+import com.example.bookclub.errors.study.studylike.StudyLikeAlreadyExistedException;
+import com.example.bookclub.errors.study.studylike.StudyLikeNotExistedException;
+import com.example.bookclub.errors.study.StudyNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

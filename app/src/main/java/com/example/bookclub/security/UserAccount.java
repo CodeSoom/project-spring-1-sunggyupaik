@@ -1,6 +1,6 @@
 package com.example.bookclub.security;
 
-import com.example.bookclub.domain.Account;
+import com.example.bookclub.domain.account.Account;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;

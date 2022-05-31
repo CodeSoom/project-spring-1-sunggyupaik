@@ -1,8 +1,7 @@
 package com.example.bookclub.controller;
 
-import com.example.bookclub.application.PostService;
-import com.example.bookclub.domain.Post;
-import org.springframework.http.HttpStatus;
+import com.example.bookclub.application.post.PostService;
+import com.example.bookclub.domain.post.Post;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
