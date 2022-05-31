@@ -3,8 +3,8 @@ package com.example.bookclub.controller.api;
 import com.example.bookclub.application.EmailService;
 import com.example.bookclub.application.LoginService;
 import com.example.bookclub.common.CommonResponse;
+import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.dto.EmailDto;
-import com.example.bookclub.dto.KakaoLoginRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,7 +35,7 @@ public class LoginApiController {
 	 */
 	@PostMapping("/kakao-login")
 	public CommonResponse<EmailDto.EmailSendResultDto> kakaoLogin(
-			@RequestBody KakaoLoginRequest kakaoLoginRequest
+			@RequestBody AccountDto.KakaoLoginRequest kakaoLoginRequest
 	) {
 		if(loginService.checkAlreadyExistedEmail(kakaoLoginRequest)) {
 			UsernamePasswordAuthenticationToken authenticationToken

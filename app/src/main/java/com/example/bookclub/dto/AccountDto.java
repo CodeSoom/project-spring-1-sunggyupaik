@@ -347,4 +347,21 @@ public class AccountDto {
 		}
 	}
 
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class KakaoLoginRequest {
+		private String email;
+
+		@Builder
+		public KakaoLoginRequest(String email) {
+			this.email = email;
+		}
+
+		public static KakaoLoginRequest of(String email) {
+			return KakaoLoginRequest.builder()
+					.email(email)
+					.build();
+		}
+	}
 }

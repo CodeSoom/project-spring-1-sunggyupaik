@@ -1,7 +1,7 @@
 package com.example.bookclub.application;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.dto.KakaoLoginRequest;
+import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.repository.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -29,7 +29,7 @@ public class LoginService {
 	 * @param kakaoLoginRequest 카카오 로그인에 성공한 이메일 정보
 	 * @return 사용자가 기존에 존재하는지 여부
 	 */
-	public boolean checkAlreadyExistedEmail(KakaoLoginRequest kakaoLoginRequest) {
+	public boolean checkAlreadyExistedEmail(AccountDto.KakaoLoginRequest kakaoLoginRequest) {
 		String email = kakaoLoginRequest.getEmail();
 		return accountRepository.existsByEmail(email);
 	}
@@ -40,7 +40,9 @@ public class LoginService {
 	 * @param kakaoLoginRequest 카카오 로그인에 성공한 이메일 정보
 	 * @return 주어진 이메일에 해당하는 사용자 인증토큰
 	 */
-	public UsernamePasswordAuthenticationToken makeKakaoAuthenticationToken(KakaoLoginRequest kakaoLoginRequest) {
+	public UsernamePasswordAuthenticationToken makeKakaoAuthenticationToken(
+			AccountDto.KakaoLoginRequest kakaoLoginRequest
+	) {
 		String email = kakaoLoginRequest.getEmail();
 		Account account = accountAuthenticationService.getAccountByEmail(email);
 
