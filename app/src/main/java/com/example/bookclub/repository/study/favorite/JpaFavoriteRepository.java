@@ -1,4 +1,4 @@
-package com.example.bookclub.repository;
+package com.example.bookclub.repository.study.favorite;
 
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.favorite.Favorite;

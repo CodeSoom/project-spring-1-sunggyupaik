@@ -1,4 +1,4 @@
-package com.example.bookclub.repository;
+package com.example.bookclub.repository.account.emailauthentication;
 
 import com.example.bookclub.domain.account.emailauthentication.EmailAuthentication;
 import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;

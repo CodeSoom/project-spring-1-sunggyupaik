@@ -1,4 +1,4 @@
-package com.example.bookclub.repository;
+package com.example.bookclub.repository.study.studycomment;
 
 import com.example.bookclub.domain.study.studycomment.StudyComment;
 import com.example.bookclub.domain.study.studycomment.StudyCommentRepository;

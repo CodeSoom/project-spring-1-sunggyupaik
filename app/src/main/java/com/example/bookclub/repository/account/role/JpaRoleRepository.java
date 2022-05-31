@@ -1,4 +1,4 @@
-package com.example.bookclub.repository;
+package com.example.bookclub.repository.account.role;
 
 import com.example.bookclub.domain.account.role.Role;
 import com.example.bookclub.domain.account.role.RoleRepository;

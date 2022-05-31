@@ -1,4 +1,4 @@
-package com.example.bookclub.repository;
+package com.example.bookclub.repository.account.accounthistory;
 
 import com.example.bookclub.domain.account.accounthistory.AccountHistory;
 import com.example.bookclub.domain.account.accounthistory.AccountHistoryRepository;

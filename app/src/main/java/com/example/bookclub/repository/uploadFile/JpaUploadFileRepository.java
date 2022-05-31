@@ -1,4 +1,4 @@
-package com.example.bookclub.repository;
+package com.example.bookclub.repository.uploadFile;
 
 import com.example.bookclub.domain.uplodfile.UploadFile;
 import com.example.bookclub.domain.uplodfile.UploadFileRepository;
