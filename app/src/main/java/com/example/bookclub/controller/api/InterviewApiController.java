@@ -1,7 +1,7 @@
 package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.interview.InterviewService;
-import com.example.bookclub.common.CommonResponse;
+import com.example.bookclub.common.response.CommonResponse;
 import com.example.bookclub.domain.interview.Interview;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;

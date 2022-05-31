@@ -6,7 +6,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.example.bookclub.domain.uplodfile.UploadFile;
-import com.example.bookclub.errors.fileupload.FileUploadBadRequestException;
+import com.example.bookclub.common.exception.fileupload.FileUploadBadRequestException;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;

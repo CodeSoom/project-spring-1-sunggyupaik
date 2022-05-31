@@ -6,7 +6,7 @@ import com.example.bookclub.domain.account.role.Role;
 import com.example.bookclub.domain.account.role.RoleRepository;
 import com.example.bookclub.domain.study.Study;
 import com.example.bookclub.domain.uplodfile.UploadFile;
-import com.example.bookclub.errors.account.AccountEmailNotFoundException;
+import com.example.bookclub.common.exception.account.AccountEmailNotFoundException;
 import com.example.bookclub.repository.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;

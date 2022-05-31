@@ -3,7 +3,7 @@ package com.example.bookclub.common;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.account.accounthistory.AccountHistory;
 import com.example.bookclub.domain.account.accounthistory.AccountHistoryRepository;
-import com.example.bookclub.common.utils.BeanUtil;
+import com.example.bookclub.common.util.BeanUtil;
 
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
