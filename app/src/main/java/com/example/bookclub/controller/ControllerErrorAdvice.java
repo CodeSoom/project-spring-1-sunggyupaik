@@ -1,6 +1,7 @@
 package com.example.bookclub.controller;
 
 import com.example.bookclub.common.CommonResponse;
+import com.example.bookclub.common.interceptor.CommonHttpRequestInterceptor;
 import com.example.bookclub.errors.account.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.account.AccountEmailNotFoundException;
 import com.example.bookclub.errors.account.AccountNewPasswordNotMatchedException;
@@ -33,16 +34,29 @@ import com.example.bookclub.errors.study.studycommentlike.StudyCommentLikeAlread
 import com.example.bookclub.errors.study.studycommentlike.StudyCommentLikeNotFoundException;
 import com.example.bookclub.errors.study.studylike.StudyLikeAlreadyExistedException;
 import com.example.bookclub.errors.study.studylike.StudyLikeNotExistedException;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Objects;
 
+@Slf4j
 @RestControllerAdvice
 public class ControllerErrorAdvice {
+    @ResponseBody
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(value = Exception.class)
+    public CommonResponse onException(Exception e) {
+        String eventId = MDC.get(CommonHttpRequestInterceptor.HEADER_REQUEST_UUID_KEY);
+        log.error("eventId = {} ", eventId, e);
+        return CommonResponse.fail(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(StudyStartDateInThePastException.class)
     public CommonResponse handleStudyStartDateInThePast(StudyStartDateInThePastException e) {
