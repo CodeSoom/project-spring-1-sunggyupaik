@@ -1,4 +1,4 @@
-package com.example.bookclub.utils;
+package com.example.bookclub.common.utils;
 
 class JwtUtilTest {
 //    private static final String SECRET = "12345678901234567890123456789010";

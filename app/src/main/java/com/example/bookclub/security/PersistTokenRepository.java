@@ -1,6 +1,6 @@
 package com.example.bookclub.security;
 
-import com.example.bookclub.utils.JsonUtil;
+import com.example.bookclub.common.utils.JsonUtil;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;

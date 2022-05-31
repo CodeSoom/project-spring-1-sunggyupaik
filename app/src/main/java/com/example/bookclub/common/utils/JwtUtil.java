@@ -1,4 +1,4 @@
-package com.example.bookclub.utils;
+package com.example.bookclub.common.utils;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

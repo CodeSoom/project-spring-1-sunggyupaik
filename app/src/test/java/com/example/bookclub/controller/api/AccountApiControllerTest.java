@@ -49,8 +49,8 @@ import javax.sql.DataSource;
 import java.time.LocalDate;
 import java.util.List;
 
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentRequest;
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentResponse;
+import static com.example.bookclub.common.utils.ApiDocumentUtils.getDocumentRequest;
+import static com.example.bookclub.common.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.is;

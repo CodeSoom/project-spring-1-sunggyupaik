@@ -1,4 +1,4 @@
-package com.example.bookclub.utils;
+package com.example.bookclub.common.utils;
 
 import com.example.bookclub.application.post.PostService;
 import com.example.bookclub.domain.post.Post;

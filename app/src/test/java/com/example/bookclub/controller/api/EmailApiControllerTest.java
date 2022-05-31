@@ -26,8 +26,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 import javax.sql.DataSource;
 
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentRequest;
-import static com.example.bookclub.utils.ApiDocumentUtils.getDocumentResponse;
+import static com.example.bookclub.common.utils.ApiDocumentUtils.getDocumentRequest;
+import static com.example.bookclub.common.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;

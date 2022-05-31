@@ -1,4 +1,4 @@
-package com.example.bookclub.utils;
+package com.example.bookclub.common.utils;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
