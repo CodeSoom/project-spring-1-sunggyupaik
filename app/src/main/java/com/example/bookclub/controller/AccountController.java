@@ -1,7 +1,7 @@
 package com.example.bookclub.controller;
 
 import com.example.bookclub.domain.Account;
-import com.example.bookclub.dto.StudyDto;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.repository.study.JpaStudyRepository;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
@@ -69,7 +69,7 @@ public class AccountController {
                 .map(favorite -> favorite.getStudy().getId())
                 .collect(Collectors.toList());
 
-        List<StudyDto.StudyFavoriteDto> studies = studyRepository.findByFavoriteStudies(favoriteStudyIds);
+        List<StudyApiDto.StudyFavoriteDto> studies = studyRepository.findByFavoriteStudies(favoriteStudyIds);
 
         model.addAttribute("StudyFavoriteDto", studies);
 

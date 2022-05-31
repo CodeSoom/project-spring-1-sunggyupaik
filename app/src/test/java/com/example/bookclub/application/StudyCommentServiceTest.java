@@ -4,7 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentRepository;
-import com.example.bookclub.dto.StudyDto;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.errors.StudyCommentContentNotExistedException;
 import com.example.bookclub.errors.StudyCommentDeleteBadRequest;
 import com.example.bookclub.errors.StudyCommentNotFoundException;
@@ -46,8 +46,8 @@ public class StudyCommentServiceTest {
 	private StudyComment othersStudyComment;
 
 	private UserAccount userAccount;
-	private StudyDto.StudyCommentCreateDto studyCommentCreateDto;
-	private StudyDto.StudyCommentCreateDto studyCommentCreateDtoWithoutContent;
+	private StudyApiDto.StudyCommentCreateDto studyCommentCreateDto;
+	private StudyApiDto.StudyCommentCreateDto studyCommentCreateDtoWithoutContent;
 
 	private StudyCommentService studyCommentService;
 	private StudyCommentRepository studyCommentRepository;
@@ -97,11 +97,11 @@ public class StudyCommentServiceTest {
 				.authorities(authorities)
 				.build();
 
-		studyCommentCreateDto = StudyDto.StudyCommentCreateDto.builder()
+		studyCommentCreateDto = StudyApiDto.StudyCommentCreateDto.builder()
 				.content(STUDY_COMMENT_CONTENT)
 				.build();
 
-		studyCommentCreateDtoWithoutContent = StudyDto.StudyCommentCreateDto.builder()
+		studyCommentCreateDtoWithoutContent = StudyApiDto.StudyCommentCreateDto.builder()
 				.content("")
 				.build();
 	}
@@ -130,7 +130,7 @@ public class StudyCommentServiceTest {
 		given(studyService.getStudy(STUDY_SETUP_ID)).willReturn(study);
 		given(studyCommentRepository.save(any(StudyComment.class))).willReturn(studyComment);
 
-		StudyDto.StudyCommentResultDto studyCommentResultDto = studyCommentService.createStudyComment(
+		StudyApiDto.StudyCommentResultDto studyCommentResultDto = studyCommentService.createStudyComment(
 				userAccount, STUDY_SETUP_ID, studyCommentCreateDto);
 
 		assertThat(studyCommentResultDto.getContent()).isEqualTo(STUDY_COMMENT_CONTENT);
@@ -151,7 +151,7 @@ public class StudyCommentServiceTest {
 	void deleteStudyCommentWithExistedId() {
 		given(studyCommentRepository.findById(STUDY_COMMENT_EXISTED_ID)).willReturn(Optional.of(studyComment));
 
-		StudyDto.StudyCommentResultDto studyCommentResultDto = studyCommentService.deleteStudyComment(userAccount, STUDY_COMMENT_EXISTED_ID);
+		StudyApiDto.StudyCommentResultDto studyCommentResultDto = studyCommentService.deleteStudyComment(userAccount, STUDY_COMMENT_EXISTED_ID);
 
 		assertThat(studyCommentResultDto.getId()).isEqualTo(STUDY_COMMENT_EXISTED_ID);
 	}

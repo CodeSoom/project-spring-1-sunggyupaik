@@ -2,12 +2,11 @@ package com.example.bookclub.repository.study;
 
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
-import com.example.bookclub.dto.QStudyAccountInfoResultDto;
-import com.example.bookclub.dto.QStudyDto_StudyFavoriteDto;
-import com.example.bookclub.dto.QStudyInfoResultDto;
-import com.example.bookclub.dto.StudyAccountInfoResultDto;
+import com.example.bookclub.dto.QStudyApiDto_StudyFavoriteDto;
+import com.example.bookclub.dto.QStudyDto_StudyAccountInfoResultDto;
+import com.example.bookclub.dto.QStudyDto_StudyInfoResultDto;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.dto.StudyDto;
-import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.errors.StudyNotFoundException;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -28,15 +27,15 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 	}
 
 	@Override
-	public StudyInfoResultDto getStudyInfo(Long id) {
-		StudyInfoResultDto studyInfoResultDto = getStudyInfoResultDto(id)
+	public StudyDto.StudyInfoResultDto getStudyInfo(Long id) {
+		StudyDto.StudyInfoResultDto studyInfoResultDto = getStudyInfoResultDto(id)
 				.orElseThrow(() -> new StudyNotFoundException(id));
 
 		Long findStudyId = studyInfoResultDto.getId();
 
-		List<StudyAccountInfoResultDto> studyAccountInfoResultDto =
+		List<StudyDto.StudyAccountInfoResultDto> studyAccountInfoResultDto =
 				queryFactory
-					.select(new QStudyAccountInfoResultDto(account.name, account.email, account.nickname))
+					.select(new QStudyDto_StudyAccountInfoResultDto(account.name, account.email, account.nickname))
 					.from(account)
 					.where(account.study.id.eq(findStudyId))
 					.fetch();
@@ -58,9 +57,9 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 				.fetch();
 	}
 
-	private Optional<StudyInfoResultDto> getStudyInfoResultDto(Long id) {
+	private Optional<StudyDto.StudyInfoResultDto> getStudyInfoResultDto(Long id) {
 		return Optional.ofNullable(queryFactory
-				.select(new QStudyInfoResultDto(
+				.select(new QStudyDto_StudyInfoResultDto(
 								study.id, study.name, study.bookName, study.contact, study.startDate
 								,study.endDate, study.startTime, study.endTime, study.day
 						)
@@ -95,9 +94,9 @@ public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
 	}
 
 	@Override
-	public List<StudyDto.StudyFavoriteDto> findByFavoriteStudies(List<Long> studyIds) {
+	public List<StudyApiDto.StudyFavoriteDto> findByFavoriteStudies(List<Long> studyIds) {
 		return queryFactory
-				.select(new QStudyDto_StudyFavoriteDto(
+				.select(new QStudyApiDto_StudyFavoriteDto(
 						study.id, study.name, study.bookName, study.studyState
 				))
 				.from(study)

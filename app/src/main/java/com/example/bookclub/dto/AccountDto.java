@@ -159,12 +159,12 @@ public class AccountDto {
 
 		private UploadFileDto.UploadFileResultDto uploadFileResultDto;
 
-		private StudyDto.StudyResultDto studyResultDto;
+		private StudyApiDto.StudyResultDto studyResultDto;
 
 		@Builder
 		public AccountResultDto(Long id, String name, String email, String nickname, String password,
 								boolean deleted, UploadFileDto.UploadFileResultDto uploadFileResultDto,
-								StudyDto.StudyResultDto studyResultDto) {
+								StudyApiDto.StudyResultDto studyResultDto) {
 			this.id = id;
 			this.name = name;
 			this.email = email;
@@ -184,7 +184,7 @@ public class AccountDto {
 					.password(account.getPassword())
 					.deleted(account.isDeleted())
 					.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(account.getUploadFile()))
-					.studyResultDto(StudyDto.StudyResultDto.of(account.getStudy()))
+					.studyResultDto(StudyApiDto.StudyResultDto.of(account.getStudy()))
 					.build();
 		}
 	}

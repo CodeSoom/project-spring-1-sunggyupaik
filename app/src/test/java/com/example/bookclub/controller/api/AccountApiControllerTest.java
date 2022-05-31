@@ -10,7 +10,7 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.UploadFile;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.AccountDto;
-import com.example.bookclub.dto.StudyDto;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.dto.UploadFileDto;
 import com.example.bookclub.errors.AccountEmailDuplicatedException;
 import com.example.bookclub.errors.AccountNewPasswordNotMatchedException;
@@ -380,7 +380,7 @@ class AccountApiControllerTest {
 				.password(ACCOUNT_FILE_PASSWORD)
 				.deleted(ACCOUNT_FILE_DELETED)
 				.uploadFileResultDto(UploadFileDto.UploadFileResultDto.of(createdUploadFile))
-				.studyResultDto(StudyDto.StudyResultDto.of(study))
+				.studyResultDto(StudyApiDto.StudyResultDto.of(study))
 				.build();
 
 		accountUpdatedWithUploadFileResultDto = AccountDto.AccountUpdateResultDto.builder()

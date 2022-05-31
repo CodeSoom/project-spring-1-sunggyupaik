@@ -2,14 +2,14 @@ package com.example.bookclub.repository.study;
 
 import com.example.bookclub.domain.Study;
 import com.example.bookclub.domain.StudyState;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.dto.StudyDto;
-import com.example.bookclub.dto.StudyInfoResultDto;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface StudyRepositoryCustom {
-    StudyInfoResultDto getStudyInfo(Long id);
+    StudyDto.StudyInfoResultDto getStudyInfo(Long id);
 
     List<Study> findByBookNameContaining(String keyword, StudyState studyState, Pageable pageable);
 
@@ -19,5 +19,5 @@ public interface StudyRepositoryCustom {
 
     long getAllStudiesCount();
 
-	List<StudyDto.StudyFavoriteDto> findByFavoriteStudies(List<Long> studyIds);
+	List<StudyApiDto.StudyFavoriteDto> findByFavoriteStudies(List<Long> studyIds);
 }

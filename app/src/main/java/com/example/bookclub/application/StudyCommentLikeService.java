@@ -4,7 +4,7 @@ import com.example.bookclub.domain.Account;
 import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyCommentLike;
 import com.example.bookclub.domain.StudyCommentLikeRepository;
-import com.example.bookclub.dto.StudyDto;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.errors.StudyCommentLikeAlreadyExistedException;
 import com.example.bookclub.errors.StudyCommentLikeNotFoundException;
 import com.example.bookclub.security.UserAccount;
@@ -38,7 +38,7 @@ public class StudyCommentLikeService {
 	 * @throws StudyCommentLikeAlreadyExistedException 로그인한 사용자의 스터디 댓글 식별자에 이미 좋아요가 존재하는 경우
 	 */
 	@Transactional
-	public StudyDto.StudyLikesCommentResultDto likeComment(UserAccount userAccount, Long commentId) {
+	public StudyApiDto.StudyLikesCommentResultDto likeComment(UserAccount userAccount, Long commentId) {
 		Long accountId = userAccount.getAccount().getId();
 
 		StudyComment studyComment = studyCommentService.getStudyComment(commentId);
@@ -57,7 +57,7 @@ public class StudyCommentLikeService {
 		studyCommentLike.addStudyCommentAndAccount(studyComment, account);
 		studyCommentLikeRepository.save(studyCommentLike);
 
-		return StudyDto.StudyLikesCommentResultDto.of(commentId);
+		return StudyApiDto.StudyLikesCommentResultDto.of(commentId);
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class StudyCommentLikeService {
 	 * @throws StudyCommentLikeNotFoundException 로그인한 사용자의 스터디 댓글 식별자에 좋아요가 존재하지 않는 경우
 	 */
 	@Transactional
-	public StudyDto.StudyLikesCommentResultDto unlikeComment(UserAccount userAccount, Long commentId) {
+	public StudyApiDto.StudyLikesCommentResultDto unlikeComment(UserAccount userAccount, Long commentId) {
 		Long accountId = userAccount.getAccount().getId();
 
 		StudyComment studyComment = studyCommentService.getStudyComment(commentId);
@@ -79,6 +79,6 @@ public class StudyCommentLikeService {
 
 		studyCommentLikeRepository.delete(savedStudyCommentLike);
 
-		return StudyDto.StudyLikesCommentResultDto.of(savedStudyCommentLike.getId());
+		return StudyApiDto.StudyLikesCommentResultDto.of(savedStudyCommentLike.getId());
 	}
 }
