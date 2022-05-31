@@ -15,12 +15,10 @@ import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.StudyApplyResultDto;
 import com.example.bookclub.dto.StudyCommentCreateDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
-import com.example.bookclub.dto.StudyCreateDto;
+import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.dto.StudyFavoriteResultDto;
 import com.example.bookclub.dto.StudyLikeResultDto;
 import com.example.bookclub.dto.StudyLikesCommentResultDto;
-import com.example.bookclub.dto.StudyResultDto;
-import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.dto.UploadFileDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
@@ -226,18 +224,18 @@ class StudyApiControllerTest {
     private Study fullSizeStudy;
     private Study closedStudy;
 
-    private StudyCreateDto studyCreateDto;
-    private StudyCreateDto studyStartDateIsPastCreateDto;
-    private StudyCreateDto studyStartDateIsAfterEndDateCreateDto;
-    private StudyCreateDto studyStartTimeIsAfterEndTimeCreateDto;
-    private StudyCreateDto studyAlreadyInOpenOrCloseCreateDto;
+    private StudyDto.StudyCreateDto studyCreateDto;
+    private StudyDto.StudyCreateDto studyStartDateIsPastCreateDto;
+    private StudyDto.StudyCreateDto studyStartDateIsAfterEndDateCreateDto;
+    private StudyDto.StudyCreateDto studyStartTimeIsAfterEndTimeCreateDto;
+    private StudyDto.StudyCreateDto studyAlreadyInOpenOrCloseCreateDto;
 
-    private StudyUpdateDto studyUpdateDto;
-    private StudyUpdateDto studyStartDateIsPastUpdateDto;
-    private StudyUpdateDto studyStartDateIsAfterEndDateUpdateDto;
+    private StudyDto.StudyUpdateDto studyUpdateDto;
+    private StudyDto.StudyUpdateDto studyStartDateIsPastUpdateDto;
+    private StudyDto.StudyUpdateDto studyStartDateIsAfterEndDateUpdateDto;
 
-    private StudyResultDto studyResultDto;
-    private StudyResultDto updatedStudyResultDto;
+    private StudyDto.StudyResultDto studyResultDto;
+    private StudyDto.StudyResultDto updatedStudyResultDto;
 
     private StudyCommentCreateDto studyCommentCreateDto;
     private StudyCommentCreateDto studyCommentCreateWithoutContentDto;
@@ -357,7 +355,7 @@ class StudyApiControllerTest {
                 accountWithClosedStudy.getPassword(),
                 List.of(new SimpleGrantedAuthority("USER")));
 
-        studyCreateDto = StudyCreateDto.builder()
+        studyCreateDto = StudyDto.StudyCreateDto.builder()
                 .name(STUDY_SETUP_NAME)
                 .email(STUDY_SETUP_EMAIL)
                 .description(STUDY_SETUP_DESCRIPTION)
@@ -371,22 +369,22 @@ class StudyApiControllerTest {
                 .zone(STUDY_SETUP_ZONE)
                 .build();
 
-        studyStartDateIsPastCreateDto = StudyCreateDto.builder()
+        studyStartDateIsPastCreateDto = StudyDto.StudyCreateDto.builder()
                 .startDate(CREATE_START_DATE_PAST)
                 .endDate(STUDY_SETUP_END_DATE)
                 .build();
 
-        studyStartDateIsAfterEndDateCreateDto = StudyCreateDto.builder()
+        studyStartDateIsAfterEndDateCreateDto = StudyDto.StudyCreateDto.builder()
                 .startDate(STUDY_SETUP_END_DATE)
                 .endDate(STUDY_SETUP_START_DATE)
                 .build();
 
-        studyStartTimeIsAfterEndTimeCreateDto = StudyCreateDto.builder()
+        studyStartTimeIsAfterEndTimeCreateDto = StudyDto.StudyCreateDto.builder()
                 .startTime(STUDY_SETUP_END_TIME)
                 .endTime(STUDY_SETUP_START_TIME)
                 .build();
 
-        studyUpdateDto = StudyUpdateDto.builder()
+        studyUpdateDto = StudyDto.StudyUpdateDto.builder()
                 .name(STUDY_UPDATE_NAME)
                 .description(STUDY_UPDATE_DESCRIPTION)
                 .contact(STUDY_UPDATE_CONTACT)
@@ -399,18 +397,18 @@ class StudyApiControllerTest {
                 .zone(STUDY_UPDATE_ZONE)
                 .build();
 
-        studyStartDateIsPastUpdateDto = StudyUpdateDto.builder()
+        studyStartDateIsPastUpdateDto = StudyDto.StudyUpdateDto.builder()
                 .startDate(CREATE_START_DATE_PAST)
                 .endDate(STUDY_SETUP_END_DATE)
                 .build();
 
-        studyStartDateIsAfterEndDateUpdateDto = StudyUpdateDto.builder()
+        studyStartDateIsAfterEndDateUpdateDto = StudyDto.StudyUpdateDto.builder()
                 .startDate(STUDY_SETUP_END_DATE)
                 .endDate(STUDY_SETUP_START_DATE)
                 .build();
 
-        studyResultDto = StudyResultDto.of(setUpStudy);
-        updatedStudyResultDto = StudyResultDto.of(updatedStudy);
+        studyResultDto = StudyDto.StudyResultDto.of(setUpStudy);
+        updatedStudyResultDto = StudyDto.StudyResultDto.of(updatedStudy);
 
         list = List.of(setUpStudy, updatedStudy);
 
@@ -572,7 +570,7 @@ class StudyApiControllerTest {
     @Test
     void createWithValidateAttribute() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyDto.StudyCreateDto.class)))
                 .willReturn(studyResultDto);
 
         this.mockMvc.perform(
@@ -634,7 +632,7 @@ class StudyApiControllerTest {
     @Test
     void createWithStartDateIsTodayOrBeforeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyDto.StudyCreateDto.class)))
                 .willThrow(new StudyStartDateInThePastException());
 
         mockMvc.perform(
@@ -675,7 +673,7 @@ class StudyApiControllerTest {
     @Test
     void createWithStartDateIsAfterEndDateInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyDto.StudyCreateDto.class)))
                 .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
@@ -716,7 +714,7 @@ class StudyApiControllerTest {
     @Test
     void createWithStartTimeIsAfterTimeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_EMAIL), any(StudyDto.StudyCreateDto.class)))
                 .willThrow(new StudyStartAndEndTimeNotValidException());
 
         mockMvc.perform(
@@ -757,7 +755,7 @@ class StudyApiControllerTest {
     @Test
     void createWithAccountAlreadyInStudyOpenOrClose() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.createStudy(eq(ACCOUNT_SECOND_EMAIL), any(StudyCreateDto.class)))
+        given(studyService.createStudy(eq(ACCOUNT_SECOND_EMAIL), any(StudyDto.StudyCreateDto.class)))
                 .willThrow(new StudyAlreadyInOpenOrCloseException());
 
         mockMvc.perform(
@@ -798,7 +796,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithValidateAttribute() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyDto.StudyUpdateDto.class))
+        )
                 .willReturn(updatedStudyResultDto);
 
         this.mockMvc.perform(
@@ -858,7 +858,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithNotManager() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithoutStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyDto.StudyUpdateDto.class))
+        )
                 .willThrow(new AccountNotManagerOfStudyException());
 
         mockMvc.perform(
@@ -897,7 +899,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithStartDateInPastInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyDto.StudyUpdateDto.class))
+        )
                 .willThrow(new StudyStartDateInThePastException());
 
         mockMvc.perform(
@@ -936,7 +940,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithStartDateIsAfterEndDateInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyDto.StudyUpdateDto.class))
+        )
                 .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(
@@ -975,7 +981,9 @@ class StudyApiControllerTest {
     @Test
     void updateWithStartTimeIsAfterEndTimeInvalid() throws Exception {
         SecurityContextHolder.getContext().setAuthentication(accountWithSetupStudyToken);
-        given(studyService.updateStudy(eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyUpdateDto.class)))
+        given(studyService.updateStudy(
+                eq(ACCOUNT_SECOND_EMAIL), eq(STUDY_SETUP_EXISTED_ID), any(StudyDto.StudyUpdateDto.class))
+        )
                 .willThrow(new StudyStartAndEndDateNotValidException());
 
         mockMvc.perform(

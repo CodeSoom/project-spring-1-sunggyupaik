@@ -10,12 +10,12 @@ import org.springframework.data.domain.Page;
 @Builder
 @ToString
 public class StudyListInfoDto {
-	Page<StudyResultDto> studyResultDtos;
+	Page<StudyDto.StudyResultDto> studyResultDtos;
 	private StudyState studyState;
 	private String search;
 	private String searchStudyStateCode;
 
-	public static StudyListInfoDto of(Page<StudyResultDto> studyResultDtos, StudyState studyState, String search) {
+	public static StudyListInfoDto of(Page<StudyDto.StudyResultDto> studyResultDtos, StudyState studyState, String search) {
 		return StudyListInfoDto.builder()
 				.studyResultDtos(studyResultDtos)
 				.studyState(studyState)

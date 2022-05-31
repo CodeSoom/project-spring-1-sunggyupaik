@@ -11,12 +11,10 @@ import com.example.bookclub.domain.Study;
 import com.example.bookclub.dto.StudyApplyResultDto;
 import com.example.bookclub.dto.StudyCommentCreateDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
-import com.example.bookclub.dto.StudyCreateDto;
+import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.dto.StudyFavoriteResultDto;
 import com.example.bookclub.dto.StudyLikeResultDto;
 import com.example.bookclub.dto.StudyLikesCommentResultDto;
-import com.example.bookclub.dto.StudyResultDto;
-import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.http.HttpStatus;
@@ -72,9 +70,9 @@ public class StudyApiController {
      * @return 조회한 스터디 정보
      */
     @GetMapping("/{id}")
-    public CommonResponse<StudyResultDto> detail(@PathVariable Long id) {
+    public CommonResponse<StudyDto.StudyResultDto> detail(@PathVariable Long id) {
         Study study = studyService.getStudy(id);
-        StudyResultDto response = StudyResultDto.of(study);
+        StudyDto.StudyResultDto response = StudyDto.StudyResultDto.of(study);
         return CommonResponse.success(response);
     }
 
@@ -87,11 +85,11 @@ public class StudyApiController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public CommonResponse<StudyResultDto> create(
+    public CommonResponse<StudyDto.StudyResultDto> create(
             @CurrentAccount Account account,
-            @RequestBody StudyCreateDto studyCreateDto
+            @RequestBody StudyDto.StudyCreateDto studyCreateDto
     ) {
-        StudyResultDto response = studyService.createStudy(account.getEmail(), studyCreateDto);
+        StudyDto.StudyResultDto response = studyService.createStudy(account.getEmail(), studyCreateDto);
         return CommonResponse.success(response);
     }
 
@@ -105,12 +103,13 @@ public class StudyApiController {
      */
     //@PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @PatchMapping("/{id}")
-    public CommonResponse<StudyResultDto> update(
+    public CommonResponse<StudyDto.StudyResultDto> update(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long id,
-            @RequestBody StudyUpdateDto studyUpdateDto
+            @RequestBody StudyDto.StudyUpdateDto studyUpdateDto
     ) {
-        StudyResultDto response = studyService.updateStudy(userAccount.getAccount().getEmail(), id, studyUpdateDto);
+        StudyDto.StudyResultDto response =
+                studyService.updateStudy(userAccount.getAccount().getEmail(), id, studyUpdateDto);
         return CommonResponse.success(response);
     }
 
@@ -124,11 +123,11 @@ public class StudyApiController {
     //@PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public CommonResponse<StudyResultDto> delete(
+    public CommonResponse<StudyDto.StudyResultDto> delete(
             @AuthenticationPrincipal UserAccount userAccount,
             @PathVariable Long id
     ) {
-        StudyResultDto response = studyService.deleteStudy(userAccount.getAccount().getEmail(), id);
+        StudyDto.StudyResultDto response = studyService.deleteStudy(userAccount.getAccount().getEmail(), id);
         return CommonResponse.success(response);
     }
 

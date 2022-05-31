@@ -6,11 +6,8 @@ import com.example.bookclub.domain.StudyComment;
 import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.dto.StudyApplyResultDto;
 import com.example.bookclub.dto.StudyCommentResultDto;
-import com.example.bookclub.dto.StudyCreateDto;
-import com.example.bookclub.dto.StudyDetailResultDto;
+import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
-import com.example.bookclub.dto.StudyResultDto;
-import com.example.bookclub.dto.StudyUpdateDto;
 import com.example.bookclub.errors.AccountNotManagerOfStudyException;
 import com.example.bookclub.errors.ParseTimeException;
 import com.example.bookclub.errors.StudyAlreadyExistedException;
@@ -65,7 +62,7 @@ public class StudyService {
      * @throws StudyStartAndEndDateNotValidException 생성하려는 스터디 종료일이 시작일보다 빠른 경우
      * @throws StudyStartAndEndTimeNotValidException 생성하려는 스터디 종료시간이 시작시간보다 빠른 경우
      */
-    public StudyResultDto createStudy(String email, StudyCreateDto studyCreateDto) {
+    public StudyDto.StudyResultDto createStudy(String email, StudyDto.StudyCreateDto studyCreateDto) {
         Account loginAccount = accountService.findAccountByEmail(email);
 
         if(loginAccount.getStudy() != null) {
@@ -95,7 +92,7 @@ public class StudyService {
         study.addAdmin(loginAccount);
         Study createdStudy = studyRepository.save(study);
 
-        return StudyResultDto.of(createdStudy);
+        return StudyDto.StudyResultDto.of(createdStudy);
     }
 
     /**
@@ -110,7 +107,7 @@ public class StudyService {
      * @throws StudyStartAndEndDateNotValidException 스터디 식별자에 해당하는 스터디 종료일이 시작일보다 빠른 경우
      * @throws StudyStartAndEndTimeNotValidException 스터디 식별자에 해당하는 스터디 종료시간이 시작시간보다 빠른 경우
      */
-    public StudyResultDto updateStudy(String email, Long id, StudyUpdateDto studyUpdateDto) {
+    public StudyDto.StudyResultDto updateStudy(String email, Long id, StudyDto.StudyUpdateDto studyUpdateDto) {
         Study study = getStudy(id);
         Account loginAccount = accountService.findAccountByEmail(email);
         if(!study.getEmail().equals(loginAccount.getEmail())) {
@@ -132,7 +129,7 @@ public class StudyService {
         }
 
         study.updateWith(studyUpdateDto);
-        return StudyResultDto.of(study);
+        return StudyDto.StudyResultDto.of(study);
     }
 
     /**
@@ -184,7 +181,7 @@ public class StudyService {
      * @return 삭제된 스터디 식별자
      * @throws AccountNotManagerOfStudyException 스터디 식별자에 해당하는 스터디 이메일과 사용자 식별자가 다른 경우
      */
-    public StudyResultDto deleteStudy(String email, Long id) {
+    public StudyDto.StudyResultDto deleteStudy(String email, Long id) {
         Study study = getStudy(id);
         Account loginAccount = accountService.findAccountByEmail(email);
         if(!study.getEmail().equals(loginAccount.getEmail())) {
@@ -194,7 +191,7 @@ public class StudyService {
         study.deleteAccounts();
         studyRepository.delete(study);
 
-        return StudyResultDto.of(study);
+        return StudyDto.StudyResultDto.of(study);
     }
 
     /**
@@ -283,7 +280,7 @@ public class StudyService {
      * @param id 스터디 식별자
      * @return 스터디 식별자에 해당하는 스터디 정보
      */
-    public StudyDetailResultDto getDetailedStudy(UserAccount userAccount, Long id) {
+    public StudyDto.StudyDetailResultDto getDetailedStudy(UserAccount userAccount, Long id) {
         Long principalId = userAccount.getAccount().getId();
         Study study = getStudy(id);
         List<StudyComment> studyComments = study.getStudyComments();
@@ -311,7 +308,7 @@ public class StudyService {
                     })
                 .collect(Collectors.toList());
 
-        return StudyDetailResultDto.of(StudyResultDto.of(study), studyCommentResultDtos);
+        return StudyDto.StudyDetailResultDto.of(StudyDto.StudyResultDto.of(study), studyCommentResultDtos);
     }
 
     /**
@@ -323,7 +320,7 @@ public class StudyService {
      * @param pageable 페이징 정보
      * @return 검색어와 스터디 상태에 해당하는 스터디 페이징 정보
      */
-    public Page<StudyResultDto> getStudiesBySearch(String keyword, StudyState studyState, Long principalId, Pageable pageable) {
+    public Page<StudyDto.StudyResultDto> getStudiesBySearch(String keyword, StudyState studyState, Long principalId, Pageable pageable) {
         List<Study> studies = studyRepository.findByBookNameContaining(keyword, studyState, pageable);
         long total = studyRepository.getStudiesCountByKeyword(keyword, studyState);
 
@@ -336,8 +333,8 @@ public class StudyService {
             });
         });
 
-        List<StudyResultDto> studyResultDtos = studies.stream()
-                .map(StudyResultDto::of)
+        List<StudyDto.StudyResultDto> studyResultDtos = studies.stream()
+                .map(StudyDto.StudyResultDto::of)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(studyResultDtos, pageable, total);

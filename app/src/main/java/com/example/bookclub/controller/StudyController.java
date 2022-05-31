@@ -9,10 +9,9 @@ import com.example.bookclub.domain.StudyState;
 import com.example.bookclub.domain.Zone;
 import com.example.bookclub.dto.PageResultDto;
 import com.example.bookclub.dto.StudyCreateInfoDto;
-import com.example.bookclub.dto.StudyDetailResultDto;
+import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.dto.StudyInfoResultDto;
 import com.example.bookclub.dto.StudyListInfoDto;
-import com.example.bookclub.dto.StudyResultDto;
 import com.example.bookclub.dto.StudyUpdateInfoDto;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.data.domain.Page;
@@ -57,7 +56,7 @@ public class StudyController {
                               @PathVariable Long id, Model model) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        StudyDetailResultDto detailedStudy = studyService.getDetailedStudy(userAccount, id);
+        StudyDto.StudyDetailResultDto detailedStudy = studyService.getDetailedStudy(userAccount, id);
         model.addAttribute("detailedStudy", detailedStudy);
 
         Study study = studyService.getStudy(id);
@@ -201,7 +200,8 @@ public class StudyController {
      */
     private String getStudyList(Account account, Pageable pageable,
                                 Model model, String title, StudyState studyState) {
-        Page<StudyResultDto> studyResultDto = studyService.getStudiesBySearch(title, studyState, account.getId(), pageable);
+        Page<StudyDto.StudyResultDto> studyResultDto =
+                studyService.getStudiesBySearch(title, studyState, account.getId(), pageable);
         StudyListInfoDto studyListInfoDto = StudyListInfoDto.of(studyResultDto, studyState, title);
 
         model.addAttribute("StudyListInfoDto", studyListInfoDto);
