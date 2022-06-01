@@ -108,3 +108,6 @@ jasypt:
   key: ENC(Ma5/uTJf8gChwHgjSmo9HemMwEJfQqxq)
   encryptor:
     bean: jasyptStringEncryptor
+
+sentry:
+  dsn: ENC(2JTLuAB3yghUCxXLi4ii2ApDUeDt+hQ9HmL9EEoVcBO5zmFbx6cYG8AAH4161uWuSHBeG0Bace1GbawyNTEwUo+RTn7NCv7ktATlEzUOzDr+dMnXjdDNug==)

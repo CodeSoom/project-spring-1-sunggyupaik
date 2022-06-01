@@ -194,6 +194,9 @@ dependencies {
 
 	// Jackson DataType
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
+	//Sentry Log
+	implementation 'io.sentry:sentry-spring-boot-starter:5.7.4'
 }
 
 application {
