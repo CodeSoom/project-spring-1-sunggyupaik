@@ -293,7 +293,7 @@ public class StudyService {
      *
      * @param keyword 검색어
      * @param studyState 스터디 상태
-     * @param principalId 로그인한 사용자 식별자
+     * @param account 로그인한 사용자
      * @param pageable 페이징 정보
      * @return 검색어와 스터디 상태에 해당하는 스터디 페이징 정보
      */
