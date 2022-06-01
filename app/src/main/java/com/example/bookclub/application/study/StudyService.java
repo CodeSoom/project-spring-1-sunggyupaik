@@ -297,22 +297,12 @@ public class StudyService {
      * @param pageable 페이징 정보
      * @return 검색어와 스터디 상태에 해당하는 스터디 페이징 정보
      */
-    public Page<StudyApiDto.StudyResultDto> getStudiesBySearch(String keyword, StudyState studyState, Long principalId, Pageable pageable) {
+    public Page<StudyApiDto.StudyResultDto> getStudiesBySearch(
+            String keyword, StudyState studyState, Account account, Pageable pageable
+    ) {
         List<Study> studies = studyRepository.findByBookNameContaining(keyword, studyState, pageable);
         long total = studyRepository.getStudiesCountByKeyword(keyword, studyState);
-
-        studies.forEach(study -> {
-            study.addLikesCount(study.getStudyLikes().size());
-            study.getStudyLikes().forEach(studyLike -> {
-                if(studyLike.getAccount().getId().equals(principalId)) {
-                    study.addLiked();
-                }
-            });
-        });
-
-        List<StudyApiDto.StudyResultDto> studyResultDtos = studies.stream()
-                .map(StudyApiDto.StudyResultDto::of)
-                .collect(Collectors.toList());
+        List<StudyApiDto.StudyResultDto> studyResultDtos = studySeriesFactory.getStudyLists(account, studies);
 
         return new PageImpl<>(studyResultDtos, pageable, total);
     }

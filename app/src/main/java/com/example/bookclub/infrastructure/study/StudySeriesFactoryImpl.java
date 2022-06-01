@@ -42,4 +42,21 @@ public class StudySeriesFactoryImpl implements StudySeriesFactory {
 
 		return StudyApiDto.StudyDetailResultDto.of(StudyApiDto.StudyResultDto.of(study), studyCommentResultDtos);
 	}
+
+	@Override
+	public List<StudyApiDto.StudyResultDto> getStudyLists(Account account, List<Study> studies) {
+		Long principalId = account.getId();
+
+		return studies.stream()
+				.map(study -> {
+					study.addLikesCount(study.getStudyLikes().size());
+					study.getStudyLikes().forEach(studyLike -> {
+						if(studyLike.getAccount().getId().equals(principalId)) {
+							study.addLiked();
+						}
+					});
+					return StudyApiDto.StudyResultDto.of(study);
+				})
+				.collect(Collectors.toList());
+	}
 }
