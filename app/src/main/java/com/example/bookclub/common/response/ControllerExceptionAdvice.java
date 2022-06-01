@@ -33,6 +33,7 @@ import com.example.bookclub.common.exception.study.studycommentlike.StudyComment
 import com.example.bookclub.common.exception.study.studylike.StudyLikeAlreadyExistedException;
 import com.example.bookclub.common.exception.study.studylike.StudyLikeNotExistedException;
 import com.example.bookclub.common.interceptor.CommonHttpRequestInterceptor;
+import io.sentry.Sentry;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.core.NestedExceptionUtils;
@@ -46,12 +47,13 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class ControllerErrorAdvice {
+public class ControllerExceptionAdvice {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(value = Exception.class)
     public CommonResponse onException(Exception e) {
         String eventId = MDC.get(CommonHttpRequestInterceptor.HEADER_REQUEST_UUID_KEY);
         log.error("eventId = {} ", eventId, e);
+        Sentry.captureException(e);
         return CommonResponse.fail(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
