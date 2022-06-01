@@ -1,12 +1,16 @@
-package com.example.bookclub.domain.study;
+package com.example.bookclub.infrastructure.study;
 
 import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.StudySeriesFactory;
 import com.example.bookclub.domain.study.studycomment.StudyComment;
 import com.example.bookclub.dto.StudyApiDto;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class StudySeriesFactoryImpl implements StudySeriesFactory {
 	@Override
 	public StudyApiDto.StudyDetailResultDto getDetailedStudy(Account account, Study study) {
