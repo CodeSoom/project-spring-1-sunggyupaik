@@ -15,7 +15,7 @@ import com.example.bookclub.common.exception.account.AccountNicknameDuplicatedEx
 import com.example.bookclub.common.exception.account.AccountNotFoundException;
 import com.example.bookclub.common.exception.account.AccountPasswordBadRequestException;
 import com.example.bookclub.common.exception.account.emailauthentication.EmailNotAuthenticatedException;
-import com.example.bookclub.repository.account.JpaAccountRepository;
+import com.example.bookclub.infrastructure.account.JpaAccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

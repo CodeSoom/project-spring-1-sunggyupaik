@@ -18,7 +18,7 @@ import com.example.bookclub.common.exception.study.StudySizeFullException;
 import com.example.bookclub.common.exception.study.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.common.exception.study.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.common.exception.study.StudyStartDateInThePastException;
-import com.example.bookclub.repository.study.JpaStudyRepository;
+import com.example.bookclub.infrastructure.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;

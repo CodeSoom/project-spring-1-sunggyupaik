@@ -4,7 +4,7 @@ import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.account.role.Role;
 import com.example.bookclub.domain.account.role.RoleRepository;
 import com.example.bookclub.common.exception.account.AccountEmailNotFoundException;
-import com.example.bookclub.repository.account.JpaAccountRepository;
+import com.example.bookclub.infrastructure.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

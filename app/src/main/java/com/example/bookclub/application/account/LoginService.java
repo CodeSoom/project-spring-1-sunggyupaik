@@ -2,7 +2,7 @@ package com.example.bookclub.application.account;
 
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.AccountDto;
-import com.example.bookclub.repository.account.JpaAccountRepository;
+import com.example.bookclub.infrastructure.account.JpaAccountRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
