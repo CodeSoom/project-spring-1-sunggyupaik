@@ -2,7 +2,7 @@ package com.example.bookclub.application.interview;
 
 import com.example.bookclub.domain.interview.Interview;
 import com.example.bookclub.dto.InterviewDto;
-import com.example.bookclub.repository.interview.JpaInterviewRepository;
+import com.example.bookclub.infrastructure.interview.JpaInterviewRepository;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

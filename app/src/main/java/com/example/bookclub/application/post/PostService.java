@@ -1,7 +1,7 @@
 package com.example.bookclub.application.post;
 
 import com.example.bookclub.domain.post.Post;
-import com.example.bookclub.repository.post.ElasticPostRepository;
+import com.example.bookclub.infrastructure.post.ElasticPostRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;

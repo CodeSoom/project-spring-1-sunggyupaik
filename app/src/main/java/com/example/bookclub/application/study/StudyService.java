@@ -1,12 +1,6 @@
 package com.example.bookclub.application.study;
 
 import com.example.bookclub.application.account.AccountService;
-import com.example.bookclub.domain.account.Account;
-import com.example.bookclub.domain.study.Study;
-import com.example.bookclub.domain.study.studycomment.StudyComment;
-import com.example.bookclub.domain.study.StudyState;
-import com.example.bookclub.dto.StudyApiDto;
-import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.common.exception.account.AccountNotManagerOfStudyException;
 import com.example.bookclub.common.exception.study.ParseTimeException;
 import com.example.bookclub.common.exception.study.StudyAlreadyExistedException;
@@ -18,7 +12,13 @@ import com.example.bookclub.common.exception.study.StudySizeFullException;
 import com.example.bookclub.common.exception.study.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.common.exception.study.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.common.exception.study.StudyStartDateInThePastException;
-import com.example.bookclub.repository.study.JpaStudyRepository;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.StudySeriesFactory;
+import com.example.bookclub.domain.study.StudyState;
+import com.example.bookclub.dto.StudyApiDto;
+import com.example.bookclub.dto.StudyDto;
+import com.example.bookclub.infrastructure.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -42,12 +42,15 @@ import java.util.stream.Collectors;
 public class StudyService {
     private final JpaStudyRepository studyRepository;
     private final AccountService accountService;
+    private final StudySeriesFactory studySeriesFactory;
 
     public StudyService(JpaStudyRepository studyRepository,
-                        AccountService accountService
+                        AccountService accountService,
+                        StudySeriesFactory studySeriesFactory
     ) {
         this.studyRepository = studyRepository;
         this.accountService = accountService;
+        this.studySeriesFactory = studySeriesFactory;
     }
 
     /**
@@ -280,34 +283,9 @@ public class StudyService {
      * @return 스터디 식별자에 해당하는 스터디 정보
      */
     public StudyApiDto.StudyDetailResultDto getDetailedStudy(UserAccount userAccount, Long id) {
-        Long principalId = userAccount.getAccount().getId();
+        Account account = userAccount.getAccount();
         Study study = getStudy(id);
-        List<StudyComment> studyComments = study.getStudyComments();
-        study.addCommentsCount(studyComments.size());
-        study.getFavorites().forEach(favorite -> {
-            if(favorite.getAccount().getId().equals(principalId))
-                study.addFavorite();
-        });
-        
-        studyComments.forEach(studyComment -> {
-            studyComment.setLikesCount(studyComment.getStudyCommentLikes().size());
-            studyComment.getStudyCommentLikes().forEach(studyCommentLike -> {
-               if(studyCommentLike.getAccount().getId().equals(principalId)) {
-                   studyComment.addLiked();
-               }
-            });
-
-            if(studyComment.getAccount().getId().equals(principalId))
-                studyComment.setIsWrittenByMeTrue();
-        });
-
-        List<StudyApiDto.StudyCommentResultDto> studyCommentResultDtos = studyComments.stream()
-                .map(studyComment -> {
-                        return StudyApiDto.StudyCommentResultDto.of(studyComment, studyComment.getAccount());
-                    })
-                .collect(Collectors.toList());
-
-        return StudyApiDto.StudyDetailResultDto.of(StudyApiDto.StudyResultDto.of(study), studyCommentResultDtos);
+        return studySeriesFactory.getDetailedStudy(userAccount.getAccount(), study);
     }
 
     /**
@@ -315,26 +293,16 @@ public class StudyService {
      *
      * @param keyword 검색어
      * @param studyState 스터디 상태
-     * @param principalId 로그인한 사용자 식별자
+     * @param account 로그인한 사용자
      * @param pageable 페이징 정보
      * @return 검색어와 스터디 상태에 해당하는 스터디 페이징 정보
      */
-    public Page<StudyApiDto.StudyResultDto> getStudiesBySearch(String keyword, StudyState studyState, Long principalId, Pageable pageable) {
+    public Page<StudyApiDto.StudyResultDto> getStudiesBySearch(
+            String keyword, StudyState studyState, Account account, Pageable pageable
+    ) {
         List<Study> studies = studyRepository.findByBookNameContaining(keyword, studyState, pageable);
         long total = studyRepository.getStudiesCountByKeyword(keyword, studyState);
-
-        studies.forEach(study -> {
-            study.addLikesCount(study.getStudyLikes().size());
-            study.getStudyLikes().forEach(studyLike -> {
-                if(studyLike.getAccount().getId().equals(principalId)) {
-                    study.addLiked();
-                }
-            });
-        });
-
-        List<StudyApiDto.StudyResultDto> studyResultDtos = studies.stream()
-                .map(StudyApiDto.StudyResultDto::of)
-                .collect(Collectors.toList());
+        List<StudyApiDto.StudyResultDto> studyResultDtos = studySeriesFactory.getStudyLists(account, studies);
 
         return new PageImpl<>(studyResultDtos, pageable, total);
     }

@@ -198,7 +198,7 @@ public class StudyController {
     private String getStudyList(Account account, Pageable pageable,
                                 Model model, String title, StudyState studyState) {
         Page<StudyApiDto.StudyResultDto> studyResultDto =
-                studyService.getStudiesBySearch(title, studyState, account.getId(), pageable);
+                studyService.getStudiesBySearch(title, studyState, account, pageable);
         StudyDto.StudyListInfoDto studyListInfoDto = StudyDto.StudyListInfoDto.of(studyResultDto, studyState, title);
 
         model.addAttribute("StudyListInfoDto", studyListInfoDto);
