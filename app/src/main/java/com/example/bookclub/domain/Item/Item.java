@@ -59,7 +59,7 @@ public class Item extends BaseEntity {
 
 	@Builder
 	public Item(Long id, String name, String image, String description, LocalDate publishedDate,
-				String author, String publisher, String price, OrderStatus status, List<ItemOptionGroup> itemOptionGroups) {
+				String author, String publisher, Long price, OrderStatus status, List<ItemOptionGroup> itemOptionGroups) {
 		this.id = id;
 		this.name = name;
 		this.image = image;
