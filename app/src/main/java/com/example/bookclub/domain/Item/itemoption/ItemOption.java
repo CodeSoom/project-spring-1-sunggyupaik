@@ -31,6 +31,8 @@ public class ItemOption extends BaseEntity {
 
 	private String name;
 
+	private Integer ordering;
+
 	private Long price;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -39,10 +41,12 @@ public class ItemOption extends BaseEntity {
 	private ItemOptionGroup itemOptionGroup;
 
 	@Builder
-	public ItemOption(Long id, String name, Long price, ItemOptionGroup itemOptionGroup) {
+	public ItemOption(Long id, String name, Long price,
+					  Integer ordering, ItemOptionGroup itemOptionGroup) {
 		this.id = id;
 		this.name = name;
 		this.price = price;
+		this.ordering = ordering;
 		this.itemOptionGroup = itemOptionGroup;
 	}
 }

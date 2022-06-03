@@ -36,6 +36,8 @@ public class ItemOptionGroup extends BaseEntity {
 
 	private String name;
 
+	private Integer ordering;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ITEM_ID")
 	@ToString.Exclude
@@ -47,10 +49,11 @@ public class ItemOptionGroup extends BaseEntity {
 	private List<ItemOption> itemOptions = new ArrayList<>();
 
 	@Builder
-	public ItemOptionGroup(Long id, String name, Item item,
-						   List<ItemOption> itemOptions) {
+	public ItemOptionGroup(Long id, String name, Integer ordering,
+						   Item item, List<ItemOption> itemOptions) {
 		this.id = id;
 		this.name = name;
+		this.ordering = ordering;
 		this.item = item;
 		this.itemOptions = itemOptions;
 	}
