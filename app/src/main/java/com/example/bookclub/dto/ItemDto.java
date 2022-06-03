@@ -31,6 +31,8 @@ public class ItemDto {
 
 		private String author;
 
+		private String publisher;
+
 		private Long price;
 
 		@Enumerated(EnumType.STRING)
@@ -38,13 +40,14 @@ public class ItemDto {
 
 		@Builder
 		public ItemResultDto(Long id, String title, String image, String description, LocalDate publishedDate,
-							 String author, Long price, OrderStatus status) {
+							 String author, String publisher, Long price, OrderStatus status) {
 			this.id = id;
 			this.title = title;
 			this.image = image;
 			this.description = description;
 			this.publishedDate = publishedDate;
 			this.author = author;
+			this.publisher = publisher;
 			this.price = price;
 			this.status = status;
 		}
@@ -57,6 +60,7 @@ public class ItemDto {
 					.description(item.getDescription())
 					.publishedDate(item.getPublishedDate())
 					.author(item.getAuthor())
+					.publisher(item.getPublisher())
 					.price(item.getPrice())
 					.status(item.getStatus())
 					.build();
