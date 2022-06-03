@@ -1,6 +1,7 @@
 package com.example.bookclub.application.item;
 
 import com.example.bookclub.domain.Item.Item;
+import com.example.bookclub.infrastructure.item.JpaItemRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -8,7 +9,13 @@ import javax.transaction.Transactional;
 @Service
 @Transactional
 public class ItemService {
-	public Item detailItem() {
-		return null;
+	private final JpaItemRepository itemRepository;
+
+	public ItemService(JpaItemRepository itemRepository) {
+		this.itemRepository = itemRepository;
+	}
+
+	public Item detailItem(String title) {
+		return itemRepository.findByTitle(title);
 	}
 }
