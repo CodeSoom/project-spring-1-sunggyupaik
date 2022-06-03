@@ -1,9 +1,8 @@
-package com.example.bookclub.domain.Item.itemoptiongroup;
+package com.example.bookclub.domain.Item.itemoption;
 
 import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseEntity;
-import com.example.bookclub.domain.Item.Item;
-import com.example.bookclub.domain.Item.itemoption.ItemOption;
+import com.example.bookclub.domain.Item.itemoptiongroup.ItemOptionGroup;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,40 +17,32 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
-@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 @EntityListeners(value = { AccountEntityListener.class })
-public class ItemOptionGroup extends BaseEntity {
+public class ItemOption extends BaseEntity {
 	@Id
 	@GeneratedValue
-	@Column(name = "ITEM_OPTION_GROUP_ID")
+	@Column(name = "ITEM_OPTION_ID")
 	private Long id;
 
 	private String name;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ITEM_ID")
-	@ToString.Exclude
-	private Item item;
+	private Long price;
 
-	@OneToMany(mappedBy = "itemOptionGroup")
-	@Builder.Default
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ITEM_OPTION_GROUP_ID")
 	@ToString.Exclude
-	private List<ItemOption> itemOptions = new ArrayList<>();
+	private ItemOptionGroup itemOptionGroup;
 
 	@Builder
-	public ItemOptionGroup(Long id, String name, Item item,
-						   List<ItemOption> itemOptions) {
+	public ItemOption(Long id, String name, Long price, ItemOptionGroup itemOptionGroup) {
 		this.id = id;
 		this.name = name;
-		this.item = item;
-		this.itemOptions = itemOptions;
+		this.price = price;
+		this.itemOptionGroup = itemOptionGroup;
 	}
 }
