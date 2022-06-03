@@ -34,7 +34,7 @@ public class Item extends BaseEntity {
 	@Column(name = "ITEM_ID")
 	private Long id;
 
-	private String name;
+	private String title;
 
 	private String image;
 
@@ -58,10 +58,10 @@ public class Item extends BaseEntity {
 	List<ItemOptionGroup> itemOptionGroups = new ArrayList<>();
 
 	@Builder
-	public Item(Long id, String name, String image, String description, LocalDate publishedDate,
+	public Item(Long id, String title, String image, String description, LocalDate publishedDate,
 				String author, String publisher, Long price, OrderStatus status, List<ItemOptionGroup> itemOptionGroups) {
 		this.id = id;
-		this.name = name;
+		this.title = title;
 		this.image = image;
 		this.description = description;
 		this.publishedDate = publishedDate;
