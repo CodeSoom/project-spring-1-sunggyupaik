@@ -1,7 +1,7 @@
 package com.example.bookclub.controller;
 
 import com.example.bookclub.application.item.ItemService;
-import com.example.bookclub.domain.Item.Item;
+import com.example.bookclub.dto.ItemDto;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +17,7 @@ public class ItemController {
 	}
 
 	public String itemDetail(Model model, @RequestParam String title) {
-		Item item = itemService.detailItem(title);
+		ItemDto.ItemResultDto item = itemService.detailItem(title);
 		model.addAttribute("item", item);
 
 		return "items/items-detail";

@@ -1,6 +1,6 @@
 package com.example.bookclub.application.item;
 
-import com.example.bookclub.domain.Item.Item;
+import com.example.bookclub.dto.ItemDto;
 import com.example.bookclub.infrastructure.item.JpaItemRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +15,7 @@ public class ItemService {
 		this.itemRepository = itemRepository;
 	}
 
-	public Item detailItem(String title) {
+	public ItemDto.ItemResultDto detailItem(String title) {
 		return itemRepository.findByTitle(title);
 	}
 }
