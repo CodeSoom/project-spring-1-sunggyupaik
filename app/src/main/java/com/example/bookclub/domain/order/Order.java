@@ -2,7 +2,7 @@ package com.example.bookclub.domain.order;
 
 import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseEntity;
-import com.example.bookclub.domain.order.orderitem.OrderItem;
+import com.example.bookclub.domain.order.item.OrderItem;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
