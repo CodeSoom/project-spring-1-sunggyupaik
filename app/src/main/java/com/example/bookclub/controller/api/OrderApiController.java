@@ -1,7 +1,9 @@
 package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.order.OrderService;
+import com.example.bookclub.common.response.CommonResponse;
 import com.example.bookclub.domain.order.Order;
+import com.example.bookclub.dto.OrderDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -17,8 +19,8 @@ public class OrderApiController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Object create(Order order) {
-		orderService.create(order);
-		return null;
+	public CommonResponse<OrderDto.OrderCreateResultDto> create(Order order) {
+		OrderDto.OrderCreateResultDto response = orderService.create(order);
+		return CommonResponse.success(response);
 	}
 }

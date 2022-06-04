@@ -4,6 +4,7 @@ import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseEntity;
 import com.example.bookclub.domain.order.deliveryaddress.DeliveryAddress;
 import com.example.bookclub.domain.order.item.OrderItem;
+import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,6 +48,7 @@ public class Order extends BaseEntity {
 	List<OrderItem> orderItems = new ArrayList<>();
 
 	@Builder
+	@QueryProjection
 	public Order(Long id, Long accountId, String payMethod, OrderStatus orderStatus,
 				 DeliveryAddress deliveryAddress, List<OrderItem> orderItems) {
 		this.id = id;

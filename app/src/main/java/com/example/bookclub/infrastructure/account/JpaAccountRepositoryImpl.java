@@ -1,15 +1,15 @@
 package com.example.bookclub.infrastructure.account;
 
 import com.example.bookclub.domain.account.Account;
-import com.example.bookclub.domain.QFavorite;
+import com.example.bookclub.domain.study.favorite.QFavorite;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
-import static com.example.bookclub.domain.QAccount.account;
-import static com.example.bookclub.domain.QStudy.study;
-import static com.example.bookclub.domain.QUploadFile.uploadFile;
+import static com.example.bookclub.domain.account.QAccount.account;
+import static com.example.bookclub.domain.study.QStudy.study;
+import static com.example.bookclub.domain.uplodfile.QUploadFile.uploadFile;
 
 @Repository
 public class JpaAccountRepositoryImpl implements AccountRepositoryCustom {
