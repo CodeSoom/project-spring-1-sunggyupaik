@@ -54,4 +54,8 @@ public class OrderItemOptionGroup extends BaseEntity {
 		this.orderItem = orderItem;
 		this.orderItemOptions = orderItemOptions;
 	}
+
+	public void setOrderItem(OrderItem orderItem) {
+		this.orderItem = orderItem;
+	}
 }
