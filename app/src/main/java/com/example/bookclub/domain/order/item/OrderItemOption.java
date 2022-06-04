@@ -48,4 +48,8 @@ public class OrderItemOption extends BaseEntity {
 		this.price = price;
 		this.orderItemOptionGroup = orderItemOptionGroup;
 	}
+
+	public void setOrderItemOptionGroup(OrderItemOptionGroup orderItemOptionGroup) {
+		this.orderItemOptionGroup = orderItemOptionGroup;
+	}
 }

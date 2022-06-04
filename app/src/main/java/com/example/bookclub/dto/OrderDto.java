@@ -147,10 +147,6 @@ public class OrderDto {
 					.name(this.name)
 					.build();
 		}
-
-		public void setOrder(Order order) {
-			this.order = order;
-		}
 	}
 
 	@Getter
@@ -182,10 +178,6 @@ public class OrderDto {
 					.ordering(this.ordering)
 					.name(this.name)
 					.build();
-		}
-
-		public void setOrderItem(OrderItem orderItem) {
-			this.orderItem = orderItem;
 		}
 	}
 
@@ -222,10 +214,6 @@ public class OrderDto {
 					.name(this.name)
 					.price(this.price)
 					.build();
-		}
-
-		public void setOrderItemOptionGroup(OrderItemOptionGroup orderItemOptionGroup) {
-			this.orderItemOptionGroup = orderItemOptionGroup;
 		}
 	}
 }

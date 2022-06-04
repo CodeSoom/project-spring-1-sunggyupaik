@@ -67,4 +67,8 @@ public class OrderItem extends BaseEntity {
 		this.order = order;
 		this.orderItemOptionGroups = orderItemOptionGroups;
 	}
+
+	public void setOrder(Order order) {
+		this.order = order;
+	}
 }
