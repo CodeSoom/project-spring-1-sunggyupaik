@@ -16,9 +16,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -26,32 +23,29 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 @EntityListeners(value = { AccountEntityListener.class })
-public class OrderItemOptionGroup extends BaseEntity {
+public class OrderItemOption extends BaseEntity {
 	@Id @GeneratedValue
-	@Column(name = "ORDER_ITEM_OPTION_GROUP_ID")
+	@Column(name = "ORDER_ITEM_OPTION_ID")
 	private Long id;
 
 	private Integer ordering;
 
 	private String name;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ORDER_ITEM_ID")
-	@ToString.Exclude
-	private OrderItem orderItem;
+	private Long price;
 
-	@OneToMany(mappedBy = "orderItemOptionGroup", fetch = FetchType.LAZY)
-	@Builder.Default
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ORDER_ITEM_OPTION_GROUP_ID")
 	@ToString.Exclude
-	List<OrderItemOption> orderItemOptions = new ArrayList<>();
+	OrderItemOptionGroup orderItemOptionGroup;
 
 	@Builder
-	public OrderItemOptionGroup(Long id, Integer ordering, String name, OrderItem orderItem,
-								List<OrderItemOption> orderItemOptions) {
+	public OrderItemOption(Long id, Integer ordering, String name, Long price,
+						   OrderItemOptionGroup orderItemOptionGroup) {
 		this.id = id;
 		this.ordering = ordering;
 		this.name = name;
-		this.orderItem = orderItem;
-		this.orderItemOptions = orderItemOptions;
+		this.price = price;
+		this.orderItemOptionGroup = orderItemOptionGroup;
 	}
 }

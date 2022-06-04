@@ -12,6 +12,8 @@ import lombok.ToString;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -40,12 +42,17 @@ public class OrderItem extends BaseEntity {
 
 	private String name;
 
+	@Enumerated(EnumType.STRING)
+	private DeliveryStatus deliveryStatus;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORDER_ID")
 	@ToString.Exclude
 	private Order order;
 
 	@OneToMany(mappedBy = "orderItem", fetch = FetchType.LAZY)
+	@Builder.Default
+	@ToString.Exclude
 	List<OrderItemOptionGroup> orderItemOptionGroups = new ArrayList<>();
 
 	@Builder
