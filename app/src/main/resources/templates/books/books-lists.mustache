@@ -60,7 +60,7 @@
 
     .modal_content {
         border: 2px solid black;
-        width:500px;
+        width:550px;
         height:350px;
         background:#fff;
         border-radius:10px;
@@ -149,8 +149,9 @@
                     </tr>
                 </table>
                 <button type="submit" class="btn btn-primary">스터디 생성</button>
-                <button type="button" class="btn btn-warning" onclick="location.href='/studies/open?title={{title}}'">모집중 스터디</button>
-                <button type="button" class="btn btn-danger">돌아가기</button>
+                <button type="button" class="btn btn-warning" onclick="location.href='/studies/open?title={{title}}'">스터디 검색</button>
+                <button type="button" class="btn btn-success" onclick="location.href='/items?title={{title}}'">구매</button>
+                <button type="button" class="btn btn-danger">취소</button>
             </form>
         </div>
     </div>

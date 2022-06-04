@@ -1,0 +1,42 @@
+{{>layout/header}}
+
+<h1>스터디 생성</h1>
+
+<div class="col-md-12">
+    <div class="col-md-6">
+        <form>
+            <div class="form-group">
+                <label for="bookName"> 책제목 </label>
+                <input type="text" class="form-control" id="bookName" value="{{item.title}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="bookImage"></label>
+                <img src="{{item.image}}" id="bookImage" alt="">
+            </div>
+            <div class="form-group">
+                <label for="author"> 작가 </label>
+                <input type="text" class="form-control" id="author" value="{{item.author}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="publisher"> 출판사 </label>
+                <input type="text" class="form-control" id="publisher" value="{{item.publisher}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="publishedDate"> 발행년도 </label>
+                <input type="text" class="form-control" id="publishedDate" value="{{item.publishedDate}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="description"> 설명 </label>
+                <input type="text" class="form-control" id="description" value="{{item.description}}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="price"> 가격 </label>
+                 <input type="text" class="form-control" id="description" value="{{item.price}}" readonly>
+            </div>
+        </form>
+        <a href="/" role="button" class="btn btn-secondary">돌아가기</a>
+        <button type="button" class="btn btn-primary" id="btn-save-study">결제하기</button>
+    </div>
+</div>
+
+{{>layout/footer}}
