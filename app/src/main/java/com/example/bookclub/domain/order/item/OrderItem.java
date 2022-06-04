@@ -57,12 +57,13 @@ public class OrderItem extends BaseEntity {
 
 	@Builder
 	public OrderItem(Long id, Long itemId, Integer count, Long price, String name,
-					 Order order, List<OrderItemOptionGroup> orderItemOptionGroups) {
+					 DeliveryStatus deliveryStatus, Order order, List<OrderItemOptionGroup> orderItemOptionGroups) {
 		this.id = id;
 		this.itemId = itemId;
 		this.count = count;
 		this.price = price;
 		this.name = name;
+		this.deliveryStatus = deliveryStatus;
 		this.order = order;
 		this.orderItemOptionGroups = orderItemOptionGroups;
 	}
