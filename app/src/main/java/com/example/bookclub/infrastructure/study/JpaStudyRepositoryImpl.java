@@ -15,8 +15,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.bookclub.domain.QAccount.account;
-import static com.example.bookclub.domain.QStudy.study;
+import static com.example.bookclub.domain.account.QAccount.account;
+import static com.example.bookclub.domain.study.QStudy.study;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 public class JpaStudyRepositoryImpl implements StudyRepositoryCustom {
