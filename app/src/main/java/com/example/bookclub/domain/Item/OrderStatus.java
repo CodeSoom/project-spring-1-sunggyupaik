@@ -7,7 +7,7 @@ public enum OrderStatus implements EnumMapperType {
 	ON_SALE("판매중"),
 	END_OF_SALE("판매종료");
 
-	private String orderStatus;
+	private final String orderStatus;
 
 	OrderStatus(String orderStatus) {
 		this.orderStatus = orderStatus;
