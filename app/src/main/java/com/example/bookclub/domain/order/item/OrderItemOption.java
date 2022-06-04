@@ -37,7 +37,7 @@ public class OrderItemOption extends BaseEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "ORDER_ITEM_OPTION_GROUP_ID")
 	@ToString.Exclude
-	OrderItemOptionGroup orderItemOptionGroup;
+	private OrderItemOptionGroup orderItemOptionGroup;
 
 	@Builder
 	public OrderItemOption(Long id, Integer ordering, String name, Long price,
