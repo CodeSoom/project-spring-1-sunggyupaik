@@ -4,6 +4,8 @@ package com.example.bookclub.dto;
 import com.example.bookclub.domain.order.Order;
 import com.example.bookclub.domain.order.deliveryaddress.DeliveryAddress;
 import com.example.bookclub.domain.order.item.OrderItem;
+import com.example.bookclub.domain.order.item.OrderItemOption;
+import com.example.bookclub.domain.order.item.OrderItemOptionGroup;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -71,12 +73,12 @@ public class OrderDto {
 		@NotBlank(message = "etcMessage 는 필수값입니다")
 		private String etcMessage;
 
-		private List<OrderItem> orderItemList;
+		private List<OrderItemCreateRequest> orderItemCreateRequests;
 
 		@Builder
 		public OrderCreateRequest(Long accountId, String receiverName, String receiverPhone, String receiverZipcode,
 								  String receiverAddress1, String receiverAddress2, String etcMessage,
-								  List<OrderItem> orderItemList) {
+								  List<OrderItemCreateRequest> orderItemCreateRequests) {
 			this.accountId = accountId;
 			this.receiverName = receiverName;
 			this.receiverPhone = receiverPhone;
@@ -84,7 +86,7 @@ public class OrderDto {
 			this.receiverAddress1 = receiverAddress1;
 			this.receiverAddress2 = receiverAddress2;
 			this.etcMessage = etcMessage;
-			this.orderItemList = orderItemList;
+			this.orderItemCreateRequests = orderItemCreateRequests;
 		}
 
 		public Order toEntity() {
@@ -101,8 +103,129 @@ public class OrderDto {
 					.accountId(this.accountId)
 					.payMethod(this.payMethod)
 					.deliveryAddress(deliveryAddress)
-					.orderItems(orderItemList)
 					.build();
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class OrderItemCreateRequest {
+		@NotNull(message = "accountId 는 필수값입니다")
+		private Long itemId;
+
+		@NotBlank(message = "count 는 필수값입니다")
+		private Integer count;
+
+		@NotBlank(message = "price 는 필수값입니다")
+		private Long price;
+
+		@NotBlank(message = "name 는 필수값입니다")
+		private String name;
+
+		@NotBlank(message = "order 는 필수값입니다")
+		private Order order;
+
+		private List<OrderItemOptionGroupCreateRequest> orderItemOptionGroupCreateRequests;
+
+		@Builder
+		public OrderItemCreateRequest(Long itemId, Integer count, Long price, String name,
+									  Order order, List<OrderItemOptionGroupCreateRequest> orderItemOptionGroupCreateRequests) {
+			this.itemId = itemId;
+			this.count = count;
+			this.price = price;
+			this.name = name;
+			this.order = order;
+			this.orderItemOptionGroupCreateRequests = orderItemOptionGroupCreateRequests;
+		}
+
+		public OrderItem toEntity() {
+			return OrderItem.builder()
+					.itemId(this.itemId)
+					.count(this.count)
+					.price(this.price)
+					.name(this.name)
+					.build();
+		}
+
+		public void setOrder(Order order) {
+			this.order = order;
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class OrderItemOptionGroupCreateRequest {
+		@NotBlank(message = "ordering 는 필수값입니다")
+		private Integer ordering;
+
+		@NotBlank(message = "name 는 필수값입니다")
+		private String name;
+
+		@NotBlank(message = "orderItem 는 필수값입니다")
+		private OrderItem orderItem;
+
+		private List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests;
+
+		@Builder
+		public OrderItemOptionGroupCreateRequest(Integer ordering, String name,
+												 OrderItem orderItem, List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests) {
+			this.ordering = ordering;
+			this.name = name;
+			this.orderItem = orderItem;
+			this.orderItemOptionCreateRequests = orderItemOptionCreateRequests;
+		}
+
+		public OrderItemOptionGroup toEntity() {
+			return OrderItemOptionGroup.builder()
+					.ordering(this.ordering)
+					.name(this.name)
+					.build();
+		}
+
+		public void setOrderItem(OrderItem orderItem) {
+			this.orderItem = orderItem;
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class OrderItemOptionCreateRequest {
+		@NotBlank(message = "ordering 는 필수값입니다")
+		private Integer ordering;
+
+		@NotBlank(message = "name 는 필수값입니다")
+		private String name;
+
+		@NotBlank(message = "price 는 필수값입니다")
+		private Long price;
+
+		@NotBlank(message = "orderItemOptionGroup 는 필수값입니다")
+		private OrderItemOptionGroup orderItemOptionGroup;
+
+		private List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests;
+
+		@Builder
+		public OrderItemOptionCreateRequest(Integer ordering, String name, OrderItemOptionGroup orderItemOptionGroup, Long price,
+											List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests) {
+			this.ordering = ordering;
+			this.name = name;
+			this.orderItemOptionGroup = orderItemOptionGroup;
+			this.orderItemOptionCreateRequests = orderItemOptionCreateRequests;
+		}
+
+		public OrderItemOption toEntity() {
+			return OrderItemOption.builder()
+					.ordering(this.ordering)
+					.name(this.name)
+					.price(this.price)
+					.build();
+		}
+
+		public void setOrderItemOptionGroup(OrderItemOptionGroup orderItemOptionGroup) {
+			this.orderItemOptionGroup = orderItemOptionGroup;
 		}
 	}
 }
