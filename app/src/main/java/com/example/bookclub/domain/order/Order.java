@@ -2,6 +2,7 @@ package com.example.bookclub.domain.order;
 
 import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseEntity;
+import com.example.bookclub.domain.order.deliveryaddress.DeliveryAddress;
 import com.example.bookclub.domain.order.item.OrderItem;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
@@ -36,6 +38,9 @@ public class Order extends BaseEntity {
 
 	private OrderStatus orderStatus;
 
+	@Embedded
+	private DeliveryAddress deliveryAddress;
+
 	@OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
 	@Builder.Default
 	@ToString.Exclude
@@ -43,11 +48,12 @@ public class Order extends BaseEntity {
 
 	@Builder
 	public Order(Long id, Long accountId, String payMethod, OrderStatus orderStatus,
-				 List<OrderItem> orderItems) {
+				 DeliveryAddress deliveryAddress, List<OrderItem> orderItems) {
 		this.id = id;
 		this.accountId = accountId;
 		this.payMethod = payMethod;
 		this.orderStatus = orderStatus;
+		this.deliveryAddress = deliveryAddress;
 		this.orderItems = orderItems;
 	}
 }
