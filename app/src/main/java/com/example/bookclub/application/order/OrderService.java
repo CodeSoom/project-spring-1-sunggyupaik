@@ -16,8 +16,9 @@ public class OrderService {
 	}
 
 	@Transactional
-	public OrderDto.OrderCreateResultDto create(Order order) {
+	public OrderDto.OrderCreateResponse create(OrderDto.OrderCreateRequest orderCreateRequest) {
+		Order order = orderCreateRequest.toEntity();
 		Order savedOrder = orderRepository.save(order);
-		return OrderDto.OrderCreateResultDto.of(savedOrder);
+		return OrderDto.OrderCreateResponse.of(savedOrder);
 	}
 }

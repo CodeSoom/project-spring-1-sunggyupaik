@@ -2,12 +2,14 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.order.OrderService;
 import com.example.bookclub.common.response.CommonResponse;
-import com.example.bookclub.domain.order.Order;
 import com.example.bookclub.dto.OrderDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.validation.Valid;
 
 @RestController("/api/orders")
 public class OrderApiController {
@@ -19,8 +21,10 @@ public class OrderApiController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public CommonResponse<OrderDto.OrderCreateResultDto> create(Order order) {
-		OrderDto.OrderCreateResultDto response = orderService.create(order);
+	public CommonResponse<OrderDto.OrderCreateResponse> create(
+			@RequestBody @Valid OrderDto.OrderCreateRequest orderCreateRequest
+	) {
+		OrderDto.OrderCreateResponse response = orderService.create(orderCreateRequest);
 		return CommonResponse.success(response);
 	}
 }
