@@ -1,12 +1,21 @@
 package com.example.bookclub.application.order;
 
 import com.example.bookclub.domain.order.Order;
+import com.example.bookclub.infrastructure.order.JpaOrderRepository;
 import org.springframework.stereotype.Service;
+
+import javax.transaction.Transactional;
 
 @Service
 public class OrderService {
-	public Order create(Order order) {
+	private final JpaOrderRepository orderRepository;
 
-		return order;
+	public OrderService(JpaOrderRepository orderRepository) {
+		this.orderRepository = orderRepository;
+	}
+
+	@Transactional
+	public Order create(Order order) {
+		return orderRepository.save(order);
 	}
 }
