@@ -1,4 +1,4 @@
-package com.example.bookclub.domain.order.orderitem;
+package com.example.bookclub.domain.order.item;
 
 import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseEntity;
@@ -17,6 +17,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -42,13 +45,18 @@ public class OrderItem extends BaseEntity {
 	@ToString.Exclude
 	private Order order;
 
-	public OrderItem(Long id, Long itemId, Integer count,
-					 Long price, String name, Order order) {
+	@OneToMany(mappedBy = "orderItem", fetch = FetchType.LAZY)
+	List<OrderItemOptionGroup> orderItemOptionGroups = new ArrayList<>();
+
+	@Builder
+	public OrderItem(Long id, Long itemId, Integer count, Long price, String name,
+					 Order order, List<OrderItemOptionGroup> orderItemOptionGroups) {
 		this.id = id;
 		this.itemId = itemId;
 		this.count = count;
 		this.price = price;
 		this.name = name;
 		this.order = order;
+		this.orderItemOptionGroups = orderItemOptionGroups;
 	}
 }
