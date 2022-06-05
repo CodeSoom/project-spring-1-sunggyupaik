@@ -2,8 +2,11 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.order.OrderService;
 import com.example.bookclub.common.response.CommonResponse;
+import com.example.bookclub.domain.order.Order;
 import com.example.bookclub.dto.OrderDto;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -26,5 +29,10 @@ public class OrderApiController {
 	) {
 		OrderDto.OrderCreateResponse response = orderService.create(orderCreateRequest);
 		return CommonResponse.success(response);
+	}
+
+	@GetMapping("/{id}")
+	public Order detail(@PathVariable Long id) {
+		return orderService.detail(id);
 	}
 }
