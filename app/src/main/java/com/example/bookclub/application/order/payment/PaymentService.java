@@ -3,10 +3,10 @@ package com.example.bookclub.application.order.payment;
 import com.example.bookclub.domain.order.payment.PayMethod;
 import com.example.bookclub.dto.OrderDto;
 import com.example.bookclub.infrastructure.order.payment.NicePayProcessor;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.Objects;
 
 @Service
 public class PaymentService {
@@ -17,11 +17,18 @@ public class PaymentService {
 	}
 
 	@Transactional
-	public OrderDto.OrderPayResponse pay(OrderDto.OrderPayRequest orderPayRequest) {
-		if(Objects.equals(orderPayRequest.getPayMethod(), PayMethod.NICE_PAY.name())) {
-			nicePayProcessor.nicePayProcess(orderPayRequest);
+	public Long pay(OrderDto.OrderPayRequest orderPayRequest)
+			throws JsonProcessingException {
+		if (orderPayRequest.getPayMethod() == PayMethod.NICE_PAY) {
+			nicePayProcessor.pay(orderPayRequest);
 		}
 
-		return null;
+		return orderPayRequest.getOrderId();
+	}
+
+	@Transactional
+	public OrderDto.OrderPayResponse nicePaymentServerAuth(String tid, Long amount, Long orderId)
+			throws JsonProcessingException {
+		return nicePayProcessor.nicePaymentServerAuth(tid, amount, orderId);
 	}
 }

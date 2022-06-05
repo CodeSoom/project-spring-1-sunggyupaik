@@ -6,6 +6,7 @@ import com.example.bookclub.domain.order.deliveryaddress.DeliveryAddress;
 import com.example.bookclub.domain.order.item.OrderItem;
 import com.example.bookclub.domain.order.item.OrderItemOption;
 import com.example.bookclub.domain.order.item.OrderItemOptionGroup;
+import com.example.bookclub.domain.order.payment.PayMethod;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -269,12 +270,12 @@ public class OrderDto {
 	public static class OrderPayRequest {
 		private Long orderId;
 
-		private String payMethod;
+		private PayMethod payMethod;
 
 		private Long amount;
 
 		@Builder
-		public OrderPayRequest(Long orderId, String payMethod, Long amount) {
+		public OrderPayRequest(Long orderId, PayMethod payMethod, Long amount) {
 			this.orderId = orderId;
 			this.payMethod = payMethod;
 			this.amount = amount;
@@ -296,6 +297,14 @@ public class OrderDto {
 			this.orderId = orderId;
 			this.payMethod = payMethod;
 			this.amount = amount;
+		}
+
+		public static OrderPayResponse of(Order order) {
+			return OrderPayResponse.builder()
+					.orderId(order.getId())
+					.payMethod(order.getPayMethod())
+					.amount(order.calculatePriceAmount())
+					.build();
 		}
 	}
 }
