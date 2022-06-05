@@ -71,4 +71,12 @@ public class OrderItem extends BaseEntity {
 	public void setOrder(Order order) {
 		this.order = order;
 	}
+
+	public Long calculatePriceAmount() {
+		Long orderItemOptionGroupsPrice = orderItemOptionGroups.stream()
+				.mapToLong(OrderItemOptionGroup::calculatePriceAmount)
+				.sum();
+
+		return (orderItemOptionGroupsPrice + price) * count;
+	}
 }
