@@ -216,4 +216,50 @@ public class OrderDto {
 					.build();
 		}
 	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class OrderDetailResponse {
+		private Long id;
+
+		private Long accountId;
+
+		private String payMethod;
+
+		private Long priceAmount;
+
+		private DeliveryAddress deliveryAddress;
+
+		private String orderStatus;
+
+		private String orderStatusName;
+
+		private List<OrderItem> orderItems;
+
+		@Builder
+		public OrderDetailResponse(Long id, Long accountId, String payMethod, Long priceAmount,
+								   DeliveryAddress deliveryAddress, String orderStatus, String orderStatusName,
+								   List<OrderItem> orderItems) {
+			this.id = id;
+			this.accountId = accountId;
+			this.payMethod = payMethod;
+			this.priceAmount = priceAmount;
+			this.deliveryAddress = deliveryAddress;
+			this.orderStatus = orderStatus;
+			this.orderStatusName = orderStatusName;
+			this.orderItems = orderItems;
+		}
+
+		public static OrderDetailResponse of(Order order, List<OrderItem> orderItems) {
+			return OrderDetailResponse.builder()
+					.payMethod(order.getPayMethod())
+					.priceAmount(0L)
+					.deliveryAddress(order.getDeliveryAddress())
+					.orderStatus(order.getOrderStatus().getCode())
+					.orderStatusName(order.getOrderStatus().getTitle())
+					.orderItems(orderItems)
+					.build();
+		}
+	}
 }
