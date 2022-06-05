@@ -58,4 +58,8 @@ public class Order extends BaseEntity {
 		this.deliveryAddress = deliveryAddress;
 		this.orderItems = orderItems;
 	}
+
+	public Long calculatePriceAmount() {
+		return orderItems.stream().mapToLong(OrderItem::calculatePriceAmount).sum();
+	}
 }

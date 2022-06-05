@@ -254,7 +254,7 @@ public class OrderDto {
 		public static OrderDetailResponse of(Order order, List<OrderItem> orderItems) {
 			return OrderDetailResponse.builder()
 					.payMethod(order.getPayMethod())
-					.priceAmount(0L)
+					.priceAmount(order.calculatePriceAmount())
 					.deliveryAddress(order.getDeliveryAddress())
 					.orderStatus(order.getOrderStatus().getCode())
 					.orderStatusName(order.getOrderStatus().getTitle())

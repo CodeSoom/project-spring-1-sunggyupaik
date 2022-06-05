@@ -58,4 +58,9 @@ public class OrderItemOptionGroup extends BaseEntity {
 	public void setOrderItem(OrderItem orderItem) {
 		this.orderItem = orderItem;
 	}
+
+	public Long calculatePriceAmount() {
+		return orderItemOptions.stream()
+				.mapToLong(OrderItemOption::getPrice).sum();
+	}
 }
