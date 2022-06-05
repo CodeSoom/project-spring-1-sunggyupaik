@@ -12,6 +12,7 @@ import com.example.bookclub.common.exception.account.emailauthentication.EmailBa
 import com.example.bookclub.common.exception.account.emailauthentication.EmailNotAuthenticatedException;
 import com.example.bookclub.common.exception.account.emailauthentication.MessageCreateBadRequestException;
 import com.example.bookclub.common.exception.fileupload.FileUploadBadRequestException;
+import com.example.bookclub.common.exception.order.OrderNotFoundException;
 import com.example.bookclub.common.exception.study.ParseTimeException;
 import com.example.bookclub.common.exception.study.StudyAlreadyExistedException;
 import com.example.bookclub.common.exception.study.StudyAlreadyInOpenOrCloseException;
@@ -360,5 +361,14 @@ public class ControllerExceptionAdvice {
         log.warn("[BaseException] eventId = {}, cause = {}, errorMsg = {}",
                 eventId, NestedExceptionUtils.getMostSpecificCause(e), NestedExceptionUtils.getMostSpecificCause(e).getMessage());
         return CommonResponse.fail(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+    }
+
+    @ExceptionHandler(OrderNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public CommonResponse handleOrderNotFoundException(OrderNotFoundException e) {
+        String eventId = MDC.get(CommonHttpRequestInterceptor.HEADER_REQUEST_UUID_KEY);
+        log.warn("[BaseException] eventId = {}, cause = {}, errorMsg = {}",
+                eventId, NestedExceptionUtils.getMostSpecificCause(e), NestedExceptionUtils.getMostSpecificCause(e).getMessage());
+        return CommonResponse.fail(e.getMessage(), HttpStatus.NOT_FOUND.value());
     }
 }

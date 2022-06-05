@@ -1,5 +1,6 @@
 package com.example.bookclub.application.order;
 
+import com.example.bookclub.common.exception.order.OrderNotFoundException;
 import com.example.bookclub.domain.order.Order;
 import com.example.bookclub.domain.order.OrderSeriesFactory;
 import com.example.bookclub.dto.OrderDto;
@@ -26,5 +27,11 @@ public class OrderService {
 		orderSeriesFactory.createOrder(order, orderCreateRequest);
 
 		return OrderDto.OrderCreateResponse.of(order);
+	}
+
+	@Transactional
+	public Order detail(Long id) {
+		return orderRepository.findById(id)
+				.orElseThrow(() -> new OrderNotFoundException(id));
 	}
 }
