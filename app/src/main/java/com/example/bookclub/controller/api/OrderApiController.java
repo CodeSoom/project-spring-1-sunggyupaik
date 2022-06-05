@@ -1,6 +1,7 @@
 package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.order.OrderService;
+import com.example.bookclub.application.order.payment.PaymentService;
 import com.example.bookclub.common.response.CommonResponse;
 import com.example.bookclub.dto.OrderDto;
 import org.springframework.http.HttpStatus;
@@ -16,9 +17,12 @@ import javax.validation.Valid;
 @RestController("/api/orders")
 public class OrderApiController {
 	private final OrderService orderService;
+	private final PaymentService paymentService;
 
-	public OrderApiController(OrderService orderService) {
+	public OrderApiController(OrderService orderService,
+							  PaymentService paymentService) {
 		this.orderService = orderService;
+		this.paymentService = paymentService;
 	}
 
 	@PostMapping
@@ -34,5 +38,11 @@ public class OrderApiController {
 	public CommonResponse<OrderDto.OrderDetailResponse> detail(@PathVariable Long id) {
 		OrderDto.OrderDetailResponse response = orderService.getOrder(id);
 		return CommonResponse.success(response);
+	}
+
+	@PostMapping("/payment")
+	@ResponseStatus(HttpStatus.CREATED)
+	public OrderDto.OrderPayResponse payment(@RequestBody OrderDto.OrderPayRequest orderPayRequest) {
+		return paymentService.pay(orderPayRequest);
 	}
 }

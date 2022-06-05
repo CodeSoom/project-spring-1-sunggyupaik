@@ -262,4 +262,40 @@ public class OrderDto {
 					.build();
 		}
 	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class OrderPayRequest {
+		private Long orderId;
+
+		private String payMethod;
+
+		private Long amount;
+
+		@Builder
+		public OrderPayRequest(Long orderId, String payMethod, Long amount) {
+			this.orderId = orderId;
+			this.payMethod = payMethod;
+			this.amount = amount;
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class OrderPayResponse {
+		private Long orderId;
+
+		private String payMethod;
+
+		private Long amount;
+
+		@Builder
+		public OrderPayResponse(Long orderId, String payMethod, Long amount) {
+			this.orderId = orderId;
+			this.payMethod = payMethod;
+			this.amount = amount;
+		}
+	}
 }
