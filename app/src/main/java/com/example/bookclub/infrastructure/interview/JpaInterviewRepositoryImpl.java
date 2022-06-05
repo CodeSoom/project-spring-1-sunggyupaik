@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-import static com.example.bookclub.domain.QInterview.interview;
+import static com.example.bookclub.domain.interview.QInterview.interview;
 import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 
 @Repository
