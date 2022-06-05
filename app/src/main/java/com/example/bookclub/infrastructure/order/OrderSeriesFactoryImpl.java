@@ -55,4 +55,9 @@ public class OrderSeriesFactoryImpl implements OrderSeriesFactory {
 					.build();
 		});
 	}
+
+	@Override
+	public OrderDto.OrderDetailResponse detailOrder(Order order) {
+		return null;
+	}
 }

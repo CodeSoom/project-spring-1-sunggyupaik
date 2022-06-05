@@ -2,7 +2,6 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.order.OrderService;
 import com.example.bookclub.common.response.CommonResponse;
-import com.example.bookclub.domain.order.Order;
 import com.example.bookclub.dto.OrderDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,7 +31,8 @@ public class OrderApiController {
 	}
 
 	@GetMapping("/{id}")
-	public Order detail(@PathVariable Long id) {
-		return orderService.detail(id);
+	public CommonResponse<OrderDto.OrderDetailResponse> detail(@PathVariable Long id) {
+		OrderDto.OrderDetailResponse response = orderService.getOrder(id);
+		return CommonResponse.success(response);
 	}
 }

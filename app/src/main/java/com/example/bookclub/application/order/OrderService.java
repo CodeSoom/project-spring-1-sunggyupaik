@@ -3,11 +3,13 @@ package com.example.bookclub.application.order;
 import com.example.bookclub.common.exception.order.OrderNotFoundException;
 import com.example.bookclub.domain.order.Order;
 import com.example.bookclub.domain.order.OrderSeriesFactory;
+import com.example.bookclub.domain.order.item.OrderItem;
 import com.example.bookclub.dto.OrderDto;
 import com.example.bookclub.infrastructure.order.JpaOrderRepository;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class OrderService {
@@ -30,8 +32,11 @@ public class OrderService {
 	}
 
 	@Transactional
-	public Order detail(Long id) {
-		return orderRepository.findById(id)
+	public OrderDto.OrderDetailResponse getOrder(Long id) {
+		Order order = orderRepository.findById(id)
 				.orElseThrow(() -> new OrderNotFoundException(id));
+		List<OrderItem> orderItemLists = order.getOrderItems();
+
+		return OrderDto.OrderDetailResponse.of(order, orderItemLists);
 	}
 }
