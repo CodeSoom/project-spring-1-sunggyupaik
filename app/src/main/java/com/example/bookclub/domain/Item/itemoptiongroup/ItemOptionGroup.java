@@ -1,6 +1,5 @@
 package com.example.bookclub.domain.Item.itemoptiongroup;
 
-import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseEntity;
 import com.example.bookclub.domain.Item.Item;
 import com.example.bookclub.domain.Item.itemoption.ItemOption;
@@ -12,7 +11,6 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -27,7 +25,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
-@EntityListeners(value = { AccountEntityListener.class })
 public class ItemOptionGroup extends BaseEntity {
 	@Id
 	@GeneratedValue

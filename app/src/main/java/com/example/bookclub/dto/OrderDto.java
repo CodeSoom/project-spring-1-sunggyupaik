@@ -124,19 +124,15 @@ public class OrderDto {
 		@NotBlank(message = "name 는 필수값입니다")
 		private String name;
 
-		@NotBlank(message = "order 는 필수값입니다")
-		private Order order;
-
 		private List<OrderItemOptionGroupCreateRequest> orderItemOptionGroupCreateRequests;
 
 		@Builder
 		public OrderItemCreateRequest(Long itemId, Integer count, Long price, String name,
-									  Order order, List<OrderItemOptionGroupCreateRequest> orderItemOptionGroupCreateRequests) {
+									  List<OrderItemOptionGroupCreateRequest> orderItemOptionGroupCreateRequests) {
 			this.itemId = itemId;
 			this.count = count;
 			this.price = price;
 			this.name = name;
-			this.order = order;
 			this.orderItemOptionGroupCreateRequests = orderItemOptionGroupCreateRequests;
 		}
 
@@ -160,17 +156,13 @@ public class OrderDto {
 		@NotBlank(message = "name 는 필수값입니다")
 		private String name;
 
-		@NotBlank(message = "orderItem 는 필수값입니다")
-		private OrderItem orderItem;
-
 		private List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests;
 
 		@Builder
 		public OrderItemOptionGroupCreateRequest(Integer ordering, String name,
-												 OrderItem orderItem, List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests) {
+												 List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests) {
 			this.ordering = ordering;
 			this.name = name;
-			this.orderItem = orderItem;
 			this.orderItemOptionCreateRequests = orderItemOptionCreateRequests;
 		}
 
@@ -195,17 +187,13 @@ public class OrderDto {
 		@NotBlank(message = "price 는 필수값입니다")
 		private Long price;
 
-		@NotBlank(message = "orderItemOptionGroup 는 필수값입니다")
-		private OrderItemOptionGroup orderItemOptionGroup;
-
 		private List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests;
 
 		@Builder
-		public OrderItemOptionCreateRequest(Integer ordering, String name, OrderItemOptionGroup orderItemOptionGroup, Long price,
+		public OrderItemOptionCreateRequest(Integer ordering, String name, Long price,
 											List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests) {
 			this.ordering = ordering;
 			this.name = name;
-			this.orderItemOptionGroup = orderItemOptionGroup;
 			this.orderItemOptionCreateRequests = orderItemOptionCreateRequests;
 		}
 
