@@ -28,7 +28,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
-@EntityListeners(value = { AccountEntityListener.class })
 public class OrderItem extends BaseEntity {
 	@Id @GeneratedValue
 	@Column(name = "ORDER_ITEM_ID")

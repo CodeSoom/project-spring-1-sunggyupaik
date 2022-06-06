@@ -1,6 +1,5 @@
 package com.example.bookclub.domain.order;
 
-import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseEntity;
 import com.example.bookclub.domain.order.deliveryaddress.DeliveryAddress;
 import com.example.bookclub.domain.order.item.OrderItem;
@@ -14,7 +13,6 @@ import lombok.ToString;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -27,7 +25,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
-@EntityListeners(value = { AccountEntityListener.class })
 public class Order extends BaseEntity {
 	@Id @GeneratedValue
 	@Column(name = "ORDER_ID")

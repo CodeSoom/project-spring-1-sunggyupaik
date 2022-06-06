@@ -1,6 +1,5 @@
 package com.example.bookclub.domain.Item;
 
-import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseEntity;
 import com.example.bookclub.domain.Item.itemoptiongroup.ItemOptionGroup;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -12,7 +11,6 @@ import lombok.ToString;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
@@ -28,7 +26,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
-@EntityListeners(value = { AccountEntityListener.class })
 public class Item extends BaseEntity {
 	@Id @GeneratedValue
 	@Column(name = "ITEM_ID")
