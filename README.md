@@ -1,9 +1,20 @@
 ## Bookclub
 
-IT 서적 스터디를 위한 사이트입니다. 
+IT 서적 스터디와 공유를 위한 플랫폼입니다.  
+자신이 원하는 책을 주제로 팀원들과 스터디 할 수 있습니다.
 
-자신이 원하는 책을 검색하여 방을 만들고 관심있는 사람들과 스터디를 결성합니다.
+## 기술 스택
 
-방장은 스터디를 신청한 스터디원들의 이메일을 확인할 수 있습니다.
+- Java 11
+- Spring Boot 2.5.x
+- Gradle
+- Spring Data Jpa
+- QueryDSL
+- Spring Security
+- Rabbitmq
+- Elastic Search
 
-[bookclub](http://www.itbookclub.tk:8081)
+## System Architecture
+
+![image](https://user-images.githubusercontent.com/45138206/172886044-e773c28f-97bb-44ae-ba08-65a1df52e2c9.png)
+
