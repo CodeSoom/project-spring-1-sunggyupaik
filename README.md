@@ -13,6 +13,7 @@ IT 서적 스터디와 공유를 위한 플랫폼입니다.
 - Spring Security
 - Rabbitmq
 - Elastic Search
+- Redis
 
 ## System Architecture
 
