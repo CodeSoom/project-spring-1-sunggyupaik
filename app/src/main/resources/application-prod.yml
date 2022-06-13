@@ -26,10 +26,10 @@ spring:
 #    driver-class-name: com.mysql.cj.jdbc.Driver
 #    username: ENC(zuNFykPTMKRsOAwjahsIcg==)
 #    password: ENC(2JWfpVnJYUhB01mCISW3s8RPUNktgC3q)
-  url: jdbc:postgresql://34.85.16.173:5432/bookclub
-  driverClassName: org.postgresql.Driver
-  username: admin
-  password: admin
+    url: jdbc:postgresql://34.85.16.173:5432/bookclub
+    driverClassName: org.postgresql.Driver
+    username: admin
+    password: admin
 
   jpa:
     #database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
