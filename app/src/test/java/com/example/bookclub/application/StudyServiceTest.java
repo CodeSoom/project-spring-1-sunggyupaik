@@ -4,14 +4,6 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.example.bookclub.application.account.AccountService;
 import com.example.bookclub.application.study.StudyService;
 import com.example.bookclub.application.uploadfile.UploadFileService;
-import com.example.bookclub.domain.account.Account;
-import com.example.bookclub.domain.study.Day;
-import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;
-import com.example.bookclub.domain.account.role.RoleRepository;
-import com.example.bookclub.domain.study.Study;
-import com.example.bookclub.domain.study.StudyState;
-import com.example.bookclub.domain.study.Zone;
-import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.common.exception.account.AccountNotManagerOfStudyException;
 import com.example.bookclub.common.exception.study.StudyAlreadyExistedException;
 import com.example.bookclub.common.exception.study.StudyAlreadyInOpenOrCloseException;
@@ -22,6 +14,15 @@ import com.example.bookclub.common.exception.study.StudySizeFullException;
 import com.example.bookclub.common.exception.study.StudyStartAndEndDateNotValidException;
 import com.example.bookclub.common.exception.study.StudyStartAndEndTimeNotValidException;
 import com.example.bookclub.common.exception.study.StudyStartDateInThePastException;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;
+import com.example.bookclub.domain.account.role.RoleRepository;
+import com.example.bookclub.domain.study.Day;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.StudySeriesFactory;
+import com.example.bookclub.domain.study.StudyState;
+import com.example.bookclub.domain.study.Zone;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.infrastructure.account.JpaAccountRepository;
 import com.example.bookclub.infrastructure.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
@@ -165,11 +166,13 @@ public class StudyServiceTest {
 	private AmazonS3 amazonS3;
 	private UploadFileService uploadFileService;
 	private AccountService accountService;
+	private StudySeriesFactory studySeriesFactory;
 
     @BeforeEach
     void setUp() {
         studyRepository = mock(JpaStudyRepository.class);
         accountRepository = mock(JpaAccountRepository.class);
+		studySeriesFactory = mock(StudySeriesFactory.class);
 		emailAuthenticationRepository = mock(EmailAuthenticationRepository.class);
 		roleRepository = mock(RoleRepository.class);
 		amazonS3 = mock(AmazonS3.class);
@@ -177,7 +180,7 @@ public class StudyServiceTest {
 		passwordEncoder = new BCryptPasswordEncoder();
 		accountService = new AccountService(accountRepository, emailAuthenticationRepository,
 				                            passwordEncoder, uploadFileService, roleRepository);
-        studyService = new StudyService(studyRepository, accountService);
+        studyService = new StudyService(studyRepository, accountService, studySeriesFactory);
 
 		setUpStudy = Study.builder()
 				.id(STUDY_SETUP_ID)
