@@ -54,7 +54,7 @@ spring:
       hosts: 10.178.0.2,10.178.0.3,10.178.0.4,10.178.0.5
       port: 9200
 
-  rebbitmq:
+  rabbitmq:
     host: localhost
     username: guest
     password: guest

@@ -21,14 +21,19 @@ spring:
       enabled: true
 
   datasource:
-    url: ENC(UhF92Os3ZVe+9Hm1mNENnweWRmgkrty/iWcSyQRVm4liJErpfHK9v594PY687n1skaJ+u3wvUQ0bGVgt89/nomAipcB+KGl0wD/8kbC0wG5NjspEzb8TbmIjeNULueUCmcN20iW/mks=)
-    jdbc-url: ENC(22yXNiZ07pEukQbWeBl++wue0+RVk8PitR0RJ9oqVdMI7X7DBwDJVW8QOYeOLzDc0KUzHotgn0dvlvjtrD+TAkxE5jy4hpHNy3Qu4vbF1u4MdFwxtTQEtyr6H/nmf1EVW+IIglq47Qt5enr6yyliDBMuhnR+pGcT0qJgpd9zDiM=)
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ENC(zuNFykPTMKRsOAwjahsIcg==)
-    password: ENC(2JWfpVnJYUhB01mCISW3s8RPUNktgC3q)
+#    url: ENC(UhF92Os3ZVe+9Hm1mNENnweWRmgkrty/iWcSyQRVm4liJErpfHK9v594PY687n1skaJ+u3wvUQ0bGVgt89/nomAipcB+KGl0wD/8kbC0wG5NjspEzb8TbmIjeNULueUCmcN20iW/mks=)
+#    jdbc-url: ENC(22yXNiZ07pEukQbWeBl++wue0+RVk8PitR0RJ9oqVdMI7X7DBwDJVW8QOYeOLzDc0KUzHotgn0dvlvjtrD+TAkxE5jy4hpHNy3Qu4vbF1u4MdFwxtTQEtyr6H/nmf1EVW+IIglq47Qt5enr6yyliDBMuhnR+pGcT0qJgpd9zDiM=)
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: ENC(zuNFykPTMKRsOAwjahsIcg==)
+#    password: ENC(2JWfpVnJYUhB01mCISW3s8RPUNktgC3q)
+  url: jdbc:postgresql://34.85.16.173:5432/bookclub
+  driverClassName: org.postgresql.Driver
+  username: admin
+  password: admin
 
   jpa:
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    #database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     generate-ddl: true
     hibernate:
       ddl-auto: update
@@ -46,6 +51,16 @@ spring:
       pageable:
         default-page-size: 10
         max-page-size: 2000
+
+    elasticsearch:
+      hosts: 10.178.0.2,10.178.0.3,10.178.0.4,10.178.0.5
+      port: 9200
+
+  rabbitmq:
+    host: 34.84.34.164
+    username: guest
+    password: guest
+    port: 5672
 
   mail:
     username: ENC(/qNjHfAouomFQW84ddaVlwSyuuBwMnqvIQdsY5EHeCs=)
