@@ -6,6 +6,7 @@ import com.example.bookclub.domain.order.deliveryaddress.DeliveryAddress;
 import com.example.bookclub.domain.order.item.OrderItem;
 import com.example.bookclub.domain.order.item.OrderItemOption;
 import com.example.bookclub.domain.order.item.OrderItemOptionGroup;
+import com.example.bookclub.domain.order.payment.PayMethod;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -123,19 +124,15 @@ public class OrderDto {
 		@NotBlank(message = "name 는 필수값입니다")
 		private String name;
 
-		@NotBlank(message = "order 는 필수값입니다")
-		private Order order;
-
 		private List<OrderItemOptionGroupCreateRequest> orderItemOptionGroupCreateRequests;
 
 		@Builder
 		public OrderItemCreateRequest(Long itemId, Integer count, Long price, String name,
-									  Order order, List<OrderItemOptionGroupCreateRequest> orderItemOptionGroupCreateRequests) {
+									  List<OrderItemOptionGroupCreateRequest> orderItemOptionGroupCreateRequests) {
 			this.itemId = itemId;
 			this.count = count;
 			this.price = price;
 			this.name = name;
-			this.order = order;
 			this.orderItemOptionGroupCreateRequests = orderItemOptionGroupCreateRequests;
 		}
 
@@ -159,17 +156,13 @@ public class OrderDto {
 		@NotBlank(message = "name 는 필수값입니다")
 		private String name;
 
-		@NotBlank(message = "orderItem 는 필수값입니다")
-		private OrderItem orderItem;
-
 		private List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests;
 
 		@Builder
 		public OrderItemOptionGroupCreateRequest(Integer ordering, String name,
-												 OrderItem orderItem, List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests) {
+												 List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests) {
 			this.ordering = ordering;
 			this.name = name;
-			this.orderItem = orderItem;
 			this.orderItemOptionCreateRequests = orderItemOptionCreateRequests;
 		}
 
@@ -194,17 +187,13 @@ public class OrderDto {
 		@NotBlank(message = "price 는 필수값입니다")
 		private Long price;
 
-		@NotBlank(message = "orderItemOptionGroup 는 필수값입니다")
-		private OrderItemOptionGroup orderItemOptionGroup;
-
 		private List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests;
 
 		@Builder
-		public OrderItemOptionCreateRequest(Integer ordering, String name, OrderItemOptionGroup orderItemOptionGroup, Long price,
+		public OrderItemOptionCreateRequest(Integer ordering, String name, Long price,
 											List<OrderItemOptionCreateRequest> orderItemOptionCreateRequests) {
 			this.ordering = ordering;
 			this.name = name;
-			this.orderItemOptionGroup = orderItemOptionGroup;
 			this.orderItemOptionCreateRequests = orderItemOptionCreateRequests;
 		}
 
@@ -259,6 +248,50 @@ public class OrderDto {
 					.orderStatus(order.getOrderStatus().getCode())
 					.orderStatusName(order.getOrderStatus().getTitle())
 					.orderItems(orderItems)
+					.build();
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class OrderPayRequest {
+		private Long orderId;
+
+		private PayMethod payMethod;
+
+		private Long amount;
+
+		@Builder
+		public OrderPayRequest(Long orderId, PayMethod payMethod, Long amount) {
+			this.orderId = orderId;
+			this.payMethod = payMethod;
+			this.amount = amount;
+		}
+	}
+
+	@Getter
+	@NoArgsConstructor(access = AccessLevel.PROTECTED)
+	@ToString
+	public static class OrderPayResponse {
+		private Long orderId;
+
+		private String payMethod;
+
+		private Long amount;
+
+		@Builder
+		public OrderPayResponse(Long orderId, String payMethod, Long amount) {
+			this.orderId = orderId;
+			this.payMethod = payMethod;
+			this.amount = amount;
+		}
+
+		public static OrderPayResponse of(Order order) {
+			return OrderPayResponse.builder()
+					.orderId(order.getId())
+					.payMethod(order.getPayMethod())
+					.amount(order.calculatePriceAmount())
 					.build();
 		}
 	}
