@@ -13,7 +13,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
 
-@Document(indexName = "post_shard_8")
+@Document(indexName = "post_shard_8_replica_1")
 @Getter
 @NoArgsConstructor
 @ToString
