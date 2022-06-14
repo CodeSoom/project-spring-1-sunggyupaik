@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
@@ -15,13 +16,13 @@ import javax.persistence.Id;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @ToString(callSuper = true)
 public class Diary {
-	@Id
-	private String id;
+	@Id @GeneratedValue
+	private Long id;
 
 	private String content;
 
 	@Builder
-	public Diary(String id, String content) {
+	public Diary(Long id, String content) {
 		this.id = id;
 		this.content = content;
 	}
