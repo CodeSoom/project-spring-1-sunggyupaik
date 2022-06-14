@@ -2,8 +2,9 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.post.PostService;
 import com.example.bookclub.common.response.CommonResponse;
-import com.example.bookclub.domain.post.Post;
 import com.example.bookclub.common.util.Producer;
+import com.example.bookclub.domain.post.Diary;
+import com.example.bookclub.domain.post.Post;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -36,6 +37,14 @@ public class PostApiController {
 		String jsonPost = objectMapper.writeValueAsString(post);
 		producer.sendTo(jsonPost);
 		return CommonResponse.success(post);
+	}
+
+	@PostMapping("/diary")
+	@ResponseStatus(HttpStatus.CREATED)
+	public CommonResponse<Diary> createDiary(@RequestBody Diary diary) throws JsonProcessingException {
+		String jsonPost = objectMapper.writeValueAsString(diary);
+		producer.sendTo(jsonPost);
+		return CommonResponse.success(diary);
 	}
 
 	@GetMapping("/search")
