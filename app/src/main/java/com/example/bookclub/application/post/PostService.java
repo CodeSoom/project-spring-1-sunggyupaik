@@ -29,6 +29,10 @@ public class PostService {
 		diaryRepository.save(diary);
 	}
 
+	public Diary createDiaryRaw(Diary diary) {
+		return diaryRepository.save(diary);
+	}
+
 	public List<Post> findByContent(String content) {
 		return elasticPostRepository.findByContent(content);
 	}

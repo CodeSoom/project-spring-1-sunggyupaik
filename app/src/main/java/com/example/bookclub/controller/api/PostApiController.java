@@ -46,6 +46,13 @@ public class PostApiController {
 		producer.sendTo(jsonPost);
 		return CommonResponse.success(diary);
 	}
+	
+	@PostMapping("/diaryRaw")
+	@ResponseStatus(HttpStatus.CREATED)
+	public CommonResponse<Diary> createDiaryRaw(@RequestBody Diary diary) throws JsonProcessingException {
+		Diary response = postService.createDiaryRaw(diary);
+		return CommonResponse.success(response);
+	}
 
 	@GetMapping("/search")
 	public CommonResponse<List<Post>> lists(@RequestParam String content) {
