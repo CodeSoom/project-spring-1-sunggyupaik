@@ -121,6 +121,8 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                                 .antMatchers("/posts").permitAll()
                                 .antMatchers("/api/post").permitAll()
                                 .antMatchers("/api/search**").permitAll()
+                                .antMatchers("/api/diary").permitAll()
+                                .antMatchers("/api/diaryRaw").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
