@@ -197,6 +197,9 @@ dependencies {
 
 	//Sentry Log
 	implementation 'io.sentry:sentry-spring-boot-starter:5.7.4'
+
+	//Postgresql
+	implementation 'org.postgresql:postgresql:42.3.3'
 }
 
 application {

@@ -111,7 +111,7 @@ class EmailApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("email", is(emailSendResultDto.getEmail())))
+                .andExpect(jsonPath("$.data.email", is(emailSendResultDto.getEmail())))
                 .andDo(document("email-authenticationNumber-create",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -119,8 +119,11 @@ class EmailApiControllerTest {
                                 fieldWithPath("email").type(STRING).description("이메일")
                         ),
                         responseFields(
-                                fieldWithPath("email").type(STRING).description("이메일"),
-                                fieldWithPath("authenticationNumber").description("인증번호")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("data.email").type(STRING).description("이메일"),
+                                fieldWithPath("data.authenticationNumber").description("인증번호"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -145,7 +148,10 @@ class EmailApiControllerTest {
                                 fieldWithPath("email").type(STRING).description("이메일")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }

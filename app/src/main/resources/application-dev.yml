@@ -21,13 +21,14 @@ spring:
       enabled: true
 
   datasource:
-      url: jdbc:h2:file:~/dev/temp/h2db/bookclub
-      driverClassName: org.h2.Driver
-      username: sa
-      password:
+    url: jdbc:mysql://34.85.16.173:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
+    jdbc-url: jdbc:mysql://34.85.16.173:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 1234
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     generate-ddl: true
     hibernate:
       ddl-auto: update
@@ -47,10 +48,10 @@ spring:
         max-page-size: 2000
 
     elasticsearch:
-      hosts: localhost
+      hosts: 10.178.0.2,10.178.0.3,10.178.0.4,10.178.0.5
       port: 9200
 
-  rebbitmq:
+  rabbitmq:
     host: localhost
     username: guest
     password: guest

@@ -465,34 +465,37 @@ class StudyApiControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         responseFields(
-                                fieldWithPath("[].id").type(NUMBER).description("스터디 식별자"),
-                                fieldWithPath("[].name").type(STRING).description("이름"),
-                                fieldWithPath("[].bookName").type(STRING).description("책 제목"),
-                                fieldWithPath("[].bookImage").type(STRING).description("책 사진"),
-                                fieldWithPath("[].email").type(STRING).description("이메일"),
-                                fieldWithPath("[].description").type(STRING).description("설명"),
-                                fieldWithPath("[].contact").type(STRING).description("연락처"),
-                                fieldWithPath("[].size").type(NUMBER).description("정원 수"),
-                                fieldWithPath("[].applyCount").type(NUMBER).description("지원 수"),
-                                fieldWithPath("[].startDate").type(STRING).description("시작날짜"),
-                                fieldWithPath("[].endDate").type(STRING).description("종료날짜"),
-                                fieldWithPath("[].startTime").type(STRING).description("시작시간"),
-                                fieldWithPath("[].endTime").type(STRING).description("종료시간"),
-                                fieldWithPath("[].day").type(STRING).description("요일"),
-                                fieldWithPath("[].studyState").type(STRING).description("스터디 상태"),
-                                fieldWithPath("[].zone").type(STRING).description("지역"),
-                                fieldWithPath("[].liked").type(BOOLEAN).description("좋아요 여부"),
-                                fieldWithPath("[].likesCount").type(NUMBER).description("좋아요 수"),
-                                fieldWithPath("[].commentsCount").type(NUMBER).description("댓글 수"),
-                                fieldWithPath("[].favorite").type(BOOLEAN).description("즐겨찾기 여부"),
-                                fieldWithPath("[].createdDate").type(STRING).description("생성날짜"),
-                                fieldWithPath("[].updatedDate").type(STRING).description("수정날짜"),
-                                fieldWithPath("[].createdBy").type(STRING).description("생성자"),
-                                fieldWithPath("[].updatedBy").type(STRING).description("수정자"),
-                                fieldWithPath("[].sizeFull").type(BOOLEAN).description("정원 만료 여부"),
-                                fieldWithPath("[].notOpened").type(BOOLEAN).description("스터디 모집중 여부"),
-                                fieldWithPath("[].alreadyStarted").type(BOOLEAN).description("스터디 진행중 여부"),
-                                fieldWithPath("[].favorites").description("즐겨찾기 목록")
+                                fieldWithPath("data.[].id").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("data.[].name").type(STRING).description("이름"),
+                                fieldWithPath("data.[].bookName").type(STRING).description("책 제목"),
+                                fieldWithPath("data.[].bookImage").type(STRING).description("책 사진"),
+                                fieldWithPath("data.[].email").type(STRING).description("이메일"),
+                                fieldWithPath("data.[].description").type(STRING).description("설명"),
+                                fieldWithPath("data.[].contact").type(STRING).description("연락처"),
+                                fieldWithPath("data.[].size").type(NUMBER).description("정원 수"),
+                                fieldWithPath("data.[].applyCount").type(NUMBER).description("지원 수"),
+                                fieldWithPath("data.[].startDate").type(STRING).description("시작날짜"),
+                                fieldWithPath("data.[].endDate").type(STRING).description("종료날짜"),
+                                fieldWithPath("data.[].startTime").type(STRING).description("시작시간"),
+                                fieldWithPath("data.[].endTime").type(STRING).description("종료시간"),
+                                fieldWithPath("data.[].day").type(STRING).description("요일"),
+                                fieldWithPath("data.[].studyState").type(STRING).description("스터디 상태"),
+                                fieldWithPath("data.[].zone").type(STRING).description("지역"),
+                                fieldWithPath("data.[].liked").type(BOOLEAN).description("좋아요 여부"),
+                                fieldWithPath("data.[].likesCount").type(NUMBER).description("좋아요 수"),
+                                fieldWithPath("data.[].commentsCount").type(NUMBER).description("댓글 수"),
+                                fieldWithPath("data.[].favorite").type(BOOLEAN).description("즐겨찾기 여부"),
+                                fieldWithPath("data.[].createdDate").type(STRING).description("생성날짜"),
+                                fieldWithPath("data.[].updatedDate").type(STRING).description("수정날짜"),
+                                fieldWithPath("data.[].createdBy").type(STRING).description("생성자"),
+                                fieldWithPath("data.[].updatedBy").type(STRING).description("수정자"),
+                                fieldWithPath("data.[].sizeFull").type(BOOLEAN).description("정원 만료 여부"),
+                                fieldWithPath("data.[].notOpened").type(BOOLEAN).description("스터디 모집중 여부"),
+                                fieldWithPath("data.[].alreadyStarted").type(BOOLEAN).description("스터디 진행중 여부"),
+                                fieldWithPath("data.[].favorites").description("즐겨찾기 목록"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                     ));
     }
@@ -513,26 +516,29 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 식별자"),
-                                fieldWithPath("name").type(STRING).description("이름"),
-                                fieldWithPath("bookName").type(STRING).description("책 제목"),
-                                fieldWithPath("bookImage").type(STRING).description("책 사진"),
-                                fieldWithPath("email").type(STRING).description("이메일"),
-                                fieldWithPath("description").type(STRING).description("설명"),
-                                fieldWithPath("contact").type(STRING).description("연락처"),
-                                fieldWithPath("size").type(NUMBER).description("정원 수"),
-                                fieldWithPath("applyCount").type(NUMBER).description("지원 수"),
-                                fieldWithPath("startDate").type(STRING).description("시작날짜"),
-                                fieldWithPath("endDate").type(STRING).description("종료날짜"),
-                                fieldWithPath("startTime").type(STRING).description("시작시간"),
-                                fieldWithPath("endTime").type(STRING).description("종료시간"),
-                                fieldWithPath("day").type(STRING).description("요일"),
-                                fieldWithPath("studyState").type(STRING).description("스터디 상태"),
-                                fieldWithPath("zone").type(STRING).description("지역"),
-                                fieldWithPath("liked").type(BOOLEAN).description("좋아요 여부"),
-                                fieldWithPath("likesCount").type(NUMBER).description("좋아요 수"),
-                                fieldWithPath("commentsCount").type(NUMBER).description("댓글 수"),
-                                fieldWithPath("favorite").type(BOOLEAN).description("즐겨찾기 여부")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("data.name").type(STRING).description("이름"),
+                                fieldWithPath("data.bookName").type(STRING).description("책 제목"),
+                                fieldWithPath("data.bookImage").type(STRING).description("책 사진"),
+                                fieldWithPath("data.email").type(STRING).description("이메일"),
+                                fieldWithPath("data.description").type(STRING).description("설명"),
+                                fieldWithPath("data.contact").type(STRING).description("연락처"),
+                                fieldWithPath("data.size").type(NUMBER).description("정원 수"),
+                                fieldWithPath("data.applyCount").type(NUMBER).description("지원 수"),
+                                fieldWithPath("data.startDate").type(STRING).description("시작날짜"),
+                                fieldWithPath("data.endDate").type(STRING).description("종료날짜"),
+                                fieldWithPath("data.startTime").type(STRING).description("시작시간"),
+                                fieldWithPath("data.endTime").type(STRING).description("종료시간"),
+                                fieldWithPath("data.day").type(STRING).description("요일"),
+                                fieldWithPath("data.studyState").type(STRING).description("스터디 상태"),
+                                fieldWithPath("data.zone").type(STRING).description("지역"),
+                                fieldWithPath("data.liked").type(BOOLEAN).description("좋아요 여부"),
+                                fieldWithPath("data.likesCount").type(NUMBER).description("좋아요 수"),
+                                fieldWithPath("data.commentsCount").type(NUMBER).description("댓글 수"),
+                                fieldWithPath("data.favorite").type(BOOLEAN).description("즐겨찾기 여부"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -554,7 +560,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("오류 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
 
@@ -574,9 +583,9 @@ class StudyApiControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(studyResultDto.getId()))
-                .andExpect(jsonPath("name").value(studyResultDto.getName()))
-                .andExpect(jsonPath("description").value(studyResultDto.getDescription()))
+                .andExpect(jsonPath("$.data.id").value(studyResultDto.getId()))
+                .andExpect(jsonPath("$.data.name").value(studyResultDto.getName()))
+                .andExpect(jsonPath("$.data.description").value(studyResultDto.getDescription()))
                 .andDo(document("study-create",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -599,26 +608,29 @@ class StudyApiControllerTest {
                                 fieldWithPath("zone").description("지역")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 식별자"),
-                                fieldWithPath("name").type(STRING).description("이름"),
-                                fieldWithPath("bookName").type(STRING).description("책 제목"),
-                                fieldWithPath("bookImage").type(STRING).description("책 사진"),
-                                fieldWithPath("email").type(STRING).description("이메일"),
-                                fieldWithPath("description").type(STRING).description("설명"),
-                                fieldWithPath("contact").type(STRING).description("연락처"),
-                                fieldWithPath("size").type(NUMBER).description("정원 수"),
-                                fieldWithPath("applyCount").type(NUMBER).description("지원 수"),
-                                fieldWithPath("startDate").type(STRING).description("시작날짜"),
-                                fieldWithPath("endDate").type(STRING).description("종료날짜"),
-                                fieldWithPath("startTime").type(STRING).description("시작시간"),
-                                fieldWithPath("endTime").type(STRING).description("종료시간"),
-                                fieldWithPath("day").type(STRING).description("요일"),
-                                fieldWithPath("studyState").type(STRING).description("스터디 상태"),
-                                fieldWithPath("zone").type(STRING).description("지역"),
-                                fieldWithPath("liked").type(BOOLEAN).description("좋아요 여부"),
-                                fieldWithPath("likesCount").type(NUMBER).description("좋아요 수"),
-                                fieldWithPath("commentsCount").type(NUMBER).description("댓글 수"),
-                                fieldWithPath("favorite").type(BOOLEAN).description("즐겨찾기 여부")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("data.name").type(STRING).description("이름"),
+                                fieldWithPath("data.bookName").type(STRING).description("책 제목"),
+                                fieldWithPath("data.bookImage").type(STRING).description("책 사진"),
+                                fieldWithPath("data.email").type(STRING).description("이메일"),
+                                fieldWithPath("data.description").type(STRING).description("설명"),
+                                fieldWithPath("data.contact").type(STRING).description("연락처"),
+                                fieldWithPath("data.size").type(NUMBER).description("정원 수"),
+                                fieldWithPath("data.applyCount").type(NUMBER).description("지원 수"),
+                                fieldWithPath("data.startDate").type(STRING).description("시작날짜"),
+                                fieldWithPath("data.endDate").type(STRING).description("종료날짜"),
+                                fieldWithPath("data.startTime").type(STRING).description("시작시간"),
+                                fieldWithPath("data.endTime").type(STRING).description("종료시간"),
+                                fieldWithPath("data.day").type(STRING).description("요일"),
+                                fieldWithPath("data.studyState").type(STRING).description("스터디 상태"),
+                                fieldWithPath("data.zone").type(STRING).description("지역"),
+                                fieldWithPath("data.liked").type(BOOLEAN).description("좋아요 여부"),
+                                fieldWithPath("data.likesCount").type(NUMBER).description("좋아요 수"),
+                                fieldWithPath("data.commentsCount").type(NUMBER).description("댓글 수"),
+                                fieldWithPath("data.favorite").type(BOOLEAN).description("즐겨찾기 여부"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -659,7 +671,10 @@ class StudyApiControllerTest {
                                 fieldWithPath("zone").description("지역")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -700,7 +715,10 @@ class StudyApiControllerTest {
                                     fieldWithPath("zone").description("지역")
                             ),
                             responseFields(
-                                    fieldWithPath("message").type(STRING).description("예외 메세지")
+                                    fieldWithPath("result").type(STRING).description("결과"),
+                                    fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                    fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                    fieldWithPath("data").description("데이터")
                             )
                     ));
     }
@@ -741,7 +759,10 @@ class StudyApiControllerTest {
                                 fieldWithPath("zone").description("지역")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -782,7 +803,10 @@ class StudyApiControllerTest {
                                 fieldWithPath("zone").description("지역")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -802,9 +826,9 @@ class StudyApiControllerTest {
         )
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("name").value(updatedStudyResultDto.getName()))
-                .andExpect(jsonPath("description").value(updatedStudyResultDto.getDescription()))
-                .andExpect(jsonPath("contact").value(updatedStudyResultDto.getContact()))
+                .andExpect(jsonPath("$.data.name").value(updatedStudyResultDto.getName()))
+                .andExpect(jsonPath("$.data.description").value(updatedStudyResultDto.getDescription()))
+                .andExpect(jsonPath("$.data.contact").value(updatedStudyResultDto.getContact()))
                 .andDo(document("study-update",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -825,26 +849,29 @@ class StudyApiControllerTest {
                                 fieldWithPath("zone").description("지역")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 식별자"),
-                                fieldWithPath("name").type(STRING).description("이름"),
-                                fieldWithPath("bookName").type(STRING).description("책 제목"),
-                                fieldWithPath("bookImage").type(STRING).description("책 사진"),
-                                fieldWithPath("email").type(STRING).description("이메일"),
-                                fieldWithPath("description").type(STRING).description("설명"),
-                                fieldWithPath("contact").type(STRING).description("연락처"),
-                                fieldWithPath("size").type(NUMBER).description("정원 수"),
-                                fieldWithPath("applyCount").type(NUMBER).description("지원 수"),
-                                fieldWithPath("startDate").type(STRING).description("시작날짜"),
-                                fieldWithPath("endDate").type(STRING).description("종료날짜"),
-                                fieldWithPath("startTime").type(STRING).description("시작시간"),
-                                fieldWithPath("endTime").type(STRING).description("종료시간"),
-                                fieldWithPath("day").type(STRING).description("요일"),
-                                fieldWithPath("studyState").type(STRING).description("스터디 상태"),
-                                fieldWithPath("zone").type(STRING).description("지역"),
-                                fieldWithPath("liked").type(BOOLEAN).description("좋아요 여부"),
-                                fieldWithPath("likesCount").type(NUMBER).description("좋아요 수"),
-                                fieldWithPath("commentsCount").type(NUMBER).description("댓글 수"),
-                                fieldWithPath("favorite").type(BOOLEAN).description("즐겨찾기 여부")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("data.name").type(STRING).description("이름"),
+                                fieldWithPath("data.bookName").type(STRING).description("책 제목"),
+                                fieldWithPath("data.bookImage").type(STRING).description("책 사진"),
+                                fieldWithPath("data.email").type(STRING).description("이메일"),
+                                fieldWithPath("data.description").type(STRING).description("설명"),
+                                fieldWithPath("data.contact").type(STRING).description("연락처"),
+                                fieldWithPath("data.size").type(NUMBER).description("정원 수"),
+                                fieldWithPath("data.applyCount").type(NUMBER).description("지원 수"),
+                                fieldWithPath("data.startDate").type(STRING).description("시작날짜"),
+                                fieldWithPath("data.endDate").type(STRING).description("종료날짜"),
+                                fieldWithPath("data.startTime").type(STRING).description("시작시간"),
+                                fieldWithPath("data.endTime").type(STRING).description("종료시간"),
+                                fieldWithPath("data.day").type(STRING).description("요일"),
+                                fieldWithPath("data.studyState").type(STRING).description("스터디 상태"),
+                                fieldWithPath("data.zone").type(STRING).description("지역"),
+                                fieldWithPath("data.liked").type(BOOLEAN).description("좋아요 여부"),
+                                fieldWithPath("data.likesCount").type(NUMBER).description("좋아요 수"),
+                                fieldWithPath("data.commentsCount").type(NUMBER).description("댓글 수"),
+                                fieldWithPath("data.favorite").type(BOOLEAN).description("즐겨찾기 여부"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -885,7 +912,10 @@ class StudyApiControllerTest {
                                 fieldWithPath("zone").description("지역")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -926,7 +956,10 @@ class StudyApiControllerTest {
                                 fieldWithPath("zone").description("지역")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -967,7 +1000,10 @@ class StudyApiControllerTest {
                                 fieldWithPath("zone").description("지역")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1008,7 +1044,10 @@ class StudyApiControllerTest {
                                 fieldWithPath("zone").description("지역")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1023,8 +1062,8 @@ class StudyApiControllerTest {
                 RestDocumentationRequestBuilders.delete("/api/study/{id}", STUDY_SETUP_EXISTED_ID)
         )
                 .andDo(print())
-                .andExpect(jsonPath("name").value(setUpStudy.getName()))
-                .andExpect(jsonPath("description").value(setUpStudy.getDescription()))
+                .andExpect(jsonPath("$.data.name").value(setUpStudy.getName()))
+                .andExpect(jsonPath("$.data.description").value(setUpStudy.getDescription()))
                 .andExpect(status().isNoContent())
                 .andDo(document("study-delete",
                         getDocumentRequest(),
@@ -1033,26 +1072,29 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 식별자"),
-                                fieldWithPath("name").type(STRING).description("이름"),
-                                fieldWithPath("bookName").type(STRING).description("책 제목"),
-                                fieldWithPath("bookImage").type(STRING).description("책 사진"),
-                                fieldWithPath("email").type(STRING).description("이메일"),
-                                fieldWithPath("description").type(STRING).description("설명"),
-                                fieldWithPath("contact").type(STRING).description("연락처"),
-                                fieldWithPath("size").type(NUMBER).description("정원 수"),
-                                fieldWithPath("applyCount").type(NUMBER).description("지원 수"),
-                                fieldWithPath("startDate").type(STRING).description("시작날짜"),
-                                fieldWithPath("endDate").type(STRING).description("종료날짜"),
-                                fieldWithPath("startTime").type(STRING).description("시작시간"),
-                                fieldWithPath("endTime").type(STRING).description("종료시간"),
-                                fieldWithPath("day").type(STRING).description("요일"),
-                                fieldWithPath("studyState").type(STRING).description("스터디 상태"),
-                                fieldWithPath("zone").type(STRING).description("지역"),
-                                fieldWithPath("liked").type(BOOLEAN).description("좋아요 여부"),
-                                fieldWithPath("likesCount").type(NUMBER).description("좋아요 수"),
-                                fieldWithPath("commentsCount").type(NUMBER).description("댓글 수"),
-                                fieldWithPath("favorite").type(BOOLEAN).description("즐겨찾기 여부")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("data.name").type(STRING).description("이름"),
+                                fieldWithPath("data.bookName").type(STRING).description("책 제목"),
+                                fieldWithPath("data.bookImage").type(STRING).description("책 사진"),
+                                fieldWithPath("data.email").type(STRING).description("이메일"),
+                                fieldWithPath("data.description").type(STRING).description("설명"),
+                                fieldWithPath("data.contact").type(STRING).description("연락처"),
+                                fieldWithPath("data.size").type(NUMBER).description("정원 수"),
+                                fieldWithPath("data.applyCount").type(NUMBER).description("지원 수"),
+                                fieldWithPath("data.startDate").type(STRING).description("시작날짜"),
+                                fieldWithPath("data.endDate").type(STRING).description("종료날짜"),
+                                fieldWithPath("data.startTime").type(STRING).description("시작시간"),
+                                fieldWithPath("data.endTime").type(STRING).description("종료시간"),
+                                fieldWithPath("data.day").type(STRING).description("요일"),
+                                fieldWithPath("data.studyState").type(STRING).description("스터디 상태"),
+                                fieldWithPath("data.zone").type(STRING).description("지역"),
+                                fieldWithPath("data.liked").type(BOOLEAN).description("좋아요 여부"),
+                                fieldWithPath("data.likesCount").type(NUMBER).description("좋아요 수"),
+                                fieldWithPath("data.commentsCount").type(NUMBER).description("댓글 수"),
+                                fieldWithPath("data.favorite").type(BOOLEAN).description("즐겨찾기 여부"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1090,7 +1132,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1114,7 +1159,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 식별자")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1138,7 +1186,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1162,7 +1213,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1186,7 +1240,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1210,7 +1267,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1222,7 +1282,7 @@ class StudyApiControllerTest {
                 .willReturn(studyApplyResultDto);
 
         this.mockMvc.perform(
-                RestDocumentationRequestBuilders.delete("/api/study/cancel/{id}", STUDY_SETUP_EXISTED_ID)
+                RestDocumentationRequestBuilders.post("/api/study/cancel/{id}", STUDY_SETUP_EXISTED_ID)
         )
                 .andDo(print())
                 .andExpect(status().isOk())
@@ -1233,7 +1293,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 식별자")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1256,7 +1319,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1280,7 +1346,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1303,7 +1372,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("메세지 예외")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1326,7 +1398,10 @@ class StudyApiControllerTest {
                                 parameterWithName("studyId").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 식별자")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1349,7 +1424,10 @@ class StudyApiControllerTest {
                                 parameterWithName("studyId").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1372,7 +1450,10 @@ class StudyApiControllerTest {
                                 parameterWithName("studyId").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1395,7 +1476,10 @@ class StudyApiControllerTest {
                                 parameterWithName("studyId").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 식별자")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1418,7 +1502,10 @@ class StudyApiControllerTest {
                                 parameterWithName("studyId").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1441,7 +1528,10 @@ class StudyApiControllerTest {
                                 parameterWithName("studyId").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1460,7 +1550,7 @@ class StudyApiControllerTest {
                 )
                 .andDo(print())
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("content").value(studyCommentResultDto.getContent()))
+                .andExpect(jsonPath("$.data.content").value(studyCommentResultDto.getContent()))
                 .andDo(document("study-comment-create",
                         getDocumentRequest(),
                         getDocumentResponse(),
@@ -1471,15 +1561,18 @@ class StudyApiControllerTest {
                                 fieldWithPath("content").type(STRING).description("내용")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 댓글 식별자"),
-                                fieldWithPath("content").type(STRING).description("내용"),
-                                fieldWithPath("studyId").type(NUMBER).description("스터디 식별자"),
-                                fieldWithPath("accountId").type(NUMBER).description("사용자 식별자"),
-                                fieldWithPath("nickname").type(STRING).description("닉네임"),
-                                fieldWithPath("writtenByMe").type(BOOLEAN).description("댓글 주인 여부"),
-                                fieldWithPath("updatedDate").type(STRING).description("수정 날짜"),
-                                fieldWithPath("liked").type(BOOLEAN).description("좋아요 여부"),
-                                fieldWithPath("likesCount").type(NUMBER).description("좋아요 수")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 댓글 식별자"),
+                                fieldWithPath("data.content").type(STRING).description("내용"),
+                                fieldWithPath("data.studyId").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("data.accountId").type(NUMBER).description("사용자 식별자"),
+                                fieldWithPath("data.nickname").type(STRING).description("닉네임"),
+                                fieldWithPath("data.writtenByMe").type(BOOLEAN).description("댓글 주인 여부"),
+                                fieldWithPath("data.updatedDate").type(STRING).description("수정 날짜"),
+                                fieldWithPath("data.liked").type(BOOLEAN).description("좋아요 여부"),
+                                fieldWithPath("data.likesCount").type(NUMBER).description("좋아요 수"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1508,7 +1601,10 @@ class StudyApiControllerTest {
                                 fieldWithPath("content").type(STRING).description("내용")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1531,15 +1627,18 @@ class StudyApiControllerTest {
                                 parameterWithName("studyCommentId").description("스터디 댓글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 댓글 식별자"),
-                                fieldWithPath("content").type(STRING).description("내용"),
-                                fieldWithPath("studyId").type(NUMBER).description("스터디 식별자"),
-                                fieldWithPath("accountId").type(NUMBER).description("사용자 식별자"),
-                                fieldWithPath("nickname").type(STRING).description("닉네임"),
-                                fieldWithPath("writtenByMe").type(BOOLEAN).description("댓글 주인 여부"),
-                                fieldWithPath("updatedDate").type(STRING).description("수정 날짜"),
-                                fieldWithPath("liked").type(BOOLEAN).description("좋아요 여부"),
-                                fieldWithPath("likesCount").type(NUMBER).description("좋아요 수")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 댓글 식별자"),
+                                fieldWithPath("data.content").type(STRING).description("내용"),
+                                fieldWithPath("data.studyId").type(NUMBER).description("스터디 식별자"),
+                                fieldWithPath("data.accountId").type(NUMBER).description("사용자 식별자"),
+                                fieldWithPath("data.nickname").type(STRING).description("닉네임"),
+                                fieldWithPath("data.writtenByMe").type(BOOLEAN).description("댓글 주인 여부"),
+                                fieldWithPath("data.updatedDate").type(STRING).description("수정 날짜"),
+                                fieldWithPath("data.liked").type(BOOLEAN).description("좋아요 여부"),
+                                fieldWithPath("data.likesCount").type(NUMBER).description("좋아요 수"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1562,7 +1661,10 @@ class StudyApiControllerTest {
                                 parameterWithName("studyCommentId").description("스터디 댓글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1585,7 +1687,10 @@ class StudyApiControllerTest {
                                 parameterWithName("studyCommentId").description("스터디 댓글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1609,7 +1714,10 @@ class StudyApiControllerTest {
                                 parameterWithName("commentId").description("스터디 댓글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 댓글 식별자")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 댓글 식별자"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1645,7 +1753,10 @@ class StudyApiControllerTest {
                                 parameterWithName("commentId").description("스터디 댓글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1668,7 +1779,10 @@ class StudyApiControllerTest {
                                 parameterWithName("commentId").description("스터디 댓글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 댓글 식별자")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 댓글 식별자"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1691,7 +1805,10 @@ class StudyApiControllerTest {
                                 parameterWithName("commentId").description("스터디 댓글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1714,7 +1831,10 @@ class StudyApiControllerTest {
                                 parameterWithName("commentId").description("스터디 댓글 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1737,7 +1857,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 즐겨찾기 식별자")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 즐겨찾기 식별자"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1760,7 +1883,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1783,7 +1909,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1806,7 +1935,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("id").type(NUMBER).description("스터디 즐겨찾기 식별자")
+                                fieldWithPath("data.id").type(NUMBER).description("스터디 즐겨찾기 식별자"),
+                                fieldWithPath("message").description("예외 메세지"),
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("errorCode").description("에러코드")
                         )
                 ));
     }
@@ -1829,7 +1961,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }
@@ -1852,7 +1987,10 @@ class StudyApiControllerTest {
                                 parameterWithName("id").description("스터디 식별자")
                         ),
                         responseFields(
-                                fieldWithPath("message").type(STRING).description("예외 메세지")
+                                fieldWithPath("result").type(STRING).description("결과"),
+                                fieldWithPath("message").type(STRING).description("예외 메세지"),
+                                fieldWithPath("errorCode").type(STRING).description("에러코드"),
+                                fieldWithPath("data").description("데이터")
                         )
                 ));
     }

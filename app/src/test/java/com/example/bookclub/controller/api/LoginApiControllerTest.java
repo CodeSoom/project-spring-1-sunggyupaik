@@ -134,8 +134,8 @@ public class LoginApiControllerTest {
 		)
 				.andDo(print())
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("email").value(KAKAO_LOGIN_EMAIL))
-				.andExpect(jsonPath("authenticationNumber").isEmpty())
+				.andExpect(jsonPath("$.data.email").value(KAKAO_LOGIN_EMAIL))
+				.andExpect(jsonPath("$.data.authenticationNumber").isEmpty())
 				.andDo(document("kakao-login-existed-email",
 						getDocumentRequest(),
 						getDocumentResponse(),
@@ -144,8 +144,11 @@ public class LoginApiControllerTest {
 								fieldWithPath("email").type(STRING).description("사용자 이메일")
 						),
 						responseFields(
-								fieldWithPath("email").type(STRING).description("사용자 식별자"),
-								fieldWithPath("authenticationNumber").description("사용자 인증번호")
+								fieldWithPath("data.email").type(STRING).description("사용자 식별자"),
+								fieldWithPath("data.authenticationNumber").description("사용자 인증번호"),
+								fieldWithPath("message").description("예외 메세지"),
+								fieldWithPath("result").type(STRING).description("결과"),
+								fieldWithPath("errorCode").description("에러코드")
 						)
 				));
 	}
@@ -162,8 +165,8 @@ public class LoginApiControllerTest {
 				)
 				.andDo(print())
 				.andExpect(status().isOk())
-				.andExpect(jsonPath("email").value(KAKAO_LOGIN_EMAIL_NOT_EXISTED))
-				.andExpect(jsonPath("authenticationNumber").value(AUTHENTICATION_NUMBER))
+				.andExpect(jsonPath("$.data.email").value(KAKAO_LOGIN_EMAIL_NOT_EXISTED))
+				.andExpect(jsonPath("$.data.authenticationNumber").value(AUTHENTICATION_NUMBER))
 				.andDo(document("kakao-login-not-existed-email",
 						getDocumentRequest(),
 						getDocumentResponse(),
@@ -172,8 +175,11 @@ public class LoginApiControllerTest {
 										fieldWithPath("email").type(STRING).description("사용자 이메일")
 								),
 						responseFields(
-								fieldWithPath("email").type(STRING).description("사용자 식별자"),
-								fieldWithPath("authenticationNumber").type(STRING).description("사용자 인증번호")
+								fieldWithPath("data.email").type(STRING).description("사용자 식별자"),
+								fieldWithPath("data.authenticationNumber").type(STRING).description("사용자 인증번호"),
+								fieldWithPath("message").description("예외 메세지"),
+								fieldWithPath("result").type(STRING).description("결과"),
+								fieldWithPath("errorCode").description("에러코드")
 						)
 				));
 	}
