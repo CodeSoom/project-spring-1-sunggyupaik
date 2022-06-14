@@ -2,6 +2,7 @@ package com.example.bookclub.controller.api;
 
 import com.example.bookclub.application.post.PostService;
 import com.example.bookclub.common.response.CommonResponse;
+import com.example.bookclub.common.util.DiaryProducer;
 import com.example.bookclub.common.util.Producer;
 import com.example.bookclub.domain.post.Diary;
 import com.example.bookclub.domain.post.Post;
@@ -23,11 +24,14 @@ import java.util.List;
 public class PostApiController {
 	private final PostService postService;
 	private final Producer producer;
+	private final DiaryProducer diaryProducer;
 	private final ObjectMapper objectMapper;
 
-	public PostApiController(PostService postService, Producer producer, ObjectMapper objectMapper) {
+	public PostApiController(PostService postService, Producer producer,
+							 DiaryProducer diaryProducer, ObjectMapper objectMapper) {
 		this.postService = postService;
 		this.producer = producer;
+		this.diaryProducer = diaryProducer;
 		this.objectMapper = objectMapper;
 	}
 
@@ -43,7 +47,7 @@ public class PostApiController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public CommonResponse<Diary> createDiary(@RequestBody Diary diary) throws JsonProcessingException {
 		String jsonPost = objectMapper.writeValueAsString(diary);
-		producer.sendTo(jsonPost);
+		diaryProducer.sendTo(jsonPost);
 		return CommonResponse.success(diary);
 	}
 	

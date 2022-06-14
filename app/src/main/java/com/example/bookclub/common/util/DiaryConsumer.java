@@ -5,7 +5,9 @@ import com.example.bookclub.domain.post.Diary;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DiaryConsumer {
 	private final PostService postService;
 	private final ObjectMapper objectMapper;
