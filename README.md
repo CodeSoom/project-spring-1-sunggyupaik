@@ -20,7 +20,7 @@ IT 서적 스터디와 공유를 위한 플랫폼입니다.
 ![image](https://user-images.githubusercontent.com/45138206/172886044-e773c28f-97bb-44ae-ba08-65a1df52e2c9.png)
 
 ## 주요 내용
-- 도메인 중심으로 약 20개 가량 DB Modeling 설계 및 JPA 연관관계 작성  
+- [도메인 중심으로 약 20개 가량 DB Modeling 설계 및 JPA 연관관계 작성](https://github.com/sunggyupaik/project-spring-1-sunggyupaik/wiki/ERD)
 
 - TDD를 통해 작은 단위로 기능을 만들기(테스트 코드 약 160개)  
 TDD로 코드의 안정성을 높이며, 좀 더 작은 단위로 메서드 작성 고민
