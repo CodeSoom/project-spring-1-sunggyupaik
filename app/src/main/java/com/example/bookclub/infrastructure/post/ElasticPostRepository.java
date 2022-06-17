@@ -7,7 +7,7 @@ import org.springframework.data.elasticsearch.repository.ElasticsearchRepository
 import java.util.List;
 
 public interface ElasticPostRepository extends ElasticsearchRepository<Post, String> {
-	@Query("{ \"bool\" : { \"must\" : [ { \"query_string\" : { \"query\" : \"*?0*\", \"fields\" : [ \"content\" ] } } ] } }")
+	//@Query("{ \"bool\" : { \"must\" : [ { \"query_string\" : { \"query\" : \"*?0*\", \"fields\" : [ \"content\" ] } } ] } }")
 	List<Post> findByContent(String content);
 
 	Post save(Post post);

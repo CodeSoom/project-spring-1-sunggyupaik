@@ -48,11 +48,11 @@ spring:
         max-page-size: 2000
 
     elasticsearch:
-      hosts: 10.178.0.2,10.178.0.3,10.178.0.4,10.178.0.5
+      hosts: 34.64.112.123,34.64.228.237,34.64.109.20,34.64.114.178
       port: 9200
 
   rabbitmq:
-    host: localhost
+    host: 34.84.34.164
     username: guest
     password: guest
     port: 5672
@@ -62,7 +62,7 @@ spring:
 
   mail:
     username: ENC(/qNjHfAouomFQW84ddaVlwSyuuBwMnqvIQdsY5EHeCs=)
-    password: ENC(108QkIuAdhSx2x4QIBI8A9GuNVwmxSh7)
+    password: ENC(OpCG3YawFvaXQBrIQydUzIifc6qiCuqm2UiholPJfYY=)
     host: smtp.gmail.com
     port: 587
     properties:
