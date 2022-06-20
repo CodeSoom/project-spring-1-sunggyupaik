@@ -2,13 +2,13 @@ package com.example.bookclub.domain.account;
 
 import com.example.bookclub.common.AccountEntityListener;
 import com.example.bookclub.common.BaseTimeEntity;
-import com.example.bookclub.domain.study.favorite.Favorite;
+import com.example.bookclub.domain.account.accounthistory.AccountHistory;
 import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.favorite.Favorite;
 import com.example.bookclub.domain.study.studycomment.StudyComment;
 import com.example.bookclub.domain.study.studycommentlike.StudyCommentLike;
 import com.example.bookclub.domain.study.studylike.StudyLike;
 import com.example.bookclub.domain.uplodfile.UploadFile;
-import com.example.bookclub.domain.account.accounthistory.AccountHistory;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,6 +30,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +44,7 @@ import java.util.Objects;
 @ToString(callSuper = true)
 @EntityListeners(value = { AccountEntityListener.class })
 @JsonIgnoreProperties({"study", "accountHistories", "studyLikes", "studyComments"})
-public class Account extends BaseTimeEntity {
+public class Account extends BaseTimeEntity implements Serializable {
     /* 식별자 */
     @Id @GeneratedValue
     @Column(name = "ACCOUNT_ID")

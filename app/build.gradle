@@ -200,6 +200,9 @@ dependencies {
 
 	//Postgresql
 	implementation 'org.postgresql:postgresql:42.3.3'
+
+	// Redis Session
+	implementation 'org.springframework.session:spring-session-data-redis:2.7.0'
 }
 
 application {
