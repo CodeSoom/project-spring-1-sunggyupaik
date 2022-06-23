@@ -1,13 +1,6 @@
 package com.example.bookclub.application.account;
 
 import com.example.bookclub.application.uploadfile.UploadFileService;
-import com.example.bookclub.domain.account.Account;
-import com.example.bookclub.domain.account.emailauthentication.EmailAuthentication;
-import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;
-import com.example.bookclub.domain.account.role.Role;
-import com.example.bookclub.domain.account.role.RoleRepository;
-import com.example.bookclub.domain.uplodfile.UploadFile;
-import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.common.exception.account.AccountEmailDuplicatedException;
 import com.example.bookclub.common.exception.account.AccountEmailNotFoundException;
 import com.example.bookclub.common.exception.account.AccountNewPasswordNotMatchedException;
@@ -15,6 +8,13 @@ import com.example.bookclub.common.exception.account.AccountNicknameDuplicatedEx
 import com.example.bookclub.common.exception.account.AccountNotFoundException;
 import com.example.bookclub.common.exception.account.AccountPasswordBadRequestException;
 import com.example.bookclub.common.exception.account.emailauthentication.EmailNotAuthenticatedException;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthentication;
+import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;
+import com.example.bookclub.domain.account.role.Role;
+import com.example.bookclub.domain.account.role.RoleRepository;
+import com.example.bookclub.domain.uplodfile.UploadFile;
+import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.infrastructure.account.JpaAccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
