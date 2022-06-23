@@ -23,6 +23,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +37,7 @@ import java.util.List;
 @Builder
 @ToString
 @JsonIgnoreProperties({"accounts", "studyLikes", "studyComments"})
-public class Study extends BaseEntity {
+public class Study extends BaseEntity implements Serializable {
     /* 식별자 */
     @Id @GeneratedValue
     @Column(name = "STUDY_ID")
