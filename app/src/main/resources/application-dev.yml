@@ -19,19 +19,29 @@ spring:
       enabled: true
     restart:
       enabled: true
-
   datasource:
-    url: jdbc:mysql://34.85.16.173:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
-    jdbc-url: jdbc:mysql://34.85.16.173:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 1234
+    url: jdbc:h2:file:~/dev/temp/h2db/bookclub
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
 
   jpa:
-    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    database-platform: org.hibernate.dialect.H2Dialect
     generate-ddl: true
     hibernate:
       ddl-auto: update
+#  datasource:
+#    url: jdbc:mysql://34.85.16.173:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
+#    jdbc-url: jdbc:mysql://34.85.16.173:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    username: root
+#    password: 1234
+#
+#  jpa:
+#    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+#    generate-ddl: true
+#    hibernate:
+#      ddl-auto: update
 
     # Query show
     show-sql: true

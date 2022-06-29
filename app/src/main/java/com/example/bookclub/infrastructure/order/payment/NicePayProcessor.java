@@ -32,8 +32,8 @@ public class NicePayProcessor {
 		this.orderRepository = orderRepository;
 	}
 
-	private String CLIENT_ID = "";
-	private String SECRET_KEY = "";
+	private String CLIENT_ID = "S2_299d7444916a46d29cffc772336f15e8";
+	private String SECRET_KEY = "ea9e673332934016ba405238b7d60a9a";
 
 	public void pay(OrderDto.OrderPayRequest orderPayRequest) throws JsonProcessingException {
 
