@@ -20,8 +20,8 @@ import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.infrastructure.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -64,6 +64,7 @@ public class StudyService {
      * @throws StudyStartAndEndDateNotValidException 생성하려는 스터디 종료일이 시작일보다 빠른 경우
      * @throws StudyStartAndEndTimeNotValidException 생성하려는 스터디 종료시간이 시작시간보다 빠른 경우
      */
+    @CacheEvict(cacheNames = "Studies", allEntries = true)
     public StudyApiDto.StudyResultDto createStudy(String email, StudyApiDto.StudyCreateDto studyCreateDto) {
         Account loginAccount = accountService.findAccountByEmail(email);
 
@@ -183,6 +184,7 @@ public class StudyService {
      * @return 삭제된 스터디 식별자
      * @throws AccountNotManagerOfStudyException 스터디 식별자에 해당하는 스터디 이메일과 사용자 식별자가 다른 경우
      */
+    @CacheEvict(cacheNames = "Studies", allEntries = true)
     public StudyApiDto.StudyResultDto deleteStudy(String email, Long id) {
         Study study = getStudy(id);
         Account loginAccount = accountService.findAccountByEmail(email);
@@ -297,14 +299,14 @@ public class StudyService {
      * @param pageable 페이징 정보
      * @return 검색어와 스터디 상태에 해당하는 스터디 페이징 정보
      */
-    public Page<StudyApiDto.StudyResultDto> getStudiesBySearch(
+    @Cacheable(cacheNames = "Studies", key = "#studyState.code + #pageable.pageNumber")
+    public List<StudyApiDto.StudyResultDto> getStudiesBySearch(
             String keyword, StudyState studyState, Account account, Pageable pageable
     ) {
         List<Study> studies = studyRepository.findByBookNameContaining(keyword, studyState, pageable);
         long total = studyRepository.getStudiesCountByKeyword(keyword, studyState);
-        List<StudyApiDto.StudyResultDto> studyResultDtos = studySeriesFactory.getStudyLists(account, studies);
 
-        return new PageImpl<>(studyResultDtos, pageable, total);
+        return studySeriesFactory.getStudyLists(account, studies);
     }
 
     /**
@@ -373,5 +375,9 @@ public class StudyService {
      */
     public long getAllStudiesCount() {
         return studyRepository.getAllStudiesCount();
+    }
+
+    public long getStudiesBySearchCount(String title, StudyState studyState) {
+        return studyRepository.getStudiesCountByKeyword(title, studyState);
     }
 }

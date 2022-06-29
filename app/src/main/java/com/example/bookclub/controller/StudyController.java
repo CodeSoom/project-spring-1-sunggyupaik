@@ -11,7 +11,7 @@ import com.example.bookclub.dto.PageResultDto;
 import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.security.UserAccount;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 /**
  * 스터디 조회, 생성, 수정 페이지를 요청한다
@@ -118,16 +120,16 @@ public class StudyController {
      * @param userAccount 로그인한 사용자
      * @param model 모델
      * @param pageable 페이징
-     * @param title 검색 제목
+     * @param search 검색 제목
      * @return 모집중 스터디 조회 페이지
      */
     @GetMapping("/open")
     public String studyOpenList(@AuthenticationPrincipal UserAccount userAccount, Model model,
                                 @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable,
-                                @RequestParam(required = false) String title) {
+                                @RequestParam(required = false) String search) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        return getStudyList(userAccount.getAccount(), pageable, model, title, StudyState.OPEN);
+        return getStudyList(userAccount.getAccount(), pageable, model, search, StudyState.OPEN);
     }
 
     /**
@@ -197,12 +199,14 @@ public class StudyController {
      */
     private String getStudyList(Account account, Pageable pageable,
                                 Model model, String title, StudyState studyState) {
-        Page<StudyApiDto.StudyResultDto> studyResultDto =
+        List<StudyApiDto.StudyResultDto> studyResultDto =
                 studyService.getStudiesBySearch(title, studyState, account, pageable);
+
         StudyDto.StudyListInfoDto studyListInfoDto = StudyDto.StudyListInfoDto.of(studyResultDto, studyState, title);
+        long total = studyService.getStudiesBySearchCount(title, studyState);
 
         model.addAttribute("StudyListInfoDto", studyListInfoDto);
-        model.addAttribute("page", PageResultDto.of(studyResultDto));
+        model.addAttribute("page", PageResultDto.of(new PageImpl<>(studyResultDto, pageable, total)));
 
         return "studies/studies-list";
     }

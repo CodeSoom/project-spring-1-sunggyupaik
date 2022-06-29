@@ -1,7 +1,7 @@
 package com.example.bookclub.dto;
 
-import com.example.bookclub.domain.study.Day;
 import com.example.bookclub.common.EnumMapperValue;
+import com.example.bookclub.domain.study.Day;
 import com.example.bookclub.domain.study.Study;
 import com.example.bookclub.domain.study.StudyState;
 import com.example.bookclub.domain.study.Zone;
@@ -11,7 +11,6 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
-import org.springframework.data.domain.Page;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -106,12 +105,12 @@ public class StudyDto {
 	@Builder
 	@ToString
 	public static class StudyListInfoDto {
-		Page<StudyApiDto.StudyResultDto> studyResultDtos;
+		List<StudyApiDto.StudyResultDto> studyResultDtos;
 		private StudyState studyState;
 		private String search;
 		private String searchStudyStateCode;
 
-		public static StudyListInfoDto of(Page<StudyApiDto.StudyResultDto> studyResultDtos, StudyState studyState, String search) {
+		public static StudyListInfoDto of(List<StudyApiDto.StudyResultDto> studyResultDtos, StudyState studyState, String search) {
 			return StudyListInfoDto.builder()
 					.studyResultDtos(studyResultDtos)
 					.studyState(studyState)

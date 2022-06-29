@@ -203,6 +203,9 @@ dependencies {
 
 	// Redis Session
 	implementation 'org.springframework.session:spring-session-data-redis:2.7.0'
+
+	// Spring Boot Starter Cache
+	implementation 'org.springframework.boot:spring-boot-starter-cache:2.7.0'
 }
 
 application {
