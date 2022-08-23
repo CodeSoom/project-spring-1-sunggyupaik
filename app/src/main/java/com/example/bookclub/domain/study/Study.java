@@ -1,10 +1,11 @@
 package com.example.bookclub.domain.study;
 
 import com.example.bookclub.common.BaseEntity;
+import com.example.bookclub.common.exception.study.StudySizeFullException;
+import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.favorite.Favorite;
 import com.example.bookclub.domain.study.studycomment.StudyComment;
 import com.example.bookclub.domain.study.studylike.StudyLike;
-import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.StudyApiDto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.querydsl.core.annotations.QueryProjection;
@@ -188,8 +189,13 @@ public class Study extends BaseEntity implements Serializable {
      * 지원자 수를 1 증가시킨다.
      *
      * @param account 사용자
+     * @throws StudySizeFullException 스터디 식별자에 해당하는 스터디 정원이 다 찬 경우
      */
     public void addAccount(Account account) {
+        if(this.applyCount + 1 > this.size) {
+            throw new StudySizeFullException();
+        }
+
         this.applyCount += 1;
         accounts.add(account);
         account.addStudy(this);

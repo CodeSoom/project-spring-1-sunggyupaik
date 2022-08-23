@@ -209,19 +209,16 @@ public class StudyService {
      * @throws StudySizeFullException 스터디 식별자에 해당하는 스터디 정원이 다 찬 경우
      */
     public StudyApiDto.StudyApplyResultDto applyStudy(UserAccount userAccount, Long id) {
-        Study study = getStudy(id);
         Account account = userAccount.getAccount();
-
-        if(!study.getStudyState().equals(StudyState.OPEN)) {
-            throw new StudyNotInOpenStateException();
-        }
 
         if (account.getStudy() != null) {
             throw new StudyAlreadyExistedException();
         }
 
-        if (study.isSizeFull()) {
-            throw new StudySizeFullException();
+        Study study = getStudyForUpdate(id);
+
+        if(!study.getStudyState().equals(StudyState.OPEN)) {
+            throw new StudyNotInOpenStateException();
         }
 
         study.addAccount(account);
@@ -272,6 +269,18 @@ public class StudyService {
      * @throws StudyNotFoundException 스터디 식별자에 해당하는 스터디가 존재하지 않는 경우
      */
     public Study getStudy(Long id) {
+        return studyRepository.findById(id)
+                .orElseThrow(() -> new StudyNotFoundException(id));
+    }
+
+    /**
+     * 주어진 스터디 식별자에 해당하는 스터디를 반환한다.
+     *
+     * @param id 스터디 식별자
+     * @return 스터디 식별자에 해당하는 스터디
+     * @throws StudyNotFoundException 스터디 식별자에 해당하는 스터디가 존재하지 않는 경우
+     */
+    public Study getStudyForUpdate(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
     }
