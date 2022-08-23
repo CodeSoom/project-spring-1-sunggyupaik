@@ -45,4 +45,22 @@
         <div>종료된 스터디<br><h5>{{allEndStudiesCount}}</h5></div>
     </div>
 </div>
+<button onclick="serverAuth()">serverAuth 결제하기</button>
+
+<script src="https://pay.nicepay.co.kr/v1/js/"></script>
+<script>
+    function serverAuth() {
+        AUTHNICE.requestPay({
+            clientId: 'S2_299d7444916a46d29cffc772336f15e8',
+            method: 'card',
+            orderId: '9',
+            amount: 100,
+            goodsName: '나이스페이-상품',
+            returnUrl: 'http://localhost:9059/serverAuth',
+            fnError: function (result) {
+                alert('개발자확인용 : ' + result.errorMsg + '')
+            }
+        });
+    }
+</script>
 {{>layout/footer}}
