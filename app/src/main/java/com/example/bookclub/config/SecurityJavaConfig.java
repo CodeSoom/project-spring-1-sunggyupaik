@@ -23,7 +23,6 @@ import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSessionEvent;
-import javax.sql.DataSource;
 import java.time.LocalDateTime;
 
 /**
@@ -32,18 +31,15 @@ import java.time.LocalDateTime;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
     private final AccountAuthenticationService accountAuthenticationService;
-    private final DataSource dataSource;
     private final CustomEntryPoint customEntryPoint;
     private final CustomDeniedHandler customDeniedHandler;
     private final PersistTokenRepository persistTokenRepository;
 
     public SecurityJavaConfig(AccountAuthenticationService accountAuthenticationService,
-                              DataSource dataSource,
                               CustomEntryPoint customEntryPoint,
                               CustomDeniedHandler customDeniedHandler,
                               PersistTokenRepository persistTokenRepository) {
         this.accountAuthenticationService = accountAuthenticationService;
-        this.dataSource = dataSource;
         this.customEntryPoint = customEntryPoint;
         this.customDeniedHandler = customDeniedHandler;
         this.persistTokenRepository = persistTokenRepository;
