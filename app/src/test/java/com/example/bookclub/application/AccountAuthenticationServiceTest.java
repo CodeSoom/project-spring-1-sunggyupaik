@@ -35,6 +35,7 @@ class AccountAuthenticationServiceTest {
 	private final static String ROLE_SETUP_NAME = "USER";
 
 	private final static Long STUDY_SETUP_ID = 2L;
+	private final static int STUDY_SETUP_SIZE = 10;
 	private final static Long UPLOAD_FILE_SETUP_ID = 3L;
 
 	private Account setupAccount;
@@ -69,6 +70,7 @@ class AccountAuthenticationServiceTest {
 
 		setupStudy = Study.builder()
 				.id(STUDY_SETUP_ID)
+				.size(STUDY_SETUP_SIZE)
 				.build();
 
 		setupUploadFile = UploadFile.builder()
