@@ -147,6 +147,7 @@ class StudyApiControllerTest {
     private static final Long STUDY_NOT_EXISTED_ID = 999L;
     private static final Long STUDY_CLOSED_ID = 5L;
     private static final Long ACCOUNT_CLOSED_STUDY_ID = 6L;
+    private static final int STUDY_CLOSED_SIZE = 10;
     private static final LocalDate CREATE_START_DATE_PAST = LocalDate.now().minusDays(1);
 
     private static final Long STUDY_COMMENT_EXISTED_ID = 7L;
@@ -330,6 +331,7 @@ class StudyApiControllerTest {
                 .studyState(StudyState.CLOSE)
                 .startDate(LocalDate.now().minusDays(1))
                 .endDate(LocalDate.now().plusDays(5))
+                .size(STUDY_CLOSED_SIZE)
                 .build();
 
         closedStudy.addAccount(accountWithClosedStudy);
