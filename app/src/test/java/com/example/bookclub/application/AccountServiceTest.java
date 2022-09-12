@@ -62,6 +62,7 @@ class AccountServiceTest {
 
     private static final Long STUDY_SETUP_ID = 7L;
     private static final String STUDY_SETUP_EMAIL = ACCOUNT_SETUP_EMAIL;
+    private static final int STUDY_SETUP_SIZE = 10;
 
     private static final Long UPLOADFILE_UPDATE_ID = 4L;
     private static final String UPLOADFILE_UPDATE_FILENAME = "updatedFileName";
@@ -139,6 +140,7 @@ class AccountServiceTest {
         setUpStudy = Study.builder()
                 .id(STUDY_SETUP_ID)
                 .email(STUDY_SETUP_EMAIL)
+                .size(STUDY_SETUP_SIZE)
                 .build();
 
         setUpAccount = Account.builder()

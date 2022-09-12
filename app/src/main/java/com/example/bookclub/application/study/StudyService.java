@@ -281,7 +281,7 @@ public class StudyService {
      * @throws StudyNotFoundException 스터디 식별자에 해당하는 스터디가 존재하지 않는 경우
      */
     public Study getStudyForUpdate(Long id) {
-        return studyRepository.findById(id)
+        return studyRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
     }
 

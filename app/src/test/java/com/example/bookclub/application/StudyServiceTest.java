@@ -53,7 +53,7 @@ public class StudyServiceTest {
     private static final String STUDY_SETUP_DESCRIPTION = "studySetupDescription";
     private static final String STUDY_SETUP_CONTACT = "studySetupContact";
     private static final int STUDY_SETUP_SIZE = 5;
-    private static final int STUDY_SETUP_APPLY_COUNT = 3;
+    private static final int STUDY_SETUP_APPLY_COUNT = 1;
     private static final LocalDate STUDY_SETUP_START_DATE = LocalDate.now().plusDays(1);
     private static final LocalDate STUDY_SETUP_END_DATE = LocalDate.now().plusDays(7);
     private static final Day STUDY_SETUP_DAY = Day.MONDAY;
@@ -249,19 +249,16 @@ public class StudyServiceTest {
                 .build();
 
 		setUpStudy.addAccount(applierOfSetUpStudyOne);
-
         applierOfSetUpStudyTwo = Account.builder()
                 .id(ACCOUNT_APPLIER_TWO_ID)
                 .build();
 
 		setUpStudy.addAccount(applierOfSetUpStudyTwo);
-
         applierOfSetUpStudyThree = Account.builder()
                 .id(ACCOUNT_APPLIER_THREE_ID)
                 .build();
 
 		setUpStudy.addAccount(applierOfSetUpStudyThree);
-
 		accountWithoutStudy = Account.builder()
 				.id(ACCOUNT_APPLIER_WITHOUT_STUDY_ID)
 				.build();
@@ -655,9 +652,9 @@ public class StudyServiceTest {
 
     @Test
     void applyWithValidAttribute() {
-        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+        given(studyRepository.findByIdForUpdate(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
 
-        Study study = studyService.getStudy(STUDY_SETUP_ID);
+        Study study = studyService.getStudyForUpdate(STUDY_SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
         studyService.applyStudy(userAccountWithoutStudy, STUDY_SETUP_ID);
         int afterApplyCount = study.getApplyCount();
@@ -678,7 +675,7 @@ public class StudyServiceTest {
 
     @Test
     void applyThatSizeIsFull() {
-        given(studyRepository.findById(STUDY_FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
+        given(studyRepository.findByIdForUpdate(STUDY_FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
 
         assertThatThrownBy(() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_FULL_SIZE_ID))
                 .isInstanceOf(StudySizeFullException.class);
@@ -686,7 +683,7 @@ public class StudyServiceTest {
 
 	@Test
 	void applyNotOpenedStudy() {
-		given(studyRepository.findById(STUDY_CLOSED_ID)).willReturn(Optional.of(closedStudy));
+		given(studyRepository.findByIdForUpdate(STUDY_CLOSED_ID)).willReturn(Optional.of(closedStudy));
 
 		assertThatThrownBy(
 				() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_CLOSED_ID)
