@@ -28,6 +28,8 @@ import com.example.bookclub.infrastructure.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -420,38 +422,44 @@ public class StudyServiceTest {
         assertThat(lists).containsExactly(setUpStudy, createdStudy);
     }
 
-//    @Test
-//    void listOpenedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
-//        }
-//    }
-//
-//    @Test
-//    void listClosedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listClosedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
-//        }
-//    }
-//
-//    @Test
-//    void listEndedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listEndedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.END);
-//        }
-//    }
+	@Test
+	void listOpenedStudies() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("", StudyState.OPEN, pageable)).willReturn(listOpenedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("", StudyState.OPEN, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+		}
+	}
+
+	@Test
+	void listClosedStudies() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("", StudyState.CLOSE, pageable)).willReturn(listClosedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("", StudyState.CLOSE, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
+		}
+	}
+
+	@Test
+	void listEndedStudies() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("", StudyState.END, pageable)).willReturn(listEndedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("", StudyState.END, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.END);
+		}
+	}
 
     @Test
     void detailWithExistedId() {
