@@ -137,6 +137,9 @@ public class StudyServiceTest {
     private Study endYesterdayClosedStudyTwo;
     private Study endedStudyOne;
     private Study endedStudyTwo;
+	private Study openedStudyWithOpenKeyword;
+	private Study closedStudyWithCloseKeyword;
+	private Study endedStudyWithEndKeyword;
     private Study bookNamePythonStudyOne;
     private Study bookNamePythonStudyTwo;
 	private Study closedStudy;
@@ -156,6 +159,9 @@ public class StudyServiceTest {
     private List<Study> listOpenedStudies;
     private List<Study> listClosedStudies;
     private List<Study> listEndedStudies;
+	private List<Study> listOpenedStudiesWithOpenKeyword;
+	private List<Study> listClosedStudiesWithCloseKeyword;
+	private List<Study> listEndedStudiesWithEndKeyword;
     private List<Account> listApplierOfSetUpStudy;
     private List<Study> listBookNamePythonKeywordStudies;
 
@@ -315,6 +321,21 @@ public class StudyServiceTest {
 				.endDate(TODAY)
                 .build();
 
+		openedStudyWithOpenKeyword = Study.builder()
+				.studyState(StudyState.OPEN)
+				.name("Open")
+				.build();
+
+		closedStudyWithCloseKeyword = Study.builder()
+				.studyState(StudyState.CLOSE)
+				.name("Close")
+				.build();
+
+		endedStudyWithEndKeyword = Study.builder()
+				.studyState(StudyState.END)
+				.name("End")
+				.build();
+
         endYesterdayClosedStudyTwo = Study.builder()
                 .studyState(StudyState.CLOSE)
 				.endDate(YESTERDAY)
@@ -410,6 +431,9 @@ public class StudyServiceTest {
         listOpenedStudies = List.of(startTodayOpenedStudyOne, startTomorrowOpenedStudyTwo);
         listClosedStudies = List.of(endTodayClosedStudyOne, endYesterdayClosedStudyTwo);
         listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
+		listOpenedStudiesWithOpenKeyword = List.of(openedStudyWithOpenKeyword);
+		listClosedStudiesWithCloseKeyword = List.of(closedStudyWithCloseKeyword);
+		listEndedStudiesWithEndKeyword = List.of(endedStudyWithEndKeyword);
         listBookNamePythonKeywordStudies = List.of(bookNamePythonStudyOne, bookNamePythonStudyTwo);
     }
 
@@ -458,6 +482,51 @@ public class StudyServiceTest {
 
 		for(StudyApiDto.StudyResultDto study : lists) {
 			assertThat(study.getStudyState()).isEqualTo(StudyState.END);
+		}
+	}
+
+	@Test
+	void listOpenedStudiesWithKeyword() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("Open", StudyState.OPEN, pageable))
+				.willReturn(listOpenedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("Open", StudyState.OPEN, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+			assertThat(study.getName()).isEqualTo("Open");
+		}
+	}
+
+	@Test
+	void listClosedStudiesWithKeyword() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("Close", StudyState.OPEN, pageable))
+				.willReturn(listOpenedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("Close", StudyState.OPEN, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+			assertThat(study.getName()).isEqualTo("Close");
+		}
+	}
+
+	@Test
+	void listEndedStudiesWithKeyword() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("End", StudyState.OPEN, pageable))
+				.willReturn(listOpenedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("End", StudyState.OPEN, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+			assertThat(study.getName()).isEqualTo("End");
 		}
 	}
 
