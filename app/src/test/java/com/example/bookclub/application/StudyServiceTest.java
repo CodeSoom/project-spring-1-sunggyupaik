@@ -28,6 +28,8 @@ import com.example.bookclub.infrastructure.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -53,7 +55,7 @@ public class StudyServiceTest {
     private static final String STUDY_SETUP_DESCRIPTION = "studySetupDescription";
     private static final String STUDY_SETUP_CONTACT = "studySetupContact";
     private static final int STUDY_SETUP_SIZE = 5;
-    private static final int STUDY_SETUP_APPLY_COUNT = 3;
+    private static final int STUDY_SETUP_APPLY_COUNT = 1;
     private static final LocalDate STUDY_SETUP_START_DATE = LocalDate.now().plusDays(1);
     private static final LocalDate STUDY_SETUP_END_DATE = LocalDate.now().plusDays(7);
     private static final Day STUDY_SETUP_DAY = Day.MONDAY;
@@ -135,6 +137,9 @@ public class StudyServiceTest {
     private Study endYesterdayClosedStudyTwo;
     private Study endedStudyOne;
     private Study endedStudyTwo;
+	private Study openedStudyWithOpenKeyword;
+	private Study closedStudyWithCloseKeyword;
+	private Study endedStudyWithEndKeyword;
     private Study bookNamePythonStudyOne;
     private Study bookNamePythonStudyTwo;
 	private Study closedStudy;
@@ -154,6 +159,9 @@ public class StudyServiceTest {
     private List<Study> listOpenedStudies;
     private List<Study> listClosedStudies;
     private List<Study> listEndedStudies;
+	private List<Study> listOpenedStudiesWithOpenKeyword;
+	private List<Study> listClosedStudiesWithCloseKeyword;
+	private List<Study> listEndedStudiesWithEndKeyword;
     private List<Account> listApplierOfSetUpStudy;
     private List<Study> listBookNamePythonKeywordStudies;
 
@@ -249,19 +257,16 @@ public class StudyServiceTest {
                 .build();
 
 		setUpStudy.addAccount(applierOfSetUpStudyOne);
-
         applierOfSetUpStudyTwo = Account.builder()
                 .id(ACCOUNT_APPLIER_TWO_ID)
                 .build();
 
 		setUpStudy.addAccount(applierOfSetUpStudyTwo);
-
         applierOfSetUpStudyThree = Account.builder()
                 .id(ACCOUNT_APPLIER_THREE_ID)
                 .build();
 
 		setUpStudy.addAccount(applierOfSetUpStudyThree);
-
 		accountWithoutStudy = Account.builder()
 				.id(ACCOUNT_APPLIER_WITHOUT_STUDY_ID)
 				.build();
@@ -315,6 +320,21 @@ public class StudyServiceTest {
                 .studyState(StudyState.CLOSE)
 				.endDate(TODAY)
                 .build();
+
+		openedStudyWithOpenKeyword = Study.builder()
+				.studyState(StudyState.OPEN)
+				.name("Open")
+				.build();
+
+		closedStudyWithCloseKeyword = Study.builder()
+				.studyState(StudyState.CLOSE)
+				.name("Close")
+				.build();
+
+		endedStudyWithEndKeyword = Study.builder()
+				.studyState(StudyState.END)
+				.name("End")
+				.build();
 
         endYesterdayClosedStudyTwo = Study.builder()
                 .studyState(StudyState.CLOSE)
@@ -411,6 +431,9 @@ public class StudyServiceTest {
         listOpenedStudies = List.of(startTodayOpenedStudyOne, startTomorrowOpenedStudyTwo);
         listClosedStudies = List.of(endTodayClosedStudyOne, endYesterdayClosedStudyTwo);
         listEndedStudies = List.of(endedStudyOne, endedStudyTwo);
+		listOpenedStudiesWithOpenKeyword = List.of(openedStudyWithOpenKeyword);
+		listClosedStudiesWithCloseKeyword = List.of(closedStudyWithCloseKeyword);
+		listEndedStudiesWithEndKeyword = List.of(endedStudyWithEndKeyword);
         listBookNamePythonKeywordStudies = List.of(bookNamePythonStudyOne, bookNamePythonStudyTwo);
     }
 
@@ -423,38 +446,89 @@ public class StudyServiceTest {
         assertThat(lists).containsExactly(setUpStudy, createdStudy);
     }
 
-//    @Test
-//    void listOpenedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.OPEN)).willReturn(listOpenedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.OPEN);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
-//        }
-//    }
-//
-//    @Test
-//    void listClosedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.CLOSE)).willReturn(listClosedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.CLOSE);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
-//        }
-//    }
-//
-//    @Test
-//    void listEndedStudies() {
-//        given(studyRepository.findByStudyState(StudyState.END)).willReturn(listEndedStudies);
-//
-//        List<Study> lists = studyService.getStudiesByStudyState(StudyState.END);
-//
-//        for(Study study : lists) {
-//            assertThat(study.getStudyState()).isEqualTo(StudyState.END);
-//        }
-//    }
+	@Test
+	void listOpenedStudies() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("", StudyState.OPEN, pageable)).willReturn(listOpenedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("", StudyState.OPEN, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+		}
+	}
+
+	@Test
+	void listClosedStudies() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("", StudyState.CLOSE, pageable)).willReturn(listClosedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("", StudyState.CLOSE, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.CLOSE);
+		}
+	}
+
+	@Test
+	void listEndedStudies() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("", StudyState.END, pageable)).willReturn(listEndedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("", StudyState.END, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.END);
+		}
+	}
+
+	@Test
+	void listOpenedStudiesWithKeyword() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("Open", StudyState.OPEN, pageable))
+				.willReturn(listOpenedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("Open", StudyState.OPEN, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+			assertThat(study.getName()).isEqualTo("Open");
+		}
+	}
+
+	@Test
+	void listClosedStudiesWithKeyword() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("Close", StudyState.OPEN, pageable))
+				.willReturn(listOpenedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("Close", StudyState.OPEN, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+			assertThat(study.getName()).isEqualTo("Close");
+		}
+	}
+
+	@Test
+	void listEndedStudiesWithKeyword() {
+		Pageable pageable = PageRequest.of(0, 5);
+		given(studyRepository.findByBookNameContaining("End", StudyState.OPEN, pageable))
+				.willReturn(listOpenedStudies);
+
+		List<StudyApiDto.StudyResultDto> lists = studyService
+				.getStudiesBySearch("End", StudyState.OPEN, accountWithoutStudy, pageable);
+
+		for(StudyApiDto.StudyResultDto study : lists) {
+			assertThat(study.getStudyState()).isEqualTo(StudyState.OPEN);
+			assertThat(study.getName()).isEqualTo("End");
+		}
+	}
 
     @Test
     void detailWithExistedId() {
@@ -655,9 +729,9 @@ public class StudyServiceTest {
 
     @Test
     void applyWithValidAttribute() {
-        given(studyRepository.findById(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
+        given(studyRepository.findByIdForUpdate(STUDY_SETUP_ID)).willReturn(Optional.of(setUpStudy));
 
-        Study study = studyService.getStudy(STUDY_SETUP_ID);
+        Study study = studyService.getStudyForUpdate(STUDY_SETUP_ID);
         int beforeApplyCount = study.getApplyCount();
         studyService.applyStudy(userAccountWithoutStudy, STUDY_SETUP_ID);
         int afterApplyCount = study.getApplyCount();
@@ -678,7 +752,7 @@ public class StudyServiceTest {
 
     @Test
     void applyThatSizeIsFull() {
-        given(studyRepository.findById(STUDY_FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
+        given(studyRepository.findByIdForUpdate(STUDY_FULL_SIZE_ID)).willReturn(Optional.of(fullSizeStudy));
 
         assertThatThrownBy(() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_FULL_SIZE_ID))
                 .isInstanceOf(StudySizeFullException.class);
@@ -686,7 +760,7 @@ public class StudyServiceTest {
 
 	@Test
 	void applyNotOpenedStudy() {
-		given(studyRepository.findById(STUDY_CLOSED_ID)).willReturn(Optional.of(closedStudy));
+		given(studyRepository.findByIdForUpdate(STUDY_CLOSED_ID)).willReturn(Optional.of(closedStudy));
 
 		assertThatThrownBy(
 				() -> studyService.applyStudy(userAccountWithoutStudy, STUDY_CLOSED_ID)
