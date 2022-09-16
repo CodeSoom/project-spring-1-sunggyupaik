@@ -55,9 +55,16 @@ spring:
     generate-ddl: true
     hibernate:
       ddl-auto: update
+    show_sql: true
+    # Query pretty print
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+
   datasource:
-    url: jdbc:h2:file:~/dev/temp/h2db/bookclub
-    jdbc-url: jdbc:h2:file:~/dev/temp/h2db/bookclub
+    url: jdbc:h2:tcp://localhost/~/bookclub
+    jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
     driver-class-name: org.h2.Driver
     username: sa
     password:
@@ -67,14 +74,12 @@ spring:
 #    generate-ddl: true
 #    hibernate:
 #      ddl-auto: update
+#    show-sql: true
+#      # Query pretty print
+#    properties:
+#      hibernate:
+#        format_sql: true
 
-    # Query show
-    show-sql: true
-
-    # Query pretty print
-    properties:
-      hibernate:
-        format_sql: true
 
   data:
     web:
@@ -138,13 +143,13 @@ resources:
 image:
   path: ENC(lY4tnO32eKTp0P0ExJaHeQFAU+6tfUq7nsBdtWOUHkMICPMky+JIQZ6wmpxhzfDa)
 
-logging:
-  config: classpath:log4j2.xml
-  level:
-    org:
-      hibernate:
-        SQL: info
-        type: trace
+#logging:
+#  config: classpath:log4j2.xml
+#  level:
+#    org:
+#      hibernate:
+#        SQL: info
+#        type: trace
 #          descriptor:
 #            sql: trace
 
