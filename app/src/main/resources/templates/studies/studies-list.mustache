@@ -28,14 +28,14 @@
     function go_previous(studyState) {
         document.frmList.target = '';
         document.frmList.page.value = $(".previous").val() -1;
-        document.frmList.action = "/studies/" + + studyState.toLowerCase();
+        document.frmList.action = "/studies/" + studyState.toLowerCase();
         document.frmList.submit();
     }
 
     function go_next(studyState) {
         document.frmList.target = '';
         document.frmList.page.value = $(".next").val() -1;
-        document.frmList.action = "/studies" + + studyState.toLowerCase();
+        document.frmList.action = "/studies/" + studyState.toLowerCase();
         document.frmList.submit();
     }
 
