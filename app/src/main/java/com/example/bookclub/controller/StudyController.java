@@ -1,6 +1,5 @@
 package com.example.bookclub.controller;
 
-import com.example.bookclub.application.account.AccountService;
 import com.example.bookclub.application.study.StudyService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.Day;
@@ -34,12 +33,9 @@ import java.util.List;
 @RequestMapping("/studies")
 public class StudyController {
     private final StudyService studyService;
-    private final AccountService accountService;
 
-    public StudyController(StudyService studyService,
-                           AccountService accountService) {
+    public StudyController(StudyService studyService) {
         this.studyService = studyService;
-        this.accountService = accountService;
     }
 
     /**
