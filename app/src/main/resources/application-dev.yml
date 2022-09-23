@@ -19,36 +19,29 @@ spring:
       enabled: true
     restart:
       enabled: true
-  #  datasource:
-  #    hikari:
-  #      read:
-  #        url: jdbc:h2:file:~/dev/temp/h2db/bookclub
-  #        jdbc-url: jdbc:h2:file:~/dev/temp/h2db/bookclub
-  #        driver-class-name: org.h2.Driver
-  #        username: sa
-  #        password:
-  #
-  #      write:
-  #        url: jdbc:h2:file:~/dev/temp/h2db/bookclub
-  #        jdbc-url: jdbc:h2:file:~/dev/temp/h2db/bookclub
-  #        driver-class-name: org.h2.Driver
-  #        username: sa
-  #        password:
-  #  datasource:
-  #    hikari:
-  #      write:
-  #        url: jdbc:mysql://34.125.215.241:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
-  #        jdbc-url: jdbc:mysql://34.125.215.241:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
-  #        driver-class-name: com.mysql.cj.jdbc.Driver
-  #        username: bookroot
-  #        password: 1234
 
-  #      read:
-  #        url: jdbc:mysql://34.125.215.241:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
-  #          jdbc-url: jdbc:mysql://34.125.215.241:3306/bookclub?serverTimezone=UTC&characterEncoding=UTF-8
-  #          driver-class-name: com.mysql.cj.jdbc.Driver
-  #          username: bookroot
-  #          password: 1234
+#    datasource:
+#      url: jdbc:h2:tcp://localhost/~/bookclub
+#      jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
+#      driver-class-name: org.h2.Driver
+#      username: sa
+#      password:
+
+    datasource:
+      hikari:
+        read:
+          #url: jdbc:h2:tcp://localhost/~/bookclub
+          jdbc-url: jdbc:h2:tcp://localhost/~/bookclub2
+          driver-class-name: org.h2.Driver
+          username: sa
+          password:
+
+        write:
+          #url: jdbc:h2:tcp://localhost/~/jdbc
+          jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
+          driver-class-name: org.h2.Driver
+          username: sa
+          password:
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -61,13 +54,6 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
-
-  datasource:
-    url: jdbc:h2:tcp://localhost/~/bookclub
-    jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
 
 #  jpa:
 #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
