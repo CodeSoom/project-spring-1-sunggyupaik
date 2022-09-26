@@ -3,11 +3,9 @@ package com.example.bookclub.application.item;
 import com.example.bookclub.dto.ItemDto;
 import com.example.bookclub.infrastructure.item.JpaItemRepository;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
 public class ItemService {
 	private final JpaItemRepository itemRepository;
 
@@ -15,6 +13,7 @@ public class ItemService {
 		this.itemRepository = itemRepository;
 	}
 
+	@Transactional(readOnly = true)
 	public ItemDto.ItemResultDto detailItem(String title) {
 		return itemRepository.findByTitle(title);
 	}
