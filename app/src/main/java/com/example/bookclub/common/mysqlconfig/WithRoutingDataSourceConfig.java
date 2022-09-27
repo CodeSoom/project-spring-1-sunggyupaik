@@ -45,7 +45,12 @@ public class WithRoutingDataSourceConfig {
 		return DataSourceBuilder.create().type(HikariDataSource.class).build();
 	}
 
-
+	/**
+	 * 읽기 저장소와 쓰기 저장소를 데이터소스 맵에 담는다.
+	 *
+	 * @param readDataSource 읽기 저장소
+	 * @param writeDataSource 쓰기 저장소
+	 */
 	@Bean
 	public DataSource routingDataSource(@Qualifier("writeDataSource") DataSource writeDataSource,
 										@Qualifier("readDataSource") DataSource readDataSource) {
@@ -60,11 +65,21 @@ public class WithRoutingDataSourceConfig {
 		return routingDataSource;
 	}
 
+	/**
+	 * 읽기 전용 유무에 따라서 동적으로 데이터소스를 선택하여 반환한다.
+	 *
+	 * @param routingDataSource 읽기와 쓰기 저장소
+	 */
 	@Bean
 	public DataSource routingLazyDataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
 		return new LazyConnectionDataSourceProxy(routingDataSource);
 	}
 
+	/**
+	 * 동적으로 선택된 저장소가 반환되면 해당 저장소에 맞는 트랜잭션 매니저를 반환한다.
+	 *
+	 * @param dataSource 동적으로 선택되는 읽기 혹은 쓰기 저장소
+	 */
 	@Bean
 	public PlatformTransactionManager transactionManager(@Qualifier("routingLazyDataSource") DataSource dataSource) {
 		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
