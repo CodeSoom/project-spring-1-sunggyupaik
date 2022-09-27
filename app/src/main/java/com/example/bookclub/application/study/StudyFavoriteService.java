@@ -1,15 +1,16 @@
 package com.example.bookclub.application.study;
 
 import com.example.bookclub.application.account.AccountService;
-import com.example.bookclub.domain.account.Account;
-import com.example.bookclub.domain.study.favorite.Favorite;
-import com.example.bookclub.domain.study.favorite.FavoriteRepository;
-import com.example.bookclub.domain.study.Study;
-import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.common.exception.study.favorite.StudyFavoriteAlreadyExistedException;
 import com.example.bookclub.common.exception.study.favorite.StudyFavoriteNotExistedException;
+import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
+import com.example.bookclub.domain.study.favorite.Favorite;
+import com.example.bookclub.domain.study.favorite.FavoriteRepository;
+import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 스터디 즐겨찾기  생성, 삭제를 한다.
@@ -36,6 +37,7 @@ public class StudyFavoriteService {
 	 * @return 생성된 스터디 즐겨찾기 식별자
 	 * @throws StudyFavoriteAlreadyExistedException 주어진 스터디 식별자에 해당하는 즐겨찾기가 존재하는 경우
 	 */
+	@Transactional
 	public StudyApiDto.StudyFavoriteResultDto favoriteStudy(UserAccount userAccount, Long studyId) {
 		Long accountId = userAccount.getAccount().getId();
 
@@ -66,6 +68,7 @@ public class StudyFavoriteService {
 	 * @return 삭제된 스터디 즐겨찾기 아이디
 	 * @throws StudyFavoriteNotExistedException 주어진 스터디 식별자에 해당하는 즐겨찾기가 없는 경우
 	 */
+	@Transactional
 	public StudyApiDto.StudyFavoriteResultDto unFavoriteStudy(UserAccount userAccount, Long studyId) {
 		Long accountId = userAccount.getAccount().getId();
 

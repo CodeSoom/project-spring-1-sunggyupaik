@@ -18,14 +18,12 @@ import com.example.bookclub.dto.AccountDto;
 import com.example.bookclub.infrastructure.account.JpaAccountRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 사용자 조회, 생성, 수정, 삭제, 인증번호 조회, 삭제, 닉네임 중복검사, 비밀번호 변경, 사용자 수 조회를 한다.
  */
 @Service
-@Transactional
 public class AccountService {
     private final JpaAccountRepository accountRepository;
     private final EmailAuthenticationRepository emailAuthenticationRepository;
@@ -53,6 +51,7 @@ public class AccountService {
      * @return 주어진 사용자 식별자에 해당하는 사용자
      * @throws AccountNotFoundException 주어진 사용자 식별자에 해당하는 사용자가 없는 경우
      */
+    @Transactional(readOnly = true)
     public Account findAccount(Long id) {
         return accountRepository.findById(id)
                 .orElseThrow(() -> new AccountNotFoundException(id));
@@ -65,6 +64,7 @@ public class AccountService {
      * @return 조회한 사용자 정보
      * @throws AccountEmailNotFoundException 주어진 사용자 이메일에 해당하는 사용자가 없는 경우
      */
+    @Transactional(readOnly = true)
     public Account findAccountByEmail(String email) {
         return accountRepository.findByEmail(email)
                 .orElseThrow(() -> new AccountEmailNotFoundException(email));
@@ -77,6 +77,7 @@ public class AccountService {
      * @return 조회한 사용자 정보
      * @throws AccountNotFoundException 주어진 사용자 식별자에 해당하는 사용자가 없는 경우
      * */
+    @Transactional(readOnly = true)
     public AccountDto.AccountResultDto getAccount(Long id) {
         return accountRepository.findById(id)
                 .map(AccountDto.AccountResultDto::of)
@@ -93,6 +94,7 @@ public class AccountService {
      * @throws EmailNotAuthenticatedException 주어진 이메일에 해당하는 인증번호가 없는 경우
      * @throws AccountNicknameDuplicatedException 주어진 사용자 닉네임이 이미 존재하는 경우
      */
+    @Transactional
     public AccountDto.AccountCreateResultDto createAccount(
             AccountDto.AccountCreateDto accountCreateDto,
             UploadFile uploadFile
@@ -143,6 +145,7 @@ public class AccountService {
      * @throws AccountPasswordBadRequestException 저장된 사용자 비밀번호와 주어진 비밀번호가 다른 경우
      * @throws AccountNicknameDuplicatedException 수정할 사용자 닉네임이 이미 존재하는 경우
      */
+    @Transactional
     public AccountDto.AccountUpdateResultDto updateAccount(
             Long id,
             AccountDto.AccountUpdateDto accountUpdateDto,
@@ -176,6 +179,7 @@ public class AccountService {
      * @return 조회한 인증번호
      * @throws EmailNotAuthenticatedException 주어진 사용자 이메일에 해당하는 인증번호가 없는 경우
      */
+    @Transactional(readOnly = true)
     public EmailAuthentication getAuthenticationNumber(String email) {
         return emailAuthenticationRepository.findByEmail(email)
                 .orElseThrow(() -> new EmailNotAuthenticatedException(email));
@@ -187,6 +191,7 @@ public class AccountService {
      * @param email 사용자 이메일
      * @return 삭제한 인증번호
      */
+    @Transactional
     public EmailAuthentication deleteEmailAuthentication(String email) {
         EmailAuthentication emailAuthentication = getAuthenticationNumber(email);
         emailAuthenticationRepository.delete(emailAuthentication);
@@ -199,6 +204,7 @@ public class AccountService {
      * @param id 사용자 식별자
      * @return 삭제한 사용자 정보
      */
+    @Transactional
     public AccountDto.AccountDeleteResultDto deleteAccount(Long id) {
         Account account = findAccount(id);
         account.delete();
@@ -213,6 +219,7 @@ public class AccountService {
      * @param nickname 수정할 사용자 닉네임
      * @return 닉네임 중복 여부
      */
+    @Transactional(readOnly = true)
     public boolean isNicknameDuplicated(Long id, String nickname) {
         return accountRepository.existsByIdNotAndNickname(id, nickname);
     }
@@ -226,6 +233,7 @@ public class AccountService {
      * @throws AccountPasswordBadRequestException 저장된 비밀번호와 주어진 비밀번호가 다른 경우
      * @throws AccountNewPasswordNotMatchedException 주어진 비밀번호와 비밀번호 확인이 다른 경우
      */
+    @Transactional
     public AccountDto.AccountUpdatePasswordResultDto updatePassword(
             Long id,
             AccountDto.AccountUpdatePasswordDto accountUpdatePasswordDto
@@ -253,6 +261,7 @@ public class AccountService {
      *
      * @return 모든 사용자 수
      */
+    @Transactional(readOnly = true)
     public long getAllAccountsCount() {
         return accountRepository.getAllAccountsCount();
     }

@@ -7,8 +7,8 @@ import com.example.bookclub.domain.order.item.OrderItem;
 import com.example.bookclub.dto.OrderDto;
 import com.example.bookclub.infrastructure.order.JpaOrderRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -31,7 +31,7 @@ public class OrderService {
 		return OrderDto.OrderCreateResponse.of(order);
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public OrderDto.OrderDetailResponse getOrder(Long id) {
 		Order order = orderRepository.findById(id)
 				.orElseThrow(() -> new OrderNotFoundException(id));
