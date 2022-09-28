@@ -5,6 +5,7 @@ import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.InterviewDto;
 import com.example.bookclub.dto.PageResultDto;
 import com.example.bookclub.security.UserAccount;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,6 +41,7 @@ public class InterviewController {
      * @return 인터뷰 조회 페이지
      */
     @GetMapping
+    @Cacheable(cacheNames = "Interviews", key = "#pageable.pageNumber")
     public String interviewLists(@AuthenticationPrincipal UserAccount userAccount, Model model,
                                  @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable,
                                  @RequestParam(defaultValue = "") String search) {
