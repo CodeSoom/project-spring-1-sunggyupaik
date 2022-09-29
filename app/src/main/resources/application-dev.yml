@@ -14,10 +14,10 @@ spring:
   redis:
     cache:
       host: localhost
-      port: 6379
+      port: 6380
     session:
       host: localhost
-      port: 6380
+      port: 6379
   devtools:
     livereload:
       enabled: true

@@ -41,7 +41,7 @@ public class RedisCacheConfig {
 	}
 
 	@Bean
-	public RedisCacheManager redisCacheManager() {
+	public RedisCacheManager redisCacheManager(RedisConnectionFactory redisCacheConnectionFactory) {
 		RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
 				.defaultCacheConfig()
 				.disableCachingNullValues()
@@ -54,7 +54,7 @@ public class RedisCacheConfig {
 		redisCacheConfigurationMap.put("Interviews", redisCacheConfiguration.entryTtl(Duration.ofMinutes(5)));
 
 		return RedisCacheManager.RedisCacheManagerBuilder
-				.fromConnectionFactory(redisCacheConnectionFactory())
+				.fromConnectionFactory(redisCacheConnectionFactory)
 				.cacheDefaults(redisCacheConfiguration)
 				.withInitialCacheConfigurations(redisCacheConfigurationMap)
 				.build();
