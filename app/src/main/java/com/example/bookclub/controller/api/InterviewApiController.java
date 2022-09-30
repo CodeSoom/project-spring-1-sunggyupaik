@@ -3,7 +3,6 @@ package com.example.bookclub.controller.api;
 import com.example.bookclub.application.interview.InterviewService;
 import com.example.bookclub.common.response.CommonResponse;
 import com.example.bookclub.domain.interview.Interview;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +34,6 @@ public class InterviewApiController {
 	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	@CacheEvict(cacheNames = "Interviews", allEntries = true)
 	public CommonResponse<List<Interview>> create() {
 		List<Interview> response = interviewService.crawlAllInterviews();
 		return CommonResponse.success(response);
