@@ -1,6 +1,7 @@
-package com.example.bookclub.common;
+package com.example.bookclub.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -18,16 +19,24 @@ import java.util.Map;
 
 @Configuration
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 1800)
-public class RedisConfig {
+public class RedisCacheConfig {
+	@Value("${spring.redis.cache.host}")
+	private String hostName;
+
+	@Value("${spring.redis.cache.port}")
+	private int port;
+
 	private final ObjectMapper objectMapper;
 
-	public RedisConfig(ObjectMapper objectMapper) {
+	public RedisCacheConfig(ObjectMapper objectMapper) {
 		this.objectMapper = objectMapper;
 	}
 
 	@Bean
-	public RedisConnectionFactory redisConnectionFactory() {
+	public RedisConnectionFactory redisCacheConnectionFactory() {
 		RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
+		redisStandaloneConfiguration.setHostName(hostName);
+		redisStandaloneConfiguration.setPort(port);
 		return new LettuceConnectionFactory(redisStandaloneConfiguration);
 	}
 
@@ -42,9 +51,10 @@ public class RedisConfig {
 				);
 
 		Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
-		redisCacheConfigurationMap.put("Studies", redisCacheConfiguration.entryTtl(Duration.ofMinutes(5)));
+		redisCacheConfigurationMap.put("Interviews", redisCacheConfiguration.entryTtl(Duration.ofMinutes(5)));
+
 		return RedisCacheManager.RedisCacheManagerBuilder
-				.fromConnectionFactory(redisConnectionFactory())
+				.fromConnectionFactory(redisCacheConnectionFactory())
 				.cacheDefaults(redisCacheConfiguration)
 				.withInitialCacheConfigurations(redisCacheConfigurationMap)
 				.build();
