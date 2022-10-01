@@ -175,7 +175,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                         PathRequest.toStaticResources().atCommonLocations()
                         //PathRequest.toH2Console()
                 )
-                .antMatchers("/resources/images/**")
+                .antMatchers("/resources/images/**", "/error")
         ;
     }
 }
