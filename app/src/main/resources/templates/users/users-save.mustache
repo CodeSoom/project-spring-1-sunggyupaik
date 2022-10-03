@@ -39,13 +39,7 @@
 
             <div class="form-group">
                 <label for="authenticationNumber"> 인증번호 </label>
-                {{#authenticationNumber}}
-                    <input type="text" class="form-control" id="authenticationNumber"
-                           value = "{{authenticationNumber}}" placeholder="인증번호를 입력하세요" readonly>
-                {{/authenticationNumber}}
-                {{^authenticationNumber}}
                     <input type="text" class="form-control" id="authenticationNumber" placeholder="인증번호를 입력하세요">
-                {{/authenticationNumber}}
             </div>
 
             <div class="form-group">
