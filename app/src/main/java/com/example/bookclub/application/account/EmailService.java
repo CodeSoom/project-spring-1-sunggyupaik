@@ -69,7 +69,7 @@ public class EmailService {
      * @throws MessageCreateBadRequestException 전송할 메세지 만들기가 안되는 경우
      */
     @Transactional
-    private MimeMessage createMessage(String email, String authenticationNumber) {
+    public MimeMessage createMessage(String email, String authenticationNumber) {
         MimeMessage  message = javaMailSender.createMimeMessage();
 
         try {
