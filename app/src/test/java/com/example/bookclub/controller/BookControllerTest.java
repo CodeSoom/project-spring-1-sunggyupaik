@@ -137,4 +137,40 @@ class BookControllerTest {
 			}
 		}
 	}
+
+	@Nested
+	@DisplayName("booksRecommendLists 메서드는")
+	class Describe_booksRecommendLists {
+		@Nested
+		@DisplayName("로그인한 사용자가 주어지면")
+		class Context_WithAccount {
+			@Test
+			@DisplayName("추천 도서 조회 페이지를 리턴한다")
+			void itReturnsBookListsView() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+
+				mockMvc.perform(get("/books/recommend")
+								.param("account", objectMapper.writeValueAsString(account))
+						)
+						.andExpect(status().isOk())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+						.andExpect(model().attribute("bookType", BookType.RECOMMEND.getTitle()))
+						.andExpect(view().name("books/books-lists"));
+			}
+		}
+
+		@Nested
+		@DisplayName("로그인한 사용자가 주어지지 않으면")
+		class Context_WithNotAccount {
+			@Test
+			@DisplayName("아무런 데이터도 리턴하지 않는다")
+			@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
+			void itReturnsNull() throws Exception {
+				mockMvc.perform(get("/books/recommend"))
+						.andDo(print())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+						.andExpect(status().is5xxServerError());
+			}
+		}
+	}
 }
