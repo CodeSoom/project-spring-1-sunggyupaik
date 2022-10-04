@@ -275,4 +275,65 @@ public class AccountControllerTest {
 			}
 		}
 	}
+
+	@Nested
+	@DisplayName("usersPasswordUpdate 메서드는")
+	class Describe_usersPasswordUpdate {
+		@Nested
+		@DisplayName("로그인한 사용자와 자신의 식별자가 주어진다면")
+		class Context_WithAccountAndExistedId {
+			private final Long EXISTED_ID = 1L;
+
+			@Test
+			@DisplayName("비밀번호 수정 화면을 리턴한다")
+			void itReturnsUsersUpdatePasswordView() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+
+				mockMvc.perform(get("/users/update/password/{id}", EXISTED_ID)
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
+						)
+						.andExpect(status().isOk())
+						.andExpect(content().contentType(MediaType.valueOf("text/html;charset=UTF-8")))
+						.andExpect(view().name("users/users-update-password"));
+			}
+		}
+
+		@Nested
+		@DisplayName("로그인한 사용자와 자신이 아닌 식별자가 주어진다면")
+		class Context_WithAccountAndNotExistedId {
+			private final Long NOT_EXISTED_ID = 2L;
+
+			@Test
+			@DisplayName("접근이 불가능하다는 메세지를 리턴한다")
+			void itReturnsAccessIsDeniedMessage() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+
+				mockMvc.perform(get("/users/update/password/{id}", NOT_EXISTED_ID)
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
+						)
+						.andDo(print())
+						.andExpect(status().is5xxServerError())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+						.andExpect(content().string(containsString("Access is denied")));
+			}
+		}
+
+		@Nested
+		@DisplayName("로그인한 사용자가 주어지지 않는다면")
+		class Context_WithNotAccount {
+			private final Long NOT_EXISTED_ID = 2L;
+
+			@Test
+			@DisplayName("사용자의 식별자와 주어진 식별자가 다르다는 메세지를 리턴한다")
+			@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
+			void itReturnsFailedToEvaluateExpressionMessage() throws Exception {
+
+				mockMvc.perform(get("/users/update/password/{id}", NOT_EXISTED_ID))
+						.andDo(print())
+						.andExpect(status().is5xxServerError())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+						.andExpect(content().string(containsString("Failed to evaluate expression")));
+			}
+		}
+	}
 }
