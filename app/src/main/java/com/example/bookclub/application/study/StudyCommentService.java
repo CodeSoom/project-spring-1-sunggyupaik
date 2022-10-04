@@ -1,16 +1,16 @@
 package com.example.bookclub.application.study;
 
+import com.example.bookclub.common.exception.study.studycomment.StudyCommentContentNotExistedException;
+import com.example.bookclub.common.exception.study.studycomment.StudyCommentDeleteBadRequest;
+import com.example.bookclub.common.exception.study.studycomment.StudyCommentNotFoundException;
 import com.example.bookclub.domain.study.Study;
 import com.example.bookclub.domain.study.studycomment.StudyComment;
 import com.example.bookclub.domain.study.studycomment.StudyCommentRepository;
 import com.example.bookclub.dto.StudyApiDto;
-import com.example.bookclub.common.exception.study.studycomment.StudyCommentContentNotExistedException;
-import com.example.bookclub.common.exception.study.studycomment.StudyCommentDeleteBadRequest;
-import com.example.bookclub.common.exception.study.studycomment.StudyCommentNotFoundException;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 
 /**
  * 스터디 댓글 생성, 삭제, 조회한다.
@@ -77,7 +77,7 @@ public class StudyCommentService {
 	 * @return 조회한 스터디 댓글
 	 * @throws StudyCommentNotFoundException 주어진 스터디 댓글 식별자에 해당하는 스터디 댓글이 존재하지 않는 경우
 	 */
-	@Transactional
+	@Transactional(readOnly = true)
 	public StudyComment getStudyComment(Long id) {
 		return studyCommentRepository.findById(id)
 				.orElseThrow(() -> new StudyCommentNotFoundException(id));

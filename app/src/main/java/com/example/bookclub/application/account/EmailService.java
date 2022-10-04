@@ -1,13 +1,14 @@
 package com.example.bookclub.application.account;
 
+import com.example.bookclub.common.exception.account.emailauthentication.EmailBadRequestException;
+import com.example.bookclub.common.exception.account.emailauthentication.MessageCreateBadRequestException;
 import com.example.bookclub.domain.account.emailauthentication.EmailAuthentication;
 import com.example.bookclub.domain.account.emailauthentication.EmailAuthenticationRepository;
 import com.example.bookclub.dto.EmailDto;
-import com.example.bookclub.common.exception.account.emailauthentication.EmailBadRequestException;
-import com.example.bookclub.common.exception.account.emailauthentication.MessageCreateBadRequestException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -35,6 +36,7 @@ public class EmailService {
      * @return 인증번호를 전송한 이메일
      * @throws EmailBadRequestException 메일 전송 요청이 잘못된 경우
      */
+    @Transactional
     public EmailDto.EmailSendResultDto sendAuthenticationNumber(EmailDto.EmailRequestDto emailRequestDto) {
         String authenticationNumber = createAuthenticationNumber();
         String email = emailRequestDto.getEmail();
@@ -66,6 +68,7 @@ public class EmailService {
      * @return 전송할 메세지
      * @throws MessageCreateBadRequestException 전송할 메세지 만들기가 안되는 경우
      */
+    @Transactional
     private MimeMessage createMessage(String email, String authenticationNumber) {
         MimeMessage  message = javaMailSender.createMimeMessage();
 
@@ -82,6 +85,7 @@ public class EmailService {
         return message;
     }
 
+    @Transactional
     public EmailDto.EmailSendResultDto saveAuthenticationNumber(EmailDto.EmailRequestDto emailRequestDto) {
         String authenticationNumber = createAuthenticationNumber();
         String email = emailRequestDto.getEmail();
@@ -102,6 +106,7 @@ public class EmailService {
      *
      * @return 생성된 인증번호
      */
+    @Transactional
     public String createAuthenticationNumber() {
         double dValue = Math.random();
         int iValue = (int)(dValue * 100000);

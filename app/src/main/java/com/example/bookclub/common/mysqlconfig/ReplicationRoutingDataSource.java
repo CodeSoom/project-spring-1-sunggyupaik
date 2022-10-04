@@ -6,6 +6,9 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 @Slf4j
 public class ReplicationRoutingDataSource extends AbstractRoutingDataSource {
+	/**
+	 * 현재 트랜잭션이 읽기 전용인지 아닌지를 반환한다.
+	 */
 	@Override
 	protected Object determineCurrentLookupKey() {
 		boolean isReadOnly = TransactionSynchronizationManager.isCurrentTransactionReadOnly();

@@ -20,13 +20,11 @@ import com.example.bookclub.dto.StudyApiDto;
 import com.example.bookclub.dto.StudyDto;
 import com.example.bookclub.infrastructure.study.JpaStudyRepository;
 import com.example.bookclub.security.UserAccount;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -38,7 +36,6 @@ import java.util.stream.Collectors;
  * 스터디 생성, 수정, 조회, 지원 생성, 지원 삭제, 검색, 스터디상태 변경, 갯수 조회를 한다.
  */
 @Service
-@Transactional
 public class StudyService {
     private final JpaStudyRepository studyRepository;
     private final AccountService accountService;
@@ -64,7 +61,7 @@ public class StudyService {
      * @throws StudyStartAndEndDateNotValidException 생성하려는 스터디 종료일이 시작일보다 빠른 경우
      * @throws StudyStartAndEndTimeNotValidException 생성하려는 스터디 종료시간이 시작시간보다 빠른 경우
      */
-    @CacheEvict(cacheNames = "Studies", allEntries = true)
+    @Transactional
     public StudyApiDto.StudyResultDto createStudy(String email, StudyApiDto.StudyCreateDto studyCreateDto) {
         Account loginAccount = accountService.findAccountByEmail(email);
 
@@ -110,6 +107,7 @@ public class StudyService {
      * @throws StudyStartAndEndDateNotValidException 스터디 식별자에 해당하는 스터디 종료일이 시작일보다 빠른 경우
      * @throws StudyStartAndEndTimeNotValidException 스터디 식별자에 해당하는 스터디 종료시간이 시작시간보다 빠른 경우
      */
+    @Transactional
     public StudyApiDto.StudyResultDto updateStudy(String email, Long id, StudyApiDto.StudyUpdateDto studyUpdateDto) {
         Study study = getStudy(id);
         Account loginAccount = accountService.findAccountByEmail(email);
@@ -184,7 +182,7 @@ public class StudyService {
      * @return 삭제된 스터디 식별자
      * @throws AccountNotManagerOfStudyException 스터디 식별자에 해당하는 스터디 이메일과 사용자 식별자가 다른 경우
      */
-    @CacheEvict(cacheNames = "Studies", allEntries = true)
+    @Transactional
     public StudyApiDto.StudyResultDto deleteStudy(String email, Long id) {
         Study study = getStudy(id);
         Account loginAccount = accountService.findAccountByEmail(email);
@@ -208,6 +206,7 @@ public class StudyService {
      * @throws StudyAlreadyExistedException 스터디 식별자에 해당하는 스터디 지원이 이미 존재하는 경우
      * @throws StudySizeFullException 스터디 식별자에 해당하는 스터디 정원이 다 찬 경우
      */
+    @Transactional
     public StudyApiDto.StudyApplyResultDto applyStudy(UserAccount userAccount, Long id) {
         Account account = userAccount.getAccount();
 
@@ -235,6 +234,7 @@ public class StudyService {
      * @throws StudyNotInOpenStateException 스터디 식별자에 해당하는 스터디가 모집중이 아닌 경우
      * @throws StudyNotAppliedBefore 스터디 식별자에 해당하는 스터디 신청이 존재하지 않는 경우
      */
+    @Transactional
     public StudyApiDto.StudyApplyResultDto cancelStudy(UserAccount userAccount, Long id) {
         Study study = getStudy(id);
         Account account = userAccount.getAccount();
@@ -257,6 +257,7 @@ public class StudyService {
      *
      * @return 스터디 리스트
      */
+    @Transactional(readOnly = true)
     public List<Study> getStudies() {
         return studyRepository.findAll();
     }
@@ -268,6 +269,7 @@ public class StudyService {
      * @return 스터디 식별자에 해당하는 스터디
      * @throws StudyNotFoundException 스터디 식별자에 해당하는 스터디가 존재하지 않는 경우
      */
+    @Transactional(readOnly = true)
     public Study getStudy(Long id) {
         return studyRepository.findById(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
@@ -280,8 +282,9 @@ public class StudyService {
      * @return 스터디 식별자에 해당하는 스터디
      * @throws StudyNotFoundException 스터디 식별자에 해당하는 스터디가 존재하지 않는 경우
      */
+    @Transactional(readOnly = true)
     public Study getStudyForUpdate(Long id) {
-        return studyRepository.findById(id)
+        return studyRepository.findByIdForUpdate(id)
                 .orElseThrow(() -> new StudyNotFoundException(id));
     }
 
@@ -293,8 +296,8 @@ public class StudyService {
      * @param id 스터디 식별자
      * @return 스터디 식별자에 해당하는 스터디 정보
      */
+    @Transactional(readOnly = true)
     public StudyApiDto.StudyDetailResultDto getDetailedStudy(UserAccount userAccount, Long id) {
-        Account account = userAccount.getAccount();
         Study study = getStudy(id);
         return studySeriesFactory.getDetailedStudy(userAccount.getAccount(), study);
     }
@@ -308,7 +311,7 @@ public class StudyService {
      * @param pageable 페이징 정보
      * @return 검색어와 스터디 상태에 해당하는 스터디 페이징 정보
      */
-    @Cacheable(cacheNames = "Studies", key = "#studyState.code + #pageable.pageNumber")
+    @Transactional(readOnly = true)
     public List<StudyApiDto.StudyResultDto> getStudiesBySearch(
             String keyword, StudyState studyState, Account account, Pageable pageable
     ) {
@@ -325,6 +328,7 @@ public class StudyService {
      * @param id 스터디 식별자
      * @return 스터디 식별자에 해당하는 스터디 정보
      */
+    @Transactional(readOnly = true)
     public StudyDto.StudyInfoResultDto getStudyInfo(Long id) {
         return studyRepository.getStudyInfo(id);
     }
@@ -373,6 +377,7 @@ public class StudyService {
      * @param studyState 스터디 상태
      * @return 스터디 상태에 해당하는 스터디 갯수
      */
+    @Transactional(readOnly = true)
     public long getStudiesCount(StudyState studyState) {
         return studyRepository.getStudiesCount(studyState);
     }
@@ -382,10 +387,12 @@ public class StudyService {
      *
      * @return 스터디 갯수
      */
+    @Transactional(readOnly = true)
     public long getAllStudiesCount() {
         return studyRepository.getAllStudiesCount();
     }
 
+    @Transactional(readOnly = true)
     public long getStudiesBySearchCount(String title, StudyState studyState) {
         return studyRepository.getStudiesCountByKeyword(title, studyState);
     }

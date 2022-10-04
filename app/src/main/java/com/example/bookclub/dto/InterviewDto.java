@@ -2,18 +2,21 @@ package com.example.bookclub.dto;
 
 import com.example.bookclub.domain.interview.Interview;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 public class InterviewDto {
 	@Getter
 	@ToString
-	public static class InterviewResultDto {
+	public static class InterviewResultDto implements Serializable {
 		private String interviewUrl;
 
 		private String imgUrl;
@@ -22,6 +25,7 @@ public class InterviewDto {
 
 		private String title;
 
+		@JsonSerialize(using = LocalDateSerializer.class)
 		@JsonDeserialize(using = LocalDateDeserializer.class)
 		private LocalDate date;
 

@@ -7,12 +7,11 @@ import com.example.bookclub.security.UserAccount;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
 public class LoginService {
 	private final AccountAuthenticationService accountAuthenticationService;
 	private final JpaAccountRepository accountRepository;
@@ -29,6 +28,7 @@ public class LoginService {
 	 * @param kakaoLoginRequest 카카오 로그인에 성공한 이메일 정보
 	 * @return 사용자가 기존에 존재하는지 여부
 	 */
+	@Transactional(readOnly = true)
 	public boolean checkAlreadyExistedEmail(AccountDto.KakaoLoginRequest kakaoLoginRequest) {
 		String email = kakaoLoginRequest.getEmail();
 		return accountRepository.existsByEmail(email);
@@ -40,6 +40,7 @@ public class LoginService {
 	 * @param kakaoLoginRequest 카카오 로그인에 성공한 이메일 정보
 	 * @return 주어진 이메일에 해당하는 사용자 인증토큰
 	 */
+	@Transactional
 	public UsernamePasswordAuthenticationToken makeKakaoAuthenticationToken(
 			AccountDto.KakaoLoginRequest kakaoLoginRequest
 	) {

@@ -8,12 +8,14 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,7 +27,6 @@ import java.util.Optional;
  * 인터뷰 크롤링, 조회, 리스트 조회를 한다.
  */
 @Service
-@Transactional
 public class InterviewService {
     private final JpaInterviewRepository interviewRepository;
 
@@ -39,6 +40,8 @@ public class InterviewService {
      *
      * @return 크롤링한 인터뷰 리스트
      */
+    @Transactional
+    @CacheEvict(cacheNames = "Interviews::*", allEntries = true)
     public List<Interview> crawlAllInterviews() {
         List<Interview> list = new ArrayList<>();
         boolean isLastPage = false;
@@ -142,6 +145,7 @@ public class InterviewService {
      * @param pageable 페이징 정보
      * @return 조회된 인터뷰 페이징 리스트 정보
      */
+    @Transactional(readOnly = true)
     public Page<InterviewDto.InterviewResultDto> getInterviews(String search, Pageable pageable) {
         return interviewRepository.findAllContainsTileOrContent(search, pageable);
     }
@@ -152,6 +156,8 @@ public class InterviewService {
      * @param pageable 페이징 정보
      * @return 조회된 인터뷰 페이징 리스트 정보
      */
+    @Transactional(readOnly = true)
+    @Cacheable(cacheNames = "Interviews", key = "#pageable.pageNumber")
     public Page<InterviewDto.InterviewResultDto> getAllInterviews(Pageable pageable) {
         return interviewRepository.findAll(pageable);
     }
