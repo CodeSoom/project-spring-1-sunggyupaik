@@ -114,7 +114,7 @@ class BookControllerTest {
 				SecurityContextHolder.getContext().setAuthentication(accountToken);
 
 				mockMvc.perform(get("/books/bestseller")
-								.param("account", objectMapper.writeValueAsString(account))
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
 						)
 						.andExpect(status().isOk())
 						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
@@ -150,7 +150,7 @@ class BookControllerTest {
 				SecurityContextHolder.getContext().setAuthentication(accountToken);
 
 				mockMvc.perform(get("/books/recommend")
-								.param("account", objectMapper.writeValueAsString(account))
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
 						)
 						.andExpect(status().isOk())
 						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
@@ -186,7 +186,7 @@ class BookControllerTest {
 				SecurityContextHolder.getContext().setAuthentication(accountToken);
 
 				mockMvc.perform(get("/books/new")
-								.param("account", objectMapper.writeValueAsString(account))
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
 						)
 						.andExpect(status().isOk())
 						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
