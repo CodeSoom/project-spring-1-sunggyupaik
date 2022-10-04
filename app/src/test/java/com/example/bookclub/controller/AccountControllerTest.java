@@ -44,10 +44,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(AccountController.class)
 public class AccountControllerTest {
 	private static final String EMAIL = "1234@naver.com";
+	private static final String NAME = "paik";
+	private static final String NICKNAME ="bluesky";
 
 	private Account account;
 	private UserAccount userAccount;
+	private UserAccount anonymousUserAccount;
 	private UsernamePasswordAuthenticationToken accountToken;
+	private UsernamePasswordAuthenticationToken anonymousToken;
 
 	@Autowired
 	MockMvc mockMvc;
@@ -93,21 +97,33 @@ public class AccountControllerTest {
 
 		account = Account.builder()
 				.id(1L)
+				.email(EMAIL)
+				.name(NAME)
+				.nickname(NICKNAME)
 				.build();
 
-		List<GrantedAuthority> USER_AUTHORITY = new ArrayList<GrantedAuthority>();
-		USER_AUTHORITY.add(new SimpleGrantedAuthority("USER"));
+		List<GrantedAuthority> ROLE_USER = new ArrayList<GrantedAuthority>();
+		ROLE_USER.add(new SimpleGrantedAuthority("USER"));
 
-		List<GrantedAuthority> USER_ANONYMOUS = new ArrayList<GrantedAuthority>();
-		USER_AUTHORITY.add(new SimpleGrantedAuthority("ROLE_ANONYMOUS"));
+		List<GrantedAuthority> ROLE_ANONYMOUS = new ArrayList<GrantedAuthority>();
+		ROLE_ANONYMOUS.add(new SimpleGrantedAuthority("ANONYMOUS"));
 
 		userAccount = UserAccount.builder()
 				.account(account)
-				.authorities(USER_AUTHORITY)
+				.authorities(ROLE_USER)
+				.build();
+
+		anonymousUserAccount = UserAccount.builder()
+				.account(account)
+				.authorities(ROLE_ANONYMOUS)
 				.build();
 
 		accountToken = new UsernamePasswordAuthenticationToken(
-				userAccount, null, USER_AUTHORITY
+				userAccount, null, ROLE_USER
+		);
+
+		anonymousToken = new UsernamePasswordAuthenticationToken(
+				anonymousUserAccount, null, ROLE_ANONYMOUS
 		);
 	}
 
@@ -197,6 +213,65 @@ public class AccountControllerTest {
 						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 						.andExpect(content().string(containsString("Access is denied")))
 						.andExpect(status().is5xxServerError());
+			}
+		}
+	}
+
+	@Nested
+	@DisplayName("accountUpdate 메서드는")
+	class Describe_accountUpdate {
+		@Nested
+		@DisplayName("로그인한 사용자와 자신의 식별자가 주어진다면")
+		class Context_WithAccountAndExistedId {
+			private final Long EXISTED_ID = 1L;
+
+			@Test
+			@DisplayName("정보 수정 페이지를 리턴한다")
+			void itReturnsUsersUpdateView() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+
+				mockMvc.perform(get("/users/update/{id}", EXISTED_ID)
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
+						)
+						.andExpect(status().isOk())
+						.andExpect(content().contentType(MediaType.valueOf("text/html;charset=UTF-8")))
+						.andExpect(view().name("users/users-update"));
+			}
+		}
+
+		@Nested
+		@DisplayName("로그인한 사용자와 자신이 아닌 식별자가 주어진다면")
+		class Context_WithAccountAndNotExistedId {
+			private final Long NOT_EXISTED_ID = 2L;
+
+			@Test
+			@DisplayName("접근이 불가능하다는 메세지를 리턴한다")
+			void itReturnsAccessIsDeniedMessage() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+
+				mockMvc.perform(get("/users/update/{id}", NOT_EXISTED_ID))
+						.andDo(print())
+						.andExpect(status().is5xxServerError())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+						.andExpect(content().string(containsString("Access is denied")));
+			}
+		}
+
+		@Nested
+		@DisplayName("로그인한 사용자가 주어지지 않는다면")
+		class Context_WithNotAccount {
+			private final Long NOT_EXISTED_ID = 2L;
+
+			@Test
+			@DisplayName("사용자의 식별자와 주어진 식별자가 다르다는 메세지를 리턴한다")
+			@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
+			void itReturnsFailedToEvaluateExpressionMessage() throws Exception {
+
+				mockMvc.perform(get("/users/update/{id}", NOT_EXISTED_ID))
+						.andDo(print())
+						.andExpect(status().is5xxServerError())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+						.andExpect(content().string(containsString("Failed to evaluate expression")));
 			}
 		}
 	}
