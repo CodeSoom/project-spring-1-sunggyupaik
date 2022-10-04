@@ -1,8 +1,8 @@
 package com.example.bookclub.controller;
 
+import com.example.bookclub.application.study.query.StudyQueryService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.StudyApiDto;
-import com.example.bookclub.infrastructure.study.JpaStudyRepository;
 import com.example.bookclub.security.CurrentAccount;
 import com.example.bookclub.security.UserAccount;
 import org.springframework.security.access.AccessDeniedException;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 사용자의 가입, 수정, 즐겨찾기 등 페이지를 요청한다
@@ -23,10 +22,10 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/users")
 public class AccountController {
-    private final JpaStudyRepository studyRepository;
+    private final StudyQueryService studyQueryService;
 
-    public AccountController(JpaStudyRepository studyRepository) {
-        this.studyRepository = studyRepository;
+    public AccountController(StudyQueryService studyQueryService) {
+        this.studyQueryService = studyQueryService;
     }
 
     /**
@@ -37,14 +36,10 @@ public class AccountController {
      * @return 회원가입 페이지
      */
     @GetMapping("/save")
-    public String accountSave(@CurrentAccount Account account, String email,
-                              String authenticationNumber, Model model) {
+    public String accountSave(@CurrentAccount Account account) {
         if(account != null) {
             return "redirect:/";
         }
-
-        model.addAttribute("email", email);
-        model.addAttribute("authenticationNumber", authenticationNumber);
 
         return "users/users-save";
     }
@@ -64,12 +59,7 @@ public class AccountController {
                                 @PathVariable Long id, Model model) {
         checkTopMenu(userAccount.getAccount(), model);
 
-        List<Long> favoriteStudyIds = userAccount.getAccount().getFavorites()
-                .stream().filter(favorite -> favorite.getAccount().getId().equals(id))
-                .map(favorite -> favorite.getStudy().getId())
-                .collect(Collectors.toList());
-
-        List<StudyApiDto.StudyFavoriteDto> studies = studyRepository.findByFavoriteStudies(favoriteStudyIds);
+        List<StudyApiDto.StudyFavoriteDto> studies = studyQueryService.getFavoriteStudies(userAccount.getAccount());
 
         model.addAttribute("StudyFavoriteDto", studies);
 
