@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.domain.Page;
 
 import java.util.ArrayList;
@@ -29,6 +28,9 @@ public class PageResultDto {
 	}
 
 	public static PageResultDto of(Page page) {
+		if(page.isEmpty())
+			return PageResultDto.builder().build();
+
 		int pageNumber = page.getPageable().getPageNumber() + 1;
 		int size = page.getSize();
 		int totalPages = page.getTotalPages();
