@@ -1,9 +1,10 @@
 package com.example.bookclub.controller;
 
 import com.example.bookclub.application.account.AccountAuthenticationService;
-import com.example.bookclub.application.interview.BookService;
+import com.example.bookclub.application.account.AccountService;
+import com.example.bookclub.application.study.StudyService;
 import com.example.bookclub.domain.account.Account;
-import com.example.bookclub.domain.study.BookType;
+import com.example.bookclub.domain.study.Study;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import com.example.bookclub.security.PersistTokenRepository;
@@ -21,7 +22,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -31,15 +31,15 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-@WebMvcTest(BookController.class)
-class BookControllerTest {
+@WebMvcTest(HomeController.class)
+class HomeControllerTest {
 	private static final Long EXISTED_ID = 1L;
 	private static final String EMAIL = "1234@naver.com";
 	private static final String NAME = "paik";
@@ -47,6 +47,8 @@ class BookControllerTest {
 
 	private Account account;
 	private UserAccount userAccount;
+
+	private Study study;
 	private UsernamePasswordAuthenticationToken accountToken;
 
 	@Autowired
@@ -74,7 +76,10 @@ class BookControllerTest {
 	private PersistTokenRepository persistTokenRepository;
 
 	@MockBean
-	private BookService bookService;
+	private AccountService accountService;
+
+	@MockBean
+	private StudyService studyService;
 
 	@BeforeEach
 	void setup() {
@@ -88,6 +93,10 @@ class BookControllerTest {
 				.name(NAME)
 				.nickname(NICKNAME)
 				.build();
+
+		study = Study.builder().id(1L).build();
+
+		account.addStudy(study);
 
 		List<GrantedAuthority> ROLE_USER = new ArrayList<GrantedAuthority>();
 		ROLE_USER.add(new SimpleGrantedAuthority("USER"));
@@ -103,23 +112,24 @@ class BookControllerTest {
 	}
 
 	@Nested
-	@DisplayName("booksBestSellerLists 메서드는")
-	class Describe_booksBestSellerLists {
+	@DisplayName("home 메서드는")
+	class Describe_home {
 		@Nested
 		@DisplayName("로그인한 사용자가 주어지면")
 		class Context_WithAccount {
 			@Test
-			@DisplayName("베스트셀러 도서 조회 페이지를 리턴한다")
-			void itReturnsBookListsView() throws Exception {
+			@DisplayName("즐겨찾기, 참여중 스터디 버튼과 홈 화면을 리턴한다")
+			void itReturnsIndexView() throws Exception {
+				given(accountAuthenticationService.getAccountByEmail(EMAIL)).willReturn(account);
 				SecurityContextHolder.getContext().setAuthentication(accountToken);
 
-				mockMvc.perform(get("/books/bestseller")
-								.param("userAccount", objectMapper.writeValueAsString(userAccount))
+				mockMvc.perform(get("/")
+								.param("account", objectMapper.writeValueAsString(account))
 						)
 						.andExpect(status().isOk())
+						.andExpect(model().attributeExists("account"))
 						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-						.andExpect(model().attribute("bookType", BookType.BESTSELLER.getTitle()))
-						.andExpect(view().name("books/books-lists"));
+						.andExpect(view().name("index"));
 			}
 		}
 
@@ -127,85 +137,14 @@ class BookControllerTest {
 		@DisplayName("로그인한 사용자가 주어지지 않으면")
 		class Context_WithNotAccount {
 			@Test
-			@DisplayName("아무런 데이터도 리턴하지 않는다")
-			@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
-			void itReturnsNull() throws Exception {
-				mockMvc.perform(get("/books/bestseller"))
-						.andDo(print())
-						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-						.andExpect(status().is5xxServerError());
-			}
-		}
-	}
+			@DisplayName("회원가입 버튼과 홈 화면을 리턴한다")
+			void itReturnsIndexView() throws Exception {
 
-	@Nested
-	@DisplayName("booksRecommendLists 메서드는")
-	class Describe_booksRecommendLists {
-		@Nested
-		@DisplayName("로그인한 사용자가 주어지면")
-		class Context_WithAccount {
-			@Test
-			@DisplayName("추천 도서 조회 페이지를 리턴한다")
-			void itReturnsBookListsView() throws Exception {
-				SecurityContextHolder.getContext().setAuthentication(accountToken);
-
-				mockMvc.perform(get("/books/recommend")
-								.param("userAccount", objectMapper.writeValueAsString(userAccount))
-						)
+				mockMvc.perform(get("/"))
 						.andExpect(status().isOk())
+						.andExpect(model().attributeDoesNotExist("account"))
 						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-						.andExpect(model().attribute("bookType", BookType.RECOMMEND.getTitle()))
-						.andExpect(view().name("books/books-lists"));
-			}
-		}
-
-		@Nested
-		@DisplayName("로그인한 사용자가 주어지지 않으면")
-		class Context_WithNotAccount {
-			@Test
-			@DisplayName("아무런 데이터도 리턴하지 않는다")
-			@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
-			void itReturnsNull() throws Exception {
-				mockMvc.perform(get("/books/recommend"))
-						.andDo(print())
-						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-						.andExpect(status().is5xxServerError());
-			}
-		}
-	}
-
-	@Nested
-	@DisplayName("booksNewLists 메서드는")
-	class Describe_booksNewLists {
-		@Nested
-		@DisplayName("로그인한 사용자가 주어지면")
-		class Context_WithAccount {
-			@Test
-			@DisplayName("신간 도서 조회 페이지를 리턴한다")
-			void itReturnsBookListsView() throws Exception {
-				SecurityContextHolder.getContext().setAuthentication(accountToken);
-
-				mockMvc.perform(get("/books/new")
-								.param("userAccount", objectMapper.writeValueAsString(userAccount))
-						)
-						.andExpect(status().isOk())
-						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
-						.andExpect(model().attribute("bookType", BookType.NEW.getTitle()))
-						.andExpect(view().name("books/books-lists"));
-			}
-		}
-
-		@Nested
-		@DisplayName("로그인한 사용자가 주어지지 않으면")
-		class Context_WithNotAccount {
-			@Test
-			@DisplayName("아무런 데이터도 리턴하지 않는다")
-			@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
-			void itReturnsNull() throws Exception {
-				mockMvc.perform(get("/books/new"))
-						.andDo(print())
-						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-						.andExpect(status().is5xxServerError());
+						.andExpect(view().name("index"));
 			}
 		}
 	}
