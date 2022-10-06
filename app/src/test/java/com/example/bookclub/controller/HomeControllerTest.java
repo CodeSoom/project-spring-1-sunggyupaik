@@ -4,15 +4,16 @@ import com.example.bookclub.application.account.AccountAuthenticationService;
 import com.example.bookclub.application.account.AccountService;
 import com.example.bookclub.application.study.StudyService;
 import com.example.bookclub.domain.account.Account;
+import com.example.bookclub.domain.study.Study;
 import com.example.bookclub.security.CustomDeniedHandler;
 import com.example.bookclub.security.CustomEntryPoint;
 import com.example.bookclub.security.PersistTokenRepository;
 import com.example.bookclub.security.UserAccount;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -30,6 +31,7 @@ import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -45,6 +47,8 @@ class HomeControllerTest {
 
 	private Account account;
 	private UserAccount userAccount;
+
+	private Study study;
 	private UsernamePasswordAuthenticationToken accountToken;
 
 	@Autowired
@@ -90,6 +94,10 @@ class HomeControllerTest {
 				.nickname(NICKNAME)
 				.build();
 
+		study = Study.builder().id(1L).build();
+
+		account.addStudy(study);
+
 		List<GrantedAuthority> ROLE_USER = new ArrayList<GrantedAuthority>();
 		ROLE_USER.add(new SimpleGrantedAuthority("USER"));
 
@@ -112,13 +120,14 @@ class HomeControllerTest {
 			@Test
 			@DisplayName("즐겨찾기, 참여중 스터디 버튼과 홈 화면을 리턴한다")
 			void itReturnsIndexView() throws Exception {
+				given(accountAuthenticationService.getAccountByEmail(EMAIL)).willReturn(account);
 				SecurityContextHolder.getContext().setAuthentication(accountToken);
 
 				mockMvc.perform(get("/")
 								.param("account", objectMapper.writeValueAsString(account))
 						)
 						.andExpect(status().isOk())
-						.andExpect(model().attributeExists("studyManager", "studyApply", "account"))
+						.andExpect(model().attributeExists("account"))
 						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 						.andExpect(view().name("index"));
 			}
@@ -130,12 +139,10 @@ class HomeControllerTest {
 			@Test
 			@DisplayName("회원가입 버튼과 홈 화면을 리턴한다")
 			void itReturnsIndexView() throws Exception {
-				SecurityContextHolder.getContext().setAuthentication(accountToken);
 
-				mockMvc.perform(get("/")
-								.param("account", objectMapper.writeValueAsString(account))
-						)
+				mockMvc.perform(get("/"))
 						.andExpect(status().isOk())
+						.andExpect(model().attributeDoesNotExist("account"))
 						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
 						.andExpect(view().name("index"));
 			}
