@@ -5,7 +5,6 @@ import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.InterviewDto;
 import com.example.bookclub.dto.PageResultDto;
 import com.example.bookclub.security.UserAccount;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -26,12 +25,9 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 @RequestMapping("/interviews")
 public class InterviewController {
     private final InterviewService interviewService;
-    private final ObjectMapper objectMapper;
 
-    public InterviewController(InterviewService interviewService,
-                               ObjectMapper objectMapper) {
+    public InterviewController(InterviewService interviewService) {
         this.interviewService = interviewService;
-        this.objectMapper = objectMapper;
     }
 
     /**
