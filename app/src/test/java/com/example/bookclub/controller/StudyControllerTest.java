@@ -210,4 +210,41 @@ public class StudyControllerTest {
 			}
 		}
 	}
+
+	@Nested
+	@DisplayName("studySave 메서드는")
+	class Describe_studySave {
+		@Nested
+		@DisplayName("로그인한 사용자가 주어진다면")
+		class Context_WithAccount {
+			@Test
+			@DisplayName("스터디 생성 화면을 리턴한다")
+			void itReturnsWithStudiesSaveView() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+
+				mockMvc.perform(get("/studies/save")
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
+						)
+						.andExpect(status().isOk())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+						.andExpect(view().name("studies/studies-save")
+						);
+			}
+		}
+
+		@Nested
+		@DisplayName("로그인한 사용자가 주어지지 않는다면")
+		class Context_WithNotAccount {
+			@Test
+			@DisplayName("아무런 데이터도 리턴하지 않는다")
+			@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
+			void itReturnsFailedToEvaluateExpressionMessage() throws Exception {
+
+				mockMvc.perform(get("/studies/save"))
+						.andDo(print())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+						.andExpect(status().is5xxServerError());
+			}
+		}
+	}
 }
