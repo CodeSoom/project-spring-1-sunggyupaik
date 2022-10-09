@@ -54,11 +54,6 @@ public class StudyController {
         StudyApiDto.StudyDetailResultDto detailedStudy = studyService.getDetailedStudy(userAccount, id);
         model.addAttribute("detailedStudy", detailedStudy);
 
-        Study study = studyService.getStudy(id);
-        if (study.isAlreadyStarted() || study.isNotOpened()) {
-            return "studies/studies-detail";
-        }
-
         return "studies/studies-detail";
     }
 
