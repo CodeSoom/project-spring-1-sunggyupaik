@@ -17,6 +17,13 @@ public class StudyQueryService {
 		this.studyRepository = jpaStudyRepository;
 	}
 
+	/**
+	 * 주어진 스터디 사용자에 해당하는 즐겨찾기 스터디 리스트 정보를 반환한다.
+	 * 즐겨찾기 한 스터디 식별자, 이름, 책 이름, 스터디 상태를 포함한다.
+	 *
+	 * @param account 로그인한 사용자
+	 * @return 스터디 사용자에 해당하는 즐겨찾기 스터디 정보
+	 */
 	@Transactional(readOnly = true)
 	public List<StudyApiDto.StudyFavoriteDto> getFavoriteStudies(Account account) {
 		List<Long> favoriteStudyIds = account.getFavorites()
