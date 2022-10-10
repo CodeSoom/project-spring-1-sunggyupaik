@@ -91,7 +91,7 @@ public class StudyController {
      * @return 스터디 수정 페이지
      * @throws AccessDeniedException 경로 아이디와 로그인한 사용자의 생성 스터디 아이디가 다른 경우
      */
-    @PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
+    //@PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @GetMapping("/update/{id}")
     public String studyUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {
