@@ -340,12 +340,10 @@ public class StudyControllerTest {
 			@Nested
 			@DisplayName("로그인한 사용자가 주어지지 않는다면")
 			class Context_WithNotAccount {
-
 				@Test
 				@DisplayName("아무런 데이터도 리턴하지 않는다")
 				@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
-				void itReturnsFailedToEvaluateExpressionMessage() throws Exception {
-
+				void itReturnsNull() throws Exception {
 					mockMvc.perform(get("/studies/open"))
 							.andDo(print())
 							.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
@@ -378,13 +376,49 @@ public class StudyControllerTest {
 			@Nested
 			@DisplayName("로그인한 사용자가 주어지지 않는다면")
 			class Context_WithNotAccount {
-
 				@Test
 				@DisplayName("아무런 데이터도 리턴하지 않는다")
 				@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
-				void itReturnsFailedToEvaluateExpressionMessage() throws Exception {
+				void itReturnsNull() throws Exception {
 
 					mockMvc.perform(get("/studies/close"))
+							.andDo(print())
+							.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+							.andExpect(status().is5xxServerError());
+				}
+			}
+		}
+	}
+
+	@Nested
+	@DisplayName("studyEndList 메서드는")
+	class Describe_studyEndList {
+		@Nested
+		@DisplayName("로그인한 사용자가 주어진다면")
+		class Context_WithAccount {
+			@Test
+			@DisplayName("모집중 스터디 조회 화면을 리턴한다")
+			void itReturnsStudiesListView() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+
+				mockMvc.perform(get("/studies/end")
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
+						)
+						.andExpect(status().isOk())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+						.andExpect(view().name("studies/studies-list")
+						);
+			}
+
+			@Nested
+			@DisplayName("로그인한 사용자가 주어지지 않는다면")
+			class Context_WithNotAccount {
+				@Test
+				@DisplayName("아무런 데이터도 리턴하지 않는다")
+				@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
+				void itReturnsNull() throws Exception {
+
+					mockMvc.perform(get("/studies/end"))
 							.andDo(print())
 							.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 							.andExpect(status().is5xxServerError());
