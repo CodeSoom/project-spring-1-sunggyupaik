@@ -426,4 +426,44 @@ public class StudyControllerTest {
 			}
 		}
 	}
+
+	@Nested
+	@DisplayName("studyApplyUserList 메서드는")
+	class Describe_studyApplyUserList {
+		@Nested
+		@DisplayName("로그인한 사용자와 스터디 식별자가 주어진다면")
+		class Context_WithAccountAndExistedStudyId {
+			private final Long EXISTED_ID = 1L;
+
+			@Test
+			@DisplayName("스터디 지원현황 화면을 리턴한다")
+			void itReturnsStudiesUsersList() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+
+				mockMvc.perform(get("/studies/{id}/users", EXISTED_ID)
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
+						)
+						.andExpect(status().isOk())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+						.andExpect(view().name("studies/studies-users-list")
+						);
+			}
+		}
+
+		@Nested
+		@DisplayName("로그인한 사용자가 주어지지 않는다면")
+		class Context_WithNotAccount {
+			private final Long EXISTED_ID = 1L;
+
+			@Test
+			@DisplayName("아무런 데이터도 리턴하지 않는다")
+			@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
+			void itReturnsNull() throws Exception {
+				mockMvc.perform(get("/studies/{id}/users", EXISTED_ID))
+						.andDo(print())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+						.andExpect(status().is5xxServerError());
+			}
+		}
+	}
 }
