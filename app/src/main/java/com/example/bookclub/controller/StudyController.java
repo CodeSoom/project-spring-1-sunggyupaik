@@ -1,6 +1,7 @@
 package com.example.bookclub.controller;
 
 import com.example.bookclub.application.study.StudyService;
+import com.example.bookclub.common.exception.account.AccountNotManagerOfStudyException;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.Day;
 import com.example.bookclub.domain.study.Study;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -54,11 +54,6 @@ public class StudyController {
         StudyApiDto.StudyDetailResultDto detailedStudy = studyService.getDetailedStudy(userAccount, id);
         model.addAttribute("detailedStudy", detailedStudy);
 
-        Study study = studyService.getStudy(id);
-        if (study.isAlreadyStarted() || study.isNotOpened()) {
-            return "studies/studies-detail";
-        }
-
         return "studies/studies-detail";
     }
 
@@ -96,13 +91,17 @@ public class StudyController {
      * @return 스터디 수정 페이지
      * @throws AccessDeniedException 경로 아이디와 로그인한 사용자의 생성 스터디 아이디가 다른 경우
      */
-    @PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
+    //@PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @GetMapping("/update/{id}")
     public String studyUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {
         checkTopMenu(userAccount.getAccount(), model);
 
         Study study = studyService.getStudy(id);
+
+        if(study == null || !(userAccount.getAccount().getEmail().equals(study.getEmail()))) {
+            throw new AccountNotManagerOfStudyException();
+        }
 
         StudyDto.StudyUpdateInfoDto studyUpdateInfoDto = StudyDto.StudyUpdateInfoDto.of(study);
         model.addAttribute("StudyUpdateInfoDto", studyUpdateInfoDto);
