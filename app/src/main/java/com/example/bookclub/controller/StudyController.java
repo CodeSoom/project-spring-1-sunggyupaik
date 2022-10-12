@@ -1,6 +1,7 @@
 package com.example.bookclub.controller;
 
 import com.example.bookclub.application.study.StudyService;
+import com.example.bookclub.common.exception.account.AccountNotManagerOfStudyException;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.Day;
 import com.example.bookclub.domain.study.Study;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -98,6 +98,10 @@ public class StudyController {
         checkTopMenu(userAccount.getAccount(), model);
 
         Study study = studyService.getStudy(id);
+
+        if(study == null || !(userAccount.getAccount().getEmail().equals(study.getEmail()))) {
+            throw new AccountNotManagerOfStudyException();
+        }
 
         StudyDto.StudyUpdateInfoDto studyUpdateInfoDto = StudyDto.StudyUpdateInfoDto.of(study);
         model.addAttribute("StudyUpdateInfoDto", studyUpdateInfoDto);
