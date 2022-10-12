@@ -77,6 +77,7 @@ public class StudyControllerTest {
 	private Account account;
 	private Account secondAccount;
 	private Study study;
+	private Study secondStudy;
 	private UserAccount userAccount;
 
 	private StudyApiDto.StudyResultDto studyResultDto;
@@ -153,6 +154,14 @@ public class StudyControllerTest {
 		study.setCreatedBy(STUDY_SETUP_CREATED_BY);
 		study.setUpdatedBy(STUDY_SETUP_UPDATED_BY);
 		study.addAdmin(account);
+
+		account.addStudy(study);
+		study.addAccount(account);
+
+		secondStudy = Study.builder()
+				.id(2L)
+				.email("other@naver.com")
+				.build();
 
 		studyResultDto = StudyApiDto.StudyResultDto.of(study);
 		detailedStudy = StudyApiDto.StudyDetailResultDto.of(studyResultDto, null);
@@ -244,6 +253,66 @@ public class StudyControllerTest {
 						.andDo(print())
 						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
 						.andExpect(status().is5xxServerError());
+			}
+		}
+	}
+
+	@Nested
+	@DisplayName("studyUpdate 메서드는")
+	class Describe_studyUpdate {
+		@Nested
+		@DisplayName("로그인한 사용자와 해당 사용자가 만든 스터디 식별자가 주어진다면")
+		class Context_WithAccountAndExistedStudyId {
+			private final Long EXISTED_STUDY_ID = 1L;
+
+			@Test
+			@DisplayName("스터디 수정 화면을 리턴한다")
+			void itReturnsStudiesUpdateView() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+				given(studyService.getStudy(EXISTED_STUDY_ID)).willReturn(study);
+
+				mockMvc.perform(get("/studies/update/{id}", EXISTED_STUDY_ID)
+								.param("userAccount", objectMapper.writeValueAsString(userAccount))
+						)
+						.andExpect(status().isOk())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+						.andExpect(view().name("studies/studies-update")
+						);
+			}
+		}
+
+		@Nested
+		@DisplayName("로그인한 사용자가 주어지지 않는다면")
+		class Context_WithNotAccount {
+			private final Long EXISTED_STUDY_ID = 1L;
+
+			@Test
+			@DisplayName("아무런 데이터도 리턴하지 않는다")
+			@WithMockUser(username = "test", password = "password", roles = "ANONYMOUS")
+			void itReturnsFailedToEvaluateExpressionMessage() throws Exception {
+
+				mockMvc.perform(get("/studies/update/{id}", EXISTED_STUDY_ID))
+						.andDo(print())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+						.andExpect(status().is5xxServerError());
+			}
+		}
+
+		@Nested
+		@DisplayName("로그인한 사용자와 다른 사용자가 방장인 스터디 식별자가 주어진다면")
+		class Context_WithAccountAndNotExistedId {
+			private final Long NOT_EXISTED_STUDY_ID = 2L;
+
+			@Test
+			@DisplayName("권한이 없다는 메세지를 리턴한다")
+			void itReturnsFailedToEvaluateExpressionMessage() throws Exception {
+				SecurityContextHolder.getContext().setAuthentication(accountToken);
+				given(studyService.getStudy(NOT_EXISTED_STUDY_ID)).willReturn(secondStudy);
+
+				mockMvc.perform(get("/studies/update/{id}", NOT_EXISTED_STUDY_ID))
+						.andDo(print())
+						.andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
+						.andExpect(status().isForbidden());
 			}
 		}
 	}
