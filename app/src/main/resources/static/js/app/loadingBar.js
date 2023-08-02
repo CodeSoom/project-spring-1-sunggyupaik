@@ -4,7 +4,7 @@ function funLoadingBarStart() {
     var backGroundCover = "<div id='back'></div>"; //뒷 배경을 감쌀 커버
     var loadingBarImage = ''; //가운데 띄워 줄 이미지
     loadingBarImage += "<div id='loadingBar'>";
-    loadingBarImage += " <img src='../images/loadingBar.gif'/>"; //로딩 바 이미지
+    loadingBarImage += "<img src='../images/loadingBar.gif'/>"; //로딩 바 이미지
     loadingBarImage += "</div>";
     $('body').append(backGroundCover).append(loadingBarImage);
     $('#back').css({ 'width': backWidth, 'height': backHeight, 'opacity': '0.3' });
