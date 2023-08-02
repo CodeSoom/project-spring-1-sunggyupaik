@@ -41,7 +41,7 @@ spring:
         password:
 
       write:
-        #url: jdbc:h2:tcp://localhost/~/jdbc
+        #url: jdbc:h2:tcp://localhost/~/bookclub
         jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
         driver-class-name: org.h2.Driver
         username: sa
