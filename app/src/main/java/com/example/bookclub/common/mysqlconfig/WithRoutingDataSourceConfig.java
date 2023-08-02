@@ -3,14 +3,15 @@ package com.example.bookclub.common.mysqlconfig;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.LazyConnectionDataSourceProxy;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -20,6 +21,8 @@ import java.util.Map;
  * 읽기, 쓰기 저장소를 설정하고 경우에 따라 라우팅되도록 한다
  */
 @Configuration
+@EnableTransactionManagement
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
 @Slf4j
 public class WithRoutingDataSourceConfig {
 	/**
@@ -28,7 +31,6 @@ public class WithRoutingDataSourceConfig {
 	 * @return 쓰기 저장소
 	 */
 	@Bean
-	@Primary
 	@ConfigurationProperties(prefix = "spring.datasource.hikari.write")
 	public DataSource writeDataSource() {
 		return DataSourceBuilder.create().type(HikariDataSource.class).build();
@@ -71,19 +73,8 @@ public class WithRoutingDataSourceConfig {
 	 * @param routingDataSource 읽기와 쓰기 저장소
 	 */
 	@Bean
+	@Primary
 	public DataSource routingLazyDataSource(@Qualifier("routingDataSource") DataSource routingDataSource) {
 		return new LazyConnectionDataSourceProxy(routingDataSource);
-	}
-
-	/**
-	 * 동적으로 선택된 저장소가 반환되면 해당 저장소에 맞는 트랜잭션 매니저를 반환한다.
-	 *
-	 * @param dataSource 동적으로 선택되는 읽기 혹은 쓰기 저장소
-	 */
-	@Bean
-	public PlatformTransactionManager transactionManager(@Qualifier("routingLazyDataSource") DataSource dataSource) {
-		DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-		transactionManager.setDataSource(dataSource);
-		return transactionManager;
 	}
 }
