@@ -1,5 +1,6 @@
 package com.example.bookclub.controller;
 
+import com.example.bookclub.application.account.AccountAuthenticationService;
 import com.example.bookclub.application.interview.BookService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.BookType;
@@ -19,9 +20,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/books")
 public class BookController {
     private final BookService bookService;
+    private final AccountAuthenticationService accountAuthenticationService;
 
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService,
+                          AccountAuthenticationService accountAuthenticationService) {
         this.bookService = bookService;
+        this.accountAuthenticationService = accountAuthenticationService;
     }
 
     /**
@@ -33,7 +37,8 @@ public class BookController {
      */
     @GetMapping("/bestseller")
     public String booksBestSellerLists(@AuthenticationPrincipal UserAccount userAccount, Model model) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
         return getBookList(model, BookType.BESTSELLER, "");
     }
@@ -47,7 +52,8 @@ public class BookController {
      */
     @GetMapping("/recommend")
     public String booksRecommendLists(@AuthenticationPrincipal UserAccount userAccount, Model model) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
         return getBookList(model, BookType.RECOMMEND, "");
     }
@@ -61,7 +67,8 @@ public class BookController {
      */
     @GetMapping("/new")
     public String booksNewLists(@AuthenticationPrincipal UserAccount userAccount, Model model) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
         return getBookList(model, BookType.NEW, "");
     }
@@ -76,7 +83,8 @@ public class BookController {
     @GetMapping("/search")
     public String booksSearchLists(@AuthenticationPrincipal UserAccount userAccount,
                                    Model model, @RequestParam String search) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
         
         return getBookList(model, BookType.SEARCH, search);
     }
@@ -103,13 +111,11 @@ public class BookController {
      * @param model 모델
      */
     private void checkTopMenu(Account account, Model model) {
-        if (account.isMangerOf(account.getStudy())) {
+        if (account.isMangerOf(account.getStudy()))
             model.addAttribute("studyManager", account.getStudy());
-        }
 
-        if (account.isApplierOf(account.getStudy())) {
+        if (account.isApplierOf(account.getStudy()))
             model.addAttribute("studyApply", account.getStudy());
-        }
 
         model.addAttribute("account", account);
     }

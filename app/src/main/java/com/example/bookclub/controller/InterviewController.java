@@ -1,5 +1,6 @@
 package com.example.bookclub.controller;
 
+import com.example.bookclub.application.account.AccountAuthenticationService;
 import com.example.bookclub.application.interview.InterviewService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.InterviewDto;
@@ -25,9 +26,12 @@ import static org.apache.commons.lang3.ObjectUtils.isEmpty;
 @RequestMapping("/interviews")
 public class InterviewController {
     private final InterviewService interviewService;
+    private final AccountAuthenticationService accountAuthenticationService;
 
-    public InterviewController(InterviewService interviewService) {
+    public InterviewController(InterviewService interviewService,
+                               AccountAuthenticationService accountAuthenticationService) {
         this.interviewService = interviewService;
+        this.accountAuthenticationService = accountAuthenticationService;
     }
 
     /**
@@ -43,7 +47,8 @@ public class InterviewController {
     public String interviewLists(@AuthenticationPrincipal UserAccount userAccount, Model model,
                                  @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable,
                                  @RequestParam(defaultValue = "") String search) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
         Page<InterviewDto.InterviewResultDto> page = null;
         if(isEmpty(search)) {
@@ -71,13 +76,12 @@ public class InterviewController {
      * @param model 모델
      */
     private void checkTopMenu(Account account, Model model) {
-        model.addAttribute("account", account);
-        if (account.isMangerOf(account.getStudy())) {
+        if (account.isMangerOf(account.getStudy()))
             model.addAttribute("studyManager", account.getStudy());
-        }
 
-        if (account.isApplierOf(account.getStudy())) {
+        if (account.isApplierOf(account.getStudy()))
             model.addAttribute("studyApply", account.getStudy());
-        }
+
+        model.addAttribute("account", account);
     }
 }
