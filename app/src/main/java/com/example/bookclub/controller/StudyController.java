@@ -1,6 +1,8 @@
 package com.example.bookclub.controller;
 
+import com.example.bookclub.application.account.AccountAuthenticationService;
 import com.example.bookclub.application.study.StudyService;
+import com.example.bookclub.common.exception.account.AccountNotManagerOfStudyException;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.domain.study.Day;
 import com.example.bookclub.domain.study.Study;
@@ -15,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,9 +34,12 @@ import java.util.List;
 @RequestMapping("/studies")
 public class StudyController {
     private final StudyService studyService;
+    private final AccountAuthenticationService accountAuthenticationService;
 
-    public StudyController(StudyService studyService) {
+    public StudyController(StudyService studyService,
+                           AccountAuthenticationService accountAuthenticationService) {
         this.studyService = studyService;
+        this.accountAuthenticationService = accountAuthenticationService;
     }
 
     /**
@@ -53,11 +57,6 @@ public class StudyController {
 
         StudyApiDto.StudyDetailResultDto detailedStudy = studyService.getDetailedStudy(userAccount, id);
         model.addAttribute("detailedStudy", detailedStudy);
-
-        Study study = studyService.getStudy(id);
-        if (study.isAlreadyStarted() || study.isNotOpened()) {
-            return "studies/studies-detail";
-        }
 
         return "studies/studies-detail";
     }
@@ -96,13 +95,18 @@ public class StudyController {
      * @return 스터디 수정 페이지
      * @throws AccessDeniedException 경로 아이디와 로그인한 사용자의 생성 스터디 아이디가 다른 경우
      */
-    @PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
+    //@PreAuthorize("@studyManagerCheck.isManagerOfStudy(#userAccount.account)")
     @GetMapping("/update/{id}")
     public String studyUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
         Study study = studyService.getStudy(id);
+
+        if(study == null || !(userAccount.getAccount().getEmail().equals(study.getEmail()))) {
+            throw new AccountNotManagerOfStudyException();
+        }
 
         StudyDto.StudyUpdateInfoDto studyUpdateInfoDto = StudyDto.StudyUpdateInfoDto.of(study);
         model.addAttribute("StudyUpdateInfoDto", studyUpdateInfoDto);
@@ -123,9 +127,10 @@ public class StudyController {
     public String studyOpenList(@AuthenticationPrincipal UserAccount userAccount, Model model,
                                 @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable,
                                 @RequestParam(required = false) String search) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
-        return getStudyList(userAccount.getAccount(), pageable, model, search, StudyState.OPEN);
+        return getStudyList(savedAccount, pageable, model, search, StudyState.OPEN);
     }
 
     /**
@@ -141,9 +146,10 @@ public class StudyController {
     public String studyCloseList(@AuthenticationPrincipal UserAccount userAccount, Model model,
                                  @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable,
                                  @RequestParam(required = false) String title) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
-        return getStudyList(userAccount.getAccount(), pageable, model, title, StudyState.CLOSE);
+        return getStudyList(savedAccount, pageable, model, title, StudyState.CLOSE);
     }
 
     /**
@@ -159,9 +165,10 @@ public class StudyController {
     public String studyEndList(@AuthenticationPrincipal UserAccount userAccount, Model model,
                                @PageableDefault(size=10, sort="id", direction= Sort.Direction.ASC) Pageable pageable,
                                @RequestParam(required = false) String title) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
-        return getStudyList(userAccount.getAccount(), pageable, model, title, StudyState.END);
+        return getStudyList(savedAccount, pageable, model, title, StudyState.END);
     }
 
     /**
@@ -175,7 +182,8 @@ public class StudyController {
     @GetMapping("/{id}/users")
     public String studyApplyUserList(@AuthenticationPrincipal UserAccount userAccount,
                                      @PathVariable Long id, Model model) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
         StudyDto.StudyInfoResultDto studyInfo = studyService.getStudyInfo(id);
         model.addAttribute("StudyInfoResultDto", studyInfo);
@@ -214,13 +222,11 @@ public class StudyController {
      * @param model 모델
      */
     private void checkTopMenu(Account account, Model model) {
-        if (account.isMangerOf(account.getStudy())) {
+        if (account.isMangerOf(account.getStudy()))
             model.addAttribute("studyManager", account.getStudy());
-        }
 
-        if (account.isApplierOf(account.getStudy())) {
+        if (account.isApplierOf(account.getStudy()))
             model.addAttribute("studyApply", account.getStudy());
-        }
 
         model.addAttribute("account", account);
     }

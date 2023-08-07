@@ -209,6 +209,10 @@ dependencies {
 
 	// Hibernate EntityManager
 	implementation'org.hibernate:hibernate-entitymanager'
+
+	// Spring Security Test
+	testImplementation 'org.springframework.security:spring-security-test'
+
 }
 
 application {

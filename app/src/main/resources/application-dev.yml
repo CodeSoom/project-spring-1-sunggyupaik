@@ -24,28 +24,28 @@ spring:
     restart:
       enabled: true
 
-#    datasource:
-#      url: jdbc:h2:tcp://localhost/~/bookclub
-#      jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
-#      driver-class-name: org.h2.Driver
-#      username: sa
-#      password:
+#  datasource:
+#    url: jdbc:h2:tcp://localhost/~/bookclub
+#    jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
+#    driver-class-name: org.h2.Driver
+#    username: sa
+#    password:
 
-    datasource:
-      hikari:
-        read:
-          #url: jdbc:h2:tcp://localhost/~/bookclub
-          jdbc-url: jdbc:h2:tcp://localhost/~/bookclub2
-          driver-class-name: org.h2.Driver
-          username: sa
-          password:
+  datasource:
+    hikari:
+      read:
+        #url: jdbc:h2:tcp://localhost/~/bookclub
+        jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
+        driver-class-name: org.h2.Driver
+        username: sa
+        password:
 
-        write:
-          #url: jdbc:h2:tcp://localhost/~/jdbc
-          jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
-          driver-class-name: org.h2.Driver
-          username: sa
-          password:
+      write:
+        #url: jdbc:h2:tcp://localhost/~/bookclub
+        jdbc-url: jdbc:h2:tcp://localhost/~/bookclub
+        driver-class-name: org.h2.Driver
+        username: sa
+        password:
 
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
@@ -58,6 +58,7 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+    open-in-view: false
 
 #  jpa:
 #    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect

@@ -10,6 +10,7 @@
     }
 </style>
 <div class="container-fluid" style="margin-top: 100px">
+    {{#StudyInfoResultDto}}
     <div class="row">
         <div class="col-md-2">
             <div class="panel panel-info">
@@ -48,5 +49,8 @@
             </div>
         </div>
     </div>
+    {{/StudyInfoResultDto}}
+    {{^StudyInfoResultDto}}
+    {{/StudyInfoResultDto}}
 </div>
 {{>layout/footer}}

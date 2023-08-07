@@ -95,7 +95,7 @@ public class Study extends BaseEntity implements Serializable {
     private Zone zone;
 
     /* 사용자 리스트 */
-    @OneToMany(mappedBy = "study", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "study")
     @Builder.Default
     @ToString.Exclude
     List<Account> accounts = new ArrayList<>();
@@ -113,7 +113,7 @@ public class Study extends BaseEntity implements Serializable {
     List<StudyComment> studyComments = new ArrayList<>();
 
     /* 즐겨찾기 리스트 */
-    @OneToMany(mappedBy = "study")
+    @OneToMany(mappedBy = "study", cascade = CascadeType.REMOVE)
     @Builder.Default
     @ToString.Exclude
     List<Favorite> favorites = new ArrayList<>();

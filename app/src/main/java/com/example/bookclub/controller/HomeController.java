@@ -30,15 +30,15 @@ public class HomeController {
     /**
      * 루트 페이지로 이동한다
      *
-     * @param account 로그인한 사용자
+     * @param userAccount 로그인한 사용자
      * @param model 모델
      * @return 루트 페이지
      */
     @GetMapping("/")
     public String home(@CurrentAccount Account account, Model model) {
         if(account != null) {
-            account = accountAuthenticationService.getAccountByEmail(account.getEmail());
-            checkTopMenu(account, model);
+            Account savedAccount = accountAuthenticationService.getAccountByEmail(account.getEmail());
+            checkTopMenu(savedAccount, model);
         }
 
         long allAccountsCount = accountService.getAllAccountsCount();
@@ -63,12 +63,11 @@ public class HomeController {
      * @param model 모델
      */
     private void checkTopMenu(Account account, Model model) {
-        if (account.isMangerOf(account.getStudy())) {
+        if (account.isMangerOf(account.getStudy()))
             model.addAttribute("studyManager", account.getStudy());
-        }
-        if (account.isApplierOf(account.getStudy())) {
+
+        if (account.isApplierOf(account.getStudy()))
             model.addAttribute("studyApply", account.getStudy());
-        }
 
         model.addAttribute("account", account);
     }
