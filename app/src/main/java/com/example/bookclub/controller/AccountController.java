@@ -1,5 +1,6 @@
 package com.example.bookclub.controller;
 
+import com.example.bookclub.application.account.AccountAuthenticationService;
 import com.example.bookclub.application.study.query.StudyQueryService;
 import com.example.bookclub.domain.account.Account;
 import com.example.bookclub.dto.StudyApiDto;
@@ -23,9 +24,12 @@ import java.util.List;
 @RequestMapping("/users")
 public class AccountController {
     private final StudyQueryService studyQueryService;
+    private final AccountAuthenticationService accountAuthenticationService;
 
-    public AccountController(StudyQueryService studyQueryService) {
+    public AccountController(StudyQueryService studyQueryService,
+                             AccountAuthenticationService accountAuthenticationService) {
         this.studyQueryService = studyQueryService;
+        this.accountAuthenticationService = accountAuthenticationService;
     }
 
     /**
@@ -57,9 +61,10 @@ public class AccountController {
     @GetMapping("/{id}/favorite")
     public String accountFavorite(@AuthenticationPrincipal UserAccount userAccount,
                                 @PathVariable Long id, Model model) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
-        List<StudyApiDto.StudyFavoriteDto> studies = studyQueryService.getFavoriteStudies(userAccount.getAccount());
+        List<StudyApiDto.StudyFavoriteDto> studies = studyQueryService.getFavoriteStudies(savedAccount);
 
         model.addAttribute("StudyFavoriteDto", studies);
 
@@ -79,7 +84,8 @@ public class AccountController {
     @GetMapping("/update/{id}")
     public String accountUpdate(@AuthenticationPrincipal UserAccount userAccount,
                               @PathVariable Long id, Model model) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
         return "users/users-update";
     }
@@ -97,7 +103,8 @@ public class AccountController {
     @GetMapping("/update/password/{id}")
     public String usersPasswordUpdate(@AuthenticationPrincipal UserAccount userAccount,
                                       @PathVariable Long id, Model model) {
-        checkTopMenu(userAccount.getAccount(), model);
+        Account savedAccount = accountAuthenticationService.getAccountByEmail(userAccount.getAccount().getEmail());
+        checkTopMenu(savedAccount, model);
 
         return "users/users-update-password";
     }

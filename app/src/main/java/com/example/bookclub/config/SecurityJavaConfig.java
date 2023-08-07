@@ -120,6 +120,7 @@ public class SecurityJavaConfig extends WebSecurityConfigurerAdapter {
                                 .antMatchers("/api/diary").permitAll()
                                 .antMatchers("/api/diaryRaw").permitAll()
                                 .antMatchers("/serverAuth").permitAll()
+                                .antMatchers("/h2-console/**").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )

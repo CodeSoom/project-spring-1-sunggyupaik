@@ -237,4 +237,8 @@ public class Account extends BaseTimeEntity implements Serializable {
     public void deleteStudy() {
         this.study = null;
     }
+
+	public void deleteFavorite(Favorite savedFavorite) {
+        favorites.removeIf(favorite -> favorite.getId().equals(savedFavorite.getId()));
+	}
 }

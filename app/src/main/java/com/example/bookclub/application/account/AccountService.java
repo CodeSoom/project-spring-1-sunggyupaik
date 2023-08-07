@@ -104,11 +104,11 @@ public class AccountService {
             throw new AccountEmailDuplicatedException(email);
         }
 
-        EmailAuthentication emailAuthentication = getAuthenticationNumber(email);
-        String authenticationNumber = emailAuthentication.getAuthenticationNumber();
-        if (!emailAuthentication.isSameWith(authenticationNumber)) {
-            throw new EmailNotAuthenticatedException(authenticationNumber);
-        }
+//        EmailAuthentication emailAuthentication = getAuthenticationNumber(email);
+//        String authenticationNumber = emailAuthentication.getAuthenticationNumber();
+//        if (!emailAuthentication.isSameWith(authenticationNumber)) {
+//            throw new EmailNotAuthenticatedException(authenticationNumber);
+//        }
 
         String nickname = accountCreateDto.getNickname();
         boolean nicknameDuplicated = accountRepository.existsByNickname(nickname);
@@ -130,7 +130,7 @@ public class AccountService {
                 .build();
         roleRepository.save(role);
 
-        deleteEmailAuthentication(emailAuthentication.getEmail());
+        //deleteEmailAuthentication(emailAuthentication.getEmail());
 
         return AccountDto.AccountCreateResultDto.of(createdAccount);
     }
